@@ -1,0 +1,11 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "jsx-a11y", "nextjs", "oxc"],
+  "rules": {
+    "nextjs/no-img-element": "off",
+    "nextjs/no-html-link-for-pages": "off",
+    "jsx-a11y/anchor-has-content": "off",
+    "jsx-a11y/heading-has-content": "off",
+    "react-hooks/exhaustive-deps": "off"
+  }
+}
