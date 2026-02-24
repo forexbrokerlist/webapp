@@ -137,6 +137,59 @@ export const findTool = async ({ where, ...args }: Prisma.ToolFindFirstArgs = {}
   })
 }
 
+export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
+  "use cache"
+
+  cacheTag("brokers")
+  cacheLife("infinite")
+
+  const { q, sort, page, perPage } = search
+  const skip = (page - 1) * perPage
+  const take = perPage
+  let [sortBy, sortOrder] = sort.split(".")
+
+  // Map Tool-specific sort keys back to Brokers schema
+  if (sortBy === "publishedAt") sortBy = "scraped_at"
+  if (sortBy === "name") sortBy = "broker_name"
+  
+  // Ensure sortBy is valid for Brokers model to prevent Prisma errors
+  const validSortFields = ["scraped_at", "broker_name", "year_established", "overall_rating", "id"]
+  if (sortBy && !validSortFields.includes(sortBy)) {
+    sortBy = ""
+  }
+
+  // Safely omit Tool-specific properties from the where clause
+  const safeWhere = { ...where }
+  delete safeWhere.categories
+  delete safeWhere.tags
+  delete safeWhere.status
+
+  const whereQuery: Prisma.BrokersWhereInput = { ...safeWhere }
+
+  if (q) {
+    whereQuery.OR = [
+      { broker_name: { contains: q, mode: "insensitive" } },
+      { description: { contains: q, mode: "insensitive" } },
+      { pros: { contains: q, mode: "insensitive" } },
+      { cons: { contains: q, mode: "insensitive" } },
+    ]
+  }
+
+  const [brokers, total] = await Promise.all([
+    db.brokers.findMany({
+      where: whereQuery,
+      orderBy: sortBy ? { [sortBy]: sortOrder } : [{ year_established: "desc" }, { broker_name: "asc" }],
+      take,
+      skip,
+    }),
+    db.brokers.count({
+      where: whereQuery,
+    }),
+  ])
+
+  return { brokers, total, page, perPage }
+}
+
 export const findBrokers = async ({ where, orderBy, ...args }: Prisma.BrokersFindManyArgs) => {
   "use cache"
 
@@ -147,5 +200,16 @@ export const findBrokers = async ({ where, orderBy, ...args }: Prisma.BrokersFin
     ...args,
     where: { ...where },
     orderBy: orderBy ?? [{ year_established: "desc" }, { broker_name: "asc" }],
+  })
+}
+
+export const findBrokerById = async (id: number) => {
+  "use cache"
+
+  cacheTag("broker", `broker-${id}`)
+  cacheLife("infinite")
+
+  return db.brokers.findUnique({
+    where: { id },
   })
 }
