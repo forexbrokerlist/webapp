@@ -1,5 +1,5 @@
 import { createLoader, parseAsStringEnum, type SearchParams } from "nuqs/server"
-import { AdType } from "~/.generated/prisma/client"
+import { AdType } from "~/.generated/prisma/enums"
 import { AdsPicker } from "~/components/web/ads/ads-picker"
 import { findAds } from "~/server/web/ads/queries"
 

@@ -21,7 +21,7 @@ import {
 } from "~/components/common/command"
 import { useSearch } from "~/contexts/search-context"
 import { useSession } from "~/lib/auth-client"
-// import { searchItems } from "~/server/web/actions/search"
+import { searchItems } from "~/server/web/actions/search"
 
 type SearchResultsProps<T> = {
   name: string
@@ -73,7 +73,7 @@ export const Search = () => {
   const router = useRouter()
   const pathname = usePathname()
   const search = useSearch()
-  const [results, setResults] = useState<any>()
+  const [results, setResults] = useState<InferSafeActionFnResult<typeof searchItems>["data"]>()
   const { resolvedTheme, setTheme, forcedTheme } = useTheme()
   const [q, setQuery] = useDebouncedState("", 250)
   const listRef = useRef<HTMLDivElement>(null)
@@ -172,18 +172,10 @@ export const Search = () => {
 
   useHotkeys(hotkeys, [], true)
 
-  const { execute, isPending } = useAction(() => {
-    return Promise.resolve({
-      data: { 
-        tools: [],
-        categories: [{ id: "1", slug: "test", name: "Test" }],
-        tags: [{ id: "1", slug: "test", name: "Test" }],
-      },
-    })
-  }, {
+  const { execute, isPending } = useAction(searchItems, {
     onSuccess: ({ data }) => {
       setResults(data)
-    },  
+    },
 
     onError: ({ error }) => {
       console.error(error)
@@ -237,7 +229,7 @@ export const Search = () => {
             </CommandGroup>
           ))}
 
-        {/* <SearchResults
+        <SearchResults
           name={t("navigation.tools")}
           items={results?.tools}
           onItemSelect={navigateTo}
@@ -249,7 +241,7 @@ export const Search = () => {
               <span className="opacity-50">{getDomain(websiteUrl)}</span>
             </>
           )}
-        /> */}
+        />
 
         <SearchResults
           name={t("navigation.categories")}

@@ -30,7 +30,7 @@ export const searchTools = async (search: ToolFilterParams, where?: Prisma.ToolW
   }
 
   // Query Premium tools first, then others by createdAt (Standard and Free equal)
-  const [tools, total] = await db.$transaction([
+  const [tools, total] = await Promise.all([
     db.tool.findMany({
       orderBy: sortBy
         ? { [sortBy]: sortOrder }
@@ -134,5 +134,18 @@ export const findTool = async ({ where, ...args }: Prisma.ToolFindFirstArgs = {}
     ...args,
     where,
     select: toolOnePayload,
+  })
+}
+
+export const findBrokers = async ({ where, orderBy, ...args }: Prisma.BrokersFindManyArgs) => {
+  "use cache"
+
+  cacheTag("brokers")
+  cacheLife("infinite")
+
+  return db.brokers.findMany({
+    ...args,
+    where: { ...where },
+    orderBy: orderBy ?? [{ year_established: "desc" }, { broker_name: "asc" }],
   })
 }

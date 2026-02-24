@@ -20,13 +20,13 @@ export const Hero = async ({ className, ...props }: ComponentProps<"section">) =
         </Suspense>
       </Intro>
 
-      <CTAForm
+      {/* <CTAForm
         size="lg"
         className="max-w-sm mx-auto items-center text-center"
         buttonProps={{ size: "md", variant: "fancy" }}
       >
         <CTAProof />
-      </CTAForm>
+      </CTAForm> */}
     </section>
   )
 }

@@ -6,7 +6,6 @@ import { ToolListingSkeleton } from "~/components/web/tools/tool-listing"
 import { ToolQuery } from "~/components/web/tools/tool-query"
 import { siteConfig } from "~/config/site"
 import { getPageData } from "~/lib/pages"
-import { db } from "~/services/db"
 
 // Get page data
 const getData = cache(async () => {
@@ -18,23 +17,17 @@ const getData = cache(async () => {
 })
 
 export default async function (props: PageProps<"/">) {
-  // const { structuredData } = await getData()
-  const response = await db.dailyforex_brokers.findMany({
-    take: 50,
-    skip: 0,
-  })
-  console.log("response", response)
+  const { structuredData } = await getData()
 
   return (
     <>
-      <div>Hello World</div>
-      {/* <Hero /> */}
+      <Hero />
 
-      {/* <Suspense fallback={<ToolListingSkeleton />}>
+      <Suspense fallback={<ToolListingSkeleton />}>
         <ToolQuery searchParams={props.searchParams} options={{ enableFilters: true }} ad="Tools" />
-      </Suspense> */}
+      </Suspense>
 
-      {/* <StructuredData data={structuredData} /> */}
+      <StructuredData data={structuredData} />
     </>
   )
 }

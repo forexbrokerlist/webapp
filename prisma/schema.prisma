@@ -1,15 +1,228 @@
 generator client {
   provider        = "prisma-client"
-  output          = "../.generated/prisma"
   previewFeatures = ["postgresqlExtensions"]
   engineType      = "client"
+  output          = "../.generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider   = "postgresql"
+  extensions = [citext]
 }
 
-model dailyforex_brokers {
+enum AdType {
+  Banner
+  Tools
+  ToolPage
+  BlogPost
+  Bottom
+  All
+}
+
+enum ToolStatus {
+  Draft
+  Scheduled
+  Pending
+  Published
+}
+
+enum ToolTier {
+  Free
+  Standard
+  Premium
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  role          String    @default("user")
+  banned        Boolean?  @default(false)
+  banReason     String?
+  banExpires    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  accounts  Account[]
+  sessions  Session[]
+  tools     Tool[]
+  bookmarks Bookmark[]
+
+  // Indexes
+  @@index([id])
+}
+
+model Session {
+  id             String   @id @default(cuid())
+  token          String   @unique
+  expiresAt      DateTime
+  ipAddress      String?
+  userAgent      String?
+  impersonatedBy String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  // Indexes
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  // Indexes
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Ad {
+  id          String   @id @default(cuid())
+  email       String
+  name        String
+  description String?
+  websiteUrl  String
+  faviconUrl  String?
+  bannerUrl   String?
+  buttonLabel String?
+  type        AdType   @default(All)
+  startsAt    DateTime
+  endsAt      DateTime
+  sessionId   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Tool {
+  id             String     @id @default(cuid())
+  name           String     @db.Citext
+  slug           String     @unique
+  websiteUrl     String
+  affiliateUrl   String?
+  tagline        String?
+  description    String?
+  content        String?
+  faviconUrl     String?
+  screenshotUrl  String?
+  tier           ToolTier   @default(Free)
+  tierPriority   Int        @default(dbgenerated())
+  submitterName  String?
+  submitterEmail String?
+  submitterNote  String?
+  status         ToolStatus @default(Draft)
+  publishedAt    DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  // Relations
+  categories Category[]
+  tags       Tag[]
+  reports    Report[]
+  bookmarks  Bookmark[]
+  owner      User?      @relation(fields: [ownerId], references: [id])
+  ownerId    String?
+
+  @@index([id, slug])
+  @@index([name])
+  @@index([status])
+  @@index([ownerId])
+  @@index([tierPriority, publishedAt])
+  @@index([createdAt])
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @db.Citext
+  slug        String   @unique
+  label       String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Implicit relation
+  tools Tool[]
+
+  // Indexes
+  @@index([slug])
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @db.Citext
+  slug      String   @unique
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  // Relations
+  tools Tool[]
+
+  // Indexes
+  @@index([name])
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  type      String   @default("Other")
+  message   String?
+  email     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  tool   Tool?   @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  toolId String?
+
+  // Indexes
+  @@index([toolId])
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  tool   Tool   @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  toolId String
+
+  // Indexes
+  @@unique([userId, toolId])
+  @@index([userId])
+  @@index([toolId])
+}
+
+
+model Brokers {
   id                                 Int       @id @default(autoincrement())
   average_trading_cost_bitcoin       String?   @db.VarChar(82)
   average_trading_cost_eur_usd       String?   @db.VarChar(95)
@@ -49,5 +262,5 @@ model dailyforex_brokers {
   withdrawal_options                 String?   @db.VarChar(111)
   year_established                   Float?
 
-  @@map("dailyforex_brokers")
+  @@map("forex_brokers")
 }

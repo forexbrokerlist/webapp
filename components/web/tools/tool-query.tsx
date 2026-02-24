@@ -7,7 +7,7 @@ import { ToolList, type ToolListProps } from "~/components/web/tools/tool-list"
 import { ToolListing, type ToolListingProps } from "~/components/web/tools/tool-listing"
 import { adsConfig } from "~/config/ads"
 import { createGraph, generateItemList } from "~/lib/structured-data"
-import { searchTools } from "~/server/web/tools/queries"
+import {   findBrokers, searchTools } from "~/server/web/tools/queries"
 import { type ToolFilterParams, toolFilterParamsCache } from "~/server/web/tools/schema"
 
 type ToolQueryProps = Omit<ToolListingProps, "list" | "pagination"> & {
@@ -33,6 +33,8 @@ const ToolQuery = async ({
   const parsedParams = toolFilterParamsCache.parse(await searchParams)
   const params = { ...parsedParams, ...overrideParams }
   const { tools, total, page, perPage } = await searchTools(params, where)
+  const brokers = await findBrokers({})
+  console.log("brokers", brokers)  
 
   const items = tools.map(tool => ({
     name: tool.name,
