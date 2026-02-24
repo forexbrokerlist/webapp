@@ -6,13 +6,19 @@ import { AdBadge, AdLink } from "~/components/web/ads/ad-base"
 import { Container } from "~/components/web/ui/container"
 import { Favicon } from "~/components/web/ui/favicon"
 import { cx } from "~/lib/utils"
-import { findAdWithFallback } from "~/server/web/ads/actions"
+// import { findAdWithFallback } from "~/server/web/ads/actions"
 
 export const AdBanner = async ({ className, ...props }: ComponentProps<typeof Card>) => {
   const type = "Banner"
   const t = await getTranslations("components.ads")
-  const { data: ad } = await findAdWithFallback({ type })
-
+  // const { data: ad } = await findAdWithFallback({ type })
+const ad =[{
+  name: "Test",
+  description: "Test",
+  buttonLabel: "Test",
+  faviconUrl: "https://www.google.com/favicon.ico",
+  bannerUrl: "https://www.google.com/banner.png",
+}]
   if (!ad) {
     return null
   }
@@ -27,7 +33,7 @@ export const AdBanner = async ({ className, ...props }: ComponentProps<typeof Ca
         <AdLink ad={ad} type={type} source="banner">
           <AdBadge className="leading-none max-sm:order-last" />
 
-          <div className="text-xs leading-tight text-secondary-foreground mr-auto sm:text-sm">
+          {/* <div className="text-xs leading-tight text-secondary-foreground mr-auto sm:text-sm">
             <Favicon
               src={ad.faviconUrl}
               title={ad.name}
@@ -44,7 +50,7 @@ export const AdBanner = async ({ className, ...props }: ComponentProps<typeof Ca
             asChild
           >
             <span>{ad.buttonLabel || t("learn_more")}</span>
-          </Button>
+          </Button> */}
         </AdLink>
       </Card>
     </Container>
