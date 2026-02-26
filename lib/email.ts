@@ -41,5 +41,13 @@ export const sendEmail = async (email: EmailParams): Promise<CreateEmailResponse
     return
   }
 
-  return resend.emails.send(payload)
+  const response = await resend.emails.send(payload)
+
+  if (response.error) {
+    console.error("Failed to send email:", response.error)
+  } else {
+    console.log("Email sent successfully:", response.data)
+  }
+
+  return response
 }
