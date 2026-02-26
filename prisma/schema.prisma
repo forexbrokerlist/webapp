@@ -19,6 +19,12 @@ enum AdType {
   All
 }
 
+enum SponsorCategory {
+  BrokerListing
+  AlgoSelling
+  Education
+}
+
 enum ToolStatus {
   Draft
   Scheduled
@@ -263,4 +269,18 @@ model Brokers {
   year_established                   Float?
 
   @@map("forex_brokers")
+}
+
+model Sponsor {
+  id         String   @id @default(cuid())
+  name       String   @db.Citext
+  logoUrl    String
+  websiteUrl String?
+  isActive   Boolean  @default(true)
+  order      Int      @default(0)
+  category   SponsorCategory @default(BrokerListing)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([isActive, order])
 }
