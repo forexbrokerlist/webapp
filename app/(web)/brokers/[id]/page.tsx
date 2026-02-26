@@ -101,6 +101,18 @@ export default async function (props: Props) {
             </IntroDescription>
           )}
 
+          {broker.url && (
+            <div className="mt-8 rounded-xl overflow-hidden border border-border/50 shadow-sm aspect-video relative max-w-4xl mx-auto bg-muted">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src={`https://api.screenshotone.com/take?access_key=o1oeYRbFCs38-Q&url=${encodeURIComponent(broker.url.startsWith('http') ? broker.url : `https://${broker.url}`)}&format=jpg&block_ads=true&block_cookie_banners=true&block_banners_by_heuristics=false&block_trackers=true&delay=0&timeout=60&response_type=by_format&image_quality=80`}
+                alt={`${broker.broker_name} Website Screenshot`}
+                className="w-full h-full object-cover object-top"
+                loading="lazy"
+              />
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
             {/* Broker Details */}
             <Card className="p-0 overflow-hidden shadow-sm h-full">
@@ -110,32 +122,32 @@ export default async function (props: Props) {
               <div className="p-6">
                 <dl className="space-y-4 text-sm">
                   {broker.headquarters && (
-                    <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                      <dt className="text-muted-foreground font-medium">Headquarters</dt>
+                    <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                      <dt className="text-muted-foreground font-medium shrink-0">Headquarters</dt>
                       <dd className="font-semibold text-right">{broker.headquarters}</dd>
                     </div>
                   )}
                   {broker.year_established && (
-                    <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                      <dt className="text-muted-foreground font-medium">Established</dt>
+                    <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                      <dt className="text-muted-foreground font-medium shrink-0">Established</dt>
                       <dd className="font-semibold text-right">{broker.year_established}</dd>
                     </div>
                   )}
                   {broker.minimum_deposit && (
-                    <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                      <dt className="text-muted-foreground font-medium">Min Deposit</dt>
+                    <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                      <dt className="text-muted-foreground font-medium shrink-0">Min Deposit</dt>
                       <dd className="font-semibold text-right">{broker.minimum_deposit}</dd>
                     </div>
                   )}
                   {broker.execution_types && (
-                    <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                      <dt className="text-muted-foreground font-medium">Execution</dt>
+                    <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                      <dt className="text-muted-foreground font-medium shrink-0">Execution</dt>
                       <dd className="font-semibold text-right">{broker.execution_types}</dd>
                     </div>
                   )}
                   {broker.regulators && (
-                    <div className="flex justify-between items-center pb-2">
-                      <dt className="text-muted-foreground font-medium min-w-24">Regulators</dt>
+                    <div className="flex justify-between items-start gap-4 pb-2">
+                      <dt className="text-muted-foreground font-medium min-w-24 shrink-0">Regulators</dt>
                       <dd className="font-semibold text-right max-w-xs">{broker.regulators}</dd>
                     </div>
                   )}
@@ -152,51 +164,79 @@ export default async function (props: Props) {
                 <div className="p-6">
                   <dl className="space-y-4 text-sm">
                     {broker.retail_loss_rate && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Retail Loss Rate</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">Retail Loss Rate</dt>
                         <dd className="font-semibold text-right">{broker.retail_loss_rate}</dd>
                       </div>
                     )}
                     {broker.daily_loss_limit && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Daily Loss Limit</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">Daily Loss Limit</dt>
                         <dd className="font-semibold text-right">{broker.daily_loss_limit}</dd>
                       </div>
                     )}
                     {broker.maximum_trailing_drawdown && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Max Trailing Drawdown</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">Max Trailing Drawdown</dt>
                         <dd className="font-semibold text-right">{broker.maximum_trailing_drawdown}</dd>
                       </div>
                     )}
                     {broker.minimum_raw_spreads && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Min Raw Spreads</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">Min Raw Spreads</dt>
                         <dd className="font-semibold text-right">{broker.minimum_raw_spreads}</dd>
                       </div>
                     )}
                     {broker.minimum_standard_spreads && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Min Standard Spreads</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">Min Standard Spreads</dt>
                         <dd className="font-semibold text-right">{broker.minimum_standard_spreads}</dd>
                       </div>
                     )}
                     {broker.minimum_commission_for_forex && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Min Forex Commission</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">Min Forex Commission</dt>
                         <dd className="font-semibold text-right">{broker.minimum_commission_for_forex}</dd>
                       </div>
                     )}
                     {broker.profit_share && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Profit Share</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">Profit Share</dt>
                         <dd className="font-semibold text-right">{broker.profit_share}</dd>
                       </div>
                     )}
                     {broker.trading_hours && (
-                      <div className="flex justify-between items-start pb-2">
-                        <dt className="text-muted-foreground font-medium min-w-24">Trading Hours</dt>
-                        <dd className="font-semibold text-right max-w-xs">{broker.trading_hours}</dd>
+                      <div className="flex flex-col space-y-1 pb-2">
+                        <dt className="text-muted-foreground font-medium min-w-24 shrink-0">Trading Hours</dt>
+                        <dd className="font-semibold text-right max-w-full">
+                          {(() => {
+                            try {
+                              const parsed = JSON.parse(broker.trading_hours as string);
+                              if (Array.isArray(parsed)) {
+                                return (
+                                  <div className="flex flex-col mt-2 w-full pl-2 border-l-2 border-primary/20">
+                                    {parsed.map((item: any, i: number) => {
+                                      const keys = Object.keys(item);
+                                      if (keys.length < 2) return null;
+                                      const label = String(item[keys[0]] || "").replace(/_/g, " ");
+                                      const valKeys = keys.slice(1);
+                                      const value = valKeys.map(k => String(item[k])).join(" - ");
+                                      return (
+                                        <div key={i} className="flex justify-between items-start gap-4 py-1.5 border-b border-border/30 last:border-0 text-sm font-normal text-left">
+                                          <span className="text-muted-foreground shrink-0">{label}</span>
+                                          <span className="font-medium text-right">{value}</span>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                );
+                              }
+                            } catch (e) {
+                              // Not JSON, continue to fallback
+                            }
+                            return broker.trading_hours;
+                          })()}
+                        </dd>
                       </div>
                     )}
                   </dl>
@@ -213,45 +253,60 @@ export default async function (props: Props) {
                 <div className="p-6">
                   <dl className="space-y-4 text-sm">
                     {broker.funded_account_options && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Funded Accounts</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">Funded Accounts</dt>
                         <dd className="font-semibold text-right">{broker.funded_account_options}</dd>
                       </div>
                     )}
                     {broker.minimum_evaluation_fee && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Min Evaluation Fee</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">Min Evaluation Fee</dt>
                         <dd className="font-semibold text-right">{broker.minimum_evaluation_fee}</dd>
                       </div>
                     )}
                     {broker.minimum_funded_account && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Min Funded Account</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">Min Funded Account</dt>
                         <dd className="font-semibold text-right">{broker.minimum_funded_account}</dd>
                       </div>
                     )}
                     {broker.maximum_funded_account && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Max Funded Account</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">Max Funded Account</dt>
                         <dd className="font-semibold text-right">{broker.maximum_funded_account}</dd>
                       </div>
                     )}
                     {broker.funding_methods && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Funding Methods</dt>
-                        <dd className="font-semibold text-right max-w-xs">{broker.funding_methods}</dd>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2 pt-1.5">
+                        <dt className="text-muted-foreground font-medium mt-0.5 shrink-0">Funding Methods</dt>
+                        <dd className="flex flex-wrap justify-end gap-1.5 max-w-[75%]">
+                          {broker.funding_methods.split(/[,;]+/).map((item, i) => {
+                            if (!item.trim()) return null;
+                            return <Badge key={i} variant="outline" className="font-normal text-xs px-2 py-0 border-border/50 whitespace-normal text-right">{item.trim()}</Badge>
+                          })}
+                        </dd>
                       </div>
                     )}
                     {broker.deposit_options && (
-                      <div className="flex justify-between items-start border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium min-w-24">Deposit Options</dt>
-                        <dd className="font-semibold text-right max-w-xs">{broker.deposit_options}</dd>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2 pt-1.5">
+                        <dt className="text-muted-foreground font-medium min-w-24 mt-0.5 shrink-0">Deposit Options</dt>
+                        <dd className="flex flex-wrap justify-end gap-1.5 max-w-[75%]">
+                          {broker.deposit_options.split(/[,;]+/).map((item, i) => {
+                            if (!item.trim()) return null;
+                            return <Badge key={i} variant="outline" className="font-normal text-xs px-2 py-0 whitespace-normal text-right">{item.trim()}</Badge>
+                          })}
+                        </dd>
                       </div>
                     )}
                     {broker.withdrawal_options && (
-                      <div className="flex justify-between items-start pb-2">
-                        <dt className="text-muted-foreground font-medium min-w-24">Withdrawal Options</dt>
-                        <dd className="font-semibold text-right max-w-xs">{broker.withdrawal_options}</dd>
+                      <div className="flex justify-between items-start gap-4 pb-2 pt-1.5">
+                        <dt className="text-muted-foreground font-medium min-w-24 mt-0.5 shrink-0">Withdrawal Options</dt>
+                        <dd className="flex flex-wrap justify-end gap-1.5 max-w-[75%]">
+                          {broker.withdrawal_options.split(/[,;]+/).map((item, i) => {
+                            if (!item.trim()) return null;
+                            return <Badge key={i} variant="primary" className="font-normal text-xs px-2 py-0 whitespace-normal text-right">{item.trim()}</Badge>
+                          })}
+                        </dd>
                       </div>
                     )}
                   </dl>
@@ -268,32 +323,32 @@ export default async function (props: Props) {
                 <div className="p-6">
                   <dl className="space-y-4 text-sm">
                     {broker.average_trading_cost_eur_usd && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">EUR/USD</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">EUR/USD</dt>
                         <dd className="font-semibold text-right">{broker.average_trading_cost_eur_usd}</dd>
                       </div>
                     )}
                     {broker.average_trading_cost_gbp_usd && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">GBP/USD</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">GBP/USD</dt>
                         <dd className="font-semibold text-right">{broker.average_trading_cost_gbp_usd}</dd>
                       </div>
                     )}
                     {broker.average_trading_cost_gold && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Gold</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">Gold</dt>
                         <dd className="font-semibold text-right">{broker.average_trading_cost_gold}</dd>
                       </div>
                     )}
                     {broker.average_trading_cost_bitcoin && (
-                      <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                        <dt className="text-muted-foreground font-medium">Bitcoin</dt>
+                      <div className="flex justify-between items-start gap-4 border-b border-border/50 pb-2">
+                        <dt className="text-muted-foreground font-medium shrink-0">Bitcoin</dt>
                         <dd className="font-semibold text-right">{broker.average_trading_cost_bitcoin}</dd>
                       </div>
                     )}
                     {broker.average_trading_cost_wti_crude_oil && (
-                      <div className="flex justify-between items-center pb-2">
-                        <dt className="text-muted-foreground font-medium min-w-24">WTI Crude</dt>
+                      <div className="flex justify-between items-start gap-4 pb-2">
+                        <dt className="text-muted-foreground font-medium min-w-24 shrink-0">WTI Crude</dt>
                         <dd className="font-semibold text-right max-w-xs">{broker.average_trading_cost_wti_crude_oil}</dd>
                       </div>
                     )}
@@ -312,31 +367,58 @@ export default async function (props: Props) {
                   <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm">
                     {broker.trading_platforms && (
                       <div className="flex flex-col space-y-1 border-b md:border-b-0 border-border/50 pb-3 md:pb-0">
-                        <dt className="text-muted-foreground font-medium">Trading Platforms</dt>
+                        <dt className="text-muted-foreground font-medium shrink-0">Trading Platforms</dt>
                         <dd className="font-semibold text-pretty">{broker.trading_platforms}</dd>
                       </div>
                     )}
                     {broker.other_fees && (
                       <div className="flex flex-col space-y-1 border-b md:border-b-0 border-border/50 pb-3 md:pb-0">
-                        <dt className="text-muted-foreground font-medium">Other Fees</dt>
-                        <dd className="font-semibold text-pretty">{broker.other_fees}</dd>
+                        <dt className="text-muted-foreground font-medium shrink-0">Other Fees</dt>
+                        <dd className="font-semibold text-pretty">
+                          {(() => {
+                            try {
+                              const parsed = JSON.parse(broker.other_fees as string);
+                              if (Array.isArray(parsed)) {
+                                return (
+                                  <div className="flex flex-col mt-2 w-full pl-2 border-l-2 border-primary/20">
+                                    {parsed.map((item: any, i: number) => {
+                                      const keys = Object.keys(item);
+                                      if (keys.length < 2) return null;
+                                      const label = String(item[keys[0]] || "").replace(/_/g, " ");
+                                      const value = String(item[keys[1]] || "");
+                                      return (
+                                        <div key={i} className="flex justify-between items-start gap-4 bg-muted/30 px-3 py-2 rounded text-sm font-normal">
+                                          <span className="text-muted-foreground shrink-0">{label}</span>
+                                          <span className="font-medium text-right">{value}</span>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                );
+                              }
+                            } catch (e) {
+                              // Not JSON, continue to fallback
+                            }
+                            return broker.other_fees;
+                          })()}
+                        </dd>
                       </div>
                     )}
                     {broker.mobile_app_comparison && (
                       <div className="flex flex-col space-y-1 md:col-span-2 border-t border-border/50 pt-3">
-                        <dt className="text-muted-foreground font-medium">Mobile App</dt>
+                        <dt className="text-muted-foreground font-medium shrink-0">Mobile App</dt>
                         <dd className="font-semibold text-pretty">{broker.mobile_app_comparison}</dd>
                       </div>
                     )}
                     {broker.trader_table && (
                       <div className="flex flex-col space-y-1 md:col-span-2 border-t border-border/50 pt-3">
-                        <dt className="text-muted-foreground font-medium">Trader Details</dt>
+                        <dt className="text-muted-foreground font-medium shrink-0">Trader Details</dt>
                         <dd className="font-semibold text-pretty">{broker.trader_table}</dd>
                       </div>
                     )}
                     {broker.regulators_table && (
                       <div className="flex flex-col space-y-1 md:col-span-2 border-t border-border/50 pt-3">
-                        <dt className="text-muted-foreground font-medium">Regulators Detailed</dt>
+                        <dt className="text-muted-foreground font-medium shrink-0">Regulators Detailed</dt>
                         <dd className="font-semibold text-pretty">{broker.regulators_table}</dd>
                       </div>
                     )}

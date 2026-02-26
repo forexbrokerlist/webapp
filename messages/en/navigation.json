@@ -1,6 +1,6 @@
 {
   "home": "Home",
-  "tools": "Tools",
+  "tools": "Brokers",
   "categories": "Categories",
   "tags": "Tags",
   "blog": "Blog",
@@ -18,7 +18,7 @@
   "browse_tools": "Browse tools",
   "browse_categories": "Browse categories",
   "browse_tags": "Browse tags",
-  "latest_tools": "Latest tools",
+  "latest_tools": "Latest brokers",
   "quick_links": "Quick Links",
   "create": "Create",
   "appearance": "Appearance",

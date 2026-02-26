@@ -21,7 +21,7 @@
     "bookmark_view": "View bookmarks"
   },
   "filters": {
-    "search_placeholder": "Search tools...",
+    "search_placeholder": "Search Brokers...",
     "all_categories": "All categories",
     "sort_latest": "Latest",
     "sort_name_asc": "Name (A to Z)",

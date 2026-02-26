@@ -14,11 +14,11 @@
     "cta_description": "Join {count}+ other members and get updates straight to your inbox."
   },
   "count_badge": {
-    "new_tools": "{count} new {count, plural, =0 {tools} =1 {tool} other {tools}} added",
-    "total_tools": "{count} {count, plural, =0 {tools} =1 {tool} other {tools}} listed"
+    "new_tools": "{count} new {count, plural, =0 {brokers} =1 {broker} other {brokers}} added",
+    "total_tools": "{count} {count, plural, =0 {brokers} =1 {broker} other {brokers}} listed"
   },
   "cta_proof": {
-    "message": "Join {count}+ directory enthusiasts"
+    "message": "Join {count}+ forex traders"
   },
   "feature_nudge": {
     "message": "{name} has already been published on {siteName}. Upgrade its listing for extra exposure.",
@@ -56,7 +56,7 @@
   },
   "stats": {
     "pageviews": "Monthly Pageviews",
-    "tools": "Listed Tools",
+    "tools": "Listed Brokers",
     "subscribers": "Newsletter Subscribers"
   },
   "testimonial": {
