@@ -1,7 +1,7 @@
 import axios from "axios"
 
 // Use environment variable or fallback for the 14-character alphanumeric secret
-const API_SECRET = process.env.NEXT_PUBLIC_API_SECRET || "A1b2C3d4E5f6G7"
+const API_SECRET = process.env.NEXT_PUBLIC_API_SECRET || "gKlOOMqk8N9Lbw"
 
 // Algorithm: Base64 encoding
 // Encoding: UTF-8
@@ -24,8 +24,7 @@ export const apiClient = axios.create({
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
-    // Authorization: `Bearer ${encodedSecret}`,
-    Authorization: `Bearer ${"gKlOOMqk8N9Lbw"}`,
+    Authorization: `Bearer ${encodedSecret}`,
 
   },
 })
@@ -39,8 +38,7 @@ export const createApiClient = (baseURL: string | undefined) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      // Authorization: `Bearer ${encodedSecret}`,
-      Authorization: `Bearer ${"gKlOOMqk8N9Lbw"}`,
+      Authorization: `Bearer ${encodedSecret}`,
     },
   })
 }

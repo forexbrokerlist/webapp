@@ -115,7 +115,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
                   </NavLink>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <NavLink href="#" prefix={<TelescopeIcon />}>
+                  <NavLink href="/deep-scan" prefix={<TelescopeIcon />}>
                     {t("navigation.deep_research")}
                   </NavLink>
                 </DropdownMenuItem>
@@ -154,7 +154,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
           <NavLink href="/tags">{t("navigation.tags")}</NavLink>
           <NavLink href="/fx-guru">{t("navigation.fx_guru")}</NavLink>
           <NavLink href="/stock-guru">{t("navigation.stock_guru")}</NavLink>
-          <NavLink href="#">{t("navigation.deep_research")}</NavLink>
+          <NavLink href="/deep-scan">{t("navigation.deep_research")}</NavLink>
           <NavLink href="/submit">{t("navigation.submit")}</NavLink>
           <NavLink href="/about">{t("navigation.about")}</NavLink>
           {adsConfig.enabled && <NavLink href="/advertise">{t("navigation.advertise")}</NavLink>}

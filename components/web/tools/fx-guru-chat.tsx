@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { apiClient, createApiClient } from "~/lib/api-client"
+import { useSession } from "~/lib/auth-client"
 
 interface Message {
   id: string
@@ -53,6 +54,7 @@ const other_crosses = ["AUD/CHF", "AUD/CAD", "AUD/NZD", "CAD/CHF", "NZD/CHF"]
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 
 export function FxGuruChat() {
+  const { data: session } = useSession()
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState("")
   const [selectedPair, setSelectedPair] = useState(major_pairs[0])
@@ -158,7 +160,7 @@ export function FxGuruChat() {
             pair: selectedPair,
             message: inputValue,
             history: [],
-            user_id: userId,
+            user_id: session?.user?.id || userId,
           })
 
           const data = response.data

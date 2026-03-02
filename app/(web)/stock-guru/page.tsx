@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { StockGuruChat } from "~/components/web/tools/stock-guru-chat"
 
 export const metadata: Metadata = {
-  title: "Stock Guru",
-  description: "Your AI Stock Guru Assistant",
+  title: "StockGuru - AI Market Assistant",
+  description: "Get actionable insights from stock charts and market analysis",
 }
 
 export default function StockGuruPage() {
