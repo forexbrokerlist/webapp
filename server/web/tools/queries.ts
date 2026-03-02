@@ -203,13 +203,13 @@ export const findBrokers = async ({ where, orderBy, ...args }: Prisma.BrokersFin
   })
 }
 
-export const findBrokerById = async (id: number) => {
+export const findBrokerBySlug = async (slug: string) => {
   "use cache"
 
-  cacheTag("broker", `broker-${id}`)
+  cacheTag("broker", `broker-${slug}`)
   cacheLife("infinite")
 
-  return db.brokers.findUnique({
-    where: { id },
+  return db.brokers.findFirst({
+    where: { slug },
   })
 }

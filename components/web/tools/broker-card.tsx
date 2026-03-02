@@ -22,9 +22,10 @@ export const BrokerCard = ({
 }: BrokerCardProps) => {
   // Try to use a clean URL for the favicon fetch
   let domain = "forex.com";
+  const targetUrl = broker.broker_website || broker.url;
   try {
-    if (broker.url) {
-      const urlObj = new URL(broker.url.startsWith('http') ? broker.url : `https://${broker.url}`);
+    if (targetUrl) {
+      const urlObj = new URL(targetUrl.startsWith('http') ? targetUrl : `https://${targetUrl}`);
       domain = urlObj.hostname;
     }
   } catch (e) {
@@ -37,7 +38,7 @@ export const BrokerCard = ({
         <Favicon src={`https://www.google.com/s2/favicons?domain=${domain}&sz=128`} title={broker.broker_name || "Broker"} contained />
 
         <H4 as="h3" className="truncate">
-          <Link href={`/brokers/${broker.id}`}>
+          <Link href={`/brokers/${broker.slug}`}>
             <span className="absolute inset-0 z-[50] rounded-lg" />
             {broker.broker_name || "UNKNOWN BROKER"}
           </Link>
