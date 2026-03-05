@@ -9,6 +9,7 @@ import { ExternalLink } from "~/components/web/external-link"
 import { siteConfig } from "~/config/site"
 import { cx } from "~/lib/utils"
 import type { AdOne } from "~/server/web/ads/payloads"
+import { trackAdClick } from "~/server/web/ads/actions"
 
 type AdLinkProps = ComponentProps<typeof ExternalLink> & {
   ad: AdOne
@@ -20,9 +21,23 @@ type AdLinkProps = ComponentProps<typeof ExternalLink> & {
 /**
  * Base link component for ads that handles all tracking and link logic
  */
-const AdLink = ({ ad, type, source, params, ...props }: AdLinkProps) => {
+const AdLink = ({ ad, type, source, params, onClick, ...props }: AdLinkProps) => {
   const url = removeQueryParams(ad.websiteUrl)
   const isInternal = url.startsWith(siteConfig.url)
+
+  const handleClick = async (event: React.MouseEvent<HTMLAnchorElement>) => {
+    // Track click before navigating (only for real ads, not fallback)
+    if (ad.id !== siteConfig.slug && ad.status !== "Draft") {
+      try {
+        await trackAdClick({ adId: ad.id })
+      } catch (error) {
+        console.error("Failed to track ad click:", error)
+      }
+    }
+    
+    // Call original onClick if provided
+    onClick?.(event)
+  }
 
   return (
     <ExternalLink
@@ -32,6 +47,7 @@ const AdLink = ({ ad, type, source, params, ...props }: AdLinkProps) => {
       eventProps={{ url, type, source }}
       doFollow
       doTrack
+      onClick={handleClick}
       {...props}
     />
   )

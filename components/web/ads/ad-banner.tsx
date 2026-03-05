@@ -1,4 +1,6 @@
-import { getTranslations } from "next-intl/server"
+"use client"
+
+import { useEffect, useState } from "react"
 import type { ComponentProps } from "react"
 import { Button } from "~/components/common/button"
 import { Card } from "~/components/common/card"
@@ -6,14 +8,36 @@ import { AdBadge, AdLink } from "~/components/web/ads/ad-base"
 import { Container } from "~/components/web/ui/container"
 import { Favicon } from "~/components/web/ui/favicon"
 import { cx } from "~/lib/utils"
-import { findAdWithFallback } from "~/server/web/ads/actions"
+import { findAdWithFallback, trackAdImpression } from "~/server/web/ads/actions"
+import type { AdOne } from "~/server/web/ads/payloads"
+import { siteConfig } from "~/config/site"
 
-export const AdBanner = async ({ className, ...props }: ComponentProps<typeof Card>) => {
-  const type = "Banner"
-  const t = await getTranslations("components.ads")
-  const { data: ad } = await findAdWithFallback({ type })
+export const AdBanner = ({ className, ...props }: ComponentProps<typeof Card>) => {
+  const [ad, setAd] = useState<AdOne | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  if (!ad) {
+  useEffect(() => {
+    const loadAd = async () => {
+      try {
+        const type = "Banner"
+        const { data: adData } = await findAdWithFallback({ type })
+        setAd(adData ?? null)
+        
+        // Track impression when ad is loaded (only for real ads, not fallback)
+        if (adData && adData.id !== siteConfig.slug && adData.status !== "Draft") {
+          await trackAdImpression({ adId: adData.id })
+        }
+      } catch (error) {
+        console.error("Failed to load ad:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadAd()
+  }, [])
+
+  if (isLoading || !ad) {
     return null
   }
 
@@ -24,7 +48,7 @@ export const AdBanner = async ({ className, ...props }: ComponentProps<typeof Ca
         asChild
         {...props}
       >
-        <AdLink ad={ad} type={type} source="banner">
+        <AdLink ad={ad} type="Banner" source="banner">
           <AdBadge className="leading-none max-sm:order-last" />
 
           <div className="text-xs leading-tight text-secondary-foreground mr-auto sm:text-sm">
@@ -43,7 +67,7 @@ export const AdBanner = async ({ className, ...props }: ComponentProps<typeof Ca
             className="shrink-0 leading-none pointer-events-none max-sm:hidden"
             asChild
           >
-            <span>{ad.buttonLabel || t("learn_more")}</span>
+            <span>{ad.buttonLabel || "Learn more"}</span>
           </Button>
         </AdLink>
       </Card>

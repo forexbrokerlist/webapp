@@ -51,6 +51,7 @@ export const findAdWithFallback = actionClient
       buttonLabel: t("default_ad.button_label", { siteName: siteConfig.name }),
       faviconUrl: "/favicon.png",
       bannerUrl: null,
+      status: "Draft" as const,
     } satisfies AdOne
 
     if (!adsConfig.enabled) {
@@ -263,4 +264,70 @@ export const createDraftAdAndCheckout = actionClient
       redirect(checkout.url)
     },
   )
+
+export const trackAdClick = actionClient
+  .inputSchema(z.object({ adId: z.string() }))
+  .action(async ({ parsedInput: { adId }, ctx: { db } }) => {
+    try {
+      // Validate that the ad exists before updating
+      const ad = await db.ad.findUnique({
+        where: { id: adId },
+        select: { id: true, status: true },
+      })
+
+      if (!ad) {
+        console.warn(`Ad not found for click tracking: ${adId}`)
+        return { success: false, error: "Ad not found" }
+      }
+
+      // Only track clicks for active ads
+      if (ad.status !== "Scheduled") {
+        console.warn(`Attempted to track click for non-active ad: ${adId}, status: ${ad.status}`)
+        return { success: false, error: "Ad is not active" }
+      }
+
+      await db.ad.update({
+        where: { id: adId },
+        data: { clicks: { increment: 1 } },
+      })
+
+      return { success: true }
+    } catch (error) {
+      console.error(`Failed to track ad click for ${adId}:`, error)
+      return { success: false, error: "Failed to track click" }
+    }
+  })
+
+export const trackAdImpression = actionClient
+  .inputSchema(z.object({ adId: z.string() }))
+  .action(async ({ parsedInput: { adId }, ctx: { db } }) => {
+    try {
+      // Validate that the ad exists before updating
+      const ad = await db.ad.findUnique({
+        where: { id: adId },
+        select: { id: true, status: true },
+      })
+
+      if (!ad) {
+        console.warn(`Ad not found for impression tracking: ${adId}`)
+        return { success: false, error: "Ad not found" }
+      }
+
+      // Only track impressions for active ads
+      if (ad.status !== "Scheduled") {
+        console.warn(`Attempted to track impression for non-active ad: ${adId}, status: ${ad.status}`)
+        return { success: false, error: "Ad is not active" }
+      }
+
+      await db.ad.update({
+        where: { id: adId },
+        data: { impressions: { increment: 1 } },
+      })
+
+      return { success: true }
+    } catch (error) {
+      console.error(`Failed to track ad impression for ${adId}:`, error)
+      return { success: false, error: "Failed to track impression" }
+    }
+  })
 

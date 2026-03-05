@@ -1,5 +1,5 @@
 import { getInitials } from "@primoui/utils"
-import { BookmarkIcon, LogOutIcon, ShieldHalfIcon, UserIcon } from "lucide-react"
+import { BookmarkIcon, LogOutIcon, ShieldHalfIcon, TrendingUpIcon, UserIcon } from "lucide-react"
 import { motion } from "motion/react"
 import { useTranslations } from "next-intl"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/common/avatar"
@@ -82,6 +82,12 @@ export const UserMenu = () => {
           <DropdownMenuItem asChild>
             <NavLink href="/dashboard" prefix={<UserIcon />}>
               {t("navigation.dashboard")}
+            </NavLink>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem asChild>
+            <NavLink href="/advertiser/dashboard" prefix={<TrendingUpIcon />}>
+              Advertiser Dashboard
             </NavLink>
           </DropdownMenuItem>
 
