@@ -1,6 +1,7 @@
 import { isMimeTypeMatch } from "@primoui/utils"
 import type { useTranslations } from "next-intl"
 import { z } from "zod"
+import { checkoutSchema } from "~/server/web/products/schema"
 
 type TFunction = ReturnType<typeof useTranslations>
 
@@ -84,8 +85,14 @@ export const createAdDetailsSchema = (t: TFunction) => {
     websiteUrl: z
       .url({ protocol: /^https?$/, normalize: true, error: t("invalidUrl") })
       .min(1, { error: t("required") }),
+    faviconUrl: z.string().optional(),
+    bannerUrl: z.string().optional(),
     buttonLabel: z.string().optional(),
   })
+}
+
+export const createPreCheckoutAdSchema = (t: TFunction) => {
+  return createAdDetailsSchema(t).omit({ sessionId: true }).and(checkoutSchema)
 }
 
 export const createFetchMediaSchema = (t: TFunction) => {

@@ -31,6 +31,15 @@ export async function POST(req: Request) {
         const slug = session.metadata?.tool
         const email = session.customer_email ?? session.customer_details?.email
 
+        const existingAds = await db.ad.findMany({ where: { sessionId: session.id } })
+        if (existingAds.length > 0) {
+          await db.ad.updateMany({
+            where: { sessionId: session.id },
+            data: { status: "Pending" },
+          })
+          revalidateTag("ads", "infinite" as any)
+        }
+
         if (slug) {
           // Retrieve the session with line items expanded to get product metadata
           const checkoutSession = await stripe.checkout.sessions.retrieve(session.id, {

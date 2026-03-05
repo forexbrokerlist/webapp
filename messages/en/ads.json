@@ -15,9 +15,9 @@
       "label": "Banner Ad",
       "description": "Visible on every page of the website"
     },
-    "tool_page": {
-      "label": "Tool Page Ad",
-      "description": "Visible on every tool page"
+    "broker_page": {
+      "label": "Broker Page Ad",
+      "description": "Visible on every broker page"
     }
   },
   "default_ad": {

@@ -11,6 +11,7 @@ import { Section } from "~/components/web/ui/section"
 import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { cx } from "~/lib/utils"
+import { getPresignedUrlFromFull } from "~/lib/media"
 import { adOnePayload } from "~/server/web/ads/payloads"
 import { db } from "~/services/db"
 import { stripe } from "~/services/stripe"
@@ -50,10 +51,24 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 export default async function (props: PageProps<"/advertise/success">) {
   const { session, metadata } = await getData(props)
 
-  const existingAd = await db.ad.findFirst({
+  let existingAd = await db.ad.findFirst({
     where: { sessionId: session.id },
     select: adOnePayload,
   })
+
+  // Optimistically set the ad to Pending if the webhook hasn't fired yet
+  if (existingAd && existingAd.status === "Draft") {
+    await db.ad.updateMany({
+      where: { sessionId: session.id },
+      data: { status: "Pending" },
+    })
+    existingAd.status = "Pending"
+  }
+
+  if (existingAd) {
+    existingAd.faviconUrl = (await getPresignedUrlFromFull(existingAd.faviconUrl)) as string | null
+    existingAd.bannerUrl = (await getPresignedUrlFromFull(existingAd.bannerUrl)) as string | null
+  }
 
   return (
     <>

@@ -2,6 +2,7 @@ import { adminProcedure } from "~/lib/orpc"
 import { findAds } from "~/server/admin/ads/queries"
 import { adListSchema, adSchema } from "~/server/admin/ads/schema"
 import { idSchema, idsSchema } from "~/server/admin/shared/schema"
+import { AdStatus } from "~/.generated/prisma/client"
 
 const list = adminProcedure.input(adListSchema).handler(async ({ input }) => {
   return findAds(input)
@@ -61,6 +62,21 @@ const duplicate = adminProcedure
     return newAd
   })
 
+const approve = adminProcedure
+  .input(idSchema)
+  .handler(async ({ input: { id }, context: { db, revalidate } }) => {
+    const ad = await db.ad.update({
+      where: { id },
+      data: { status: AdStatus.Scheduled },
+    })
+
+    revalidate({
+      tags: ["ads"],
+    })
+
+    return ad
+  })
+
 const remove = adminProcedure
   .input(idsSchema)
   .handler(async ({ input: { ids }, context: { db, revalidate } }) => {
@@ -79,5 +95,6 @@ export const adRouter = {
   list,
   upsert,
   duplicate,
+  approve,
   remove,
 }

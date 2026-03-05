@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation"
 import { type ComponentProps, useMemo, useState } from "react"
 import { Controller, FormProvider as Form, useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { AdType } from "~/.generated/prisma/browser"
+import { AdType, AdStatus } from "~/.generated/prisma/browser"
 import { AdActions } from "~/app/admin/ads/_components/ad-actions"
 import { Button } from "~/components/common/button"
 import { Calendar } from "~/components/common/calendar"
@@ -58,6 +58,7 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
       bannerUrl: ad?.bannerUrl ?? "",
       buttonLabel: ad?.buttonLabel ?? "",
       type: ad?.type ?? AdType.All,
+      status: ad?.status ?? AdStatus.Draft,
       startsAt: ad?.startsAt ?? new Date(),
       endsAt: ad?.endsAt ?? addMonths(new Date(), 1),
     },
@@ -207,15 +208,17 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
               fetchType="favicon"
               websiteUrl={websiteUrl}
             >
-              {field.value && (
-                <Image
-                  src={field.value}
-                  alt="Favicon"
-                  width={32}
-                  height={32}
-                  className="size-8 border box-content rounded-md object-contain"
-                />
-              )}
+              {({ value }) =>
+                value && (
+                  <Image
+                    src={value}
+                    alt="Favicon"
+                    width={32}
+                    height={32}
+                    className="size-8 border box-content rounded-md object-contain"
+                  />
+                )
+              }
             </FormMedia>
           )}
         />
@@ -225,15 +228,17 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
           name="bannerUrl"
           render={({ field }) => (
             <FormMedia form={form} field={field} path={`${path}/banner`}>
-              {field.value && (
-                <Image
-                  src={field.value}
-                  alt="Banner"
-                  height={72}
-                  width={128}
-                  className="h-8 w-auto border box-content rounded-md aspect-video object-cover"
-                />
-              )}
+              {({ value }) =>
+                value && (
+                  <Image
+                    src={value}
+                    alt="Banner"
+                    height={72}
+                    width={128}
+                    className="h-8 w-auto border box-content rounded-md aspect-video object-cover"
+                  />
+                )
+              }
             </FormMedia>
           )}
         />
@@ -264,6 +269,29 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
                   {Object.values(AdType).map(type => (
                     <SelectItem key={type} value={type}>
                       {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="status"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Status</FieldLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id={field.name}>
+                  <SelectValue placeholder="Select ad status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.values(AdStatus).map(status => (
+                    <SelectItem key={status} value={status}>
+                      {status}
                     </SelectItem>
                   ))}
                 </SelectContent>

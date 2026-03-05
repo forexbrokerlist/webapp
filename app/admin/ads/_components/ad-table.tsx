@@ -27,19 +27,25 @@ import { isDefaultState } from "~/lib/parsers"
 import { adListParams } from "~/server/admin/ads/schema"
 import type { DataTableFilterField } from "~/types"
 
-type AdStatus = "Active" | "Scheduled" | "Expired"
+type AdState = "Active" | "Scheduled" | "Expired"
 
-const getAdStatus = (ad: Ad): AdStatus => {
+const getAdState = (ad: Ad): AdState => {
   const now = new Date()
   if (now < ad.startsAt) return "Scheduled"
   if (now > ad.endsAt) return "Expired"
   return "Active"
 }
 
-const statusBadges: Record<AdStatus, ComponentProps<typeof Badge>> = {
+const stateBadges: Record<AdState, ComponentProps<typeof Badge>> = {
   Active: { variant: "success" },
   Scheduled: { variant: "info" },
   Expired: { variant: "soft" },
+}
+
+const statusBadges: Record<string, ComponentProps<typeof Badge>> = {
+  Draft: { variant: "soft" },
+  Pending: { variant: "warning" },
+  Published: { variant: "success" },
 }
 
 const columns: ColumnDef<Ad>[] = [
@@ -89,12 +95,20 @@ const columns: ColumnDef<Ad>[] = [
     cell: ({ row }) => <Badge variant="outline">{row.original.type}</Badge>,
   },
   {
-    id: "status",
-    enableSorting: false,
+    accessorKey: "status",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     cell: ({ row }) => {
-      const status = getAdStatus(row.original)
+      const status = row.original.status as string
       return <Badge {...statusBadges[status]}>{status}</Badge>
+    },
+  },
+  {
+    id: "state",
+    enableSorting: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="State" />,
+    cell: ({ row }) => {
+      const state = getAdState(row.original)
+      return <Badge {...stateBadges[state]}>{state}</Badge>
     },
   },
   {
