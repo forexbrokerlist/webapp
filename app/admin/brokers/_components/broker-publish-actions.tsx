@@ -19,7 +19,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "~/components/common/pop
 import { RadioGroup, RadioGroupItem } from "~/components/common/radio-group"
 import { Stack } from "~/components/common/stack"
 import { cx } from "~/lib/utils"
-import type { ToolSchema } from "~/server/admin/tools/schema"
+import type { BrokerSchema } from "~/server/admin/brokers/schema"
 
 type ToolPublishActionsProps = ComponentProps<typeof Stack> & {
   toolStatus: ToolStatus
@@ -51,7 +51,7 @@ export const ToolPublishActions = ({
   children,
   ...props
 }: ToolPublishActionsProps) => {
-  const { control, watch } = useFormContext<ToolSchema>()
+  const { control, watch } = useFormContext<BrokerSchema>()
   const [status, submitterEmail, publishedAt] = watch(["status", "submitterEmail", "publishedAt"])
   const publishedAtDate = new Date(publishedAt ?? new Date())
 
@@ -89,7 +89,7 @@ export const ToolPublishActions = ({
             {
               status: ToolStatus.Published,
               title: "Publish now",
-              description: "Approve and publish this tool immediately",
+              description: "Approve and publish this broker immediately",
               button: {
                 onClick: handlePublished,
                 children: "Publish",
@@ -107,7 +107,7 @@ export const ToolPublishActions = ({
             {
               status: ToolStatus.Draft,
               title: "Convert to draft",
-              description: "Make this tool a draft for further editing",
+              description: "Make this broker a draft for further editing",
               button: {
                 onClick: handleDraft,
                 children: "Convert",
@@ -129,12 +129,12 @@ export const ToolPublishActions = ({
         children: "Publish",
         variant: "fancy",
         popover: {
-          title: "Ready to publish this tool?",
+          title: "Ready to publish this broker?",
           options: [
             {
               status: ToolStatus.Published,
               title: "Publish now",
-              description: "Set this tool live immediately",
+              description: "Set this broker live immediately",
               button: {
                 onClick: handlePublished,
                 children: "Publish",
@@ -166,7 +166,7 @@ export const ToolPublishActions = ({
         variant: "secondary",
         prefix: <CalendarIcon />,
         popover: {
-          title: "Update tool status",
+          title: "Update broker status",
           options: [
             {
               status: ToolStatus.Draft,
@@ -189,7 +189,7 @@ export const ToolPublishActions = ({
             {
               status: ToolStatus.Published,
               title: "Publish now",
-              description: "Set this tool live immediately",
+              description: "Set this broker live immediately",
               button: {
                 onClick: handlePublished,
                 children: "Publish",
@@ -212,12 +212,12 @@ export const ToolPublishActions = ({
         variant: "secondary",
         prefix: <BadgeCheckIcon />,
         popover: {
-          title: "Update tool status",
+          title: "Update broker status",
           options: [
             {
               status: ToolStatus.Draft,
               title: "Unpublished",
-              description: "Revert this tool to a draft",
+              description: "Revert this broker to a draft",
               button: {
                 onClick: handleDraft,
                 children: "Unpublish",
@@ -226,7 +226,7 @@ export const ToolPublishActions = ({
             {
               status: ToolStatus.Published,
               title: "Published",
-              description: "Keep this tool publicly available",
+              description: "Keep this broker publicly available",
             },
           ],
         },

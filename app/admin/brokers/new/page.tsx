@@ -1,4 +1,4 @@
-import { ToolForm } from "~/app/admin/tools/_components/tool-form"
+import { ToolForm } from "~/app/admin/brokers/_components/broker-form"
 import { Wrapper } from "~/components/common/wrapper"
 
 export default function () {

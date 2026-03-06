@@ -19,7 +19,7 @@ export const EmailAdminSubmissionPremium = ({ tool, ...props }: EmailProps) => {
         tier. You should review and approve it as soon as possible.
       </Text>
 
-      <EmailButton href={`${siteConfig.url}/admin/tools/${tool.id}`}>
+      <EmailButton href={`${siteConfig.url}/admin/brokers/${tool.id}`}>
         Review {tool.name}
       </EmailButton>
     </EmailWrapper>

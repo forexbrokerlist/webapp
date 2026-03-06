@@ -51,7 +51,7 @@ export const FormMedia = <T extends FieldValues>({
       const url = await generatePresignedUrl(value)
       
       if (active) {
-        setPreviewUrl(url)
+        setPreviewUrl(url ?? null)
       }
     }
 

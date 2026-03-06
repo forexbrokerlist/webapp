@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 import { cache, Suspense } from "react"
 import { Badge } from "~/components/common/badge"
+import { Button } from "~/components/common/button"
 import { Card, CardHeader } from "~/components/common/card"
 import { H2, H5 } from "~/components/common/heading"
 import { Link } from "~/components/common/link"
@@ -14,6 +15,7 @@ import { Nav } from "~/components/web/nav"
 import { StructuredData } from "~/components/web/structured-data"
 import { Backdrop } from "~/components/web/ui/backdrop"
 import { IntroDescription } from "~/components/web/ui/intro"
+import { BrokerBookmarkButton } from "~/components/web/brokers/broker-bookmark-button"
 import { Section } from "~/components/web/ui/section"
 import { Sticky } from "~/components/web/ui/sticky"
 import type { OpenGraphParams } from "~/lib/opengraph"
@@ -85,16 +87,21 @@ export default async function (props: Props) {
                 
                 {broker.overall_rating && (
                   <Badge variant="primary" size="lg" className="ml-2 text-white">
-                    Rating: {broker.overall_rating} 
+                    Rating: {broker.overall_rating} / 5
                   </Badge>
                 )}
               </Stack>
 
-              {(broker.broker_website || broker.url) && (
-                <a href={broker.broker_website || broker.url || "#"} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-                  Visit Broker
-                </a>
-              )}
+              <div className="flex items-center gap-2 z-10">
+                <BrokerBookmarkButton brokerId={broker.id} showLabel variant="secondary" size="md" />
+                {(broker.broker_website || broker.url) && (
+                  <Button asChild variant="fancy" size="md">
+                    <a href={broker.broker_website || broker.url || "#"} target="_blank" rel="noopener noreferrer nofollow">
+                      Visit Broker
+                    </a>
+                  </Button>
+                )}
+              </div>
               <Backdrop />
             </Stack>
           </Sticky>

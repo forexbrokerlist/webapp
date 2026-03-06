@@ -102,15 +102,15 @@
     "home_button": "Go back home"
   },
   "submit": {
-    "title": "Add a free listing",
-    "description": "Listing on {siteName} is a great way to get more exposure for your tool. We only list high-quality tools that are useful for directory owners.",
+    "title": "Submit a Broker",
+    "description": "Listing your broker on {siteName} is a great way to get more exposure. We list high-quality brokers that help traders succeed.",
     "upgrade": {
       "title": "Upgrade {name}'s Listing",
       "description": "Upgrade {name}'s listing on {siteName} for more exposure, special features, and tailored packages—ranging from free listings to premium placement."
     },
     "success": {
       "title": "Thank you for submitting {name}!",
-      "description": "We'll review {name}'s submission and publish it on {siteName} soon."
+      "description": "We'll review {name}'s submission and add the broker to {siteName} soon."
     },
     "current_tier": "Current Tier",
     "upgrade_tier": "Upgrade Listing",

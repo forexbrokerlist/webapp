@@ -45,7 +45,7 @@ export const BrokerCard = ({
         </H4>
 
         <VerifiedBadge size="md" className="-ml-1.5 shrink-0" />
-        <Crown className="absolute right-4 top-4 size-[18px] text-[#f97316] opacity-80" strokeWidth={2.5} />
+        <Crown className="absolute right-4 top-4 size-[18px] text-[#f97316] opacity-80 z-[60]" strokeWidth={2.5} />
       </CardHeader>
 
       <div className="relative size-full flex flex-col">

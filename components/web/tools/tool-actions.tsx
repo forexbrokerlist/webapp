@@ -3,7 +3,6 @@
 import { useWindowScroll } from "@mantine/hooks"
 import {
   BadgeCheckIcon,
-  BookmarkIcon,
   CodeXmlIcon,
   EllipsisIcon,
   FlagIcon,
@@ -38,7 +37,6 @@ import { reportsConfig } from "~/config/reports"
 import { useSession } from "~/lib/auth-client"
 import { isToolApproved, isToolPremiumTier, isToolPublished } from "~/lib/tools"
 import { cx } from "~/lib/utils"
-import { checkBookmark, setBookmark } from "~/server/web/actions/bookmark"
 import type { ToolOne } from "~/server/web/tools/payloads"
 
 type ToolActionsProps = ComponentProps<typeof Stack> & {
@@ -58,57 +56,6 @@ export const ToolActions = ({ tool, children, className, ...props }: ToolActions
   const [scroll] = useWindowScroll()
   const [dialog, setDialog] = useQueryState("dialog", parseAsStringEnum(Object.values(Dialog)))
   const [isStickyButtonVisible, setIsStickyButtonVisible] = useState(false)
-
-  // Bookmark state
-  const [isBookmarked, setIsBookmarked] = useState(false)
-  const [showLoginDialog, setShowLoginDialog] = useState(false)
-
-  const { execute: checkBookmarkStatus } = useAction(checkBookmark, {
-    onSuccess: ({ data }) => {
-      if (data) {
-        setIsBookmarked(data.bookmarked)
-      }
-    },
-  })
-
-  const { execute: executeBookmark, isPending: isBookmarkPending } = useAction(setBookmark, {
-    onSuccess: ({ data }) => {
-      if (data) {
-        setIsBookmarked(data.bookmarked)
-
-        toast.success(data.bookmarked ? t("bookmark_added") : t("bookmark_removed"), {
-          action: {
-            label: t("bookmark_view"),
-            onClick: () => router.push("/dashboard/bookmarks"),
-          },
-        })
-      }
-    },
-    onError: ({ error }) => {
-      toast.error(error.serverError)
-    },
-  })
-
-  useEffect(() => {
-    if (isToolPublished(tool)) {
-      setIsStickyButtonVisible(scroll.y > 250)
-    }
-  }, [scroll, tool])
-
-  useEffect(() => {
-    if (session?.user) {
-      checkBookmarkStatus({ toolId: tool.id })
-    }
-  }, [session?.user, tool.id])
-
-  const handleBookmarkClick = () => {
-    if (!session?.user) {
-      setShowLoginDialog(true)
-      return
-    }
-
-    executeBookmark({ toolId: tool.id, bookmarked: !isBookmarked })
-  }
 
   const handleClose = (isOpen: SetStateAction<boolean>) => {
     if (!isOpen) {
@@ -147,25 +94,6 @@ export const ToolActions = ({ tool, children, className, ...props }: ToolActions
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onSelect={e => {
-              if (session?.user) {
-                e.preventDefault()
-              }
-              handleBookmarkClick()
-            }}
-            disabled={isBookmarkPending}
-          >
-            {isBookmarkPending ? (
-              <LoaderIcon className="animate-spin" />
-            ) : (
-              <BookmarkIcon className={cx(isBookmarked && "fill-current")} />
-            )}
-            {isBookmarked ? t("bookmark_saved") : t("bookmark_save")}
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-
           {!isToolPremiumTier(tool) && tool.ownerId && tool.ownerId === session?.user.id && (
             <DropdownMenuItem asChild>
               <Link href={`/submit/${tool.slug}`}>
@@ -228,19 +156,6 @@ export const ToolActions = ({ tool, children, className, ...props }: ToolActions
       )}
 
       <ButtonGroup className="@max-2xl:hidden">
-        <Tooltip tooltip={isBookmarked ? t("bookmark_remove") : t("bookmark_add")}>
-          <Button
-            size="md"
-            variant="secondary"
-            prefix={<BookmarkIcon />}
-            className={cx(isBookmarked && "text-primary")}
-            onClick={handleBookmarkClick}
-            isPending={isBookmarkPending}
-          >
-            {isBookmarked ? t("bookmark_saved") : t("bookmark_save")}
-          </Button>
-        </Tooltip>
-
         {reportsConfig.enabled && (
           <Tooltip tooltip={t("report_tooltip")}>
             <Button
@@ -279,8 +194,6 @@ export const ToolActions = ({ tool, children, className, ...props }: ToolActions
       {!tool.ownerId && (
         <ToolClaimDialog tool={tool} isOpen={dialog === Dialog.claim} setIsOpen={handleClose} />
       )}
-
-      <LoginDialog isOpen={showLoginDialog} setIsOpen={setShowLoginDialog} />
     </Stack>
   )
 }

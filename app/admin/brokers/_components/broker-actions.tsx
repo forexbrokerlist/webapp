@@ -6,7 +6,7 @@ import { CopyIcon, EllipsisIcon, GlobeIcon, TrashIcon } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 import type { ComponentProps } from "react"
 import { toast } from "sonner"
-import type { Tool } from "~/.generated/prisma/browser"
+import type { Brokers } from "~/.generated/prisma/browser"
 import { DeleteDialog } from "~/components/admin/dialogs/delete-dialog"
 import { Button } from "~/components/common/button"
 import { ButtonGroup } from "~/components/common/button-group"
@@ -23,7 +23,7 @@ import { orpc } from "~/lib/orpc-query"
 import { cx } from "~/lib/utils"
 
 type ToolActionsProps = ComponentProps<typeof Button> & {
-  tool: Tool
+  tool: Brokers
 }
 
 export const ToolActions = ({ className, tool, ...props }: ToolActionsProps) => {
@@ -31,14 +31,14 @@ export const ToolActions = ({ className, tool, ...props }: ToolActionsProps) => 
   const router = useRouter()
   const queryClient = useQueryClient()
 
-  const indexPath = "/admin/tools"
+  const indexPath = "/admin/brokers"
   const singlePath = `${indexPath}/${tool.id}`
   const isSinglePage = pathname === singlePath
 
   const duplicateMutation = useMutation(
-    orpc.tools.duplicate.mutationOptions({
+    orpc.brokers.duplicate.mutationOptions({
       onSuccess: data => {
-        queryClient.invalidateQueries({ queryKey: orpc.tools.key() })
+        queryClient.invalidateQueries({ queryKey: orpc.brokers.key() })
 
         if (isSinglePage) {
           router.push(`${indexPath}/${data.id}`)
@@ -49,9 +49,9 @@ export const ToolActions = ({ className, tool, ...props }: ToolActionsProps) => 
 
   const handleDuplicate = () => {
     toast.promise(duplicateMutation.mutateAsync({ id: tool.id }), {
-      loading: "Duplicating tool...",
-      success: "Tool duplicated successfully",
-      error: err => `Failed to duplicate tool: ${err.message}`,
+      loading: "Duplicating broker...",
+      success: "Broker duplicated successfully",
+      error: err => `Failed to duplicate broker: ${err.message}`,
     })
   }
 
@@ -89,9 +89,9 @@ export const ToolActions = ({ className, tool, ...props }: ToolActionsProps) => 
             Duplicate
           </DropdownMenuItem>
 
-          {isValidUrl(tool.websiteUrl) && (
+          {isValidUrl(tool.broker_website || '') && (
             <DropdownMenuItem asChild>
-              <ExternalLink href={tool.websiteUrl} doTrack>
+              <ExternalLink href={tool.broker_website!} doTrack>
                 <GlobeIcon />
                 Visit website
               </ExternalLink>
@@ -101,10 +101,10 @@ export const ToolActions = ({ className, tool, ...props }: ToolActionsProps) => 
       </DropdownMenu>
 
       <DeleteDialog
-        ids={[tool.id]}
-        label="tool"
-        mutationOptions={orpc.tools.remove.mutationOptions}
-        queryKey={orpc.tools.key()}
+        ids={[String(tool.id)]}
+        label="broker"
+        mutationOptions={orpc.brokers.remove.mutationOptions}
+        queryKey={orpc.brokers.key()}
         onExecute={() => isSinglePage && router.push(indexPath)}
       >
         <Button

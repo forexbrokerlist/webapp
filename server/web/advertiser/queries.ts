@@ -7,6 +7,8 @@ export const findAdvertiserAds = async (email: string) => {
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
+      email: true,
+      sessionId: true,
       name: true,
       description: true,
       websiteUrl: true,

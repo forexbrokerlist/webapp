@@ -71,8 +71,8 @@ export const Sidebar = () => {
         undefined, // Separator
 
         {
-          title: "Tools",
-          href: "/admin/tools",
+          title: "Brokers",
+          href: "/admin/brokers",
           prefix: <GemIcon />,
         },
         {

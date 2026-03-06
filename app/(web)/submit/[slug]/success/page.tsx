@@ -5,7 +5,6 @@ import { cache } from "react"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
-import { toolOnePayload } from "~/server/web/tools/payloads"
 import { db } from "~/services/db"
 
 type Props = PageProps<"/submit/[slug]/success">
@@ -17,18 +16,18 @@ const namespace = "pages.submit"
 const getData = cache(async ({ params }: Props) => {
   const { slug } = await params
 
-  const tool = await db.tool.findFirst({
+  const broker = await db.brokers.findFirst({
     where: { slug },
-    select: toolOnePayload,
+    select: { broker_name: true, slug: true },
   })
 
-  if (!tool) {
+  if (!broker) {
     notFound()
   }
 
   const t = await getTranslations()
-  const name = tool.name
-  const url = `/submit/${tool.slug}/success`
+  const name = broker.broker_name || "Broker"
+  const url = `/submit/${broker.slug}/success`
   const title = t(`${namespace}.success.title`, { name })
   const description = t(`${namespace}.success.description`, { name, siteName: siteConfig.name })
 
@@ -36,7 +35,7 @@ const getData = cache(async ({ params }: Props) => {
     breadcrumbs: [{ url, title }],
   })
 
-  return { tool, ...data }
+  return { broker, ...data }
 })
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {

@@ -5,7 +5,7 @@ import { metricRouter } from "~/server/admin/metrics/router"
 import { reportRouter } from "~/server/admin/reports/router"
 import { sponsorRouter } from "~/server/admin/sponsors/router"
 import { tagRouter } from "~/server/admin/tags/router"
-import { toolRouter } from "~/server/admin/tools/router"
+import { brokerRouter } from "~/server/admin/brokers/router"
 import { userRouter } from "~/server/admin/users/router"
 
 // -----------------------------------------------------------------------------
@@ -21,7 +21,7 @@ const ping = adminProcedure.handler(async () => {
 export const adminRouter = {
   ping,
   metrics: metricRouter,
-  tools: toolRouter,
+  brokers: brokerRouter,
   categories: categoryRouter,
   tags: tagRouter,
   ads: adRouter,
