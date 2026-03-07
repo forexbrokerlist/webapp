@@ -115,5 +115,17 @@
     "current_tier": "Current Tier",
     "upgrade_tier": "Upgrade Listing",
     "choose_tier": "Get {name} Listing"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "description": "Please read our terms of service carefully before using {siteName}."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "description": "Learn more about how we collect and use your data on {siteName}."
+  },
+  "disclaimer": {
+    "title": "Disclaimer",
+    "description": "Important disclaimer regarding the information provided on {siteName}."
   }
 }

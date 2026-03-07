@@ -7,6 +7,7 @@ export const createResendContact = async (payload: CreateContactOptions) => {
   const { error, data } = await resend.contacts.create(payload)
 
   if (error) {
+    console.log("🚀 ~ createResendContact ~ error:", error)
     throw new Error("Failed to create resend contact. Please try again later.")
   }
 

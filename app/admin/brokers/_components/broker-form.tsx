@@ -250,6 +250,46 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
 
         <Controller
           control={form.control}
+          name="status"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Status</FieldLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ToolStatus.Draft}>Draft</SelectItem>
+                  <SelectItem value={ToolStatus.Pending}>Pending</SelectItem>
+                  <SelectItem value={ToolStatus.Scheduled}>Scheduled</SelectItem>
+                  <SelectItem value={ToolStatus.Published}>Published</SelectItem>
+                </SelectContent>
+              </Select>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="publishedAt"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Published At</FieldLabel>
+              <Input 
+                id={field.name} 
+                type="datetime-local" 
+                value={field.value ? (field.value instanceof Date ? field.value.toISOString().slice(0, 16) : new Date(field.value as string).toISOString().slice(0, 16)) : ''} 
+                onChange={(e) => field.onChange(e.target.value || null)} 
+                className={fieldState.invalid ? "border-red-500" : ""}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
           name="broker_website"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>

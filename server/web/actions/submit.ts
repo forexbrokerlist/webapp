@@ -2,8 +2,10 @@
 
 import { checkUrlAvailability, getDomain, tryCatch } from "@primoui/utils"
 import { getTranslations } from "next-intl/server"
+import { after } from "next/server"
 import { siteConfig } from "~/config/site"
 import { isDev } from "~/env"
+import { notifyAdminOfNewBroker } from "~/lib/notifications"
 import { isRateLimited } from "~/lib/rate-limiter"
 import { userActionClient } from "~/lib/safe-actions"
 import { createSubmitBrokerSchema } from "~/server/web/shared/schema"
@@ -35,11 +37,23 @@ export const submitBroker = userActionClient
       const [firstName, ...restOfName] = user.name.trim().split(/\s+/)
       const lastName = restOfName.join(" ")
 
-      await createResendContact({
-        email: user.email,
-        firstName,
-        lastName,
-      })
+      try {
+        await db.newsletter.upsert({
+          where: { email: user.email },
+          update: {
+            firstName,
+            lastName
+          },
+          create: {
+            email: user.email,
+            firstName,
+            lastName
+          }
+        })
+      } catch (error) {
+        console.error("Failed to save newsletter subscription:", error)
+        // Log but don't fail the whole user submission process just for the newsletter
+      }
     }
 
     const slug = data.broker_name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
@@ -56,6 +70,10 @@ export const submitBroker = userActionClient
 
     if (error) {
       throw isDev ? error : new Error(t("errors.failed_submission"))
+    }
+
+    if (broker) {
+      after(async () => await notifyAdminOfNewBroker(broker))
     }
 
     return broker

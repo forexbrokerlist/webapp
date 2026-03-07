@@ -27,5 +27,8 @@
   "new_tag": "New Tag",
   "toggle_theme": "Toggle theme",
   "admin_panel": "Admin panel",
-  "switch_theme": "Switch to {theme} Mode"
+  "switch_theme": "Switch to {theme} Mode",
+  "terms": "Terms of Service",
+  "privacy": "Privacy Policy",
+  "disclaimer": "Disclaimer"
 }

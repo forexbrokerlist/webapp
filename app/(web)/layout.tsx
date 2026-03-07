@@ -8,12 +8,11 @@ import { Backdrop } from "~/components/web/ui/backdrop"
 import { Container } from "~/components/web/ui/container"
 // import { env } from "~/env"
 
+import { QueryProvider } from "~/components/admin/providers/query-provider"
+
 export default function ({ children }: PropsWithChildren) {
   return (
-    // <PlausibleProvider
-    //   domain={env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
-    //   customDomain={env.NEXT_PUBLIC_PLAUSIBLE_URL}
-    // >
+    <QueryProvider>
       <div className="flex flex-col min-h-dvh overflow-clip pt-(--header-inner-offset)">
         <Header />
 
@@ -31,6 +30,7 @@ export default function ({ children }: PropsWithChildren) {
           </Wrapper>
         </Container>
       </div>
-    // </PlausibleProvider>
+    </QueryProvider>
   )
 }
+

@@ -3,7 +3,7 @@ import { after } from "next/server"
 import type Stripe from "stripe"
 import { ToolTier } from "~/.generated/prisma/client"
 import { env } from "~/env"
-import { notifyAdminOfPremiumTool, notifySubmitterOfPremiumTool } from "~/lib/notifications"
+import { notifyAdminOfNewAd, notifyAdminOfPremiumTool, notifySubmitterOfPremiumTool } from "~/lib/notifications"
 import { db } from "~/services/db"
 import { stripe } from "~/services/stripe"
 
@@ -37,6 +37,11 @@ export async function POST(req: Request) {
             where: { sessionId: session.id },
             data: { status: "Pending" },
           })
+          
+          // Notify admin of the new ad submission
+          const adToNotify = existingAds[0]
+          after(async () => await notifyAdminOfNewAd(adToNotify))
+          
           revalidateTag("ads", "infinite" as any)
         }
 

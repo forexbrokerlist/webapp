@@ -312,3 +312,14 @@ model Sponsor {
 
   @@index([isActive, order])
 }
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}

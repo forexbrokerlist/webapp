@@ -377,15 +377,66 @@ export default async function (props: Props) {
                       </div>
                     )}
                     {broker.trader_table && (
-                      <div className="flex flex-col space-y-1 md:col-span-2 border-t border-border/50 pt-3">
+                      <div className="flex flex-col space-y-2 md:col-span-2 border-t border-border/50 pt-4">
                         <dt className="text-muted-foreground font-medium shrink-0">Trader Details</dt>
-                        <dd className="font-semibold text-pretty">{broker.trader_table}</dd>
+                        <dd className="font-semibold text-pretty mt-2">
+                          {(() => {
+                            try {
+                              const parsed = JSON.parse(broker.trader_table as string)
+                              if (Array.isArray(parsed) && parsed.length > 0) {
+                                return (
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                    {parsed.map((item: any, i: number) => {
+                                      const keys = Object.keys(item)
+                                      if (keys.length === 0) return null
+                                      return (
+                                        <div key={i} className="bg-muted/30 rounded-lg p-3 border border-border/50 flex flex-col gap-1.5 text-sm font-normal">
+                                          {keys.map(k => (
+                                            <div key={k} className="flex flex-col">
+                                              <span className="text-xs text-muted-foreground capitalize">{k.replace(/_/g, ' ')}:</span>
+                                              <span className="font-medium">{item[k]}</span>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )
+                                    })}
+                                  </div>
+                                )
+                              }
+                            } catch (e) {
+                              // not json
+                            }
+                            return broker.trader_table
+                          })()}
+                        </dd>
                       </div>
                     )}
                     {broker.regulators_table && (
-                      <div className="flex flex-col space-y-1 md:col-span-2 border-t border-border/50 pt-3">
+                      <div className="flex flex-col space-y-2 md:col-span-2 border-t border-border/50 pt-4">
                         <dt className="text-muted-foreground font-medium shrink-0">Regulators Detailed</dt>
-                        <dd className="font-semibold text-pretty">{broker.regulators_table}</dd>
+                        <dd className="font-semibold text-pretty mt-2">
+                          {(() => {
+                            try {
+                              const parsed = JSON.parse(broker.regulators_table as string)
+                              if (Array.isArray(parsed) && parsed.length > 0) {
+                                return (
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {parsed.map((item: any, i: number) => (
+                                      <div key={i} className="bg-muted/30 rounded-lg p-3 border border-border/50 flex flex-col gap-1 text-sm font-normal">
+                                        {(item.name || item.regulator) && <div className="font-semibold text-foreground">{item.name || item.regulator}</div>}
+                                        {item.country && <div className="text-xs text-muted-foreground flex items-center gap-1 mt-1"><span className="font-medium">Country:</span> {item.country}</div>}
+                                        {item.license_number && <div className="text-xs text-muted-foreground flex items-center gap-1"><span className="font-medium">License:</span> {item.license_number}</div>}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )
+                              }
+                            } catch (e) {
+                              // not json
+                            }
+                            return broker.regulators_table
+                          })()}
+                        </dd>
                       </div>
                     )}
                   </dl>

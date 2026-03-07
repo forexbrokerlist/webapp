@@ -1,5 +1,6 @@
 import { after } from "next/server"
 import { z } from "zod"
+import { ToolStatus } from "~/.generated/prisma/client"
 import { removeS3Directories } from "~/lib/media"
 import { notifySubmitterOfToolPublished, notifySubmitterOfToolScheduled } from "~/lib/notifications"
 import { adminProcedure } from "~/lib/orpc"
@@ -116,6 +117,29 @@ const remove = adminProcedure
     return true
   })
 
+const updateStatus = adminProcedure
+  .input(z.object({ 
+    id: z.number(), 
+    status: z.enum(ToolStatus),
+    publishedAt: z.coerce.date().nullish()
+  }))
+  .handler(async ({ input: { id, status, publishedAt }, context: { db, revalidate } }) => {
+    const broker = await db.brokers.update({
+      where: { id },
+      data: { 
+        status,
+        publishedAt: status === ToolStatus.Published ? (publishedAt || new Date()) : 
+                   status === ToolStatus.Draft ? null : publishedAt
+      },
+    })
+
+    revalidate({
+      tags: ["brokers", `broker-${broker.slug}`, "schedule"],
+    })
+
+    return broker
+  })
+
 export const brokerRouter = {
   list,
   lookup,
@@ -123,4 +147,5 @@ export const brokerRouter = {
   upsert,
   duplicate,
   remove,
+  updateStatus,
 }
