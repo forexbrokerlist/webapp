@@ -13,7 +13,7 @@ type TagCardProps = ComponentProps<typeof Tile> & {
 
 const TagCard = ({ tag, ...props }: TagCardProps) => {
   const t = useTranslations()
-  const count = tag._count.tools
+  const count = tag?._count?.brokers ?? 0
 
   return (
     <Tile asChild {...props}>

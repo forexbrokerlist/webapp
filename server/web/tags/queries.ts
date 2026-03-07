@@ -16,7 +16,7 @@ export const searchTags = async (search: TagsFilterParams, where?: Prisma.TagWhe
   const [sortBy, sortOrder] = sort.split(".")
 
   const whereQuery: Prisma.TagWhereInput = {
-    tools: { some: { status: ToolStatus.Published } },
+    brokers: { some: { status: ToolStatus.Published } },
     ...(q && { name: { contains: q, mode: "insensitive" } }),
   }
 
@@ -38,9 +38,10 @@ export const searchTags = async (search: TagsFilterParams, where?: Prisma.TagWhe
     }
   }
 
+  console.log("🚀 ~ searchTags ~ whereQuery:", whereQuery, where)
   const [tags, total] = await db.$transaction([
     db.tag.findMany({
-      orderBy: sortBy ? { [sortBy]: sortOrder } : [{ tools: { _count: "desc" } }, { name: "asc" }],
+      orderBy: sortBy ? { [sortBy]: sortOrder } : [{ brokers: { _count: "desc" } }, { name: "asc" }],
       where: { ...whereQuery, ...where },
       select: tagManyPayload,
       take,
@@ -51,6 +52,7 @@ export const searchTags = async (search: TagsFilterParams, where?: Prisma.TagWhe
       where: { ...whereQuery, ...where },
     }),
   ])
+  console.log("🚀 ~ searchTags ~ total:", total, tags)
 
   return { tags, total, page, perPage }
 }
@@ -64,7 +66,7 @@ export const findTagSlugs = async ({ where, orderBy, ...args }: Prisma.TagFindMa
   return db.tag.findMany({
     ...args,
     orderBy: orderBy ?? { name: "asc" },
-    where: { tools: { some: { status: ToolStatus.Published } }, ...where },
+    where: { brokers: { some: { status: ToolStatus.Published } }, ...where },
     select: { slug: true, updatedAt: true },
   })
 }

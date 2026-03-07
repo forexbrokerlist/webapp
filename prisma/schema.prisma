@@ -160,8 +160,9 @@ model Tool {
   updatedAt      DateTime   @updatedAt
 
   // Relations
-  categories Category[]
-  tags       Tag[]
+  categories    Category[]
+  subcategories Subcategory[]
+  tags          Tag[]
   reports    Report[]
   owner      User?      @relation(fields: [ownerId], references: [id])
   ownerId    String?
@@ -183,11 +184,35 @@ model Category {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Implicit relation
-  tools Tool[]
+  // Relations
+  subcategories Subcategory[]
+  tools         Tool[]
+  brokers       Brokers[]
 
   // Indexes
   @@index([slug])
+}
+
+model Subcategory {
+  id          String   @id @default(cuid())
+  name        String   @db.Citext
+  slug        String   @unique
+  label       String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relation to category
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  // Relations to items
+  tools   Tool[]
+  brokers Brokers[]
+
+  // Indexes
+  @@index([slug])
+  @@index([categoryId])
 }
 
 model Tag {
@@ -198,7 +223,8 @@ model Tag {
   createdAt DateTime @default(now())
 
   // Relations
-  tools Tool[]
+  tools   Tool[]
+  brokers Brokers[]
 
   // Indexes
   @@index([name])
@@ -288,8 +314,11 @@ model Brokers {
   updatedAt      DateTime   @default(now()) @updatedAt
 
   // Relations
-  owner   User?   @relation(fields: [ownerId], references: [id])
-  ownerId String?
+  tags          Tag[]
+  categories    Category[]
+  subcategories Subcategory[]
+  owner         User?         @relation(fields: [ownerId], references: [id])
+  ownerId    String?
 
   @@index([slug])
   @@index([broker_name])
