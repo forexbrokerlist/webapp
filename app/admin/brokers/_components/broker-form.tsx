@@ -19,6 +19,7 @@ import { Button } from "~/components/common/button"
 import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { FormMedia } from "~/components/common/form-media"
 import { H3 } from "~/components/common/heading"
+import { Hint } from "~/components/common/hint"
 import { Input, inputVariants } from "~/components/common/input"
 import { Link } from "~/components/common/link"
 import { Note } from "~/components/common/note"
@@ -29,6 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/common/select"
+import { RelationSelector } from "~/components/common/relation-selector"
 import { Stack } from "~/components/common/stack"
 import { TextArea } from "~/components/common/textarea"
 import { Tooltip } from "~/components/common/tooltip"
@@ -67,6 +69,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
   const router = useRouter()
   const queryClient = useQueryClient()
   const { data: categories = [] } = useQuery(orpc.categories.lookup.queryOptions())
+  const { data: subcategories = [] } = useQuery(orpc.subcategories.lookup.queryOptions())
   const { data: tags = [] } = useQuery(orpc.tags.lookup.queryOptions())
   const [isPreviewing, setIsPreviewing] = useState(false)
   const [isStatusPending, setIsStatusPending] = useState(false)
@@ -104,6 +107,19 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       status: broker?.status ?? ToolStatus.Draft,
       publishedAt: broker?.publishedAt ?? undefined,
       notifySubmitter: true,
+      categoryIds: broker?.categories?.map(c => c.id) ?? [],
+      subcategoryIds: broker?.subcategories?.map(s => s.id) ?? [],
+      tagIds: broker?.tags?.map((t: { id: string }) => t.id) ?? [],
+      maximum_evaluation_fee: broker?.maximum_evaluation_fee ?? "",
+      daily_loss_limit: broker?.daily_loss_limit ?? "",
+      minimum_raw_spreads: broker?.minimum_raw_spreads ?? "",
+      minimum_standard_spreads: broker?.minimum_standard_spreads ?? "",
+      minimum_commission_for_forex: broker?.minimum_commission_for_forex ?? "",
+      average_trading_cost_eur_usd: broker?.average_trading_cost_eur_usd ?? "",
+      average_trading_cost_gbp_usd: broker?.average_trading_cost_gbp_usd ?? "",
+      average_trading_cost_gold: broker?.average_trading_cost_gold ?? "",
+      average_trading_cost_bitcoin: broker?.average_trading_cost_bitcoin ?? "",
+      average_trading_cost_wti_crude_oil: broker?.average_trading_cost_wti_crude_oil ?? "",
     },
   })
 
@@ -250,6 +266,63 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
 
         <Controller
           control={form.control}
+          name="categoryIds"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Categories</FieldLabel>
+              <RelationSelector
+                relations={categories}
+                ids={field.value ?? []}
+                setIds={field.onChange}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="subcategoryIds"
+          render={({ field, fieldState }) => {
+            const selectedCategoryIds = form.watch("categoryIds") ?? []
+            const filteredSubcategories = subcategories.filter(s => 
+              selectedCategoryIds.length === 0 || selectedCategoryIds.includes(s.categoryId)
+            )
+
+            return (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Subcategories</FieldLabel>
+                <RelationSelector
+                  relations={filteredSubcategories}
+                  ids={field.value ?? []}
+                  setIds={field.onChange}
+                />
+                <Hint>Only subcategories of selected categories are shown (if any are selected).</Hint>
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )
+          }}
+        />
+
+        <Controller
+          control={form.control}
+          name="tagIds"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>Tags</FieldLabel>
+              <RelationSelector
+                relations={tags}
+                ids={field.value ?? []}
+                setIds={field.onChange}
+              />
+              <Hint>Select any relevant tags for this broker.</Hint>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
           name="status"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
@@ -340,6 +413,16 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           { name: "inactivity_fee", label: "Inactivity Fee" },
           { name: "profit_share", label: "Profit Share" },
           { name: "retail_loss_rate", label: "Retail Loss Rate" },
+          { name: "maximum_evaluation_fee", label: "Max Evaluation Fee" },
+          { name: "daily_loss_limit", label: "Daily Loss Limit" },
+          { name: "minimum_raw_spreads", label: "Min Raw Spreads" },
+          { name: "minimum_standard_spreads", label: "Min Standard Spreads" },
+          { name: "minimum_commission_for_forex", label: "Min Commission (Forex)" },
+          { name: "average_trading_cost_eur_usd", label: "Avg Cost (EUR/USD)" },
+          { name: "average_trading_cost_gbp_usd", label: "Avg Cost (GBP/USD)" },
+          { name: "average_trading_cost_gold", label: "Avg Cost (Gold)" },
+          { name: "average_trading_cost_bitcoin", label: "Avg Cost (Bitcoin)" },
+          { name: "average_trading_cost_wti_crude_oil", label: "Avg Cost (WTI Crude Oil)" },
         ] as const).map((f) => (
           <Controller
             key={f.name}

@@ -160,8 +160,6 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
 
   // Safely omit Tool-specific properties from the where clause
   const safeWhere = { ...where }
-  delete safeWhere.categories
-  delete safeWhere.tags
   delete safeWhere.status
 
   const whereQuery: Prisma.BrokersWhereInput = { 

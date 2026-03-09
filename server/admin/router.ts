@@ -1,6 +1,7 @@
 import { adminProcedure } from "~/lib/orpc"
 import { adRouter } from "~/server/admin/ads/router"
 import { categoryRouter } from "~/server/admin/categories/router"
+import { subcategoryRouter } from "~/server/admin/subcategories/router"
 import { metricRouter } from "~/server/admin/metrics/router"
 import { reportRouter } from "~/server/admin/reports/router"
 import { sponsorRouter } from "~/server/admin/sponsors/router"
@@ -23,6 +24,7 @@ export const adminRouter = {
   metrics: metricRouter,
   brokers: brokerRouter,
   categories: categoryRouter,
+  subcategories: subcategoryRouter,
   tags: tagRouter,
   ads: adRouter,
   users: userRouter,

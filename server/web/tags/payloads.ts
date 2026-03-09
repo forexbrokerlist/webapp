@@ -1,12 +1,14 @@
 import { type Prisma, ToolStatus } from "~/.generated/prisma/client"
 
 export const tagOnePayload = {
+  id: true,
   name: true,
   slug: true,
   _count: { select: { brokers: { where: { status: ToolStatus.Published } } } },
 } satisfies Prisma.TagSelect
 
 export const tagManyPayload = {
+  id: true,
   name: true,
   slug: true,
   _count: { select: { brokers: { where: { status: ToolStatus.Published } } } },

@@ -81,6 +81,11 @@ export const Sidebar = () => {
           prefix: <GalleryHorizontalEndIcon />,
         },
         {
+          title: "Subcategories",
+          href: "/admin/subcategories",
+          prefix: <GalleryHorizontalEndIcon />,
+        },
+        {
           title: "Tags",
           href: "/admin/tags",
           prefix: <TagIcon />,

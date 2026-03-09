@@ -71,6 +71,34 @@ export const findTagSlugs = async ({ where, orderBy, ...args }: Prisma.TagFindMa
   })
 }
 
+export const findTags = async ({
+  where,
+  orderBy,
+  all,
+  ...args
+}: Prisma.TagFindManyArgs & { all?: boolean } = {}) => {
+  "use cache"
+
+  cacheTag("tags")
+  cacheLife("infinite")
+
+  const baseWhere: Prisma.TagWhereInput = all
+    ? {}
+    : {
+        OR: [
+          { tools: { some: { status: ToolStatus.Published } } },
+          { brokers: { some: { status: ToolStatus.Published } } },
+        ],
+      }
+
+  return db.tag.findMany({
+    ...args,
+    orderBy: orderBy ?? { name: "asc" },
+    where: { ...baseWhere, ...where },
+    select: tagManyPayload,
+  })
+}
+
 export const findTag = async ({ where, ...args }: Prisma.TagFindFirstArgs = {}) => {
   "use cache"
 

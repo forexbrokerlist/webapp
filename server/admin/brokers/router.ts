@@ -31,7 +31,7 @@ const scheduled = adminProcedure
 const upsert = adminProcedure
   .input(brokerSchema)
   .handler(async ({ input, context: { db, revalidate } }) => {
-    const { id, notifySubmitter, ...data } = input
+    const { id, notifySubmitter, categoryIds, subcategoryIds, tagIds, ...data } = input
     const existingBroker = id ? await db.brokers.findUnique({ where: { id } }) : null
 
     // Fallback URL generation if missing
@@ -43,12 +43,30 @@ const upsert = adminProcedure
           data: {
             ...data,
             slug,
+            categories: {
+              set: categoryIds?.map(id => ({ id })),
+            },
+            subcategories: {
+              set: subcategoryIds?.map(id => ({ id })),
+            },
+            tags: {
+              set: tagIds?.map(id => ({ id })),
+            },
           },
         })
       : await db.brokers.create({
           data: {
             ...data,
             slug,
+            categories: {
+              connect: categoryIds?.map(id => ({ id })),
+            },
+            subcategories: {
+              connect: subcategoryIds?.map(id => ({ id })),
+            },
+            tags: {
+              connect: tagIds?.map(id => ({ id })),
+            },
           },
         })
 

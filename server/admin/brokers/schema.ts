@@ -31,7 +31,7 @@ export const brokerSchema = z.object({
   id: z.number().optional(),
   broker_name: z.string().min(1, "Name is required"),
   slug: z.string().optional(),
-  broker_website: z.string().url().optional(),
+  broker_website: z.string().url().or(z.literal("")).optional(),
   overall_rating: z.string().optional(),
   description: z.string().optional(),
   headquarters: z.string().optional(),
@@ -56,6 +56,19 @@ export const brokerSchema = z.object({
   publishedAt: z.coerce.date().nullish(),
   status: z.enum(ToolStatus).default("Draft"),
   notifySubmitter: z.boolean().default(true),
+  categoryIds: z.array(z.string()).optional(),
+  subcategoryIds: z.array(z.string()).optional(),
+  tagIds: z.array(z.string()).optional(),
+  maximum_evaluation_fee: z.string().optional(),
+  daily_loss_limit: z.string().optional(),
+  minimum_raw_spreads: z.string().optional(),
+  minimum_standard_spreads: z.string().optional(),
+  minimum_commission_for_forex: z.string().optional(),
+  average_trading_cost_eur_usd: z.string().optional(),
+  average_trading_cost_gbp_usd: z.string().optional(),
+  average_trading_cost_gold: z.string().optional(),
+  average_trading_cost_bitcoin: z.string().optional(),
+  average_trading_cost_wti_crude_oil: z.string().optional(),
 })
 
 export type BrokerSchema = z.infer<typeof brokerSchema>

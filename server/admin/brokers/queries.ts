@@ -31,5 +31,10 @@ export const findBrokerList = async ({ ...args }: Prisma.BrokersFindManyArgs = {
 export const findBrokerById = async (id: number) => {
   return db.brokers.findUnique({
     where: { id },
+    include: {
+      categories: { select: { id: true, name: true } },
+      subcategories: { select: { id: true, name: true } },
+      tags: { select: { id: true, name: true } },
+    },
   })
 }

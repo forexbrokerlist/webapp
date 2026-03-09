@@ -17,7 +17,7 @@ export const submitBroker = userActionClient
     const t = await getTranslations("schema")
     return createSubmitBrokerSchema(t)
   })
-  .action(async ({ parsedInput: { newsletterOptIn, ...data }, ctx: { user } }) => {
+  .action(async ({ parsedInput: { newsletterOptIn, categoryIds, subcategoryIds, tagIds, ...data }, ctx: { user } }) => {
     const t = await getTranslations("forms.submit")
     const userAgent = `Mozilla/5.0 (compatible; ${siteConfig.name}/1.0; +${siteConfig.url})`
 
@@ -64,6 +64,15 @@ export const submitBroker = userActionClient
         data: {
           ...data,
           slug,
+          categories: {
+            connect: categoryIds?.map((id: string) => ({ id })),
+          },
+          subcategories: {
+            connect: subcategoryIds?.map((id: string) => ({ id })),
+          },
+          tags: {
+            connect: tagIds?.map((id: string) => ({ id })),
+          },
         },
       }),
     )

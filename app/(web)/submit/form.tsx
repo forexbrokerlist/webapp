@@ -17,7 +17,22 @@ import { cx } from "~/lib/utils"
 import { submitBroker } from "~/server/web/actions/submit"
 import { createSubmitBrokerSchema } from "~/server/web/shared/schema"
 
-export const SubmitForm = ({ className, ...props }: ComponentProps<"form">) => {
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/common/select"
+import { RelationSelector } from "~/components/common/relation-selector"
+
+type SubmitFormProps = ComponentProps<"form"> & { 
+  categories?: any[]
+  subcategories?: any[] 
+  tags?: any[]
+}
+
+export const SubmitForm = ({ 
+  className, 
+  categories = [], 
+  subcategories = [], 
+  tags = [],
+  ...props 
+}: SubmitFormProps) => {
   const router = useRouter()
   const t = useTranslations("forms.submit")
   const tSchema = useTranslations("schema")
@@ -32,6 +47,7 @@ export const SubmitForm = ({ className, ...props }: ComponentProps<"form">) => {
         broker_website: "",
         description: "",
         headquarters: "",
+        year_established: undefined,
         regulators: "",
         minimum_deposit: "",
         execution_types: "",
@@ -44,9 +60,22 @@ export const SubmitForm = ({ className, ...props }: ComponentProps<"form">) => {
         inactivity_fee: "",
         profit_share: "",
         retail_loss_rate: "",
+        maximum_evaluation_fee: "",
+        daily_loss_limit: "",
+        minimum_raw_spreads: "",
+        minimum_standard_spreads: "",
+        minimum_commission_for_forex: "",
+        average_trading_cost_eur_usd: "",
+        average_trading_cost_gbp_usd: "",
+        average_trading_cost_gold: "",
+        average_trading_cost_bitcoin: "",
+        average_trading_cost_wti_crude_oil: "",
         pros: "",
         cons: "",
         newsletterOptIn: true,
+        categoryIds: [],
+        subcategoryIds: [],
+        tagIds: [],
       },
     },
 
@@ -183,6 +212,65 @@ export const SubmitForm = ({ className, ...props }: ComponentProps<"form">) => {
             <Field data-invalid={fieldState.invalid} className="col-span-full">
               <FieldLabel htmlFor={field.name}>Description:</FieldLabel>
               <TextArea id={field.name} size="lg" placeholder="Broker description" {...field} value={field.value || ""} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <h3 className="col-span-full font-semibold text-xl mt-4 -mb-2">Classification</h3>
+
+        <Controller
+          control={form.control}
+          name="categoryIds"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Categories:</FieldLabel>
+              <RelationSelector
+                relations={categories}
+                ids={field.value ?? []}
+                setIds={field.onChange}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="subcategoryIds"
+          render={({ field, fieldState }) => {
+            const selectedCategoryIds = form.watch("categoryIds") ?? []
+            const filteredSubcategories = subcategories.filter(s => 
+              selectedCategoryIds.length === 0 || selectedCategoryIds.includes(s.categoryId)
+            )
+
+            return (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Subcategories:</FieldLabel>
+                <RelationSelector
+                  relations={filteredSubcategories}
+                  ids={field.value ?? []}
+                  setIds={field.onChange}
+                />
+                <Hint>Only subcategories of selected categories are shown.</Hint>
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )
+          }}
+        />
+
+        <Controller
+          control={form.control}
+          name="tagIds"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>Tags:</FieldLabel>
+              <RelationSelector
+                relations={tags}
+                ids={field.value ?? []}
+                setIds={field.onChange}
+              />
+              <Hint>Select any relevant tags for this broker.</Hint>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -459,7 +547,7 @@ export const SubmitForm = ({ className, ...props }: ComponentProps<"form">) => {
         {serverError && <Hint className="col-span-full">{serverError}</Hint>}
 
         <div className="col-span-full">
-          <Button variant="primary" isPending={action.isPending} className="flex min-w-32">
+          <Button type="submit" variant="primary" isPending={action.isPending} className="flex min-w-32">
             {t("submit_button")}
           </Button>
         </div>

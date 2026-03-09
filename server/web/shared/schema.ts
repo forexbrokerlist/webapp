@@ -61,6 +61,9 @@ export const createSubmitBrokerSchema = (t: TFunction) => {
     trading_hours: z.string().optional(),
     url: z.string().url().or(z.literal("")).optional(),
     newsletterOptIn: z.boolean().optional().default(true),
+    categoryIds: z.array(z.string()).optional(),
+    subcategoryIds: z.array(z.string()).optional(),
+    tagIds: z.array(z.string()).optional(),
   })
 }
 
