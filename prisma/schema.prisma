@@ -301,7 +301,7 @@ model Brokers {
   maximum_evaluation_fee             String?
   withdrawal_fee                     String?
   broker_website                     String?
-  slug                               String?
+  slug                               String?    @unique
   bookmarks                          Bookmark[]
 
   // Admin & Submission fields
