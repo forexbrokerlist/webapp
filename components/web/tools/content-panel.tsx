@@ -53,41 +53,26 @@ export function ContentPanel({
   return (
     <div className="flex-1 bg-background sm:bg-card/30 border-l border-border h-full min-h-[calc(100vh-(174px+var(--header-height)))] max-h-[calc(100vh-(174px+var(--header-height)))] overflow-hidden flex flex-col">
       {/* Sticky Action Bar */}
-      <div className="sticky top-0 z-10 p-4 border-b border-border bg-background/95 backdrop-blur shadow-sm">
-        <div className="flex items-center justify-between mb-1">
-          <h3 className="font-semibold text-foreground">
-            {fullReport ? "Market Analysis Report" : "No Report Selected"}
-          </h3>
-          <div className="flex items-center gap-2">
-            {/* <Button
-              variant="secondary"
-              size="sm"
-              className="rounded-full px-4 border shadow-xs hover:border-primary/30 transition-all font-medium"
-              onClick={() =>
-                handleGenerateBlog?.(
-                  JSON.stringify({
-                    full_report: fullReport,
-                    short_response: selectedShortReport,
-                  })
-                )
-              }
-              disabled={!fullReport}
-            >
-              <FileText className="h-3.5 w-3.5 mr-1.5 opacity-70" />
-              Generate Blog
-              {blogLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin ml-2" />
-              ) : null}
-            </Button> */}
+      <div className="sticky top-0 z-20 p-5 border-b border-border/60 bg-background/60 backdrop-blur-2xl shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-blue-600 dark:from-indigo-400 dark:to-blue-400">
+              {fullReport ? "Market Analysis Report" : "Awaiting Analysis"}
+            </h3>
+            {fullReport && (
+              <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest mt-0.5">Comprehensive Forex Insights</p>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
             <Button
-              variant="secondary"
+              variant="fancy"
               size="sm"
-              className="flex items-center rounded-full px-4 border shadow-xs hover:border-primary/30 transition-all font-medium"
+              className="rounded-2xl px-6 bg-linear-to-r from-indigo-500 to-blue-600 text-white border-none shadow-md shadow-indigo-500/10 hover:shadow-lg hover:scale-[1.02] transition-all font-bold text-xs"
               onClick={handleDownload}
               disabled={!fullReport}
+              prefix={<FileText className="h-3.5 w-3.5 mr-0.5" />}
             >
-              <FileText className="h-3.5 w-3.5 mr-1.5 opacity-70" />
-              Download Document
+              Export Report
             </Button>
           </div>
         </div>
@@ -113,11 +98,22 @@ export function ContentPanel({
                     {fullReport}
                   </ReactMarkdown>
                 ) : (
-                  <div className="text-muted-foreground text-center py-12">
-                    <p className="text-lg font-medium mb-2">No report selected</p>
-                    <p className="text-sm">
-                      Send a message or select a report from the chat to view details here.
+                  <div className="flex flex-col items-center justify-center py-20 px-4 text-center animate-in fade-in zoom-in duration-700">
+                    <div className="relative mb-8">
+                      <div className="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full" />
+                      <div className="relative bg-linear-to-b from-indigo-500/10 to-transparent p-8 rounded-full border border-indigo-500/10">
+                        <FileText className="h-16 w-16 text-indigo-500/40" strokeWidth={1} />
+                      </div>
+                    </div>
+                    <h4 className="text-2xl font-bold text-foreground mb-3 tracking-tight">Ready for Analysis</h4>
+                    <p className="text-muted-foreground max-w-sm text-base leading-relaxed">
+                      Select a currency pair in the chat and ask FxGURU for any market insights or professional analysis reports.
                     </p>
+                    <div className="mt-8 flex gap-2">
+                      <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/40"></div>
+                      <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/20"></div>
+                      <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/10"></div>
+                    </div>
                   </div>
                 )}
               </div>

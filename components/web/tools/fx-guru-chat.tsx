@@ -75,7 +75,7 @@ export function FxGuruChat() {
       }
       const response = await apiClient.post("/fx/blog_generation", blogPayload)
       const data = response.data
-      
+
       if (data.status === "success") {
         const blogId = Date.now().toString()
         const blogMessage = {
@@ -117,7 +117,7 @@ export function FxGuruChat() {
           }
           const response = await createApiClient(API_BASE_URL).post("/fx/blog_generation", blogPayload)
           const data = response.data
-          
+
           if (data.status === "success") {
             const blogId = Date.now().toString()
             const blogMessage = {
@@ -157,10 +157,11 @@ export function FxGuruChat() {
 
         try {
           const response = await apiClient.post("/fx/v1/chat", {
-            pair: selectedPair,
-            message: inputValue,
-            history: [],
             user_id: session?.user?.id || userId,
+            message: inputValue,
+            session_id: null,
+            bot_type: "fx_guru",
+            pair: selectedPair,
           })
 
           const data = response.data
@@ -215,6 +216,37 @@ export function FxGuruChat() {
 
   return (
     <div className="flex-1 w-full flex flex-col bg-muted/20 dark:bg-background overflow-hidden relative">
+      {/* Background Decoration */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 45, 0],
+            opacity: [0.1, 0.2, 0.1],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-indigo-500/20 blur-[120px] rounded-full"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.3, 1],
+            rotate: [0, -45, 0],
+            opacity: [0.1, 0.2, 0.1],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+          className="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-blue-500/20 blur-[120px] rounded-full"
+        />
+      </div>
+
       <AnimatePresence mode="wait">
         {messages?.filter((datas) => datas?.sender == "assistant")?.length == 0 ? (
           // Fullscreen chat panel only
@@ -230,7 +262,7 @@ export function FxGuruChat() {
             {/* Welcome message and input area */}
             <div className="flex-1 w-full flex flex-col items-center justify-center relative pt-8 max-w-full">
               {/* Light gradient indigo background for bottom half */}
-              <div
+              {/* <div
                 className="absolute inset-0 pointer-events-none z-10 opacity-70 dark:opacity-40 flex items-end"
                 style={{
                   backgroundImage: "url('/lines.png')",
@@ -242,112 +274,131 @@ export function FxGuruChat() {
                 }}
               >
                   <div className="w-full h-[60%] bg-linear-to-t from-indigo-100/60 dark:from-indigo-900/20 to-transparent"></div>
-              </div>
+              </div> */}
 
               <div className="w-full flex flex-col items-center justify-center relative z-20 px-4">
                 <div className="text-center pt-8 pb-4 flex flex-col items-center justify-center max-w-lg mx-auto">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/sublogo.png" alt="FxGURU Logo" className="h-16 w-16 object-contain mb-4" />
-                  <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">
-                    Welcome to FxGURU
-                  </div>
-                  <div className="text-lg text-muted-foreground mb-2">
-                    Select a currency pair and start asking about market analysis!
-                  </div>
-                  <div className="text-sm font-medium text-indigo-500/80 dark:text-indigo-400/80 mb-6">
-                    Your AI-powered forex assistant
-                  </div>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="relative mb-6"
+                  >
+                    <div className="absolute inset-0 bg-indigo-500/30 blur-2xl rounded-full" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/sublogo.png" alt="FxGURU Logo" className="h-20 w-20 object-contain relative z-10" />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
+                  >
+                    <div className="text-4xl md:text-5xl font-extrabold mb-3 bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-blue-600 dark:from-indigo-400 dark:to-blue-400 tracking-tight">
+                      Welcome to FxGURU
+                    </div>
+                    <div className="text-lg md:text-xl text-muted-foreground/90 font-medium mb-3">
+                      Select a currency pair and start asking about market analysis!
+                    </div>
+                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-8">
+                      Your AI-powered forex assistant
+                    </div>
+                  </motion.div>
 
                   {/* Centered segmented toggle */}
-                  <div className="w-full flex justify-center mb-6">
-                    <div className="relative inline-flex items-center rounded-full p-1 bg-indigo-600">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4, duration: 0.6 }}
+                    className="w-full flex justify-center mb-6"
+                  >
+                    <div className="relative inline-flex items-center rounded-full p-1 bg-muted dark:bg-muted/50 border border-border/50 shadow-inner">
                       <button
                         type="button"
                         onClick={() => setPropertyType("Questions")}
-                        className={`px-6 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${
-                          propertyType === "Questions"
-                            ? "bg-white text-indigo-700 shadow"
-                            : "text-white/90 hover:text-white"
-                        }`}
+                        className={`px-8 py-2 text-sm font-semibold rounded-full transition-all duration-300 ${propertyType === "Questions"
+                          ? "bg-white dark:bg-indigo-600 text-indigo-700 dark:text-white shadow-lg scale-[1.02]"
+                          : "text-muted-foreground hover:text-foreground"
+                          }`}
                       >
                         Questions
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => setPropertyType("Blog")}
-                        className={`px-6 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${
-                          propertyType === "Blog"
-                            ? "bg-white text-indigo-700 shadow"
-                            : "text-white/90 hover:text-white"
-                        }`}
-                      >
-                        Blog
-                      </button>
                     </div>
-                  </div>
+                  </motion.div>
 
                   {/* Currency pair select */}
-                  <div className="w-full flex justify-center mb-10">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.6 }}
+                    className="w-full flex justify-center mb-10"
+                  >
                     <Select value={selectedPair} onValueChange={setSelectedPair}>
-                      <SelectTrigger id="currency-pair-select" className="w-[200px] h-11 bg-background">
+                      <SelectTrigger id="currency-pair-select" className="w-[220px] h-12 bg-background/50 backdrop-blur-md border-indigo-100 dark:border-white/10 rounded-2xl shadow-sm hover:shadow-md transition-all">
                         <SelectValue placeholder="Select currency pair" />
                       </SelectTrigger>
-                      <SelectContent className="max-h-60 overflow-y-auto" side="bottom">
-                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Major Pairs</div>
+                      <SelectContent className="max-h-60 overflow-y-auto rounded-2xl shadow-2xl border-indigo-100 dark:border-white/10 backdrop-blur-xl" side="bottom">
+                        <div className="px-3 py-2 text-[10px] font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest opacity-70">Major Pairs</div>
                         {major_pairs.map((pair) => (
-                          <SelectItem key={pair} value={pair}>{pair}</SelectItem>
+                          <SelectItem key={pair} value={pair} className="rounded-lg focus:bg-indigo-50 dark:focus:bg-indigo-950/40">{pair}</SelectItem>
                         ))}
-                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-2">Euro Crosses</div>
+                        <div className="px-3 py-2 text-[10px] font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest opacity-70 mt-3 border-t border-border/50">Euro Crosses</div>
                         {euro_crosses.map((pair) => (
-                          <SelectItem key={pair} value={pair}>{pair}</SelectItem>
+                          <SelectItem key={pair} value={pair} className="rounded-lg focus:bg-indigo-50 dark:focus:bg-indigo-950/40">{pair}</SelectItem>
                         ))}
-                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-2">Pound Crosses</div>
+                        <div className="px-3 py-2 text-[10px] font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest opacity-70 mt-3 border-t border-border/50">Pound Crosses</div>
                         {pound_crosses.map((pair) => (
-                          <SelectItem key={pair} value={pair}>{pair}</SelectItem>
+                          <SelectItem key={pair} value={pair} className="rounded-lg focus:bg-indigo-50 dark:focus:bg-indigo-950/40">{pair}</SelectItem>
                         ))}
-                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-2">Yen Crosses</div>
+                        <div className="px-3 py-2 text-[10px] font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest opacity-70 mt-3 border-t border-border/50">Yen Crosses</div>
                         {yen_crosses.map((pair) => (
-                          <SelectItem key={pair} value={pair}>{pair}</SelectItem>
+                          <SelectItem key={pair} value={pair} className="rounded-lg focus:bg-indigo-50 dark:focus:bg-indigo-950/40">{pair}</SelectItem>
                         ))}
-                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-2">Other Crosses</div>
+                        <div className="px-3 py-2 text-[10px] font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest opacity-70 mt-3 border-t border-border/50">Other Crosses</div>
                         {other_crosses.map((pair) => (
-                          <SelectItem key={pair} value={pair}>{pair}</SelectItem>
+                          <SelectItem key={pair} value={pair} className="rounded-lg focus:bg-indigo-50 dark:focus:bg-indigo-950/40">{pair}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
 
               {/* Chat Input Area */}
-              <div className="w-full flex justify-center z-20 pb-12 mt-auto px-4">
-                <div className="max-w-3xl w-full">
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7, duration: 0.8 }}
+                className="w-full flex justify-center z-20 pb-12 mt-auto px-4"
+              >
+                <div className="max-w-3xl w-full group relative">
+                  <div className="absolute -inset-1 bg-linear-to-r from-indigo-500/20 to-blue-500/20 blur-xl rounded-4xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
                   <div className="relative">
                     <TextArea
                       value={inputValue}
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInputValue(e.target.value)}
                       onKeyDown={handleKeyPress}
                       placeholder="Ask about EUR/USD, GBP/JPY, or any forex pair..."
-                      className="min-h-[140px] pr-16 p-5 resize-none bg-white/70 dark:bg-muted/10 backdrop-blur-xl border border-indigo-100 dark:border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all text-base text-foreground placeholder:text-muted-foreground/70"
+                      className="min-h-[140px] pr-20 p-6 resize-none bg-white/80 dark:bg-muted/20 backdrop-blur-2xl border border-indigo-100 dark:border-white/10 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 rounded-4xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-all text-base text-foreground placeholder:text-muted-foreground/50"
                       disabled={isLoading}
                     />
-                    <div className="absolute bottom-4 right-4 flex">
+                    <div className="absolute bottom-5 right-5 flex">
                       <Button
                         onClick={handleSend}
-                        size="sm"
-                        className="h-10 w-10 shrink-0 rounded-full bg-linear-to-br from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white shadow-md transition-transform active:scale-95"
+                        size="icon"
+                        className="h-12 w-12 rounded-2xl bg-linear-to-br from-indigo-500 to-blue-600 hover:scale-105 active:scale-95 text-white shadow-lg shadow-indigo-500/20 transition-all duration-300 disabled:opacity-50 disabled:scale-100"
                         disabled={!inputValue.trim() || isLoading}
                       >
                         {isLoading ? (
                           <Loader2 className="size-5 animate-spin" />
                         ) : (
-                          <Send className="size-5 -ml-1" />
+                          <Send className="size-5" />
                         )}
                       </Button>
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         ) : (
@@ -364,33 +415,39 @@ export function FxGuruChat() {
             {/* Chat area (left) */}
             <div className="w-full md:w-[400px] lg:w-[450px] shrink-0 flex flex-col border-r border-border bg-background z-10 overflow-hidden">
               {/* Currency Pair Dropdown with Logo */}
-              <div className="sticky top-0 z-10 p-4 border-b border-border bg-background shadow-xs">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/mainlogo.png"
-                      alt="FxGURU Logo"
-                      className="h-6 w-auto object-contain cursor-pointer dark:invert"
-                      onClick={() => {
-                        setMessages([])
-                        setUserId(null)
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
+              <div className="sticky top-0 z-10 p-5 border-b border-border bg-background/80 backdrop-blur-md shadow-sm">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-indigo-500/10 p-1.5 rounded-xl">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="/sublogo.png"
+                        alt="FxGURU Logo"
+                        className="h-7 w-7 object-contain cursor-pointer"
+                        onClick={() => {
                           setMessages([])
                           setUserId(null)
-                        }
-                      }}
-                      tabIndex={0}
-                    />
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            setMessages([])
+                            setUserId(null)
+                          }
+                        }}
+                        tabIndex={0}
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold tracking-tight">FxGURU</span>
+                      <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider leading-none">AI Assistant</span>
+                    </div>
                   </div>
-                  <div>
+                  <div className="flex-1 max-w-[140px]">
                     <Select value={selectedPair} onValueChange={setSelectedPair}>
-                      <SelectTrigger id="currency-pair-select" className="w-[140px] h-9 bg-background text-sm">
+                      <SelectTrigger id="currency-pair-select" className="h-9 bg-muted/30 border-none rounded-xl text-xs font-semibold focus:ring-1 focus:ring-indigo-500/20">
                         <SelectValue placeholder="Pair" />
                       </SelectTrigger>
-                      <SelectContent className="max-h-60 overflow-y-auto" side="bottom">
+                      <SelectContent className="max-h-60 overflow-y-auto rounded-xl border-border/50 shadow-xl" side="bottom">
                         <div className="px-2 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase">Major Pairs</div>
                         {major_pairs.map((pair) => (
                           <SelectItem key={pair} value={pair}>{pair}</SelectItem>
@@ -419,118 +476,121 @@ export function FxGuruChat() {
 
               {/* Messages */}
               <div className="flex-1 overflow-y-auto w-full p-4 space-y-6">
-                  {messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex gap-3 w-full ${
-                        message.sender === "user" ? "justify-end" : "justify-start"
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex gap-3 w-full ${message.sender === "user" ? "justify-end" : "justify-start"
                       }`}
-                    >
-                      {message.sender === "assistant" && (
-                        <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
-                          <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
-                            AI
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                      
-                      <div
-                        className={`p-4 rounded-2xl shadow-xs text-sm max-w-[85%] ${
-                          message.sender === "user"
-                            ? "bg-primary text-primary-foreground rounded-tr-sm"
-                            : "bg-card border border-border rounded-tl-sm"
-                        }`}
-                      >
-                        <div className="prose prose-sm max-w-none dark:prose-invert">
-                          {message.sender === "assistant" ? (
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                              {message.content}
-                            </ReactMarkdown>
-                          ) : (
-                            message.content.split("\n").map((line, index) => (
-                              <p key={index} className="m-0 text-inherit">
-                                {line}
-                              </p>
-                            ))
-                          )}
-                        </div>
-                        
-                        <div className="flex justify-between items-center mt-2.5">
-                          {/* View Report Button */}
-                          {message.sender === "assistant" && message.full_report ? (
-                            <Button
-                              variant="secondary"
-                              size="sm"
-                              onClick={() => handleViewReport(message.full_report!, message.short_response!)}
-                              className="h-7 text-xs px-3 rounded-full bg-background border shadow-xs hover:border-primary/30 hover:bg-muted/50 transition-all"
-                            >
-                              <FileText className="h-3 w-3 mr-1.5" />
-                              View Full Report
-                            </Button>
-                          ) : (
-                            <span />
-                          )}
-                          <div
-                            className={`text-[10px] opacity-70 ${
-                              message.sender === "user" ? "text-primary-foreground" : "text-muted-foreground"
-                            }`}
-                          >
-                            {message.timestamp}
-                          </div>
-                        </div>
-                      </div>
-
-                      {message.sender === "user" && (
-                        <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
-                          <AvatarFallback className="bg-muted text-muted-foreground">
-                            <User className="h-4 w-4" />
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                    </div>
-                  ))}
-
-                  {/* Loading indicator */}
-                  {isLoading && (
-                    <div className="flex gap-3 justify-start animate-in fade-in zoom-in duration-300">
+                  >
+                    {message.sender === "assistant" && (
                       <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
                         <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
                           AI
                         </AvatarFallback>
                       </Avatar>
-                      <div className="bg-card border border-border p-4 rounded-2xl rounded-tl-sm shadow-xs flex items-center gap-2">
-                        <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                        <span className="text-sm text-foreground/80">
-                          Analyzing market data...
-                        </span>
+                    )}
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      className={`p-4 rounded-2xl shadow-sm border text-sm max-w-[85%] transition-all duration-300 hover:shadow-md relative group/message ${message.sender === "user"
+                        ? "bg-linear-to-br from-indigo-500 to-blue-600 text-white border-transparent rounded-tr-none ml-auto"
+                        : "bg-muted/30 dark:bg-muted/10 backdrop-blur-sm border-border/50 rounded-tl-none"
+                        }`}
+                    >
+                      <div className="prose prose-sm max-w-none dark:prose-invert">
+                        {message.sender === "assistant" ? (
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {message.content}
+                          </ReactMarkdown>
+                        ) : (
+                          message.content.split("\n").map((line, index) => (
+                            <p key={index} className="m-0 text-inherit leading-relaxed">
+                              {line}
+                            </p>
+                          ))
+                        )}
                       </div>
+
+                      <div className="flex justify-between items-center mt-3 pt-3 border-t border-indigo-500/10 dark:border-white/5">
+                        {/* View Report Button */}
+                        {message.sender === "assistant" && message.full_report ? (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => handleViewReport(message.full_report!, message.short_response!)}
+                            className="h-8 text-xs px-4 rounded-xl bg-muted/40 hover:bg-muted/80 border-none transition-all duration-300 font-semibold"
+                            prefix={<FileText className="h-3 w-3" />}
+                          >
+                            View Analysis Report
+                          </Button>
+                        ) : (
+                          <span />
+                        )}
+                        <div
+                          className={`text-[10px] uppercase tracking-tighter font-bold opacity-50 ${message.sender === "user" ? "text-white" : "text-muted-foreground"
+                            }`}
+                        >
+                          {message.timestamp}
+                        </div>
+                      </div>
+                    </motion.div>
+
+                    {message.sender === "user" && (
+                      <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
+                        <AvatarFallback className="bg-muted text-muted-foreground">
+                          <User className="h-4 w-4" />
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+                  </div>
+                ))}
+
+                {/* Loading indicator */}
+                {isLoading && (
+                  <div className="flex gap-3 justify-start animate-in fade-in zoom-in duration-300">
+                    <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
+                        AI
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="bg-card border border-border p-4 rounded-2xl rounded-tl-sm shadow-xs flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                      <span className="text-sm text-foreground/80">
+                        Analyzing market data...
+                      </span>
                     </div>
-                  )}
+                  </div>
+                )}
               </div>
 
               {/* Layout Sidebar Input Area */}
-              <div className="p-4 bg-background border-t border-border z-10">
-                <div className="relative">
+              <div className="p-5 bg-background border-t border-border/50 z-10">
+                <div className="relative group">
+                  <div className="absolute -inset-1 bg-linear-to-r from-indigo-500/10 to-blue-500/10 blur-xl rounded-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
+                  <div className="relative">
                     <TextArea
                       value={inputValue}
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInputValue(e.target.value)}
                       onKeyDown={handleKeyPress}
                       placeholder="Ask a question..."
-                      className="min-h-[80px] p-3 pr-12 resize-none bg-background border-input focus:border-primary focus:ring-1 focus:ring-primary rounded-xl transition-all shadow-sm text-sm"
+                      className="min-h-[100px] p-5 pr-16 resize-none bg-muted/20 dark:bg-muted/10 backdrop-blur-xl border-border/40 focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/5 rounded-2xl transition-all shadow-sm text-sm placeholder:text-muted-foreground/40"
                       disabled={isLoading}
                     />
                     <Button
                       onClick={handleSend}
-                      size="sm"
-                      className="absolute bottom-2 right-2 h-8 w-8 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-transform active:scale-95"
-                    disabled={!inputValue.trim() || isLoading}
-                  >
-                    {isLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Send className="h-4 w-4" />
-                    )}
-                  </Button>
+                      size="icon"
+                      className="absolute bottom-4 right-4 h-10 w-10 rounded-xl bg-linear-to-br from-indigo-500 to-blue-600 hover:scale-105 active:scale-95 text-white shadow-lg shadow-indigo-500/20 transition-all duration-300"
+                      disabled={!inputValue.trim() || isLoading}
+                    >
+                      {isLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Send className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -558,17 +618,19 @@ export function FxGuruChat() {
       </AnimatePresence>
 
       {/* Global Blog Loading overlay */}
-      {blogLoading && (
-        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-200">
-          <div className="flex flex-col items-center gap-4 bg-card border border-border rounded-2xl p-8 shadow-2xl">
-            <Loader2 className="h-10 w-10 animate-spin text-indigo-600 dark:text-indigo-400" />
-            <div className="space-y-1 text-center">
-              <p className="text-base font-medium text-foreground">Generating Blog Content</p>
-              <p className="text-sm text-muted-foreground">Please wait while the AI writes your article...</p>
+      {
+        blogLoading && (
+          <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-200">
+            <div className="flex flex-col items-center gap-4 bg-card border border-border rounded-2xl p-8 shadow-2xl">
+              <Loader2 className="h-10 w-10 animate-spin text-indigo-600 dark:text-indigo-400" />
+              <div className="space-y-1 text-center">
+                <p className="text-base font-medium text-foreground">Generating Blog Content</p>
+                <p className="text-sm text-muted-foreground">Please wait while the AI writes your article...</p>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   )
 }
