@@ -10,8 +10,10 @@ import { fetchAndUploadMedia } from "~/lib/media"
 import { actionClient } from "~/lib/safe-actions"
 import type { AdOne } from "~/server/web/ads/payloads"
 import { findActiveAds } from "~/server/web/ads/queries"
-import { createAdDetailsSchema } from "~/server/web/shared/schema"
+import { createAdDetailsSchema, createPreCheckoutAdSchema } from "~/server/web/shared/schema"
 import { stripe } from "~/services/stripe"
+import { redirect } from "next/navigation"
+import { getServerSession } from "~/lib/auth"
 
 const findAdWithFallbackSchema = z.object({
   type: z.enum(AdType),
@@ -49,6 +51,7 @@ export const findAdWithFallback = actionClient
       buttonLabel: t("default_ad.button_label", { siteName: siteConfig.name }),
       faviconUrl: "/favicon.png",
       bannerUrl: null,
+      status: "Draft" as const,
     } satisfies AdOne
 
     if (!adsConfig.enabled) {
@@ -106,7 +109,7 @@ export const createAdFromCheckout = actionClient
     const faviconPath = `ads/${adDomain}/favicon`
 
     // Upload favicon
-    const faviconUrl = await fetchAndUploadMedia(adDetails.websiteUrl, faviconPath, "favicon")
+    const faviconUrl = adDetails.faviconUrl || (await fetchAndUploadMedia(adDetails.websiteUrl, faviconPath, "favicon"))
 
     // Check if ads already exist for specific sessionId
     const existingAds = await db.ad.findMany({
@@ -117,7 +120,7 @@ export const createAdFromCheckout = actionClient
     if (existingAds.length) {
       await db.ad.updateMany({
         where: { sessionId },
-        data: { ...adDetails, faviconUrl },
+        data: { ...adDetails, faviconUrl, status: "Pending" },
       })
 
       // Revalidate the cache
@@ -157,7 +160,7 @@ export const createAdFromCheckout = actionClient
 
     // Create ads in a transaction
     await db.$transaction(
-      ads.map(ad => db.ad.create({ data: { ...ad, ...adDetails, email, faviconUrl, sessionId } })),
+      ads.map(ad => db.ad.create({ data: { ...ad, ...adDetails, email, faviconUrl, sessionId, status: "Pending" } })),
     )
 
     // Revalidate the cache
@@ -165,3 +168,166 @@ export const createAdFromCheckout = actionClient
 
     return { success: true }
   })
+
+export const createDraftAdAndCheckout = actionClient
+  .inputSchema(async () => {
+    const t = await getTranslations("schema")
+    return createPreCheckoutAdSchema(t)
+  })
+  .action(
+    async ({
+      parsedInput: {
+        lineItems,
+        successUrl,
+        cancelUrl,
+        mode,
+        metadata,
+        coupon,
+        name,
+        description,
+        websiteUrl,
+        buttonLabel,
+        faviconUrl,
+        bannerUrl,
+      },
+      ctx: { db },
+    }) => {
+      const session = await getServerSession()
+      const customerEmail = session?.user.email
+
+      if (!session?.user || !customerEmail) {
+        throw new Error("You must be logged in to create an ad")
+      }
+
+      // Create checkout session
+      const checkout = await stripe.checkout.sessions.create({
+        mode,
+        metadata,
+        line_items: lineItems,
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        customer_creation: mode === "payment" ? "if_required" : undefined,
+        invoice_creation: mode === "payment" ? { enabled: true } : undefined,
+        subscription_data: mode === "subscription" && metadata ? { metadata } : undefined,
+        allow_promotion_codes: coupon ? undefined : true,
+        discounts: coupon ? [{ coupon }] : undefined,
+        success_url: `${siteConfig.url}${successUrl}?sessionId={CHECKOUT_SESSION_ID}`,
+        cancel_url: cancelUrl ? `${siteConfig.url}${cancelUrl}?cancelled=true` : undefined,
+        customer_email: customerEmail,
+      })
+
+      if (!checkout.url || !checkout.id) {
+        throw new Error("Unable to create a new Stripe Checkout Session.")
+      }
+
+      // Upload favicon
+      const adDomain = getDomain(websiteUrl)
+      const faviconPath = `ads/${adDomain}/favicon`
+      const resolvedFaviconUrl = faviconUrl || (await fetchAndUploadMedia(websiteUrl, faviconPath, "favicon"))
+
+      let parsedAds: Omit<
+        Omit<Prisma.AdCreateInput, "email">,
+        "sessionId" | "name" | "description" | "websiteUrl" | "buttonLabel" | "faviconUrl" | "bannerUrl"
+      >[] = []
+
+      if (mode === "payment" && metadata?.ads) {
+        const adsSchema = z.array(
+          z.object({
+            type: z.enum(AdType),
+            startsAt: z.coerce.number().transform(date => new Date(date)),
+            endsAt: z.coerce.number().transform(date => new Date(date)),
+          }),
+        )
+
+        parsedAds = adsSchema.parse(JSON.parse(metadata.ads))
+      }
+
+      const adDetails = {
+        name,
+        description,
+        websiteUrl,
+        buttonLabel,
+        sessionId: checkout.id,
+        email: customerEmail,
+        faviconUrl: resolvedFaviconUrl,
+        bannerUrl,
+      }
+
+      // Create Draft ad records, one per line item mapped in metadata
+      if (parsedAds.length > 0) {
+        await db.$transaction(
+          parsedAds.map(ad => db.ad.create({ data: { ...ad, ...adDetails } })),
+        )
+      }
+
+      // Redirect to the checkout session url
+      redirect(checkout.url)
+    },
+  )
+
+export const trackAdClick = actionClient
+  .inputSchema(z.object({ adId: z.string() }))
+  .action(async ({ parsedInput: { adId }, ctx: { db } }) => {
+    try {
+      // Validate that the ad exists before updating
+      const ad = await db.ad.findUnique({
+        where: { id: adId },
+        select: { id: true, status: true },
+      })
+
+      if (!ad) {
+        console.warn(`Ad not found for click tracking: ${adId}`)
+        return { success: false, error: "Ad not found" }
+      }
+
+      // Only track clicks for active ads
+      if (ad.status !== "Scheduled") {
+        console.warn(`Attempted to track click for non-active ad: ${adId}, status: ${ad.status}`)
+        return { success: false, error: "Ad is not active" }
+      }
+
+      await db.ad.update({
+        where: { id: adId },
+        data: { clicks: { increment: 1 } },
+      })
+
+      return { success: true }
+    } catch (error) {
+      console.error(`Failed to track ad click for ${adId}:`, error)
+      return { success: false, error: "Failed to track click" }
+    }
+  })
+
+export const trackAdImpression = actionClient
+  .inputSchema(z.object({ adId: z.string() }))
+  .action(async ({ parsedInput: { adId }, ctx: { db } }) => {
+    try {
+      // Validate that the ad exists before updating
+      const ad = await db.ad.findUnique({
+        where: { id: adId },
+        select: { id: true, status: true },
+      })
+
+      if (!ad) {
+        console.warn(`Ad not found for impression tracking: ${adId}`)
+        return { success: false, error: "Ad not found" }
+      }
+
+      // Only track impressions for active ads
+      if (ad.status !== "Scheduled") {
+        console.warn(`Attempted to track impression for non-active ad: ${adId}, status: ${ad.status}`)
+        return { success: false, error: "Ad is not active" }
+      }
+
+      await db.ad.update({
+        where: { id: adId },
+        data: { impressions: { increment: 1 } },
+      })
+
+      return { success: true }
+    } catch (error) {
+      console.error(`Failed to track ad impression for ${adId}:`, error)
+      return { success: false, error: "Failed to track impression" }
+    }
+  })
+

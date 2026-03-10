@@ -39,7 +39,10 @@ const generateUniqueSlug = async (
 }
 
 export const uniqueSlugsExtension = Prisma.defineExtension(client => {
-  const findUniqueRecord = async (model: "Tool" | "Category" | "Tag", slug: string) => {
+  const findUniqueRecord = async (
+    model: "Tool" | "Category" | "Tag" | "Brokers" | "Subcategory",
+    slug: string,
+  ) => {
     const payload = {
       where: { slug },
       select: { slug: true },
@@ -52,6 +55,10 @@ export const uniqueSlugsExtension = Prisma.defineExtension(client => {
         return Boolean(await client.category.findUnique(payload))
       case "Tag":
         return Boolean(await client.tag.findUnique(payload))
+      case "Brokers":
+        return Boolean(await client.brokers.findUnique(payload))
+      case "Subcategory":
+        return Boolean(await client.subcategory.findUnique(payload))
     }
   }
 
@@ -60,31 +67,45 @@ export const uniqueSlugsExtension = Prisma.defineExtension(client => {
     query: {
       $allModels: {
         async create({ model, args, query }) {
-          if (model !== "Tool" && model !== "Category" && model !== "Tag") {
+          if (
+            model !== "Tool" &&
+            model !== "Category" &&
+            model !== "Tag" &&
+            model !== "Brokers" &&
+            model !== "Subcategory"
+          ) {
             return query(args)
           }
 
           // Safely cast data to expected shape for slugified models
-          const { name, slug } = args.data
-          const source = slug || name
+          const data = args.data as any
+          const { name, slug, broker_name } = data
+          const source = slug || broker_name || name
 
           if (!source) {
             return query(args)
           }
 
-          const uniqueSlug = await generateUniqueSlug(source, slug => findUniqueRecord(model, slug))
+          const uniqueSlug = await generateUniqueSlug(source, slug => findUniqueRecord(model as any, slug))
 
           // Return query with updated slug
           return query({ ...args, data: { ...args.data, slug: uniqueSlug } } as any)
         },
 
         async update({ model, args, query }) {
-          if (model !== "Tool" && model !== "Category" && model !== "Tag") {
+          if (
+            model !== "Tool" &&
+            model !== "Category" &&
+            model !== "Tag" &&
+            model !== "Brokers" &&
+            model !== "Subcategory"
+          ) {
             return query(args)
           }
 
-          const { name, slug } = args.data
-          const source = (slug || name) as string
+          const data = args.data as any
+          const { name, slug, broker_name } = data
+          const source = (slug || broker_name || name) as string
 
           // Skip if neither name nor slug is being updated
           if (!source) {
@@ -92,7 +113,7 @@ export const uniqueSlugsExtension = Prisma.defineExtension(client => {
           }
 
           // Get the existing record to know its current slug
-          let existingRecord: { slug: string } | null = null
+          let existingRecord: { slug: string | null } | null = null
 
           switch (model) {
             case "Tool":
@@ -113,6 +134,18 @@ export const uniqueSlugsExtension = Prisma.defineExtension(client => {
                 select: { slug: true },
               })
               break
+            case "Brokers":
+              existingRecord = await client.brokers.findUnique({
+                where: args.where,
+                select: { slug: true },
+              })
+              break
+            case "Subcategory":
+              existingRecord = await client.subcategory.findUnique({
+                where: args.where,
+                select: { slug: true },
+              })
+              break
           }
 
           if (!existingRecord) {
@@ -121,11 +154,11 @@ export const uniqueSlugsExtension = Prisma.defineExtension(client => {
 
           const uniqueSlug = await generateUniqueSlug(
             source,
-            slug => findUniqueRecord(model, slug),
-            existingRecord.slug,
+            slug => findUniqueRecord(model as any, slug),
+            existingRecord.slug || undefined,
           )
 
-          return query({ ...args, data: { ...args.data, slug: uniqueSlug } })
+          return query({ ...args, data: { ...args.data, slug: uniqueSlug } } as any)
         },
       },
     },

@@ -1,5 +1,6 @@
-import { DeleteObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3"
+import { DeleteObjectCommand, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3"
 import { Upload } from "@aws-sdk/lib-storage"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import { getDomain, getErrorMessage, tryCatch } from "@primoui/utils"
 import { fileTypeFromBuffer } from "file-type"
 import wretch from "wretch"
@@ -31,6 +32,7 @@ export const uploadToS3Storage = async (file: Buffer, key: string) => {
   })
 
   const { data, error } = await tryCatch(upload.done())
+  console.log("🚀 ~ uploadToS3Storage ~ error:", error , data)
 
   if (error) {
     throw new Error(`Failed to upload ${key} to Digital Ocean Spaces: ${getErrorMessage(error)}`)
@@ -91,6 +93,61 @@ export const removeS3File = async (key: string) => {
   })
 
   return await s3Client.send(deleteCommand)
+}
+
+/**
+ * Generates a presigned URL for a Digital Ocean Spaces file.
+ * @param key - The Spaces key (path) of the file.
+ * @param expiresIn - Expiration time in seconds (default is 1 hour).
+ * @returns The presigned URL.
+ */
+export const getPresignedUrl = async (key: string, expiresIn = 3600) => {
+  const command = new GetObjectCommand({
+    Bucket: env.S3_BUCKET,
+    Key: key,
+  })
+
+  // @ts-expect-error - Type mismatch between different versions of AWS SDK packages
+  return await getSignedUrl(s3Client, command, { expiresIn })
+}
+
+/**
+ * Extracts the S3 key from a full URL and returns a presigned URL.
+ * Defaults to returning the original URL if parsing fails or URL is not from Spaces.
+ * @param url - The full URL of the file.
+ * @param expiresIn - Expiration time in seconds (default is 1 hour).
+ * @returns The presigned URL or the original URL.
+ */
+export const getPresignedUrlFromFull = async (url: string | null | undefined, expiresIn = 3600) => {
+  if (!url) return url
+
+  try {
+    const spacesDomain = `${env.S3_BUCKET}.${env.S3_REGION}.digitaloceanspaces.com`
+    const parsedUrl = new URL(url)
+    
+    // Check if the URL is from our DO Spaces
+    const customPublicUrl = env.S3_PUBLIC_URL ? new URL(env.S3_PUBLIC_URL) : null
+    const isSpacesUrl =
+      (customPublicUrl && parsedUrl.hostname === customPublicUrl.hostname) ||
+      parsedUrl.hostname === spacesDomain ||
+      parsedUrl.hostname.includes('digitaloceanspaces.com')
+
+    if (!isSpacesUrl) {
+      return url
+    }
+
+    // Extract key from pathname (removing leading slash)
+    let key = parsedUrl.pathname.substring(1)
+    
+    if (key.startsWith(`${env.S3_BUCKET}/`)) {
+      key = key.substring(env.S3_BUCKET.length + 1)
+    }
+
+    return await getPresignedUrl(decodeURIComponent(key), expiresIn)
+  } catch (err) {
+    console.error("Failed to generate presigned URL from:", url, err)
+    return url
+  }
 }
 
 /**

@@ -36,10 +36,18 @@ const prepareEmail = async (email: EmailParams): Promise<CreateEmailOptions> => 
 export const sendEmail = async (email: EmailParams): Promise<CreateEmailResponse | undefined> => {
   const payload = await prepareEmail(email)
 
-  if (!isProd) {
-    console.log("Email payload:", payload)
-    return
+  // if (!isProd) {
+  //   console.log("Email payload:", payload)
+  //   return
+  // }
+
+  const response = await resend.emails.send(payload)
+
+  if (response.error) {
+    console.error("Failed to send email:", response.error)
+  } else {
+    console.log("Email sent successfully:", response.data)
   }
 
-  return resend.emails.send(payload)
+  return response
 }

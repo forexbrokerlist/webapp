@@ -12,27 +12,38 @@ type ExternalLinkProps = ComponentProps<"a"> & {
   eventProps?: Record<string, unknown>
 }
 
-export const ExternalLink = ({
+import React from "react"
+
+export const ExternalLink = React.forwardRef<HTMLAnchorElement, ExternalLinkProps>(({
   href,
   target = "_blank",
   doTrack = false,
   doFollow = false,
   eventName,
   eventProps,
+  onClick,
   ...props
-}: ExternalLinkProps) => {
+}, ref) => {
   const trackEvent = useTrackEvent()
   const addTracking = doTrack && !href?.includes("utm_source")
   const finalHref = addTracking ? setQueryParams(href!, { utm_source: siteConfig.domain }) : href
-  const isExternal = isExternalUrl(finalHref)
+  const isExternal = isExternalUrl(finalHref || "")
 
   return (
     <a
+      ref={ref}
       href={finalHref!}
       target={target}
       rel={`noopener${doFollow ? "" : " nofollow"}`}
-      onClick={() => isExternal && eventName && trackEvent(eventName, eventProps)}
+      onClick={(e) => {
+        if (isExternal && eventName) {
+          trackEvent(eventName, eventProps)
+        }
+        onClick?.(e)
+      }}
       {...props}
     />
   )
-}
+})
+
+ExternalLink.displayName = "ExternalLink"

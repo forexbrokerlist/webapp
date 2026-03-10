@@ -9,6 +9,7 @@ import {
   GemIcon,
   LogOutIcon,
   MegaphoneIcon,
+  StarIcon,
   TagIcon,
   TriangleAlertIcon,
   UsersIcon,
@@ -70,13 +71,18 @@ export const Sidebar = () => {
         undefined, // Separator
 
         {
-          title: "Tools",
-          href: "/admin/tools",
+          title: "Brokers",
+          href: "/admin/brokers",
           prefix: <GemIcon />,
         },
         {
           title: "Categories",
           href: "/admin/categories",
+          prefix: <GalleryHorizontalEndIcon />,
+        },
+        {
+          title: "Subcategories",
+          href: "/admin/subcategories",
           prefix: <GalleryHorizontalEndIcon />,
         },
         {
@@ -93,6 +99,11 @@ export const Sidebar = () => {
           title: "Reports",
           href: "/admin/reports",
           prefix: <TriangleAlertIcon />,
+        },
+        {
+          title: "Sponsors",
+          href: "/admin/sponsors",
+          prefix: <StarIcon />,
         },
         {
           title: "Ads",

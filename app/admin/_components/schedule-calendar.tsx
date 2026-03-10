@@ -26,14 +26,14 @@ import { ShowMore } from "~/components/common/show-more"
 import { Stack } from "~/components/common/stack"
 import { orpc } from "~/lib/orpc-query"
 import { cx } from "~/lib/utils"
-import type { findScheduledTools } from "~/server/admin/tools/queries"
+import type { findScheduledBrokers } from "~/server/admin/brokers/queries"
 
-type Tools = Awaited<ReturnType<typeof findScheduledTools>>
+type BrokersType = Awaited<ReturnType<typeof findScheduledBrokers>>
 
 type CalendarDayProps = ComponentProps<"td"> & {
   day: Date
   month: Date
-  tools: Tools
+  tools: BrokersType
 }
 
 const CalendarDay = ({ className, day, tools, month, ...props }: CalendarDayProps) => {
@@ -62,16 +62,16 @@ const CalendarDay = ({ className, day, tools, month, ...props }: CalendarDayProp
           className="w-full"
           items={tools}
           limit={5}
-          renderItem={({ id, name, status }) => (
+          renderItem={({ id, broker_name, status }) => (
             <Link
               key={id}
-              href={`/admin/tools/${id}`}
+              href={`/admin/brokers/${id}`}
               className={cx(
                 "max-w-full font-medium truncate hover:text-primary",
                 status === ToolStatus.Published && "text-muted-foreground/50 line-through",
               )}
             >
-              {name}
+              {broker_name}
             </Link>
           )}
         />
@@ -90,7 +90,7 @@ export const Calendar = ({ className, ...props }: ComponentProps<"div">) => {
   const calendarEnd = endOfWeek(endOfMonth(currentMonth), { weekStartsOn: 1 })
 
   const { data: tools = [] } = useQuery(
-    orpc.tools.scheduled.queryOptions({
+    orpc.brokers.scheduled.queryOptions({
       input: {
         start: calendarStart,
         end: calendarEnd,

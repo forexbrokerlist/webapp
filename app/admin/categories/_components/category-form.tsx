@@ -33,7 +33,7 @@ type CategoryFormProps = ComponentProps<"form"> & {
 export function CategoryForm({ className, title, category, ...props }: CategoryFormProps) {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const { data: tools = [] } = useQuery(orpc.tools.lookup.queryOptions())
+  const { data: tools = [] } = useQuery(orpc.brokers.lookup.queryOptions())
 
   const form = useForm({
     resolver: zodResolver(categorySchema),
@@ -168,7 +168,7 @@ export function CategoryForm({ className, title, category, ...props }: CategoryF
           render={({ field }) => (
             <Field className="col-span-full">
               <FieldLabel>Tools</FieldLabel>
-              <RelationSelector relations={tools} ids={field.value ?? []} setIds={field.onChange} />
+              <RelationSelector relations={tools.map(t => ({...t, id: String(t.id), name: t.broker_name || ''}))} ids={field.value ?? []} setIds={field.onChange} />
             </Field>
           )}
         />

@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react"
+import { forwardRef, type ComponentProps } from "react"
 import { Box, type boxVariants } from "~/components/common/box"
 import { cva, cx, type VariantProps } from "~/lib/utils"
 
@@ -22,12 +22,16 @@ type InputProps = Omit<ComponentProps<"input">, "size"> &
   VariantProps<typeof inputVariants> &
   VariantProps<typeof boxVariants>
 
-const Input = ({ className, size, hover = false, focus = true, ...props }: InputProps) => {
-  return (
-    <Box hover={hover} focus={focus}>
-      <input className={cx(inputVariants({ size, className }))} {...props} />
-    </Box>
-  )
-}
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ className, size, hover = false, focus = true, ...props }, ref) => {
+    return (
+      <Box hover={hover} focus={focus}>
+        <input ref={ref} className={cx(inputVariants({ size, className }))} {...props} />
+      </Box>
+    )
+  },
+)
+
+Input.displayName = "Input"
 
 export { Input, inputVariants }

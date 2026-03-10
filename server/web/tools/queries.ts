@@ -30,7 +30,7 @@ export const searchTools = async (search: ToolFilterParams, where?: Prisma.ToolW
   }
 
   // Query Premium tools first, then others by createdAt (Standard and Free equal)
-  const [tools, total] = await db.$transaction([
+  const [tools, total] = await Promise.all([
     db.tool.findMany({
       orderBy: sortBy
         ? { [sortBy]: sortOrder }
@@ -134,5 +134,83 @@ export const findTool = async ({ where, ...args }: Prisma.ToolFindFirstArgs = {}
     ...args,
     where,
     select: toolOnePayload,
+  })
+}
+
+export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
+  "use cache"
+
+  cacheTag("brokers")
+  cacheLife("infinite")
+
+  const { q, sort, page, perPage } = search
+  const skip = (page - 1) * perPage
+  const take = perPage
+  let [sortBy, sortOrder] = sort.split(".")
+
+  // Map Tool-specific sort keys back to Brokers schema
+  if (sortBy === "publishedAt") sortBy = "scraped_at"
+  if (sortBy === "name") sortBy = "broker_name"
+  
+  // Ensure sortBy is valid for Brokers model to prevent Prisma errors
+  const validSortFields = ["scraped_at", "broker_name", "year_established", "overall_rating", "id"]
+  if (sortBy && !validSortFields.includes(sortBy)) {
+    sortBy = ""
+  }
+
+  // Safely omit Tool-specific properties from the where clause
+  const safeWhere = { ...where }
+  delete safeWhere.status
+
+  const whereQuery: Prisma.BrokersWhereInput = { 
+    ...safeWhere,
+    status: ToolStatus.Published,
+  }
+
+  if (q) {
+    whereQuery.OR = [
+      { broker_name: { contains: q, mode: "insensitive" } },
+      { description: { contains: q, mode: "insensitive" } },
+      { pros: { contains: q, mode: "insensitive" } },
+      { cons: { contains: q, mode: "insensitive" } },
+    ]
+  }
+
+  const [brokers, total] = await Promise.all([
+    db.brokers.findMany({
+      where: whereQuery,
+      orderBy: sortBy ? { [sortBy]: sortOrder } : [{ year_established: "desc" }, { broker_name: "asc" }],
+      take,
+      skip,
+    }),
+    db.brokers.count({
+      where: whereQuery,
+    }),
+  ])
+
+  return { brokers, total, page, perPage }
+}
+
+export const findBrokers = async ({ where, orderBy, ...args }: Prisma.BrokersFindManyArgs) => {
+  "use cache"
+
+  cacheTag("brokers")
+  cacheLife("infinite")
+
+  return db.brokers.findMany({
+    ...args,
+    where: { status: ToolStatus.Published, ...where },
+    orderBy: orderBy ?? [{ year_established: "desc" }, { broker_name: "asc" }],
+  })
+}
+
+export const findBrokerBySlug = async (slug: string) => {
+  "use cache"
+
+  cacheTag("broker", `broker-${slug}`)
+  cacheLife("infinite")
+
+  return db.brokers.findFirst({
+    where: { status: ToolStatus.Published, slug },
   })
 }

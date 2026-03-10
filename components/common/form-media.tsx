@@ -1,7 +1,7 @@
 import { isValidUrl } from "@primoui/utils"
 import { capitalCase } from "change-case"
 import { DownloadCloudIcon, UploadIcon } from "lucide-react"
-import { type ComponentProps, useRef } from "react"
+import { type ComponentProps, useRef, useState, useEffect } from "react"
 import type { ControllerRenderProps, FieldPath, FieldValues, UseFormReturn } from "react-hook-form"
 import { Button } from "~/components/common/button"
 import { Field, FieldError, FieldLabel } from "~/components/common/field"
@@ -10,13 +10,15 @@ import { Stack } from "~/components/common/stack"
 import { useMediaAction } from "~/hooks/use-media-action"
 import { cx } from "~/lib/utils"
 import { ALLOWED_MIMETYPES } from "~/server/web/shared/schema"
+import { generatePresignedUrl } from "~/server/web/actions/media"
 
-type FormMediaProps<T extends FieldValues> = ComponentProps<typeof Field> & {
+type FormMediaProps<T extends FieldValues> = Omit<ComponentProps<typeof Field>, "children"> & {
   form: UseFormReturn<T>
   field: ControllerRenderProps<T, FieldPath<T>>
   path: string
   fetchType?: "favicon" | "screenshot"
   websiteUrl?: string
+  children?: React.ReactNode | ((props: { value: string | null }) => React.ReactNode)
 }
 
 export const FormMedia = <T extends FieldValues>({
@@ -31,8 +33,31 @@ export const FormMedia = <T extends FieldValues>({
 }: FormMediaProps<T>) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const action = useMediaAction({ form, path, fieldName: field.name, fetchType })
-
+  const [previewUrl, setPreviewUrl] = useState<string | null>(field.value || null)
+  
   const error = form.formState.errors[field.name]
+
+  useEffect(() => {
+    let active = true
+
+    const loadPreview = async () => {
+      const value = field.value
+      if (!value) {
+        if (active) setPreviewUrl(null)
+        return
+      }
+
+      // Automatically generate a presigned URL. The action returns the exact same url if it's not a DO Spaces URL.
+      const url = await generatePresignedUrl(value)
+      
+      if (active) {
+        setPreviewUrl(url ?? null)
+      }
+    }
+
+    void loadPreview()
+    return () => { active = false }
+  }, [field.value])
 
   return (
     <Field className={cx("items-stretch", className)} {...props}>
@@ -69,7 +94,7 @@ export const FormMedia = <T extends FieldValues>({
       </Stack>
 
       <Stack size="sm">
-        {children}
+        {typeof children === "function" ? children({ value: previewUrl }) : children}
 
         <Input type="url" className="flex-1" {...field} />
       </Stack>

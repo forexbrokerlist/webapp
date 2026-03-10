@@ -1,6 +1,6 @@
 import { createLoader, parseAsStringEnum, type SearchParams } from "nuqs/server"
-import { AdType } from "~/.generated/prisma/client"
-import { AdsPicker } from "~/components/web/ads/ads-picker"
+import { AdType } from "~/.generated/prisma/enums"
+import { AdvertiseFlow } from "~/app/(web)/advertise/advertise-flow"
 import { findAds } from "~/server/web/ads/queries"
 
 type AdvertisePickersProps = {
@@ -12,5 +12,5 @@ export const AdvertisePickers = async ({ searchParams }: AdvertisePickersProps) 
   const { type } = searchParamsLoader(await searchParams)
   const ads = await findAds({})
 
-  return <AdsPicker ads={ads} type={type} className="mx-auto" />
+  return <AdvertiseFlow ads={ads} type={type} />
 }

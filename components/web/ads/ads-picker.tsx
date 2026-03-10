@@ -5,7 +5,7 @@ import { endOfDay, startOfDay } from "date-fns"
 import { XIcon } from "lucide-react"
 import { useFormatter, useTranslations } from "next-intl"
 import { useAction } from "next-safe-action/hooks"
-import type { ComponentProps } from "react"
+import { useState, type ComponentProps } from "react"
 import { toast } from "sonner"
 import { z } from "zod"
 import { AdType } from "~/.generated/prisma/browser"
@@ -17,21 +17,27 @@ import { Stack } from "~/components/common/stack"
 import { Tooltip } from "~/components/common/tooltip"
 import { AdsCalendar } from "~/components/web/ads/ads-calendar"
 import { Price } from "~/components/web/price"
+import { LoginDialog } from "~/components/web/auth/login-dialog"
 import { adsConfig } from "~/config/ads"
 import { siteConfig } from "~/config/site"
 import { type AdSpot, useAds } from "~/hooks/use-ads"
+import { useSession } from "~/lib/auth-client"
 import type { AdMany } from "~/server/web/ads/payloads"
-import { createStripeCheckout } from "~/server/web/products/actions"
+import { createDraftAdAndCheckout } from "~/server/web/ads/actions"
+import type { AdDetailsValues } from "~/app/(web)/advertise/ad-details-form"
 import { checkoutSchema } from "~/server/web/products/schema"
 
 type AdsCalendarProps = ComponentProps<"div"> & {
   ads: AdMany[]
   type: AdType | null
+  adDetails: AdDetailsValues
 }
 
-export const AdsPicker = ({ className, ads, type, ...props }: AdsCalendarProps) => {
+export const AdsPicker = ({ className, ads, type, adDetails, ...props }: AdsCalendarProps) => {
   const t = useTranslations("ads")
   const format = useFormatter()
+  const { data: session } = useSession()
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false)
 
   // Ad spots available for purchase
   const spots = [
@@ -51,8 +57,8 @@ export const AdsPicker = ({ className, ads, type, ...props }: AdsCalendarProps) 
     },
     {
       type: AdType.ToolPage,
-      label: t("spots.tool_page.label"),
-      description: t("spots.tool_page.description"),
+      label: t("spots.broker_page.label"),
+      description: t("spots.broker_page.description"),
       price: 15,
       preview: "https://share.cleanshot.com/dXDbZPFv",
     },
@@ -61,13 +67,18 @@ export const AdsPicker = ({ className, ads, type, ...props }: AdsCalendarProps) 
   const { price, selections, hasSelections, findAdSpot, clearSelection, updateSelection } =
     useAds(spots)
 
-  const { execute, isPending } = useAction(createStripeCheckout, {
+  const { execute, isPending } = useAction(createDraftAdAndCheckout, {
     onError: ({ error }) => {
       toast.error(error.serverError)
     },
   })
 
   const handleCheckout = () => {
+    if (!session?.user) {
+      setIsLoginDialogOpen(true)
+      return
+    }
+
     type LineItem = z.infer<typeof checkoutSchema>["lineItems"][number]
 
     const validSelections = selections.filter(({ dateRange, duration }) => {
@@ -103,6 +114,7 @@ export const AdsPicker = ({ className, ads, type, ...props }: AdsCalendarProps) 
       metadata: { ads: JSON.stringify(adData) },
       successUrl: "/advertise/success",
       cancelUrl: "/advertise",
+      ...adDetails,
     })
   }
 
@@ -120,7 +132,7 @@ export const AdsPicker = ({ className, ads, type, ...props }: AdsCalendarProps) 
             className="group shrink-0 flex-1 min-w-76 snap-center border-l -ml-px"
           >
             {type === adSpot.type && (
-              <div className="absolute inset-px border-2 border-primary/50 rounded-sm" />
+              <div className="absolute inset-px border-2 border-primary/50 rounded-sm pointer-events-none" />
             )}
           </AdsCalendar>
         ))}
@@ -202,6 +214,13 @@ export const AdsPicker = ({ className, ads, type, ...props }: AdsCalendarProps) 
           {t("purchase_button")}
         </Button>
       </Stack>
+
+      {/* Login Dialog */}
+      <LoginDialog
+        isOpen={isLoginDialogOpen}
+        setIsOpen={setIsLoginDialogOpen}
+        description={t("login_required_description", { fallback: "You need to be logged in to purchase ads." })}
+      />
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { isTruthy } from "@primoui/utils"
 import { endOfDay, startOfDay } from "date-fns"
 import type { Prisma } from "~/.generated/prisma/client"
+import { getPresignedUrlFromFull } from "~/lib/media"
 import type { AdListParams } from "~/server/admin/ads/schema"
 import { db } from "~/services/db"
 
@@ -46,12 +47,27 @@ export const findAds = async (search: AdListParams, where?: Prisma.AdWhereInput)
     }),
   ])
 
+  const resolvedAds = await Promise.all(
+    ads.map(async ad => ({
+      ...ad,
+      faviconUrl: (await getPresignedUrlFromFull(ad.faviconUrl)) as string | null,
+      bannerUrl: (await getPresignedUrlFromFull(ad.bannerUrl)) as string | null,
+    })),
+  )
+
   const pageCount = Math.ceil(adsTotal / perPage)
-  return { ads, adsTotal, pageCount }
+  return { ads: resolvedAds, adsTotal, pageCount }
 }
 
 export const findAdById = async (id: string) => {
-  return db.ad.findUnique({
+  const ad = await db.ad.findUnique({
     where: { id },
   })
+  
+  if (ad) {
+    ad.faviconUrl = (await getPresignedUrlFromFull(ad.faviconUrl)) as string | null
+    ad.bannerUrl = (await getPresignedUrlFromFull(ad.bannerUrl)) as string | null
+  }
+
+  return ad
 }

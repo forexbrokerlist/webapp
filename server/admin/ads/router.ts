@@ -2,6 +2,9 @@ import { adminProcedure } from "~/lib/orpc"
 import { findAds } from "~/server/admin/ads/queries"
 import { adListSchema, adSchema } from "~/server/admin/ads/schema"
 import { idSchema, idsSchema } from "~/server/admin/shared/schema"
+import { AdStatus } from "~/.generated/prisma/client"
+import { notifyAdvertiserOfAdStatusChange } from "~/lib/notifications"
+import { after } from "next/server"
 
 const list = adminProcedure.input(adListSchema).handler(async ({ input }) => {
   return findAds(input)
@@ -20,6 +23,10 @@ const upsert = adminProcedure
       : await db.ad.create({
           data,
         })
+
+    if (id && data.status && data.status !== ad.status) {
+      after(async () => await notifyAdvertiserOfAdStatusChange(ad))
+    }
 
     revalidate({
       tags: ["ads"],
@@ -61,6 +68,40 @@ const duplicate = adminProcedure
     return newAd
   })
 
+const approve = adminProcedure
+  .input(idSchema)
+  .handler(async ({ input: { id }, context: { db, revalidate } }) => {
+    const ad = await db.ad.update({
+      where: { id },
+      data: { status: AdStatus.Scheduled },
+    })
+
+    after(async () => await notifyAdvertiserOfAdStatusChange(ad))
+
+    revalidate({
+      tags: ["ads"],
+    })
+
+    return ad
+  })
+
+const reject = adminProcedure
+  .input(idSchema)
+  .handler(async ({ input: { id }, context: { db, revalidate } }) => {
+    const ad = await db.ad.update({
+      where: { id },
+      data: { status: AdStatus.Draft },
+    })
+
+    after(async () => await notifyAdvertiserOfAdStatusChange(ad))
+
+    revalidate({
+      tags: ["ads"],
+    })
+
+    return ad
+  })
+
 const remove = adminProcedure
   .input(idsSchema)
   .handler(async ({ input: { ids }, context: { db, revalidate } }) => {
@@ -79,5 +120,7 @@ export const adRouter = {
   list,
   upsert,
   duplicate,
+  approve,
+  reject,
   remove,
 }

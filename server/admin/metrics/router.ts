@@ -9,7 +9,7 @@ import { stripe } from "~/services/stripe"
 // -----------------------------------------------------------------------------
 const stats = adminProcedure.handler(async ({ context: { db } }) => {
   const [toolCount, categoryCount, userCount] = await db.$transaction([
-    db.tool.count(),
+    db.brokers.count(),
     db.category.count(),
     db.user.count(),
   ])

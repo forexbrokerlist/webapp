@@ -7,7 +7,7 @@ import {
   parseAsStringEnum,
 } from "nuqs/server"
 import * as z from "zod"
-import { type Ad, AdType } from "~/.generated/prisma/browser"
+import { type Ad, AdType, AdStatus } from "~/.generated/prisma/browser"
 import { getSortingStateParser } from "~/lib/parsers"
 
 export const adListParams = {
@@ -37,6 +37,7 @@ export const adSchema = z
     type: z.enum(AdType).default("All"),
     startsAt: z.date(),
     endsAt: z.date(),
+    status: z.nativeEnum(AdStatus).optional(),
   })
   .refine(data => data.endsAt > data.startsAt, {
     error: "End date must be after start date",
