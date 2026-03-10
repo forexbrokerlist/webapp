@@ -1,5 +1,5 @@
 {
-  "count_tools": "{count, plural, =0 {tools} =1 {tool} other {tools}}",
+  "count_tools": "{count, plural, =0 {brokers} =1 {broker} other {brokers}}",
   "no_tools": "No tools found for the given filters.",
   "actions": {
     "upgrade_tooltip": "Upgrade this listing for extra exposure",

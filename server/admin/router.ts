@@ -8,6 +8,7 @@ import { sponsorRouter } from "~/server/admin/sponsors/router"
 import { tagRouter } from "~/server/admin/tags/router"
 import { brokerRouter } from "~/server/admin/brokers/router"
 import { userRouter } from "~/server/admin/users/router"
+import { postRouter } from "~/server/admin/posts/router"
 
 // -----------------------------------------------------------------------------
 // Health-check procedure to verify oRPC infrastructure
@@ -30,6 +31,7 @@ export const adminRouter = {
   users: userRouter,
   reports: reportRouter,
   sponsors: sponsorRouter,
+  posts: postRouter,
 }
 
 export type AdminRouter = typeof adminRouter

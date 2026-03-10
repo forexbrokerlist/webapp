@@ -1,10 +1,10 @@
 "use client"
 
 import { getReadTime } from "@primoui/utils"
-import type { Post } from "content-collections"
 import { useFormatter, useTranslations } from "next-intl"
 import Image from "next/image"
 import type { ComponentProps } from "react"
+import type { Post } from "~/.generated/prisma/browser"
 import { Card, CardDescription, CardFooter, CardHeader } from "~/components/common/card"
 import { H4 } from "~/components/common/heading"
 import { Link } from "~/components/common/link"
@@ -20,7 +20,7 @@ export const PostCard = ({ className, post, ...props }: PostCardProps) => {
 
   return (
     <Card className={cx("overflow-clip", className)} asChild {...props}>
-      <Link href={`/blog/${post._meta.path}`}>
+      <Link href={`/blog/${post.slug}`}>
         {post.image && (
           <Image
             src={post.image}
