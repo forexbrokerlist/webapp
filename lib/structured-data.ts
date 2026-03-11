@@ -13,7 +13,7 @@ import type {
   WebPage,
   WebSite,
 } from "schema-dts"
-import type { Post } from "~/.generated/prisma/browser"
+import type { Post } from "~/lib/posts"
 import { siteConfig } from "~/config/site"
 import type { ToolMany, ToolOne } from "~/server/web/tools/payloads"
 
