@@ -1,10 +1,11 @@
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, ExternalLink } from "lucide-react"
 import type { ComponentProps } from "react"
 import { Button } from "~/components/common/button"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { cx } from "~/lib/utils"
 import { db } from "~/services/db"
 import Image from "next/image"
+import Link from "next/link"
 
 import { getPresignedUrlFromFull } from "~/lib/media"
 
@@ -26,73 +27,102 @@ export const Sponsors = async ({ className, ...props }: ComponentProps<"section"
   )
 
   const groupedSponsors = sponsorsWithPresigned.reduce((acc, sponsor) => {
-    const categoryName = sponsor.Category?.name || (sponsor.category as string)
-    if (!acc[categoryName]) {
-      acc[categoryName] = []
+    const categoryId = sponsor.categoryId || (sponsor.Category?.id) || "other"
+    if (!acc[categoryId]) {
+      acc[categoryId] = {
+        name: sponsor.Category?.name || (sponsor.category as string),
+        slug: sponsor.Category?.slug || null,
+        items: []
+      }
     }
-    acc[categoryName].push(sponsor as any)
+    acc[categoryId].items.push(sponsor)
     return acc
-  }, {} as Record<string, typeof sponsors>)
+  }, {} as Record<string, { name: string; slug: string | null; items: typeof sponsorsWithPresigned }>)
 
   return (
-    <section className={cx("flex flex-col gap-y-8 w-full py-8 md:py-12", className)} {...props}>
+    <section className={cx("flex flex-col gap-y-12 w-full py-12 md:py-16", className)} {...props}>
       <Intro alignment="center">
-        <IntroTitle className="text-2xl md:text-3xl font-bold">Supported by the best</IntroTitle>
-        <IntroDescription className="max-w-2xl mx-auto text-muted-foreground mt-4 text-sm md:text-base">
+        <IntroTitle className="text-3xl md:text-4xl font-extrabold tracking-tight">
+          Supported by the best
+        </IntroTitle>
+        <IntroDescription className="max-w-2xl mx-auto text-muted-foreground mt-4 text-base md:text-lg">
           Our platform is supported by incredible partners and sponsors who make it possible for our team to maintain this directory.
         </IntroDescription>
-        <div className="mt-6 flex justify-center">
+        <div className="mt-8 flex justify-center">
           <Button 
             variant="secondary" 
-            className="rounded-full shadow-sm text-sm"
-            suffix={<ArrowRight className="size-4" />}
+            className="rounded-full shadow-sm px-6 py-5 h-auto text-base hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+            suffix={<ArrowRight className="size-4 animate-in fade-in slide-in-from-left-2 duration-500" />}
+            asChild
           >
-            Become a sponsor
+            <Link href="/advertise">
+              Become a sponsor
+            </Link>
           </Button>
         </div>
       </Intro>
 
-      {Object.entries(groupedSponsors).map(([categoryName, categorySponsors]) => (
-        <div key={categoryName} className="mx-auto w-full max-w-5xl mt-8">
-          <h3 className="text-xl font-bold mb-4 text-center md:text-left">{categoryName}</h3>
-          <div className="border border-border rounded-xl overflow-hidden bg-background">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 -mb-px -mr-px">
-              {categorySponsors.map((sponsor) => (
+      <div className="flex flex-col gap-12">
+        {Object.entries(groupedSponsors).map(([categoryId, group]) => (
+          <div key={categoryId} className="mx-auto w-full max-w-6xl">
+            <div className="flex items-baseline justify-between mb-6 px-4 md:px-0">
+              <h3 className="text-2xl font-bold tracking-tight text-foreground/90">{group.name}</h3>
+              {group.slug && (
+                <Link 
+                  href={`/categories/${group.slug}`}
+                  className="group/link text-sm font-semibold text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5"
+                >
+                  View all 
+                  <ArrowRight className="size-3.5 group-hover/link:translate-x-0.5 transition-transform" />
+                </Link>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-px bg-border/40 border border-border/40 rounded-2xl overflow-hidden shadow-sm">
+              {group.items.map((sponsor) => (
                 <a 
                   key={sponsor.id} 
                   href={sponsor.websiteUrl || undefined}
                   target="_blank"
                   rel="noreferrer"
                   className={cx(
-                    "flex items-center justify-center py-6 px-4 gap-3 hover:bg-muted/30 transition-colors group border-r border-b border-border",
+                    "flex flex-col items-center justify-center py-8 px-6 gap-4 bg-background hover:bg-muted/30 transition-all duration-300 group/item relative",
                     !sponsor.websiteUrl && "pointer-events-none"
                   )}
                 >
-                  {sponsor.logoUrl && (
-                    <div className="relative size-6 md:size-8 shrink-0">
+                  <div className="absolute top-3 right-3 opacity-0 group-hover/item:opacity-40 transition-opacity">
+                    <ExternalLink className="size-3" />
+                  </div>
+                  
+                  {sponsor.logoUrl ? (
+                    <div className="relative w-full h-10 md:h-12 shrink-0">
                       <Image 
                         src={sponsor.logoUrl} 
                         alt={sponsor.name} 
                         fill 
-                        className="object-contain opacity-80 group-hover:opacity-100 transition-opacity" 
+                        className="object-contain opacity-70 group-hover/item:opacity-100 group-hover/item:scale-105 transition-all duration-300 grayscale group-hover/item:grayscale-0" 
                       />
                     </div>
+                  ) : (
+                    <div className="size-10 md:size-12 rounded-lg bg-muted flex items-center justify-center">
+                      <span className="text-muted-foreground font-bold text-lg">
+                        {sponsor.name.charAt(0)}
+                      </span>
+                    </div>
                   )}
-                  <span className="font-bold text-base md:text-lg tracking-tight text-foreground md:text-foreground/80 group-hover:text-foreground transition-colors overflow-hidden text-ellipsis whitespace-nowrap">
+                  
+                  <span className="font-semibold text-sm md:text-base tracking-tight text-muted-foreground group-hover/item:text-foreground transition-colors overflow-hidden text-ellipsis whitespace-nowrap text-center w-full px-2">
                     {sponsor.name}
                   </span>
                 </a>
               ))}
-              {/* Fill empty grid blocks if count is irregular for cosmetic reasons */}
-              {categorySponsors.length % 5 !== 0 && 
-                Array.from({ length: 5 - (categorySponsors.length % 5) }).map((_, i) => (
-                  <div key={i} className="hidden lg:block border-r border-b border-border py-6 px-4" />
-                ))
-              }
+              
+              {/* Decorative fill for empty spots if needed, but modern grid often looks better without hard borders if using gaps */}
+              {/* We use gap-px and bg-border to create the grid lines effect */}
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </section>
   )
 }
