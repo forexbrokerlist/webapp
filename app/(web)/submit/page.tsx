@@ -27,8 +27,18 @@ export const generateMetadata = async (): Promise<Metadata> => {
   return getPageMetadata({ url, metadata })
 }
 
+import { findCategories } from "~/server/web/categories/queries"
+import { findSubcategories } from "~/server/web/subcategories/queries"
+import { findTags } from "~/server/web/tags/queries"
+import { getServerSession } from "~/lib/auth"
+import { Hint } from "~/components/common/hint"
+
 export default async function () {
+  const session = await getServerSession()
   const { metadata } = await getData()
+  const categories = await findCategories({ all: true }) // Fetch all categories
+  const subcategories = await findSubcategories()
+  const tags = await findTags({ all: true })
 
   return (
     <>
@@ -39,7 +49,12 @@ export default async function () {
 
       <Section>
         <Section.Content>
-          <SubmitForm />
+          {!session?.user && (
+            <Hint className="mb-6 p-4 bg-muted rounded-lg text-center font-medium">
+              You must be logged in to submit a broker.
+            </Hint>
+          )}
+          <SubmitForm categories={categories} subcategories={subcategories} tags={tags} />
         </Section.Content>
       </Section>
     </>

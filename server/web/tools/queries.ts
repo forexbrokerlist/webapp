@@ -160,11 +160,12 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
 
   // Safely omit Tool-specific properties from the where clause
   const safeWhere = { ...where }
-  delete safeWhere.categories
-  delete safeWhere.tags
   delete safeWhere.status
 
-  const whereQuery: Prisma.BrokersWhereInput = { ...safeWhere }
+  const whereQuery: Prisma.BrokersWhereInput = { 
+    ...safeWhere,
+    status: ToolStatus.Published,
+  }
 
   if (q) {
     whereQuery.OR = [
@@ -198,18 +199,18 @@ export const findBrokers = async ({ where, orderBy, ...args }: Prisma.BrokersFin
 
   return db.brokers.findMany({
     ...args,
-    where: { ...where },
+    where: { status: ToolStatus.Published, ...where },
     orderBy: orderBy ?? [{ year_established: "desc" }, { broker_name: "asc" }],
   })
 }
 
-export const findBrokerById = async (id: number) => {
+export const findBrokerBySlug = async (slug: string) => {
   "use cache"
 
-  cacheTag("broker", `broker-${id}`)
+  cacheTag("broker", `broker-${slug}`)
   cacheLife("infinite")
 
-  return db.brokers.findUnique({
-    where: { id },
+  return db.brokers.findFirst({
+    where: { status: ToolStatus.Published, slug },
   })
 }

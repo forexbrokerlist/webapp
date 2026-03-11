@@ -1,7 +1,7 @@
 "use server"
 
 import { getTranslations } from "next-intl/server"
-import { fetchAndUploadMedia, uploadToS3Storage } from "~/lib/media"
+import { fetchAndUploadMedia, uploadToS3Storage, getPresignedUrlFromFull } from "~/lib/media"
 import { actionClient } from "~/lib/safe-actions"
 import { createFetchMediaSchema, createUploadMediaSchema } from "~/server/web/shared/schema"
 
@@ -31,4 +31,9 @@ export async function uploadMedia(formData: FormData) {
   const url = await uploadToS3Storage(buffer, data.path)
 
   return { data: url }
+}
+
+export async function generatePresignedUrl(url: string | null | undefined) {
+  if (!url) return null
+  return getPresignedUrlFromFull(url)
 }

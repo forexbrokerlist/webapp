@@ -49,3 +49,27 @@ export const findTools = async (search: ToolListParams, where?: Prisma.ToolWhere
   const pageCount = Math.ceil(total / perPage)
   return { tools, total, pageCount }
 }
+
+export const findBookmarkedBrokers = async (search: ToolListParams, where?: Prisma.BrokersWhereInput) => {
+  const { name, page, perPage } = search
+  const offset = (page - 1) * perPage
+
+  const whereQuery: Prisma.BrokersWhereInput = {
+    ...(name ? { broker_name: { contains: name, mode: "insensitive" } } : {}),
+  }
+
+  const [brokers, total] = await db.$transaction([
+    db.brokers.findMany({
+      where: { ...whereQuery, ...where },
+      orderBy: { broker_name: "asc" },
+      take: perPage,
+      skip: offset,
+    }),
+    db.brokers.count({
+      where: { ...whereQuery, ...where },
+    }),
+  ])
+
+  const pageCount = Math.ceil(total / perPage)
+  return { brokers, total, pageCount }
+}

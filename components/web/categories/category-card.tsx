@@ -11,19 +11,19 @@ type CategoryCardProps = ComponentProps<typeof Tile> & {
 
 const CategoryCard = async ({ category, ...props }: CategoryCardProps) => {
   const t = await getTranslations()
-  const count = category._count.tools
-
-  return (
-    <Tile asChild {...props}>
-      <Link href={`/categories/${category.slug}`}>
-        <TileTitle>{category.name}</TileTitle>
-
-        <TileDivider />
-
-        <TileCaption>{`${count} ${t("tools.count_tools", { count })}`}</TileCaption>
-      </Link>
-    </Tile>
-  )
+  const count = category._count.tools + category._count.brokers
+ 
+   return (
+     <Tile asChild {...props}>
+       <Link href={`/categories/${category.slug}`}>
+         <TileTitle>{category.name}</TileTitle>
+ 
+         <TileDivider />
+ 
+         <TileCaption>{`${count} items`}</TileCaption>
+       </Link>
+     </Tile>
+   )
 }
 
 const CategoryCardSkeleton = () => {

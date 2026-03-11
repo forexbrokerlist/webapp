@@ -111,7 +111,7 @@ export const Search = () => {
         {
           label: t("navigation.new_tool"),
           shortcut: { keys: ["meta", "1"] },
-          onSelect: () => navigateTo("/admin/tools/new"),
+          onSelect: () => navigateTo("/admin/brokers/new"),
         },
         {
           label: t("navigation.new_category"),
@@ -233,7 +233,7 @@ export const Search = () => {
           name={t("navigation.tools")}
           items={results?.tools}
           onItemSelect={navigateTo}
-          getHref={({ id, slug }) => (isAdminPath ? `/admin/tools/${id}` : `/${slug}`)}
+          getHref={({ id, slug }) => (isAdminPath ? `/admin/brokers/${id}` : `/${slug}`)}
           renderItemDisplay={({ name, faviconUrl, websiteUrl }) => (
             <>
               {faviconUrl && <Image src={faviconUrl} alt="" width={16} height={16} />}

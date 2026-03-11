@@ -3,7 +3,7 @@ import { after } from "next/server"
 import type Stripe from "stripe"
 import { ToolTier } from "~/.generated/prisma/client"
 import { env } from "~/env"
-import { notifyAdminOfPremiumTool, notifySubmitterOfPremiumTool } from "~/lib/notifications"
+import { notifyAdminOfNewAd, notifyAdminOfPremiumTool, notifySubmitterOfPremiumTool } from "~/lib/notifications"
 import { db } from "~/services/db"
 import { stripe } from "~/services/stripe"
 
@@ -30,6 +30,20 @@ export async function POST(req: Request) {
         const session = event.data.object
         const slug = session.metadata?.tool
         const email = session.customer_email ?? session.customer_details?.email
+
+        const existingAds = await db.ad.findMany({ where: { sessionId: session.id } })
+        if (existingAds.length > 0) {
+          await db.ad.updateMany({
+            where: { sessionId: session.id },
+            data: { status: "Pending" },
+          })
+          
+          // Notify admin of the new ad submission
+          const adToNotify = existingAds[0]
+          after(async () => await notifyAdminOfNewAd(adToNotify))
+          
+          revalidateTag("ads", "infinite" as any)
+        }
 
         if (slug) {
           // Retrieve the session with line items expanded to get product metadata

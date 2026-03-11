@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server"
 import { cache, Suspense } from "react"
 import { Hero } from "~/app/(web)/(home)/hero"
+import { Pricing } from "~/app/(web)/(home)/pricing"
 import { Sponsors } from "~/app/(web)/(home)/sponsors"
 import { StructuredData } from "~/components/web/structured-data"
 import { ToolListingSkeleton } from "~/components/web/tools/tool-listing"
@@ -17,18 +18,17 @@ const getData = cache(async () => {
   return getPageData(siteConfig.url, title, description)
 })
 
-export default async function (props: PageProps<"/">) {
+export default async function (props: any) {
   const { structuredData } = await getData()
 
   return (
     <>
       <Hero />
       <Sponsors />
-
       <Suspense fallback={<ToolListingSkeleton />}>
         <ToolQuery searchParams={props.searchParams} options={{ enableFilters: true }} ad="Tools" />
       </Suspense>
-
+      <Pricing />
       <StructuredData data={structuredData} />
     </>
   )

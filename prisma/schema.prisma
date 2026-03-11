@@ -38,6 +38,32 @@ enum ToolTier {
   Premium
 }
 
+enum AdStatus {
+  Draft
+  Scheduled
+  Pending
+  Published
+}
+
+enum SubscriptionStatus {
+  Active
+  Expired
+  Cancelled
+}
+
+enum PaymentStatus {
+  Pending
+  Paid
+  Failed
+  Cancelled
+}
+
+enum ClaimStatus {
+  Pending
+  Approved
+  Rejected
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String
@@ -56,6 +82,10 @@ model User {
   sessions  Session[]
   tools     Tool[]
   bookmarks Bookmark[]
+  brokers   Brokers[]
+  posts     Post[]
+  payments  Payment[]
+  claims    BrokerClaim[]
 
   // Indexes
   @@index([id])
@@ -125,6 +155,9 @@ model Ad {
   sessionId   String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  status      AdStatus @default(Draft)
+  clicks      Int      @default(0)
+  impressions Int      @default(0)
 }
 
 model Tool {
@@ -149,12 +182,12 @@ model Tool {
   updatedAt      DateTime   @updatedAt
 
   // Relations
-  categories Category[]
-  tags       Tag[]
-  reports    Report[]
-  bookmarks  Bookmark[]
-  owner      User?      @relation(fields: [ownerId], references: [id])
-  ownerId    String?
+  categories    Category[]
+  subcategories Subcategory[]
+  tags          Tag[]
+  reports       Report[]
+  owner         User?         @relation(fields: [ownerId], references: [id])
+  ownerId       String?
 
   @@index([id, slug])
   @@index([name])
@@ -173,11 +206,35 @@ model Category {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Implicit relation
-  tools Tool[]
+  // Relations
+  subcategories Subcategory[]
+  tools         Tool[]
+  brokers       Brokers[]
 
   // Indexes
   @@index([slug])
+}
+
+model Subcategory {
+  id          String   @id @default(cuid())
+  name        String   @db.Citext
+  slug        String   @unique
+  label       String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relation to category
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  // Relations to items
+  tools   Tool[]
+  brokers Brokers[]
+
+  // Indexes
+  @@index([slug])
+  @@index([categoryId])
 }
 
 model Tag {
@@ -188,7 +245,8 @@ model Tag {
   createdAt DateTime @default(now())
 
   // Relations
-  tools Tool[]
+  tools   Tool[]
+  brokers Brokers[]
 
   // Indexes
   @@index([name])
@@ -216,71 +274,227 @@ model Bookmark {
   updatedAt DateTime @updatedAt
 
   // Relations
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  tool   Tool   @relation(fields: [toolId], references: [id], onDelete: Cascade)
-  toolId String
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String
+  broker   Brokers @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+  brokerId Int
 
   // Indexes
-  @@unique([userId, toolId])
+  @@unique([userId, brokerId])
   @@index([userId])
-  @@index([toolId])
+  @@index([brokerId])
 }
 
-
 model Brokers {
-  id                                 Int       @id @default(autoincrement())
-  average_trading_cost_bitcoin       String?   @db.VarChar(82)
-  average_trading_cost_eur_usd       String?   @db.VarChar(95)
-  average_trading_cost_gbp_usd       String?   @db.VarChar(95)
-  average_trading_cost_gold          String?   @db.VarChar(92)
-  average_trading_cost_wti_crude_oil String?   @db.VarChar(92)
-  broker_name                        String?   @db.VarChar(50)
+  id                                 Int        @id @default(autoincrement())
+  average_trading_cost_bitcoin       String?    @db.VarChar(82)
+  average_trading_cost_eur_usd       String?    @db.VarChar(95)
+  average_trading_cost_gbp_usd       String?    @db.VarChar(95)
+  average_trading_cost_gold          String?    @db.VarChar(92)
+  average_trading_cost_wti_crude_oil String?    @db.VarChar(92)
+  broker_name                        String?    @db.VarChar(50)
   cons                               String?
-  daily_loss_limit                   String?   @db.VarChar(44)
-  deposit_options                    String?   @db.VarChar(111)
+  daily_loss_limit                   String?    @db.VarChar(44)
+  deposit_options                    String?    @db.VarChar(111)
   description                        String?
-  execution_types                    String?   @db.VarChar(65)
-  funded_account_options             String?   @db.VarChar(66)
-  funding_methods                    String?   @db.VarChar(213)
-  headquarters                       String?   @db.VarChar(63)
-  maximum_funded_account             String?   @db.VarChar(48)
-  maximum_trailing_drawdown          String?   @db.VarChar(29)
-  minimum_commission_for_forex       String?   @db.VarChar(101)
-  minimum_deposit                    String?   @db.VarChar(68)
-  minimum_evaluation_fee             String?   @db.VarChar(37)
-  minimum_funded_account             String?   @db.VarChar(27)
-  minimum_raw_spreads                String?   @db.VarChar(46)
-  minimum_standard_spreads           String?   @db.VarChar(34)
-  mobile_app_comparison              String?
-  other_fees                         String?
-  overall_rating                     String?   @db.VarChar(25)
-  profit_share                       String?   @db.VarChar(44)
+  execution_types                    String?    @db.VarChar(65)
+  funded_account_options             String?    @db.VarChar(66)
+  funding_methods                    String?    @db.VarChar(213)
+  headquarters                       String?    @db.VarChar(63)
+  minimum_commission_for_forex       String?    @db.VarChar(101)
+  minimum_deposit                    String?    @db.VarChar(68)
+  minimum_raw_spreads                String?    @db.VarChar(46)
+  minimum_standard_spreads           String?    @db.VarChar(34)
+  overall_rating                     String?    @db.VarChar(25)
+  profit_share                       String?    @db.VarChar(44)
   pros                               String?
-  regulators                         String?   @db.VarChar(88)
+  regulators                         String?    @db.VarChar(88)
   regulators_table                   String?
-  retail_loss_rate                   String?   @db.VarChar(49)
-  scraped_at                         DateTime? @db.Timestamp(6)
+  retail_loss_rate                   String?    @db.VarChar(49)
+  scraped_at                         DateTime?  @db.Timestamp(6)
   trader_table                       String?
   trading_hours                      String?
-  trading_platforms                  String?   @db.VarChar(98)
-  url                                String?   @db.VarChar(98)
-  withdrawal_options                 String?   @db.VarChar(111)
+  trading_platforms                  String?    @db.VarChar(98)
+  url                                String?    @db.VarChar(98)
+  withdrawal_options                 String?    @db.VarChar(111)
   year_established                   Float?
+  deposit_fees                       String?
+  inactivity_fee                     String?
+  maximum_evaluation_fee             String?
+  withdrawal_fee                     String?
+  broker_website                     String?
+  slug                               String?    @unique
+  bookmarks                          Bookmark[]
 
+  // Admin & Submission fields
+  submitterName  String?
+  submitterEmail String?
+  submitterNote  String?
+  status         ToolStatus @default(Draft)
+  publishedAt    DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @default(now()) @updatedAt
+
+  // Relations
+  tags          Tag[]
+  categories    Category[]
+  subcategories Subcategory[]
+  subscriptions BrokerSubscription[]
+  payments      Payment[]
+  claims        BrokerClaim[]
+  owner         User?                @relation(fields: [ownerId], references: [id])
+  ownerId       String?
+
+  @@index([slug])
+  @@index([broker_name])
+  @@index([status])
+  @@index([ownerId])
+  @@index([createdAt])
   @@map("forex_brokers")
 }
 
 model Sponsor {
-  id         String   @id @default(cuid())
-  name       String   @db.Citext
+  id         String          @id @default(cuid())
+  name       String          @db.Citext
   logoUrl    String
   websiteUrl String?
-  isActive   Boolean  @default(true)
-  order      Int      @default(0)
+  isActive   Boolean         @default(true)
+  order      Int             @default(0)
   category   SponsorCategory @default(BrokerListing)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
 
   @@index([isActive, order])
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Plan {
+  id String @id @default(uuid())
+
+  name        String
+  slug        String  @unique
+  description String?
+
+  price    Float  @default(0)
+  currency String @default("USD")
+
+  durationDays Int
+
+  features String[] // for UI display
+
+  blogPosts        Int  @default(0)
+  bannerAds        Int  @default(0)
+  featuredLogoDays Int?
+
+  cregisProductId String?
+
+  isActive  Boolean @default(true)
+  isPopular Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscriptions BrokerSubscription[]
+  payments      Payment[]
+  claims        BrokerClaim[]
+}
+
+model Post {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String     @unique
+  description String
+  content     String     @db.Text
+  image       String?
+  publishedAt DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  status      ToolStatus @default(Draft)
+
+  // Relations
+  author   User?   @relation(fields: [authorId], references: [id])
+  authorId String?
+
+  // Additional fields
+  locale String @default("en")
+
+  @@index([slug])
+  @@index([status])
+  @@index([authorId])
+}
+
+model BrokerSubscription {
+  id String @id @default(cuid())
+
+  brokerId Int
+  broker   Brokers @relation(fields: [brokerId], references: [id])
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id])
+
+  startsAt DateTime  @default(now())
+  endsAt   DateTime?
+
+  status SubscriptionStatus @default(Active)
+
+  createdAt DateTime @default(now())
+}
+
+model Payment {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  brokerId Int
+  broker   Brokers @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id])
+
+  amount   Float
+  currency String @default("USD")
+
+  gateway String @default("cregis")
+
+  orderId       String? @unique
+  transactionId String?
+
+  status PaymentStatus @default(Pending)
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([brokerId])
+  @@index([orderId])
+}
+
+model BrokerClaim {
+  id String @id @default(cuid())
+
+  brokerId Int
+  broker   Brokers @relation(fields: [brokerId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id])
+
+  status ClaimStatus @default(Pending)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

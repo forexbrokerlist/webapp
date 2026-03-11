@@ -1,6 +1,7 @@
 import { isMimeTypeMatch } from "@primoui/utils"
 import type { useTranslations } from "next-intl"
 import { z } from "zod"
+import { checkoutSchema } from "~/server/web/products/schema"
 
 type TFunction = ReturnType<typeof useTranslations>
 
@@ -26,16 +27,43 @@ export const createFileSchema = (t: TFunction) => {
     .refine(({ type }) => isMimeTypeMatch(type, ALLOWED_MIMETYPES), { error: t("fileTypeInvalid") })
 }
 
-export const createSubmitToolSchema = (t: TFunction) => {
+export const createSubmitBrokerSchema = (t: TFunction) => {
   return z.object({
-    name: z.string().min(1, { error: t("required") }),
-    websiteUrl: z
-      .url({ protocol: /^https?$/, normalize: true, error: t("invalidUrl") })
-      .min(1, { error: t("required") }),
-    submitterNote: z
-      .string()
-      .max(256, { error: issue => t("maxLength", { length: Number(issue.maximum) }) }),
+    broker_name: z.string().min(1, { error: t("required") }),
+    broker_website: z.string().url({ error: t("invalidUrl") }).or(z.literal("")).optional(),
+    description: z.string().optional(),
+    headquarters: z.string().optional(),
+    year_established: z.coerce.number().optional(),
+    minimum_deposit: z.string().optional(),
+    execution_types: z.string().optional(),
+    regulators: z.string().optional(),
+    trading_platforms: z.string().optional(),
+    deposit_options: z.string().optional(),
+    funding_methods: z.string().optional(),
+    withdrawal_options: z.string().optional(),
+    deposit_fees: z.string().optional(),
+    inactivity_fee: z.string().optional(),
+    withdrawal_fee: z.string().optional(),
+    maximum_evaluation_fee: z.string().optional(),
+    profit_share: z.string().optional(),
+    daily_loss_limit: z.string().optional(),
+    retail_loss_rate: z.string().optional(),
+    minimum_raw_spreads: z.string().optional(),
+    minimum_standard_spreads: z.string().optional(),
+    minimum_commission_for_forex: z.string().optional(),
+    average_trading_cost_eur_usd: z.string().optional(),
+    average_trading_cost_gbp_usd: z.string().optional(),
+    average_trading_cost_gold: z.string().optional(),
+    average_trading_cost_bitcoin: z.string().optional(),
+    average_trading_cost_wti_crude_oil: z.string().optional(),
+    pros: z.string().optional(),
+    cons: z.string().optional(),
+    trading_hours: z.string().optional(),
+    url: z.string().url().or(z.literal("")).optional(),
     newsletterOptIn: z.boolean().optional().default(true),
+    categoryIds: z.array(z.string()).optional(),
+    subcategoryIds: z.array(z.string()).optional(),
+    tagIds: z.array(z.string()).optional(),
   })
 }
 
@@ -84,8 +112,14 @@ export const createAdDetailsSchema = (t: TFunction) => {
     websiteUrl: z
       .url({ protocol: /^https?$/, normalize: true, error: t("invalidUrl") })
       .min(1, { error: t("required") }),
+    faviconUrl: z.string().optional(),
+    bannerUrl: z.string().optional(),
     buttonLabel: z.string().optional(),
   })
+}
+
+export const createPreCheckoutAdSchema = (t: TFunction) => {
+  return createAdDetailsSchema(t).omit({ sessionId: true }).and(checkoutSchema)
 }
 
 export const createFetchMediaSchema = (t: TFunction) => {

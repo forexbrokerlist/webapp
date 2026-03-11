@@ -9,6 +9,7 @@ export const adOnePayload = {
   bannerUrl: true,
   buttonLabel: true,
   type: true,
+  status: true,
 } satisfies Prisma.AdSelect
 
 export const adManyPayload = {

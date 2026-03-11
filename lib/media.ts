@@ -32,7 +32,6 @@ export const uploadToS3Storage = async (file: Buffer, key: string) => {
   })
 
   const { data, error } = await tryCatch(upload.done())
-  console.log("🚀 ~ uploadToS3Storage ~ error:", error , data)
 
   if (error) {
     throw new Error(`Failed to upload ${key} to Digital Ocean Spaces: ${getErrorMessage(error)}`)

@@ -2,7 +2,7 @@
 
 import { isValidUrl } from "@primoui/utils"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { CopyIcon, EllipsisIcon, GlobeIcon, TrashIcon } from "lucide-react"
+import { CheckIcon, CopyIcon, EllipsisIcon, GlobeIcon, TrashIcon } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 import type { ComponentProps } from "react"
 import { toast } from "sonner"
@@ -55,6 +55,38 @@ export const AdActions = ({ ad, className, ...props }: AdActionsProps) => {
     })
   }
 
+  const approveMutation = useMutation(
+    orpc.ads.approve.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: orpc.ads.key() })
+      },
+    }),
+  )
+
+  const handleApprove = () => {
+    toast.promise(approveMutation.mutateAsync({ id: ad.id }), {
+      loading: "Approving ad...",
+      success: "Ad scheduled successfully",
+      error: err => `Failed to approve ad: ${err.message}`,
+    })
+  }
+
+  const rejectMutation = useMutation(
+    orpc.ads.reject.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: orpc.ads.key() })
+      },
+    }),
+  )
+
+  const handleReject = () => {
+    toast.promise(rejectMutation.mutateAsync({ id: ad.id }), {
+      loading: "Rejecting ad...",
+      success: "Ad rejected successfully",
+      error: err => `Failed to reject ad: ${err.message}`,
+    })
+  }
+
   return (
     <ButtonGroup>
       <DropdownMenu modal={false}>
@@ -77,6 +109,19 @@ export const AdActions = ({ ad, className, ...props }: AdActionsProps) => {
           )}
 
           <DropdownMenuSeparator />
+
+          {ad.status === "Pending" && (
+            <>
+              <DropdownMenuItem onSelect={handleApprove}>
+                <CheckIcon />
+                Approve ad
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={handleReject} className="text-red-500">
+                <TrashIcon className="h-4 w-4" />
+                Reject ad
+              </DropdownMenuItem>
+            </>
+          )}
 
           <DropdownMenuItem onSelect={handleDuplicate}>
             <CopyIcon />

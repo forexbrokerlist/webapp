@@ -44,7 +44,7 @@ export const Sponsors = async ({ className, ...props }: ComponentProps<"section"
       <Intro alignment="center">
         <IntroTitle className="text-2xl md:text-3xl font-bold">Supported by the best</IntroTitle>
         <IntroDescription className="max-w-2xl mx-auto text-muted-foreground mt-4 text-sm md:text-base">
-          OpenAlternative is supported by incredible partners and sponsors who make it possible for a small team to maintain this project.
+          Our platform is supported by incredible partners and sponsors who make it possible for our team to maintain this directory.
         </IntroDescription>
         <div className="mt-6 flex justify-center">
           <Button 

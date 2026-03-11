@@ -13,7 +13,7 @@ import type {
   WebPage,
   WebSite,
 } from "schema-dts"
-import type { Post } from "~/.content-collections/generated"
+import type { Post } from "~/lib/posts"
 import { siteConfig } from "~/config/site"
 import type { ToolMany, ToolOne } from "~/server/web/tools/payloads"
 
@@ -217,7 +217,7 @@ export const generateFAQ = (questions: Array<{ question: string; answer: string 
 /**
  * Generates article/blog posting schema
  */
-export const generateArticle = (url: string, post: Post): Article => {
+export const generateArticle = (url: string, post: Post & { author?: { name: string; id: string; url?: string | null } | null }): Article => {
   const { title, description, publishedAt, updatedAt, author, image, content, locale } = post
 
   return {
@@ -232,15 +232,15 @@ export const generateArticle = (url: string, post: Post): Article => {
       ? {
           "@type": "Person",
           name: author.name,
-          url: author.url ? toAbsoluteUrl(author.url) : undefined,
+          url: author.url ? toAbsoluteUrl(author.url as string) : undefined,
         }
       : getOrganization(),
     image: image
       ? {
           "@type": "ImageObject",
           url: image,
-          width: "1200",
-          height: "630",
+          width: "1280",
+          height: "720",
         }
       : undefined,
     wordCount: content.split(/\s+/).length,
@@ -291,7 +291,7 @@ export const generateBlog = (
       "@type": "BlogPosting",
       headline: post.title,
       description: post.description || undefined,
-      url: toAbsoluteUrl(`/blog/${post._meta.path}`),
+      url: toAbsoluteUrl(`/blog/${post.slug}`),
       datePublished: post.publishedAt.toISOString(),
       dateModified: (post.updatedAt ?? post.publishedAt).toISOString(),
     })),

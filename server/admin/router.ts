@@ -1,12 +1,14 @@
 import { adminProcedure } from "~/lib/orpc"
 import { adRouter } from "~/server/admin/ads/router"
 import { categoryRouter } from "~/server/admin/categories/router"
+import { subcategoryRouter } from "~/server/admin/subcategories/router"
 import { metricRouter } from "~/server/admin/metrics/router"
 import { reportRouter } from "~/server/admin/reports/router"
 import { sponsorRouter } from "~/server/admin/sponsors/router"
 import { tagRouter } from "~/server/admin/tags/router"
-import { toolRouter } from "~/server/admin/tools/router"
+import { brokerRouter } from "~/server/admin/brokers/router"
 import { userRouter } from "~/server/admin/users/router"
+import { postRouter } from "~/server/admin/posts/router"
 
 // -----------------------------------------------------------------------------
 // Health-check procedure to verify oRPC infrastructure
@@ -21,13 +23,15 @@ const ping = adminProcedure.handler(async () => {
 export const adminRouter = {
   ping,
   metrics: metricRouter,
-  tools: toolRouter,
+  brokers: brokerRouter,
   categories: categoryRouter,
+  subcategories: subcategoryRouter,
   tags: tagRouter,
   ads: adRouter,
   users: userRouter,
   reports: reportRouter,
   sponsors: sponsorRouter,
+  posts: postRouter,
 }
 
 export type AdminRouter = typeof adminRouter

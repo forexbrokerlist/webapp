@@ -20,7 +20,7 @@ export function DashboardStats() {
   }
 
   const counters = [
-    { label: "Tools", href: "/admin/tools", count: stats.toolCount },
+    { label: "Brokers", href: "/admin/brokers", count: stats.toolCount },
     { label: "Categories", href: "/admin/categories", count: stats.categoryCount },
     { label: "Users", href: "/admin/users", count: stats.userCount },
   ]

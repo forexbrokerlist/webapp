@@ -1,7 +1,30 @@
 {
   "about": {
-    "title": "About Us",
-    "description": "{siteName} is a community driven list of tools and resources for developers."
+    "title": "About {siteName}",
+    "description": "Learn more about our mission, our story, and the team behind the world's most comprehensive forex brokers listing.",
+    "story": {
+      "title": "Our Story",
+      "content": "Founded in 2024, {siteName} was born out of a simple observation: the forex market is vast, but finding reliable, transparent, and up-to-date information about brokers is often a challenge. We started as a small community project to list tools and resources for traders, and quickly evolved into a dedicated platform for broker discovery and evaluation."
+    },
+    "mission": {
+      "title": "Our Mission",
+      "content": "Our mission is to empower traders by providing them with the clearest, most accurate data on forex brokers worldwide. We believe in transparency, community-driven insights, and the power of data to help traders make informed decisions."
+    },
+    "team": {
+      "title": "Meet the Team",
+      "members": {
+        "piotr": {
+          "name": "Piotr Kulpinski",
+          "role": "Founder & Lead Developer",
+          "bio": "A software developer and entrepreneur with over 15 years of experience building web applications. Passionate about creating tools that provide real value to the community."
+        }
+      }
+    },
+    "contact": {
+      "title": "Get in Touch",
+      "content": "Have questions, suggestions, or want to collaborate? We're always looking for new perspectives and partnerships. Reach out to us anytime.",
+      "button": "Contact Us"
+    }
   },
   "advertise": {
     "title": "Advertise",
@@ -102,18 +125,30 @@
     "home_button": "Go back home"
   },
   "submit": {
-    "title": "Add a free listing",
-    "description": "Listing on {siteName} is a great way to get more exposure for your tool. We only list high-quality tools that are useful for directory owners.",
+    "title": "Submit a Broker",
+    "description": "Listing your broker on {siteName} is a great way to get more exposure. We list high-quality brokers that help traders succeed.",
     "upgrade": {
       "title": "Upgrade {name}'s Listing",
       "description": "Upgrade {name}'s listing on {siteName} for more exposure, special features, and tailored packages—ranging from free listings to premium placement."
     },
     "success": {
       "title": "Thank you for submitting {name}!",
-      "description": "We'll review {name}'s submission and publish it on {siteName} soon."
+      "description": "We'll review {name}'s submission and add the broker to {siteName} soon."
     },
     "current_tier": "Current Tier",
     "upgrade_tier": "Upgrade Listing",
     "choose_tier": "Get {name} Listing"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "description": "Please read our terms of service carefully before using {siteName}."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "description": "Learn more about how we collect and use your data on {siteName}."
+  },
+  "disclaimer": {
+    "title": "Disclaimer",
+    "description": "Important disclaimer regarding the information provided on {siteName}."
   }
 }
