@@ -19,7 +19,7 @@ export const sponsorListParams = {
   from: parseAsString.withDefault(""),
   to: parseAsString.withDefault(""),
   operator: parseAsStringEnum(["and", "or"]).withDefault("and"),
-  category: parseAsStringEnum(Object.values(SponsorCategory)),
+  categoryId: parseAsString.withDefault(""),
 }
 
 export const sponsorListSchema = createStandardSchemaV1(sponsorListParams)
@@ -32,7 +32,7 @@ export const sponsorSchema = z.object({
   websiteUrl: z.string().url().optional().or(z.literal("")),
   isActive: z.boolean().default(true),
   order: z.number().int().default(0),
-  category: z.nativeEnum(SponsorCategory).default(SponsorCategory.BrokerListing),
+  categoryId: z.string().optional().or(z.literal("")),
 })
 
 export type SponsorSchema = z.infer<typeof sponsorSchema>

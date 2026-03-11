@@ -6,7 +6,7 @@ import type { SponsorListParams } from "~/server/admin/sponsors/schema"
 import { db } from "~/services/db"
 
 export const findSponsors = async (search: SponsorListParams, where?: Prisma.SponsorWhereInput) => {
-  const { name, page, perPage, sort, from, to, operator } = search
+  const { name, page, perPage, sort, from, to, operator, categoryId } = search
 
   const offset = (page - 1) * perPage
   const orderBy = sort.map((item) => ({ [item.id]: item.desc ? "desc" : "asc" }) as const)
@@ -16,6 +16,7 @@ export const findSponsors = async (search: SponsorListParams, where?: Prisma.Spo
 
   const expressions: (Prisma.SponsorWhereInput | undefined)[] = [
     name ? { name: { contains: name, mode: "insensitive" } } : undefined,
+    categoryId ? { categoryId } : undefined,
     fromDate || toDate ? { createdAt: { gte: fromDate, lte: toDate } } : undefined,
   ]
 
@@ -29,6 +30,7 @@ export const findSponsors = async (search: SponsorListParams, where?: Prisma.Spo
       orderBy: [...orderBy, { createdAt: "desc" }],
       take: perPage,
       skip: offset,
+      include: { Category: { select: { name: true } } },
     }),
     db.sponsor.count({
       where: { ...whereQuery, ...where },

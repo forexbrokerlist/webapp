@@ -4,7 +4,6 @@ import { Button } from "~/components/common/button"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { cx } from "~/lib/utils"
 import { db } from "~/services/db"
-import { SponsorCategory } from "~/.generated/prisma/browser"
 import Image from "next/image"
 
 import { getPresignedUrlFromFull } from "~/lib/media"
@@ -12,6 +11,7 @@ import { getPresignedUrlFromFull } from "~/lib/media"
 export const Sponsors = async ({ className, ...props }: ComponentProps<"section">) => {
   const sponsors = await db.sponsor.findMany({
     where: { isActive: true },
+    include: { Category: true },
     orderBy: { order: "asc" },
   })
 
@@ -26,18 +26,13 @@ export const Sponsors = async ({ className, ...props }: ComponentProps<"section"
   )
 
   const groupedSponsors = sponsorsWithPresigned.reduce((acc, sponsor) => {
-    if (!acc[sponsor.category]) {
-      acc[sponsor.category] = []
+    const categoryName = sponsor.Category?.name || (sponsor.category as string)
+    if (!acc[categoryName]) {
+      acc[categoryName] = []
     }
-    acc[sponsor.category].push(sponsor as any) // Type override because we mutated it, but category is still there
+    acc[categoryName].push(sponsor as any)
     return acc
-  }, {} as Record<SponsorCategory, typeof sponsors>)
-
-  const categoryLabels: Record<SponsorCategory, string> = {
-    [SponsorCategory.BrokerListing]: "Broker Listing",
-    [SponsorCategory.AlgoSelling]: "Algo Selling",
-    [SponsorCategory.Education]: "Education",
-  }
+  }, {} as Record<string, typeof sponsors>)
 
   return (
     <section className={cx("flex flex-col gap-y-8 w-full py-8 md:py-12", className)} {...props}>
@@ -57,9 +52,9 @@ export const Sponsors = async ({ className, ...props }: ComponentProps<"section"
         </div>
       </Intro>
 
-      {Object.entries(groupedSponsors).map(([category, categorySponsors]) => (
-        <div key={category} className="mx-auto w-full max-w-5xl mt-8">
-          <h3 className="text-xl font-bold mb-4 text-center md:text-left">{categoryLabels[category as SponsorCategory]}</h3>
+      {Object.entries(groupedSponsors).map(([categoryName, categorySponsors]) => (
+        <div key={categoryName} className="mx-auto w-full max-w-5xl mt-8">
+          <h3 className="text-xl font-bold mb-4 text-center md:text-left">{categoryName}</h3>
           <div className="border border-border rounded-xl overflow-hidden bg-background">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 -mb-px -mr-px">
               {categorySponsors.map((sponsor) => (

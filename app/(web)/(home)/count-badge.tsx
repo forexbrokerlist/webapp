@@ -16,11 +16,11 @@ const getCounts = async () => {
 
   // Run queries in parallel without transaction wrapper to avoid timeout issues during build
   const [count, newCount] = await Promise.all([
-    db.tool.count({
+    db.brokers.count({
       where: { status: ToolStatus.Published },
     }),
 
-    db.tool.count({
+    db.brokers.count({
       where: { status: ToolStatus.Published, publishedAt: { gte: subDays(new Date(), 7) } },
     }),
   ])
@@ -34,6 +34,7 @@ const CountBadge = async () => {
 
   try {
     const counts = await getCounts()
+    console.log("🚀 ~ CountBadge ~ counts:", counts)
     count = counts[0]
     newCount = counts[1]
   } catch (error) {

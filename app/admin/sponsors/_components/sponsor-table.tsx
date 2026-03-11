@@ -68,11 +68,11 @@ const columns: ColumnDef<Sponsor>[] = [
     ),
   },
   {
-    accessorKey: "category",
+    accessorKey: "Category.name",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Category" />,
     cell: ({ row }) => (
       <Badge variant="soft">
-        {row.original.category.replace(/([A-Z])/g, ' $1').trim()}
+        {(row.original as any).Category?.name || (row.original.category as string).replace(/([A-Z])/g, ' $1').trim()}
       </Badge>
     ),
   },

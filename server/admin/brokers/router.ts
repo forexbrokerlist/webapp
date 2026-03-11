@@ -7,8 +7,8 @@ import { adminProcedure } from "~/lib/orpc"
 import { findScheduledBrokers, findBrokerList, findBrokers } from "~/server/admin/brokers/queries"
 import { brokerListSchema, brokerSchema } from "~/server/admin/brokers/schema"
 
-export const brokerIdSchema = z.object({ id: z.number() })
-export const brokerIdsSchema = z.object({ ids: z.array(z.number()) })
+export const brokerIdSchema = z.object({ id: z.coerce.number() })
+export const brokerIdsSchema = z.object({ ids: z.array(z.coerce.number()) })
 
 const list = adminProcedure.input(brokerListSchema).handler(async ({ input }) => {
   // Since findBrokers doesn't implement pagination out of the box like findTools, we would map it here.
@@ -137,7 +137,7 @@ const remove = adminProcedure
 
 const updateStatus = adminProcedure
   .input(z.object({ 
-    id: z.number(), 
+    id: z.coerce.number(), 
     status: z.enum(ToolStatus),
     publishedAt: z.coerce.date().nullish()
   }))
