@@ -1,6 +1,6 @@
-import type { Post } from "content-collections"
 import { useTranslations } from "next-intl"
 import type { ComponentProps } from "react"
+import type { Post } from "~/lib/posts"
 import { EmptyList } from "~/components/web/empty-list"
 import { PostCard } from "~/components/web/posts/post-card"
 import { Grid } from "~/components/web/ui/grid"
@@ -15,7 +15,7 @@ export const PostList = ({ posts, ...props }: PostListProps) => {
   return (
     <Grid {...props}>
       {posts.map(post => (
-        <PostCard key={post._meta.path} post={post} />
+        <PostCard key={post.id} post={post} />
       ))}
 
       {!posts.length && <EmptyList>{t("posts.no_posts")}</EmptyList>}

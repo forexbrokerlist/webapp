@@ -1,13 +1,13 @@
 import { getReadTime } from "@primoui/utils"
-import { allPosts } from "content-collections"
 import type { Metadata } from "next"
 import { getFormatter, getTranslations } from "next-intl/server"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import { cache, Suspense } from "react"
+import { marked } from "marked"
 import { Stack } from "~/components/common/stack"
 import { AdCard, AdCardSkeleton } from "~/components/web/ads/ad-card"
-import { MDX } from "~/components/web/mdx"
+import { Markdown } from "~/components/web/markdown"
 import { Nav } from "~/components/web/nav"
 import { StructuredData } from "~/components/web/structured-data"
 import { TableOfContents } from "~/components/web/table-of-contents"
@@ -19,41 +19,35 @@ import { Section } from "~/components/web/ui/section"
 import { blogConfig } from "~/config/blog"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateArticle } from "~/lib/structured-data"
+import { extractHeadingsFromMDX, extractToolsFromMDX } from "~/lib/mdx"
+import { getPostBySlug } from "~/server/web/posts/queries"
 import { findTools } from "~/server/web/tools/queries"
 
-export const dynamicParams = false
-
-type Props = PageProps<"/blog/[slug]">
-
 // Get page data
-const getData = cache(async ({ params }: Props) => {
-  const { slug } = await params
-  const post = allPosts.find(({ _meta }) => _meta.path === slug)
+const getData = cache(async (slug: string) => {
+  const post = await getPostBySlug(slug)
 
   if (!post) {
     notFound()
   }
 
   const t = await getTranslations()
-  const url = `/blog/${post._meta.path}`
+  const url = `/blog/${slug}`
 
   const data = getPageData(url, post.title, post.description, {
     breadcrumbs: [
       { url: "/blog", title: t("navigation.blog") },
       { url, title: post.title },
     ],
-    structuredData: [generateArticle(url, post)],
+    structuredData: [generateArticle(url, post as any)],
   })
 
   return { post, ...data }
 })
 
-export const generateStaticParams = () => {
-  return allPosts.map(({ _meta }) => ({ slug: _meta.path }))
-}
-
-export const generateMetadata = async (props: Props): Promise<Metadata> => {
-  const { post, url, metadata } = await getData(props)
+export const generateMetadata = async ({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> => {
+  const { slug } = await params
+  const { post, url, metadata } = await getData(slug)
 
   const openGraph: Metadata["openGraph"] = {
     type: "article",
@@ -65,15 +59,19 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
   return getPageMetadata({ url, metadata: { ...metadata, openGraph } })
 }
 
-export default async function (props: Props) {
-  const { post, breadcrumbs, structuredData } = await getData(props)
+export default async function ({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const { post, breadcrumbs, structuredData } = await getData(slug)
   const t = await getTranslations()
   const format = await getFormatter()
 
+  const headings = extractHeadingsFromMDX(post.content)
+  const postTools = extractToolsFromMDX(post.content)
+
   // Find the tools and sort them by the order they appear in the post
-  const tools = post.tools?.length
-    ? await findTools({ where: { slug: { in: post.tools } } }).then(tools =>
-        tools.sort((a, b) => post.tools.indexOf(a.slug) - post.tools.indexOf(b.slug)),
+  const tools = postTools.length
+    ? await findTools({ where: { slug: { in: postTools } } }).then(tools =>
+        tools.sort((a, b) => postTools.indexOf(a.slug) - postTools.indexOf(b.slug)),
       )
     : []
 
@@ -117,7 +115,7 @@ export default async function (props: Props) {
             />
           )}
 
-          <MDX code={post.content} />
+          <Markdown html={String(await marked(post.content))} />
         </Section.Content>
 
         <Section.Sidebar className="max-h-(--sidebar-max-height)">
@@ -125,8 +123,8 @@ export default async function (props: Props) {
             <AdCard type="BlogPost" />
           </Suspense>
 
-          {blogConfig.tableOfContents.enabled && !!post.headings?.length && (
-            <TableOfContents headings={post.headings} />
+          {blogConfig.tableOfContents.enabled && !!headings.length && (
+            <TableOfContents headings={headings} />
           )}
 
           {blogConfig.toolsMentioned.enabled && !!tools.length && (

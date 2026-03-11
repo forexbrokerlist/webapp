@@ -29,7 +29,6 @@ async function main() {
   // console.log(`Cleared ${deleteResult.count} existing brokers.`);
 
   // for (const record of records) {
-  //   console.log("🚀 ~ main ~ record:", record)
   // Map CSV fields to the Brokers model fields
   //   const mappedData: any = {
   //     average_trading_cost_bitcoin: record.average_trading_cost_bitcoin || null,
