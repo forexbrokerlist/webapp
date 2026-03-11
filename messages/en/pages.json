@@ -150,5 +150,12 @@
   "disclaimer": {
     "title": "Disclaimer",
     "description": "Important disclaimer regarding the information provided on {siteName}."
+  },
+  "tools": {
+    "title": "All Forex Brokers",
+    "description": "Explore our comprehensive list of forex brokers. Compare features, ratings, and trading conditions to find the best fit for your trading strategy.",
+    "search": {
+      "placeholder": "Search brokers..."
+    }
   }
 }

@@ -91,6 +91,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
               </DropdownMenuContent>
             </DropdownMenu>
 
+            <NavLink href="/brokers">{t("navigation.tools")}</NavLink>
             <NavLink href="/about">{t("navigation.about")}</NavLink>
             {adsConfig.enabled && <NavLink href="/advertise">{t("navigation.advertise")}</NavLink>}
           </nav>
@@ -122,6 +123,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
           <NavLink href="/categories">{t("navigation.categories")}</NavLink>
           <NavLink href="/tags">{t("navigation.tags")}</NavLink>
           <NavLink href="/submit">{t("navigation.submit")}</NavLink>
+          <NavLink href="/brokers">{t("navigation.tools")}</NavLink>
           <NavLink href="/about">{t("navigation.about")}</NavLink>
           {adsConfig.enabled && <NavLink href="/advertise">{t("navigation.advertise")}</NavLink>}
         </nav>

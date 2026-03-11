@@ -325,6 +325,7 @@ model Brokers {
   withdrawal_fee                     String?
   broker_website                     String?
   slug                               String?    @unique
+  screenshotUrl                      String?
   bookmarks                          Bookmark[]
 
   // Admin & Submission fields

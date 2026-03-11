@@ -49,9 +49,9 @@ export const Sponsors = async ({ className, ...props }: ComponentProps<"section"
           Our platform is supported by incredible partners and sponsors who make it possible for our team to maintain this directory.
         </IntroDescription>
         <div className="mt-8 flex justify-center">
-          <Button 
-            variant="secondary" 
-            className="rounded-full shadow-sm px-6 py-5 h-auto text-base hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+          <Button
+            variant="secondary"
+            className="rounded-full shadow-sm px-4 py-3 h-auto text-base hover:bg-primary hover:text-primary-foreground transition-all duration-300"
             suffix={<ArrowRight className="size-4 animate-in fade-in slide-in-from-left-2 duration-500" />}
             asChild
           >
@@ -68,57 +68,59 @@ export const Sponsors = async ({ className, ...props }: ComponentProps<"section"
             <div className="flex items-baseline justify-between mb-6 px-4 md:px-0">
               <h3 className="text-2xl font-bold tracking-tight text-foreground/90">{group.name}</h3>
               {group.slug && (
-                <Link 
+                <Link
                   href={`/categories/${group.slug}`}
                   className="group/link text-sm font-semibold text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5"
                 >
-                  View all 
+                  View all
                   <ArrowRight className="size-3.5 group-hover/link:translate-x-0.5 transition-transform" />
                 </Link>
               )}
             </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-px bg-border/40 border border-border/40 rounded-2xl overflow-hidden shadow-sm">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {group.items.map((sponsor) => (
-                <a 
-                  key={sponsor.id} 
+                <a
+                  key={sponsor.id}
                   href={sponsor.websiteUrl || undefined}
                   target="_blank"
                   rel="noreferrer"
                   className={cx(
-                    "flex flex-col items-center justify-center py-8 px-6 gap-4 bg-background hover:bg-muted/30 transition-all duration-300 group/item relative",
+                    "group/card flex flex-col gap-4 p-4 rounded-3xl border border-border/50 bg-card/50 hover:bg-card shadow-sm hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1.5 transition-all duration-500 relative",
                     !sponsor.websiteUrl && "pointer-events-none"
                   )}
                 >
-                  <div className="absolute top-3 right-3 opacity-0 group-hover/item:opacity-40 transition-opacity">
-                    <ExternalLink className="size-3" />
+                  <div className="absolute top-4 right-4 opacity-0 group-hover/card:opacity-40 transition-opacity z-10">
+                    <ExternalLink className="size-3.5" />
                   </div>
-                  
-                  {sponsor.logoUrl ? (
-                    <div className="relative w-full h-10 md:h-12 shrink-0">
-                      <Image 
-                        src={sponsor.logoUrl} 
-                        alt={sponsor.name} 
-                        fill 
-                        className="object-contain opacity-70 group-hover/item:opacity-100 group-hover/item:scale-105 transition-all duration-300 grayscale group-hover/item:grayscale-0" 
-                      />
-                    </div>
-                  ) : (
-                    <div className="size-10 md:size-12 rounded-lg bg-muted flex items-center justify-center">
-                      <span className="text-muted-foreground font-bold text-lg">
+
+                  <div className="relative flex items-center justify-center bg-white dark:bg-white/5 rounded-2xl p-6 aspect-4/3 w-full overflow-hidden shadow-inner border border-border/40">
+                    {sponsor.logoUrl ? (
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={sponsor.logoUrl}
+                          alt={sponsor.name}
+                          fill
+                          className="object-contain p-2 opacity-80 group-hover/card:opacity-100 group-hover/card:scale-110 transition-all duration-500 grayscale group-hover/card:grayscale-0"
+                        />
+                      </div>
+                    ) : (
+                      <div className="size-full flex items-center justify-center bg-muted/50 text-muted-foreground/30 font-bold text-4xl">
                         {sponsor.name.charAt(0)}
-                      </span>
-                    </div>
-                  )}
-                  
-                  <span className="font-semibold text-sm md:text-base tracking-tight text-muted-foreground group-hover/item:text-foreground transition-colors overflow-hidden text-ellipsis whitespace-nowrap text-center w-full px-2">
-                    {sponsor.name}
-                  </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col items-center gap-0.5 px-2">
+                    <span className="font-bold text-base tracking-tight text-foreground/80 group-hover/card:text-foreground transition-colors line-clamp-1">
+                      {sponsor.name}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/50 group-hover/card:text-primary transition-colors">
+                      Sponsor
+                    </span>
+                  </div>
                 </a>
               ))}
-              
-              {/* Decorative fill for empty spots if needed, but modern grid often looks better without hard borders if using gaps */}
-              {/* We use gap-px and bg-border to create the grid lines effect */}
             </div>
           </div>
         ))}

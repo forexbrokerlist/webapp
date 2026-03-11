@@ -116,7 +116,7 @@ export default async function (props: Props) {
             <div className="mt-8 rounded-xl overflow-hidden border border-border/50 shadow-sm aspect-video relative max-w-4xl mx-auto bg-muted">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
-                src={`https://api.screenshotone.com/take?access_key=o1oeYRbFCs38-Q&url=${encodeURIComponent((broker.broker_website || broker.url || "").startsWith('http') ? (broker.broker_website || broker.url || "") : `https://${broker.broker_website || broker.url}`)}&format=jpg&block_ads=true&block_cookie_banners=true&block_banners_by_heuristics=false&block_trackers=true&delay=0&timeout=60&response_type=by_format&image_quality=80`}
+                src={broker.screenshotUrl || `https://api.screenshotone.com/take?access_key=o1oeYRbFCs38-Q&url=${encodeURIComponent((broker.broker_website || broker.url || "").startsWith('http') ? (broker.broker_website || broker.url || "") : `https://${broker.broker_website || broker.url}`)}&format=jpg&block_ads=true&block_cookie_banners=true&block_banners_by_heuristics=false&block_trackers=true&delay=0&timeout=60&response_type=by_format&image_quality=80`}
                 alt={`${broker.broker_name} Website Screenshot`}
                 className="w-full h-full object-cover object-top"
                 loading="lazy"
