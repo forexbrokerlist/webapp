@@ -45,6 +45,25 @@ enum AdStatus {
   Published
 }
 
+enum SubscriptionStatus {
+  Active
+  Expired
+  Cancelled
+}
+
+enum PaymentStatus {
+  Pending
+  Paid
+  Failed
+  Cancelled
+}
+
+enum ClaimStatus {
+  Pending
+  Approved
+  Rejected
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String
@@ -65,6 +84,8 @@ model User {
   bookmarks Bookmark[]
   brokers   Brokers[]
   posts     Post[]
+  payments  Payment[]
+  claims    BrokerClaim[]
 
   // Indexes
   @@index([id])
@@ -164,9 +185,9 @@ model Tool {
   categories    Category[]
   subcategories Subcategory[]
   tags          Tag[]
-  reports    Report[]
-  owner      User?      @relation(fields: [ownerId], references: [id])
-  ownerId    String?
+  reports       Report[]
+  owner         User?         @relation(fields: [ownerId], references: [id])
+  ownerId       String?
 
   @@index([id, slug])
   @@index([name])
@@ -318,8 +339,11 @@ model Brokers {
   tags          Tag[]
   categories    Category[]
   subcategories Subcategory[]
-  owner         User?         @relation(fields: [ownerId], references: [id])
-  ownerId    String?
+  subscriptions BrokerSubscription[]
+  payments      Payment[]
+  claims        BrokerClaim[]
+  owner         User?                @relation(fields: [ownerId], references: [id])
+  ownerId       String?
 
   @@index([slug])
   @@index([broker_name])
@@ -355,48 +379,122 @@ model Newsletter {
 }
 
 model Plan {
-  id           String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  name         String
-  slug         String   @unique
-  description  String?
+  name        String
+  slug        String  @unique
+  description String?
 
-  price        Float    @default(0)
-  currency     String   @default("USD")
+  price    Float  @default(0)
+  currency String @default("USD")
 
   durationDays Int
 
-  features     String[] // for UI display
+  features String[] // for UI display
 
   blogPosts        Int  @default(0)
   bannerAds        Int  @default(0)
   featuredLogoDays Int?
 
-  isActive     Boolean  @default(true)
-  isPopular    Boolean  @default(false)
+  cregisProductId String?
 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isActive  Boolean @default(true)
+  isPopular Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscriptions BrokerSubscription[]
+  payments      Payment[]
+  claims        BrokerClaim[]
 }
+
 model Post {
-  id          String   @id @default(cuid())
+  id          String     @id @default(cuid())
   title       String
-  slug        String   @unique
+  slug        String     @unique
   description String
-  content     String   @db.Text
+  content     String     @db.Text
   image       String?
-  publishedAt DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  publishedAt DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   status      ToolStatus @default(Draft)
 
   // Relations
-  author      User?    @relation(fields: [authorId], references: [id])
-  authorId    String?
+  author   User?   @relation(fields: [authorId], references: [id])
+  authorId String?
 
   // Additional fields
-  locale      String   @default("en")
+  locale String @default("en")
 
   @@index([slug])
   @@index([status])
   @@index([authorId])
+}
+
+model BrokerSubscription {
+  id String @id @default(cuid())
+
+  brokerId Int
+  broker   Brokers @relation(fields: [brokerId], references: [id])
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id])
+
+  startsAt DateTime  @default(now())
+  endsAt   DateTime?
+
+  status SubscriptionStatus @default(Active)
+
+  createdAt DateTime @default(now())
+}
+
+model Payment {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  brokerId Int
+  broker   Brokers @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id])
+
+  amount   Float
+  currency String @default("USD")
+
+  gateway String @default("cregis")
+
+  orderId       String? @unique
+  transactionId String?
+
+  status PaymentStatus @default(Pending)
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([brokerId])
+  @@index([orderId])
+}
+
+model BrokerClaim {
+  id String @id @default(cuid())
+
+  brokerId Int
+  broker   Brokers @relation(fields: [brokerId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id])
+
+  status ClaimStatus @default(Pending)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
