@@ -27,7 +27,10 @@ export async function GET(req: Request) {
   const results = []
   const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-  for (const broker of brokers) {
+  for (let i = 0; i < brokers.length; i++) {
+    const broker = brokers[i]
+    if (!broker) continue
+
     const url = broker.broker_website || broker.url
     if (!url) {
       results.push({ id: broker.id, slug: broker.slug, success: false, error: "No URL found" })
@@ -39,8 +42,7 @@ export async function GET(req: Request) {
       const path = `brokers/${broker.slug}/screenshot`
 
       console.info(`[${broker.slug}] Fetching screenshot...`)
-      const screenshotUrl = await fetchAndUploadMedia(cleanUrl, path, "screenshot")
-      console.log("🚀 ~ GET ~ screenshotUrl:", screenshotUrl)
+      const screenshotUrl = await fetchAndUploadMedia(cleanUrl, path, "screenshot", i)
 
       if (screenshotUrl) {
         await db.brokers.update({

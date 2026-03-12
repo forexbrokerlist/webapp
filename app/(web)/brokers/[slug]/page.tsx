@@ -22,6 +22,8 @@ import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
 import { findBrokerBySlug } from "~/server/web/tools/queries"
+import { getPresignedUrlFromFull, getScreenshotFetchUrl } from "~/lib/media"
+
 type Props = {
   params: {
     slug: string
@@ -48,7 +50,6 @@ const getData = cache(async ({ params }: Props) => {
   const url = `/brokers/${broker.slug}`
   const title = `${broker.broker_name || "Unknown Broker"} Review`
   const description = broker.description || broker.pros || ""
-
   const data = getPageData(url, title, description, {
     breadcrumbs: [
       { url: "/", title: t("navigation.tools") },
@@ -57,8 +58,11 @@ const getData = cache(async ({ params }: Props) => {
     structuredData: [generateCollectionPage(url, title, description)],
   })
 
-  return { broker, ...data }
+  const screenshotUrl = await getPresignedUrlFromFull(broker.screenshotUrl)
+
+  return { broker: { ...broker, screenshotUrl }, ...data }
 })
+
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
   const { broker, url, metadata } = await getData(props)
@@ -116,7 +120,7 @@ export default async function (props: Props) {
             <div className="mt-8 rounded-xl overflow-hidden border border-border/50 shadow-sm aspect-video relative max-w-4xl mx-auto bg-muted">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
-                src={broker.screenshotUrl || `https://api.screenshotone.com/take?access_key=o1oeYRbFCs38-Q&url=${encodeURIComponent((broker.broker_website || broker.url || "").startsWith('http') ? (broker.broker_website || broker.url || "") : `https://${broker.broker_website || broker.url}`)}&format=jpg&block_ads=true&block_cookie_banners=true&block_banners_by_heuristics=false&block_trackers=true&delay=0&timeout=60&response_type=by_format&image_quality=80`}
+                src={broker.screenshotUrl || getScreenshotFetchUrl((broker.broker_website || broker.url || "").startsWith('http') ? (broker.broker_website || broker.url || "") : `https://${broker.broker_website || broker.url}`)}
                 alt={`${broker.broker_name} Website Screenshot`}
                 className="w-full h-full object-cover object-top"
                 loading="lazy"
