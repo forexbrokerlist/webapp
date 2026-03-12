@@ -171,7 +171,7 @@ export const getFaviconFetchUrl = (url: string) => {
 export const getScreenshotFetchUrl = (url: string) => {
   const params = new URLSearchParams({
     url,
-    access_key: env.SCREENSHOTONE_ACCESS_KEY,
+    access_key: env.SCREENSHOTONE_ACCESS_KEY3,
     cache: "true",
 
     // Blockers
@@ -204,7 +204,9 @@ export const fetchAndUploadMedia = async (
   type: "favicon" | "screenshot",
 ) => {
   const endpoint = type === "favicon" ? getFaviconFetchUrl(url) : getScreenshotFetchUrl(url)
+  console.log("🚀 ~ fetchAndUploadMedia ~ endpoint:", endpoint)
   const { data, error } = await tryCatch(wretch(endpoint).get().arrayBuffer().then(Buffer.from))
+  console.log("🚀 ~ fetchAndUploadMedia ~ data:", data)
 
   if (error) {
     throw new Error(`Failed to fetch ${type} from ${url}: ${getErrorMessage(error)}`)

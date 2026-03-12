@@ -29,6 +29,9 @@ export const env = createEnv({
     STRIPE_SECRET_KEY: z.string().min(1),
     STRIPE_WEBHOOK_SECRET: z.string().min(1),
     SCREENSHOTONE_ACCESS_KEY: z.string().min(1),
+    SCREENSHOTONE_ACCESS_KEY1: z.string().min(1),
+    SCREENSHOTONE_ACCESS_KEY2: z.string().min(1),
+    SCREENSHOTONE_ACCESS_KEY3: z.string().min(1),
     PLAUSIBLE_API_KEY: z.string().optional(), // Plausible analytics disabled
     AI_GATEWAY_API_KEY: z.string().optional(),
     AI_CHAT_MODEL: z.string().default("openai/gpt-4o"),
