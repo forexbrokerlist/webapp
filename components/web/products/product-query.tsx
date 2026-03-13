@@ -21,13 +21,16 @@ export const ProductQuery = async ({
   const { discountCode } = await loadSearchParams(searchParams)
   const products = await getProductsForListing(discountCode)
 
-  const items = products
-    .map(item => ({ ...item, customProps: getProductProps?.(item) }))
-    .filter(({ customProps }) => isTruthy(customProps))
+  const items = products.map(item => ({
+    ...item,
+    customProps: getProductProps?.(item),
+  }))
+
+  const filteredItems = getProductProps ? items.filter(({ customProps }) => isTruthy(customProps)) : items
 
   return (
     <ProductList {...props}>
-      {items.map(({ product, prices, coupon, customProps }, index) => (
+      {filteredItems.map(({ product, prices, coupon, customProps }, index) => (
         <Product
           key={product.id}
           data={{ product: { ...product, ...customProps?.product }, prices, coupon }}

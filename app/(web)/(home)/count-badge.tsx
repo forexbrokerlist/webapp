@@ -34,7 +34,6 @@ const CountBadge = async () => {
 
   try {
     const counts = await getCounts()
-    console.log("🚀 ~ CountBadge ~ counts:", counts)
     count = counts[0]
     newCount = counts[1]
   } catch (error) {

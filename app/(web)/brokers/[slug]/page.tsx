@@ -1,6 +1,7 @@
 import { HashIcon } from "lucide-react"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
+import { headers } from "next/headers"
 import { notFound } from "next/navigation"
 import { cache, Suspense } from "react"
 import { Badge } from "~/components/common/badge"
@@ -16,6 +17,10 @@ import { StructuredData } from "~/components/web/structured-data"
 import { Backdrop } from "~/components/web/ui/backdrop"
 import { IntroDescription } from "~/components/web/ui/intro"
 import { BrokerBookmarkButton } from "~/components/web/brokers/broker-bookmark-button"
+import { BrokerClaimButton } from "~/components/web/brokers/broker-claim-button"
+import { BrokerScreenshot } from "~/components/web/brokers/broker-screenshot"
+import { ProductListSkeleton } from "~/components/web/products/product-list"
+import { PlanQuery } from "~/components/web/plans/plan-query"
 import { Section } from "~/components/web/ui/section"
 import { Sticky } from "~/components/web/ui/sticky"
 import type { OpenGraphParams } from "~/lib/opengraph"
@@ -77,27 +82,42 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 
 export default async function (props: Props) {
   const { broker, metadata, structuredData } = await getData(props)
+  const headerList = await headers()
 
   return (
     <>
       <Section>
         <Section.Content className="max-md:contents">
           <Sticky isOverlay>
-            <Stack className="@container self-stretch justify-between items-center">
-              <Stack className="flex-1 min-w-0">
-                <H2 as="h1" className="leading-tight! truncate">
+            <Stack className="@container self-stretch justify-between items-start md:items-center gap-y-4 flex-col md:flex-row">
+              <div className="flex flex-col gap-1 flex-1 min-w-0">
+                <H2 as="h1" className="leading-tight! md:whitespace-normal line-clamp-2">
                   {broker.broker_name}
                 </H2>
                 
                 {broker.overall_rating && (
-                  <Badge variant="primary" size="lg" className="ml-2 text-white">
+                  <Badge variant="primary" size="lg" className="w-fit text-white">
                     Rating: {broker.overall_rating} / 5
                   </Badge>
                 )}
-              </Stack>
+              </div>
 
-              <div className="flex items-center gap-2 z-10">
+              <div className="flex items-center flex-wrap gap-2 z-10 w-full md:w-auto justify-start md:justify-end">
                 <BrokerBookmarkButton brokerId={broker.id} showLabel variant="secondary" size="md" />
+                <BrokerClaimButton broker={broker}>
+                  <Suspense fallback={<ProductListSkeleton />}>
+                    <PlanQuery
+                      checkoutData={{
+                        successUrl: `${headerList.get("origin")}/brokers/${broker.slug}?claimed=true`,
+                        cancelUrl: headerList.get("referer") || "",
+                        metadata: {
+                          brokerId: String(broker.id),
+                          type: "claim",
+                        },
+                      }}
+                    />
+                  </Suspense>
+                </BrokerClaimButton>
                 {(broker.broker_website || broker.url) && (
                   <Button asChild variant="fancy" size="md">
                     <a href={broker.broker_website || broker.url || "#"} target="_blank" rel="noopener noreferrer nofollow">
@@ -118,12 +138,9 @@ export default async function (props: Props) {
 
           {(broker.broker_website || broker.url) && (
             <div className="mt-8 rounded-xl overflow-hidden border border-border/50 shadow-sm aspect-video relative max-w-4xl mx-auto bg-muted">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
+              <BrokerScreenshot
                 src={broker.screenshotUrl || getScreenshotFetchUrl((broker.broker_website || broker.url || "").startsWith('http') ? (broker.broker_website || broker.url || "") : `https://${broker.broker_website || broker.url}`)}
                 alt={`${broker.broker_name} Website Screenshot`}
-                className="w-full h-full object-cover object-top"
-                loading="lazy"
               />
             </div>
           )}
