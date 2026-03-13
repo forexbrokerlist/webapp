@@ -100,7 +100,11 @@ const columns: ColumnDef<Brokers>[] = [
     enableSorting: false,
     size: 320,
     header: ({ column }) => <DataTableColumnHeader column={column} title="Rating" />,
-    cell: ({ row }) => <Note className="truncate">{row.getValue("overall_rating")}</Note>,
+    cell: ({ row }) => {
+      const rating = row.getValue("overall_rating") as string
+      const croppedRating = rating?.split("/")[0]?.trim()
+      return <Note className="truncate">{croppedRating}</Note>
+    },
   },
   {
     accessorKey: "submitterEmail",
