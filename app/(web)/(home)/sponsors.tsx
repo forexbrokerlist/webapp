@@ -101,7 +101,7 @@ export const Sponsors = async ({ className, ...props }: ComponentProps<"section"
                           src={sponsor.logoUrl}
                           alt={sponsor.name}
                           fill
-                          className="object-contain p-2 opacity-80 group-hover/card:opacity-100 group-hover/card:scale-110 transition-all duration-500 grayscale group-hover/card:grayscale-0"
+                          className="object-contain transition-all grayscale-0 opacity-100 group-hover/card:grayscale group-hover/card:opacity-80"
                         />
                       </div>
                     ) : (

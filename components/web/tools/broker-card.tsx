@@ -74,7 +74,7 @@ export const BrokerCard = ({
               <span className="flex items-center gap-1.5 text-muted-foreground">
                 <Star className="size-3.5" /> Score
               </span>
-              <span className="font-semibold text-foreground text-sm">{broker.overall_rating || "N/A"}</span>
+              <span className="font-semibold text-foreground text-sm">{broker.overall_rating?.split("/")[0]?.trim() || "N/A"}</span>
             </div>
             
             <div className="flex flex-col gap-1 items-start">
