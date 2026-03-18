@@ -51,14 +51,16 @@ export const AdBanner = ({ className, ...props }: ComponentProps<typeof Card>) =
         <AdLink ad={ad} type="Banner" source="banner">
           <AdBadge className="leading-none max-sm:order-last" />
 
-          <div className="text-xs leading-tight text-secondary-foreground mr-auto sm:text-sm">
+          <div className="flex items-center gap-1.5 text-xs leading-tight text-secondary-foreground mr-auto sm:text-sm">
             <Favicon
               src={ad.faviconUrl}
               title={ad.name}
               size={32}
-              className="float-left align-middle p-0 mr-1.5 size-3.5 rounded-sm sm:size-4"
+              className="p-0 size-3.5 rounded-sm sm:size-4"
             />
-            <strong className="font-medium text-foreground">{ad.name}</strong> — {ad.description}
+            <span>
+              <strong className="font-medium text-foreground">{ad.name}</strong> — {ad.description}
+            </span>
           </div>
 
           <Button

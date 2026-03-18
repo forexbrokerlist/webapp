@@ -17,7 +17,7 @@ type FilterOptions = Array<{
 }>
 
 export const findFilterOptions = actionClient.action(async () => {
-  const [categories] = await Promise.all([findCategories({})])
+  const [categories] = await Promise.all([findCategories({ all: true })])
 
   const filterOptions: FilterOptions = [
     {
