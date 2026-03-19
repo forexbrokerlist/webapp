@@ -180,7 +180,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
   const [brokers, total] = await Promise.all([
     db.brokers.findMany({
       where: whereQuery,
-      orderBy: sortBy ? { [sortBy]: sortOrder } : [{ year_established: "desc" }, { broker_name: "asc" }],
+      orderBy: sortBy ? ([{ isSponsor: "desc" }, { [sortBy]: sortOrder }] as any) : [{ isSponsor: "desc" }, { year_established: "desc" }, { broker_name: "asc" }],
       take,
       skip,
     }),
@@ -198,10 +198,14 @@ export const findBrokers = async ({ where, orderBy, ...args }: Prisma.BrokersFin
   cacheTag("brokers")
   cacheLife("infinite")
 
+  const finalOrderBy = orderBy 
+    ? (Array.isArray(orderBy) ? [{ isSponsor: "desc" }, ...orderBy] : [{ isSponsor: "desc" }, orderBy])
+    : [{ isSponsor: "desc" }, { year_established: "desc" }, { broker_name: "asc" }]
+
   return db.brokers.findMany({
     ...args,
     where: { status: ToolStatus.Published, ...where },
-    orderBy: orderBy ?? [{ year_established: "desc" }, { broker_name: "asc" }],
+    orderBy: finalOrderBy as any,
   })
 }
 

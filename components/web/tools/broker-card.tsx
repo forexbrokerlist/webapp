@@ -33,19 +33,33 @@ export const BrokerCard = ({
   }
 
   return (
-    <Card isRevealed className={`items-stretch select-none ${className || ""}`} {...props}>
+    <Card 
+      isRevealed 
+      className={`items-stretch select-none transition-all duration-300 ${
+        broker.isSponsor 
+          ? "border-blue-500/40 shadow-[0_0_20px_rgba(59,130,246,0.1)] bg-linear-to-br from-blue-500/10 via-background to-background ring-1 ring-blue-500/20 hover:border-blue-500/60 hover:shadow-[0_0_25px_rgba(59,130,246,0.25)]" 
+          : "hover:border-primary/20"
+      } ${className || ""}`} 
+      {...props}
+    >
       <CardHeader wrap={false} className="pr-8 mb-1">
         <Favicon src={`https://www.google.com/s2/favicons?domain=${domain}&sz=128`} title={broker.broker_name || "Broker"} contained />
 
         <H4 as="h3" className="truncate">
           <Link href={`/brokers/${broker.slug}`}>
-            <span className="absolute inset-0 z-[50] rounded-lg" />
+            <span className="absolute inset-0 z-40 rounded-lg" />
             {broker.broker_name || "UNKNOWN BROKER"}
           </Link>
         </H4>
 
         <VerifiedBadge size="md" className="-ml-1.5 shrink-0" />
-        <Crown className="absolute right-4 top-4 size-[18px] text-[#f97316] opacity-80 z-[60]" strokeWidth={2.5} />
+        
+        {broker.isSponsor && (
+          <div className="absolute right-3 top-3 flex items-center gap-1.5 z-60 bg-blue-500/10 text-blue-500 pl-1.5 pr-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-blue-500/30 backdrop-blur-md shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+            <Crown className="size-[12px]" strokeWidth={2.5} />
+            <span>Sponsor</span>
+          </div>
+        )}
       </CardHeader>
 
       <div className="relative size-full flex flex-col">
