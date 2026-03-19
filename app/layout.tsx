@@ -23,7 +23,12 @@ export const generateMetadata = async (): Promise<Metadata> => {
       default: `${t("brand.tagline")} – ${siteConfig.name}`,
     },
     description: t("brand.description"),
-    icons: { icon: [{ type: "image/png", url: "/favicon.png" }] },
+    icons: { 
+      icon: [
+        { type: "image/svg+xml", url: "/favicon.svg" },
+        { type: "image/png", url: "/favicon.png" }
+      ] 
+    },
     ...metadataConfig,
   }
 }
