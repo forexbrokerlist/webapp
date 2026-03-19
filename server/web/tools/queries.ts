@@ -143,7 +143,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
   cacheTag("brokers")
   cacheLife("infinite")
 
-  const { q, sort, page, perPage } = search
+  const { q, category, sort, page, perPage } = search
   const skip = (page - 1) * perPage
   const take = perPage
   let [sortBy, sortOrder] = sort.split(".")
@@ -165,6 +165,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
   const whereQuery: Prisma.BrokersWhereInput = { 
     ...safeWhere,
     status: ToolStatus.Published,
+    ...(category && { categories: { some: { slug: category } } }),
   }
 
   if (q) {
