@@ -8,30 +8,32 @@ import Image from "next/image"
 import Link from "next/link"
 
 import { getPresignedUrlFromFull } from "~/lib/media"
+import { slugify } from "@primoui/utils"
 
 export const Sponsors = async ({ className, ...props }: ComponentProps<"section">) => {
-  const sponsors = await db.sponsor.findMany({
+  const dbSponsors = await db.sponsor.findMany({
     where: { isActive: true },
     include: { Category: true },
     orderBy: { order: "asc" },
   })
 
   // Only render if sponsors exist
-  if (sponsors.length === 0) return null
+  if (dbSponsors.length === 0) return null
 
   const sponsorsWithPresigned = await Promise.all(
-    sponsors.map(async (sponsor) => ({
+    dbSponsors.map(async (sponsor) => ({
       ...sponsor,
       logoUrl: sponsor.logoUrl ? await getPresignedUrlFromFull(sponsor.logoUrl) : null,
     }))
   )
 
   const groupedSponsors = sponsorsWithPresigned.reduce((acc, sponsor) => {
-    const categoryId = sponsor.categoryId || (sponsor.Category?.id) || "other"
+    const category = sponsor.Category
+    const categoryId = category?.id || "other"
     if (!acc[categoryId]) {
       acc[categoryId] = {
-        name: sponsor.Category?.name || (sponsor.category as string),
-        slug: sponsor.Category?.slug || null,
+        name: category?.name || "Other",
+        slug: category?.slug || null,
         items: []
       }
     }
@@ -80,18 +82,15 @@ export const Sponsors = async ({ className, ...props }: ComponentProps<"section"
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {group.items.map((sponsor) => (
-                <a
+                <Link
                   key={sponsor.id}
-                  href={sponsor.websiteUrl || undefined}
-                  target="_blank"
-                  rel="noreferrer"
+                  href={`/brokers/${sponsor.slug || slugify(sponsor.name || '')}`}
                   className={cx(
-                    "group/card flex flex-col gap-4 p-4 rounded-3xl border border-border/50 bg-card/50 hover:bg-card shadow-sm hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1.5 transition-all duration-500 relative",
-                    !sponsor.websiteUrl && "pointer-events-none"
+                    "group/card flex flex-col gap-4 p-4 rounded-3xl border border-border/50 bg-card/50 hover:bg-card shadow-sm hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1.5 transition-all duration-500 relative"
                   )}
                 >
                   <div className="absolute top-4 right-4 opacity-0 group-hover/card:opacity-40 transition-opacity z-10">
-                    <ExternalLink className="size-3.5" />
+                    <ArrowRight className="size-3.5" />
                   </div>
 
                   <div className="relative flex items-center justify-center bg-white dark:bg-white/5 rounded-2xl p-6 aspect-4/3 w-full overflow-hidden shadow-inner border border-border/40">
@@ -99,27 +98,27 @@ export const Sponsors = async ({ className, ...props }: ComponentProps<"section"
                       <div className="relative w-full h-full">
                         <Image
                           src={sponsor.logoUrl}
-                          alt={sponsor.name}
+                          alt={sponsor.name || ""}
                           fill
                           className="object-contain transition-all grayscale-0 opacity-100 group-hover/card:grayscale group-hover/card:opacity-80"
                         />
                       </div>
                     ) : (
                       <div className="size-full flex items-center justify-center bg-muted/50 text-muted-foreground/30 font-bold text-4xl">
-                        {sponsor.name.charAt(0)}
+                        {sponsor.name?.charAt(0)}
                       </div>
                     )}
                   </div>
 
                   <div className="flex flex-col items-center gap-0.5 px-2">
-                    <span className="font-bold text-base tracking-tight text-foreground/80 group-hover/card:text-foreground transition-colors line-clamp-1">
+                    <span className="font-bold text-base tracking-tight text-foreground/80 group-hover/card:text-foreground transition-colors line-clamp-1 text-center">
                       {sponsor.name}
                     </span>
                     <span className="text-[10px] uppercase tracking-widest font-bold text-primary group-hover/card:text-muted-foreground/50 transition-colors">
                       Sponsor
                     </span>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           </div>

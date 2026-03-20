@@ -21,6 +21,7 @@ import { Stack } from "~/components/common/stack"
 import { Switch } from "~/components/common/switch"
 import { RelationSelector } from "~/components/common/relation-selector"
 import { orpc } from "~/lib/orpc-query"
+import { useComputedField } from "~/hooks/use-computed-field"
 import { cx } from "~/lib/utils"
 import type { findSponsorById } from "~/server/admin/sponsors/queries"
 import { sponsorSchema } from "~/server/admin/sponsors/schema"
@@ -39,6 +40,7 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
     defaultValues: {
       id: sponsor?.id ?? "",
       name: sponsor?.name ?? "",
+      slug: sponsor?.slug ?? "",
       websiteUrl: sponsor?.websiteUrl ?? "",
       logoUrl: sponsor?.logoUrl ?? "",
       isActive: sponsor?.isActive ?? true,
@@ -63,6 +65,15 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
   const onSubmit = form.handleSubmit(data => mutation.mutate(data))
 
   useHotkeys([["mod+enter", () => onSubmit()]], [], true)
+
+  // Set the slug based on the name
+  useComputedField({
+    form,
+    sourceField: "name",
+    computedField: "slug",
+    callback: slugify,
+    enabled: !sponsor,
+  })
 
   const [name, websiteUrl] = form.watch(["name", "websiteUrl"])
 
@@ -93,6 +104,20 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
                 Name
               </FieldLabel>
               <Input id={field.name} data-1p-ignore {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="slug"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                Slug
+              </FieldLabel>
+              <Input id={field.name} {...field} />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

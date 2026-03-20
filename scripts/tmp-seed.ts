@@ -582,8 +582,28 @@ const brokers=   [
 ]
   for (const data of brokers) {
     try {
-      const result = await db.brokers.create({
-        data: {
+      const result = await db.brokers.upsert({
+        where: { slug: data.slug },
+        update: {
+          broker_name: data.name,
+          broker_website: data.websiteUrl,
+          screenshotUrl: data.logoUrl,
+          description: data.description,
+          headquarters: data.headquarters,
+          year_established: data.year_established,
+          status: data.status as any,
+          pros: data.pros,
+          cons: data.cons,
+          overall_rating: data.overall_rating,
+          trading_platforms: data.trading_platforms,
+          execution_types: data.execution_types,
+          regulators: data.regulators,
+          isSponsor: data.isActive,
+          categories: data.categoryId ? {
+            set: [{ id: data.categoryId }]
+          } : undefined
+        },
+        create: {
           broker_name: data.name,
           slug: data.slug,
           broker_website: data.websiteUrl,
@@ -600,13 +620,13 @@ const brokers=   [
           regulators: data.regulators,
           isSponsor: data.isActive,
           categories: data.categoryId ? {
-            connect: { id: data.categoryId }
+            connect: [{ id: data.categoryId }]
           } : undefined
         }
       })
-      console.log("Successfully created broker:", result.broker_name)
+      console.log("Successfully upserted broker:", result.broker_name)
     } catch (error) {
-      console.error(`Error creating broker ${data.name}:`, error)
+      console.error(`Error upserting broker ${data.name}:`, error)
     }
   }
 }
