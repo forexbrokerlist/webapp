@@ -42,79 +42,98 @@ export default async function () {
       <Prose>
         <h2>1. Acceptance of Terms</h2>
         <p>
-          By accessing and using {siteConfig.name} (the "Website"), you agree to be bound by these
-          Terms of Service and all applicable laws and regulations. If you do not agree with any of
-          these terms, you are prohibited from using or accessing this site.
+          By accessing or using Forex Brokers List ("the Site"), you agree to be bound by these
+          Terms of Service. If you do not agree, please discontinue use of our website immediately.
         </p>
 
-        <h2>2. Use License</h2>
+        <h2>2. Description of Service</h2>
         <p>
-          Permission is granted to temporarily download one copy of the materials (information or
-          software) on {siteConfig.name} for personal, non-commercial transitory viewing only.
+          Forex Brokers List is an online directory that allows users to discover, compare, and
+          review forex brokers. We also offer paid listing plans for brokers and advertising
+          opportunities for industry partners.
         </p>
-        <p>This is the grant of a license, not a transfer of title, and under this license you may not:</p>
+
+        <h2>3. User Accounts</h2>
         <ul>
-          <li>modify or copy the materials;</li>
-          <li>use the materials for any commercial purpose, or for any public display (commercial or non-commercial);</li>
-          <li>attempt to decompile or reverse engineer any software contained on the Website;</li>
-          <li>remove any copyright or other proprietary notations from the materials; or</li>
-          <li>transfer the materials to another person or "mirror" the materials on any other server.</li>
+          <li>You must provide accurate and complete information when creating an account</li>
+          <li>You are responsible for maintaining the confidentiality of your account credentials</li>
+          <li>You must notify us immediately of any unauthorized use of your account</li>
+          <li>We reserve the right to suspend or terminate accounts that violate these Terms</li>
         </ul>
 
-        <h2>3. User Submissions</h2>
+        <h2>4. Broker Submissions</h2>
+        <ul>
+          <li>
+            Brokers listed on our directory are submitted either by the broker themselves or sourced
+            from publicly available information
+          </li>
+          <li>We do not verify, endorse, or guarantee the accuracy of broker information</li>
+          <li>
+            Paid listings ("Sponsor" placements) are clearly marked and are commercial arrangements
+          </li>
+          <li>We reserve the right to remove any listing that violates our guidelines</li>
+        </ul>
+
+        <h2>5. Paid Plans & Payments</h2>
+        <ul>
+          <li>Paid plans (Growth, Scale) are billed as described on our Pricing page</li>
+          <li>All prices are in USD and VAT may apply depending on your jurisdiction</li>
+          <li>We offer a 30-day money-back guarantee for first-time subscribers</li>
+          <li>Refunds will not be issued after the 30-day period</li>
+        </ul>
+
+        <h2>6. Advertiser Terms</h2>
+        <ul>
+          <li>Advertising placements are subject to our separate Advertiser Agreement</li>
+          <li>We reserve the right to reject or remove any advertisement at our discretion</li>
+          <li>Advertisers are responsible for ensuring their content complies with applicable laws</li>
+        </ul>
+
+        <h2>7. Prohibited Conduct</h2>
+        <p>You agree not to:</p>
+        <ul>
+          <li>Use our website for any unlawful purpose</li>
+          <li>Submit false, misleading, or fraudulent broker information</li>
+          <li>Attempt to hack, scrape, or disrupt our platform</li>
+          <li>Use our content without express written permission</li>
+          <li>Impersonate any person or entity</li>
+        </ul>
+
+        <h2>8. Intellectual Property</h2>
         <p>
-          When you submit a broker listing or any other content to {siteConfig.name}, you grant us
-          a non-exclusive, world-wide, royalty-free license to use, copy, reproduce, process, adapt,
-          modify, publish, transmit, display and distribute such content in any and all media or
-          distribution methods.
+          All content on this website including text, logos, design, and data is the property of
+          Forex Brokers List and is protected by applicable copyright laws. You may not reproduce or
+          distribute our content without written permission.
         </p>
 
-        <h2>4. Disclaimer</h2>
+        <h2>9. Limitation of Liability</h2>
         <p>
-          The materials on {siteConfig.name} are provided on an 'as is' basis. {siteConfig.name}{" "}
-          makes no warranties, expressed or implied, and hereby disclaims and negates all other
-          warranties including, without limitation, implied warranties or conditions of
-          merchantability, fitness for a particular purpose, or non-infringement of intellectual
-          property or other violation of rights.
+          Forex Brokers List is a directory service only. We are not a financial advisor and do not
+          provide financial advice. We are not liable for:
+        </p>
+        <ul>
+          <li>Any trading losses incurred through brokers listed on our platform</li>
+          <li>Inaccurate or outdated broker information</li>
+          <li>Technical interruptions or data loss</li>
+        </ul>
+
+        <h2>10. Governing Law</h2>
+        <p>
+          These Terms shall be governed by and construed in accordance with applicable laws. Any
+          disputes shall be resolved through binding arbitration or in the courts of the applicable
+          jurisdiction.
         </p>
 
-        <h2>5. Limitations</h2>
+        <h2>11. Changes to Terms</h2>
         <p>
-          In no event shall {siteConfig.name} or its suppliers be liable for any damages (including,
-          without limitation, damages for loss of data or profit, or due to business interruption)
-          arising out of the use or inability to use the materials on the Website, even if{" "}
-          {siteConfig.name} or a {siteConfig.name} authorized representative has been notified
-          orally or in writing of the possibility of such damage.
+          We reserve the right to update these Terms at any time. Continued use of the website after
+          changes constitutes acceptance of the new Terms.
         </p>
 
-        <h2>6. Accuracy of Materials</h2>
+        <h2>12. Contact Us</h2>
         <p>
-          The materials appearing on {siteConfig.name} could include technical, typographical, or
-          photographic errors. {siteConfig.name} does not warrant that any of the materials on its
-          website are accurate, complete or current. {siteConfig.name} may make changes to the
-          materials contained on its website at any time without notice.
-        </p>
-
-        <h2>7. Links</h2>
-        <p>
-          {siteConfig.name} has not reviewed all of the sites linked to its website and is not
-          responsible for the contents of any such linked site. The inclusion of any link does not
-          imply endorsement by {siteConfig.name} of the site. Use of any such linked website is at
-          the user's own risk.
-        </p>
-
-        <h2>8. Modifications</h2>
-        <p>
-          {siteConfig.name} may revise these terms of service for its website at any time without
-          notice. By using this website you are agreeing to be bound by the then current version of
-          these terms of service.
-        </p>
-
-        <h2>9. Governing Law</h2>
-        <p>
-          These terms and conditions are governed by and construed in accordance with the laws and
-          you irrevocably submit to the exclusive jurisdiction of the courts in that State or
-          location.
+          For any questions regarding these Terms: Email:{" "}
+          <a href="mailto:forexbrokerlist24@gmail.com">forexbrokerlist24@gmail.com</a>
         </p>
       </Prose>
 

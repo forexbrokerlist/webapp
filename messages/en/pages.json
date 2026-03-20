@@ -186,6 +186,10 @@
     "title": "Privacy Policy",
     "description": "Learn more about how we collect and use your data on {siteName}."
   },
+  "cookies": {
+    "title": "Cookie Policy",
+    "description": "Learn more about how we use cookies on {siteName}."
+  },
   "disclaimer": {
     "title": "Disclaimer",
     "description": "Important disclaimer regarding the information provided on {siteName}."
