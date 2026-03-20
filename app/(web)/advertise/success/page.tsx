@@ -13,6 +13,7 @@ import { getPageData, getPageMetadata } from "~/lib/pages"
 import { cx } from "~/lib/utils"
 import { getPresignedUrlFromFull } from "~/lib/media"
 import { adOnePayload } from "~/server/web/ads/payloads"
+import { findCategories } from "~/server/web/categories/queries"
 import { db } from "~/services/db"
 import { stripe } from "~/services/stripe"
 
@@ -70,6 +71,8 @@ export default async function (props: PageProps<"/advertise/success">) {
     existingAd.bannerUrl = (await getPresignedUrlFromFull(existingAd.bannerUrl)) as string | null
   }
 
+  const categories = await findCategories({ all: true })
+
   return (
     <>
       <Intro alignment="center">
@@ -79,7 +82,12 @@ export default async function (props: PageProps<"/advertise/success">) {
 
       <Section>
         <Section.Content className={cx(!existingAd && "md:col-span-full")}>
-          <AdForm sessionId={session.id} ad={existingAd} className="w-full max-w-xl mx-auto" />
+          <AdForm
+            sessionId={session.id}
+            ad={existingAd}
+            categories={categories}
+            className="w-full max-w-xl mx-auto"
+          />
         </Section.Content>
 
         {existingAd && (

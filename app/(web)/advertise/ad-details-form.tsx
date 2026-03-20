@@ -13,14 +13,25 @@ import { TextArea } from "~/components/common/textarea"
 import { cx } from "~/lib/utils"
 import { createAdDetailsSchema } from "~/server/web/shared/schema"
 import { FormMedia } from "~/components/common/form-media"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/common/select"
 import Image from "next/image"
 import { getRandomString, slugify } from "@primoui/utils"
 import { useMemo } from "react"
+
+import { categoryManyPayload, type CategoryMany } from "~/server/web/categories/payloads"
 
 export type AdDetailsValues = {
   name: string
   websiteUrl: string
   description: string
+  categoryId: string
+  subcategoryId?: string
   buttonLabel?: string
   faviconUrl?: string
   bannerUrl?: string
@@ -29,9 +40,18 @@ export type AdDetailsValues = {
 type AdDetailsFormProps = ComponentProps<"form"> & {
   defaultValues?: Partial<AdDetailsValues>
   onSave: (values: AdDetailsValues) => void
+  categories: CategoryMany[]
+  subcategories: { id: string; name: string; categoryId: string }[]
 }
 
-export const AdDetailsForm = ({ className, defaultValues, onSave, ...props }: AdDetailsFormProps) => {
+export const AdDetailsForm = ({
+  className,
+  defaultValues,
+  onSave,
+  categories,
+  subcategories,
+  ...props
+}: AdDetailsFormProps) => {
   const t = useTranslations("forms.ad_details")
   const tSchema = useTranslations("schema")
 
@@ -44,6 +64,8 @@ export const AdDetailsForm = ({ className, defaultValues, onSave, ...props }: Ad
       name: defaultValues?.name ?? "",
       websiteUrl: defaultValues?.websiteUrl ?? "",
       description: defaultValues?.description ?? "",
+      categoryId: defaultValues?.categoryId ?? "",
+      subcategoryId: defaultValues?.subcategoryId ?? "",
       buttonLabel: defaultValues?.buttonLabel ?? "",
       faviconUrl: defaultValues?.faviconUrl ?? "",
       bannerUrl: defaultValues?.bannerUrl ?? "",
@@ -97,21 +119,27 @@ export const AdDetailsForm = ({ className, defaultValues, onSave, ...props }: Ad
 
         <Controller
           control={form.control}
-          name="description"
+          name="categoryId"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <Stack className="w-full justify-between">
-                <FieldLabel data-required htmlFor={field.name}>
-                  {t("description_label")}
-                </FieldLabel>
-                <Note className="text-xs">{t("description_note")}</Note>
-              </Stack>
-              <TextArea
-                id={field.name}
-                size="lg"
-                placeholder={t("description_placeholder")}
-                {...field}
-              />
+              <FieldLabel data-required htmlFor={field.name}>
+                Category
+              </FieldLabel>
+              <Select onValueChange={(val) => {
+                field.onChange(val)
+                form.setValue("subcategoryId", "")
+              }} defaultValue={field.value}>
+                <SelectTrigger id={field.name} size="lg">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map(category => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -124,6 +152,28 @@ export const AdDetailsForm = ({ className, defaultValues, onSave, ...props }: Ad
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>{t("button_label")}</FieldLabel>
               <Input id={field.name} size="lg" placeholder={t("button_placeholder")} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="description"
+          render={({ field, fieldState }) => (
+            <Field className="col-span-full" data-invalid={fieldState.invalid}>
+              <Stack className="w-full justify-between">
+                <FieldLabel data-required htmlFor={field.name}>
+                  {t("description_label")}
+                </FieldLabel>
+                <Note className="text-xs">{t("description_note")}</Note>
+              </Stack>
+              <TextArea
+                id={field.name}
+                size="lg"
+                placeholder={t("description_placeholder")}
+                {...field}
+              />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

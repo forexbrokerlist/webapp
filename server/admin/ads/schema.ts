@@ -35,6 +35,8 @@ export const adSchema = z
     bannerUrl: z.string().optional(),
     buttonLabel: z.string().optional(),
     type: z.enum(AdType).default("All"),
+    categoryId: z.string().optional(),
+    subcategoryId: z.string().optional(),
     startsAt: z.date(),
     endsAt: z.date(),
     status: z.nativeEnum(AdStatus).optional(),

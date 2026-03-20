@@ -8,5 +8,7 @@ export const rateLimitConfig = {
     report: { points: 3, duration: 60 * 60 },
     // 5 per 1h
     claim: { points: 5, duration: 60 * 60 },
+    // 3 per 1h
+    contact: { points: 3, duration: 60 * 60 },
   },
 }

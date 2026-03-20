@@ -56,6 +56,8 @@ const duplicate = adminProcedure
         bannerUrl: ad.bannerUrl,
         buttonLabel: ad.buttonLabel,
         type: ad.type,
+        categoryId: ad.categoryId,
+        subcategoryId: ad.subcategoryId,
         startsAt: ad.startsAt,
         endsAt: ad.endsAt,
       },

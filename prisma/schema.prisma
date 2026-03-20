@@ -158,6 +158,12 @@ model Ad {
   status      AdStatus @default(Draft)
   clicks      Int      @default(0)
   impressions Int      @default(0)
+
+  // Relations
+  categoryId    String?
+  Category      Category?    @relation(fields: [categoryId], references: [id])
+  subcategoryId String?
+  Subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
 }
 
 model Tool {
@@ -211,6 +217,7 @@ model Category {
   tools         Tool[]
   brokers       Brokers[]
   sponsors      Sponsor[]
+  ads           Ad[]
 
   // Indexes
   @@index([slug])
@@ -232,6 +239,7 @@ model Subcategory {
   // Relations to items
   tools   Tool[]
   brokers Brokers[]
+  ads     Ad[]
 
   // Indexes
   @@index([slug])
@@ -382,6 +390,19 @@ model Newsletter {
   updatedAt DateTime @updatedAt
 
   @@index([email])
+}
+
+model ContactUs {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([createdAt])
 }
 
 model Plan {

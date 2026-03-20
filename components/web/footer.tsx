@@ -16,7 +16,6 @@ import { ThemeSwitcher } from "~/components/web/theme-switcher"
 import { NavLink, navLinkVariants } from "~/components/web/ui/nav-link"
 import { adsConfig } from "~/config/ads"
 import { linksConfig } from "~/config/links"
-import { siteConfig } from "~/config/site"
 import { cx } from "~/lib/utils"
 
 export const Footer = ({ children, className, ...props }: ComponentProps<"div">) => {
@@ -56,9 +55,9 @@ export const Footer = ({ children, className, ...props }: ComponentProps<"div">)
             </Tooltip>
 
             <Tooltip tooltip={t("navigation.contact_us")}>
-              <ExternalLink href={`mailto:${siteConfig.email}`} className={navLinkVariants()}>
+              <NavLink href="/contact" className={navLinkVariants()}>
                 <AtSignIcon />
-              </ExternalLink>
+              </NavLink>
             </Tooltip>
 
             <Tooltip tooltip={t("navigation.source_code")}>
@@ -83,6 +82,7 @@ export const Footer = ({ children, className, ...props }: ComponentProps<"div">)
 
           <NavLink href="/submit">{t("navigation.submit")}</NavLink>
           <NavLink href="/about">{t("navigation.about")}</NavLink>
+          <NavLink href="/contact">{t("navigation.contact_us")}</NavLink>
           <NavLink href="/privacy">{t("navigation.privacy")}</NavLink>
           <NavLink href="/terms">{t("navigation.terms")}</NavLink>
           <NavLink href="/disclaimer">{t("navigation.disclaimer")}</NavLink>

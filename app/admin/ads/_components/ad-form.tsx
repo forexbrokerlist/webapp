@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useHotkeys } from "@mantine/hooks"
 import { getRandomString, slugify } from "@primoui/utils"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { addMonths, formatDate } from "date-fns"
 import { CalendarIcon, ClockIcon } from "lucide-react"
 import Image from "next/image"
@@ -45,6 +45,8 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
   const queryClient = useQueryClient()
   const [isStartsAtOpen, setIsStartsAtOpen] = useState(false)
   const [isEndsAtOpen, setIsEndsAtOpen] = useState(false)
+  const { data: categories = [] } = useQuery(orpc.categories.lookup.queryOptions())
+  const { data: subcategories = [] } = useQuery(orpc.subcategories.lookup.queryOptions())
 
   const form = useForm({
     resolver: zodResolver(adSchema),
@@ -58,6 +60,8 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
       bannerUrl: ad?.bannerUrl ?? "",
       buttonLabel: ad?.buttonLabel ?? "",
       type: ad?.type ?? AdType.All,
+      categoryId: ad?.categoryId ?? "",
+      subcategoryId: ad?.subcategoryId ?? "",
       status: ad?.status ?? AdStatus.Draft,
       startsAt: ad?.startsAt ?? new Date(),
       endsAt: ad?.endsAt ?? addMonths(new Date(), 1),
@@ -276,6 +280,75 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
+        />
+
+        <Controller
+          control={form.control}
+          name="categoryId"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Category</FieldLabel>
+              <Select
+                value={field.value || undefined}
+                onValueChange={(val) => {
+                  field.onChange(val)
+                  form.setValue("subcategoryId", "")
+                }}
+              >
+                <SelectTrigger id={field.name}>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category: { id: string; name: string }) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="subcategoryId"
+          render={({ field, fieldState }) => {
+            const selectedCategoryId = form.watch("categoryId")
+            const filteredSubcategories = subcategories.filter(
+              (s: { categoryId: string }) => s.categoryId === selectedCategoryId,
+            )
+
+            return (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Subcategory</FieldLabel>
+                <Select
+                  value={field.value || undefined}
+                  onValueChange={field.onChange}
+                  disabled={!selectedCategoryId || filteredSubcategories.length === 0}
+                >
+                  <SelectTrigger id={field.name}>
+                    <SelectValue
+                      placeholder={
+                        filteredSubcategories.length === 0
+                          ? "No subcategories"
+                          : "Select subcategory"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {filteredSubcategories.map((subcategory: { id: string; name: string }) => (
+                      <SelectItem key={subcategory.id} value={subcategory.id}>
+                        {subcategory.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )
+          }}
         />
 
         <Controller

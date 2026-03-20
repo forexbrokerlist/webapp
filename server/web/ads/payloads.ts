@@ -10,6 +10,8 @@ export const adOnePayload = {
   buttonLabel: true,
   type: true,
   status: true,
+  categoryId: true,
+  subcategoryId: true,
 } satisfies Prisma.AdSelect
 
 export const adManyPayload = {
@@ -23,6 +25,8 @@ export const adManyPayload = {
   type: true,
   startsAt: true,
   endsAt: true,
+  categoryId: true,
+  subcategoryId: true,
 } satisfies Prisma.AdSelect
 
 export type AdOne = Prisma.AdGetPayload<{ select: typeof adOnePayload }>

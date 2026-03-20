@@ -10,6 +10,7 @@ import {
   GemIcon,
   LogOutIcon,
   MegaphoneIcon,
+  MessageSquareIcon,
   StarIcon,
   TagIcon,
   TriangleAlertIcon,
@@ -101,6 +102,11 @@ export const Sidebar = () => {
           title: "Users",
           href: "/admin/users",
           prefix: <UsersIcon />,
+        },
+        {
+          title: "Contact Us",
+          href: "/admin/contacts",
+          prefix: <MessageSquareIcon />,
         },
         {
           title: "Reports",

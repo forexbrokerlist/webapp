@@ -52,6 +52,8 @@ export const findAdWithFallback = actionClient
       faviconUrl: "/favicon.png",
       bannerUrl: null,
       status: "Draft" as const,
+      categoryId: null,
+      subcategoryId: null,
     } satisfies AdOne
 
     if (!adsConfig.enabled) {
@@ -99,7 +101,7 @@ export const createAdFromCheckout = actionClient
   .action(async ({ parsedInput: { sessionId, ...adDetails }, ctx: { db, revalidate } }) => {
     const session = await stripe.checkout.sessions.retrieve(sessionId)
     const email = session.customer_details?.email ?? ""
-    const ads: Omit<Omit<Prisma.AdCreateInput, "email">, keyof typeof adDetails>[] = []
+    const ads: Omit<Omit<Prisma.AdUncheckedCreateInput, "email">, keyof typeof adDetails>[] = []
 
     if (session.status !== "complete") {
       throw new Error("Checkout session is not complete")
@@ -160,7 +162,23 @@ export const createAdFromCheckout = actionClient
 
     // Create ads in a transaction
     await db.$transaction(
-      ads.map(ad => db.ad.create({ data: { ...ad, ...adDetails, email, faviconUrl, sessionId, status: "Pending" } })),
+      ads.map(ad =>
+        db.ad.create({
+          data: {
+            ...ad,
+            categoryId: adDetails.categoryId,
+            subcategoryId: adDetails.subcategoryId,
+            name: adDetails.name,
+            description: adDetails.description,
+            websiteUrl: adDetails.websiteUrl,
+            buttonLabel: adDetails.buttonLabel,
+            faviconUrl,
+            sessionId,
+            email,
+            status: "Pending",
+          },
+        }),
+      ),
     )
 
     // Revalidate the cache
@@ -189,6 +207,8 @@ export const createDraftAdAndCheckout = actionClient
         buttonLabel,
         faviconUrl,
         bannerUrl,
+        categoryId,
+        subcategoryId,
       },
       ctx: { db },
     }) => {
@@ -226,7 +246,7 @@ export const createDraftAdAndCheckout = actionClient
       const resolvedFaviconUrl = faviconUrl || (await fetchAndUploadMedia(websiteUrl, faviconPath, "favicon"))
 
       let parsedAds: Omit<
-        Omit<Prisma.AdCreateInput, "email">,
+        Omit<Prisma.AdUncheckedCreateInput, "email">,
         "sessionId" | "name" | "description" | "websiteUrl" | "buttonLabel" | "faviconUrl" | "bannerUrl"
       >[] = []
 
@@ -251,7 +271,9 @@ export const createDraftAdAndCheckout = actionClient
         email: customerEmail,
         faviconUrl: resolvedFaviconUrl,
         bannerUrl,
-      }
+        categoryId,
+        subcategoryId,
+      } as const
 
       // Create Draft ad records, one per line item mapped in metadata
       if (parsedAds.length > 0) {
