@@ -21,6 +21,8 @@ export const findAdvertiserAds = async (email: string) => {
       endsAt: true,
       clicks: true,
       impressions: true,
+      categoryId: true,
+      subcategoryId: true,
       createdAt: true,
       updatedAt: true,
     },
