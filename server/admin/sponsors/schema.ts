@@ -28,6 +28,7 @@ export type SponsorListParams = inferParserType<typeof sponsorListParams>
 export const sponsorSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Name is required"),
+  slug: z.string().optional(),
   logoUrl: z.url({ protocol: /^https?$/, normalize: true }).min(1, "Logo URL is required"),
   websiteUrl: z.string().url().optional().or(z.literal("")),
   isActive: z.boolean().default(true),
