@@ -15,14 +15,39 @@ const upsert = adminProcedure
   .handler(async ({ input, context: { db, revalidate } }) => {
     const { id, ...data } = input
 
-    const ad = id
-      ? await db.ad.update({
-          where: { id },
-          data,
-        })
-      : await db.ad.create({
-          data,
-        })
+    // Validate subcategoryId to avoid FK violations
+    let resolvedSubcategoryId: string | undefined = undefined
+    if (data.subcategoryId) {
+      const sub = await db.subcategory.findUnique({ where: { id: data.subcategoryId } })
+      if (!sub) {
+        console.warn(`Invalid subcategoryId provided in admin ad upsert: ${data.subcategoryId} — ignoring`)
+        resolvedSubcategoryId = undefined
+      } else {
+        resolvedSubcategoryId = data.subcategoryId
+      }
+    }
+
+    // Replace subcategoryId with resolved value (may be undefined)
+    const createUpdateData = { ...data, subcategoryId: resolvedSubcategoryId }
+
+    let ad
+    try {
+      ad = id
+        ? await db.ad.update({
+            where: { id },
+            data: createUpdateData,
+          })
+        : await db.ad.create({
+            data: createUpdateData,
+          })
+    } catch (err) {
+      console.error("Failed to create/update ad in admin upsert", {
+        id,
+        createUpdateData,
+        error: err,
+      })
+      throw err
+    }
 
     if (id && data.status && data.status !== ad.status) {
       after(async () => await notifyAdvertiserOfAdStatusChange(ad))
@@ -46,22 +71,30 @@ const duplicate = adminProcedure
       throw new Error("Ad not found")
     }
 
-    const newAd = await db.ad.create({
-      data: {
-        name: `${ad.name} (Copy)`,
-        email: ad.email,
-        description: ad.description,
-        websiteUrl: ad.websiteUrl,
-        faviconUrl: ad.faviconUrl,
-        bannerUrl: ad.bannerUrl,
-        buttonLabel: ad.buttonLabel,
-        type: ad.type,
-        categoryId: ad.categoryId,
-        subcategoryId: ad.subcategoryId,
-        startsAt: ad.startsAt,
-        endsAt: ad.endsAt,
-      },
-    })
+    let newAd
+    try {
+      const resolvedDuplicateSubcategoryId = ad.subcategoryId && (await db.subcategory.findUnique({ where: { id: ad.subcategoryId } })) ? ad.subcategoryId : undefined
+
+      newAd = await db.ad.create({
+        data: {
+          name: `${ad.name} (Copy)`,
+          email: ad.email,
+          description: ad.description,
+          websiteUrl: ad.websiteUrl,
+          faviconUrl: ad.faviconUrl,
+          bannerUrl: ad.bannerUrl,
+          buttonLabel: ad.buttonLabel,
+          type: ad.type,
+          categoryId: ad.categoryId,
+          subcategoryId: resolvedDuplicateSubcategoryId,
+          startsAt: ad.startsAt,
+          endsAt: ad.endsAt,
+        },
+      })
+    } catch (err) {
+      console.error("Failed duplicating ad", { originalAdId: ad.id, ad, error: err })
+      throw err
+    }
 
     revalidate({
       tags: ["ads"],

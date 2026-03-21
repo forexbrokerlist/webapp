@@ -9,6 +9,7 @@ import {
   GalleryHorizontalEndIcon,
   GemIcon,
   LogOutIcon,
+  MailIcon,
   MegaphoneIcon,
   MessageSquareIcon,
   StarIcon,
@@ -122,6 +123,11 @@ export const Sidebar = () => {
           title: "Ads",
           href: "/admin/ads",
           prefix: <MegaphoneIcon />,
+        },
+        {
+          title: "Newsletter",
+          href: "/admin/newsletter",
+          prefix: <MailIcon />,
         },
 
         undefined, // Separator

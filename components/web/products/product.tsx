@@ -8,28 +8,27 @@ import { useAction } from "next-safe-action/hooks"
 import { useRouter } from "next/navigation"
 import type { ComponentProps, ReactNode } from "react"
 import { toast } from "sonner"
-import type Stripe from "stripe"
 import { Badge } from "~/components/common/badge"
 import { Button } from "~/components/common/button"
 import { Card, CardBadges, CardBg } from "~/components/common/card"
 import { H4 } from "~/components/common/heading"
 import { Skeleton } from "~/components/common/skeleton"
 import { Stack } from "~/components/common/stack"
-import { Price } from "~/components/web/price"
+import { Price as PriceDisplay } from "~/components/web/price"
 import { ProductFeatures } from "~/components/web/products/product-features"
 import { ProductIntervalSwitch } from "~/components/web/products/product-interval-switch"
 import { siteConfig } from "~/config/site"
 import { useProductPrices } from "~/hooks/use-product-prices"
-import { getProductFeatures, type ProductInterval } from "~/lib/products"
+import { getProductFeatures, type Product, type Price, type ProductInterval } from "~/lib/products"
 import { cx } from "~/lib/utils"
 import { createStripeCheckout } from "~/server/web/products/actions"
 
 const productClassName = "items-stretch gap-8 basis-72 grow max-w-80 bg-transparent"
 
 type ProductData = {
-  product: Stripe.Product
-  prices: Stripe.Price[]
-  coupon?: Stripe.Coupon
+  product: Product
+  prices: Price[]
+  coupon?: any
 }
 
 type ProductCheckoutData = Omit<
@@ -133,7 +132,7 @@ const Product = ({
         )}
       </Stack>
 
-      <Price
+      <PriceDisplay
         price={price}
         fullPrice={fullPrice}
         interval={t(`price_period.${isSubscription ? "month" : "one_time"}`)}

@@ -60,11 +60,11 @@ export const Footer = ({ children, className, ...props }: ComponentProps<"div">)
               </NavLink>
             </Tooltip>
 
-            <Tooltip tooltip={t("navigation.source_code")}>
+            {/* <Tooltip tooltip={t("navigation.source_code")}>
               <ExternalLink href={linksConfig.github} className={navLinkVariants()}>
                 <BrandGitHubIcon />
               </ExternalLink>
-            </Tooltip>
+            </Tooltip> */}
           </Stack>
         </Stack>
 

@@ -135,7 +135,7 @@ export const createAdDetailsSchema = (t: TFunction) => {
       .url({ protocol: /^https?$/, normalize: true, error: t("invalidUrl") })
       .min(1, { error: t("required") }),
     categoryId: z.string().min(1, { error: t("required") }),
-    subcategoryId: z.string().optional(),
+    subcategoryId: z.string().optional().transform(val => val || undefined),
     faviconUrl: z.string().optional(),
     bannerUrl: z.string().optional(),
     buttonLabel: z.string().optional(),

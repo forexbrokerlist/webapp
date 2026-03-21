@@ -3,7 +3,8 @@ import { createLoader, parseAsString, type SearchParams } from "nuqs/server"
 import type { ComponentProps } from "react"
 import { Product } from "~/components/web/products/product"
 import { ProductList } from "~/components/web/products/product-list"
-import { getProductsForListing, type ProductProps, type ProductWithPrices } from "~/lib/products"
+import { type ProductProps, type ProductWithPrices } from "~/lib/products"
+import { getProductsForListing } from "~/server/web/products/queries"
 
 type ProductQueryProps = ComponentProps<typeof ProductList> & {
   searchParams: Promise<SearchParams>

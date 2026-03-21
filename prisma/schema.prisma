@@ -482,11 +482,11 @@ model Payment {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  brokerId Int
-  broker   Brokers @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+  brokerId Int?
+  broker   Brokers? @relation(fields: [brokerId], references: [id], onDelete: Cascade)
 
-  planId String
-  plan   Plan   @relation(fields: [planId], references: [id])
+  planId String?
+  plan   Plan?   @relation(fields: [planId], references: [id])
 
   amount   Float
   currency String @default("USD")
