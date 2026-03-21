@@ -20,18 +20,18 @@ import { createSubmitBrokerSchema } from "~/server/web/shared/schema"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/common/select"
 import { RelationSelector } from "~/components/common/relation-selector"
 
-type SubmitFormProps = ComponentProps<"form"> & { 
+type SubmitFormProps = ComponentProps<"form"> & {
   categories?: any[]
-  subcategories?: any[] 
+  subcategories?: any[]
   tags?: any[]
 }
 
-export const SubmitForm = ({ 
-  className, 
-  categories = [], 
-  subcategories = [], 
+export const SubmitForm = ({
+  className,
+  categories = [],
+  subcategories = [],
   tags = [],
-  ...props 
+  ...props
 }: SubmitFormProps) => {
   const router = useRouter()
   const t = useTranslations("forms.submit")
@@ -108,7 +108,7 @@ export const SubmitForm = ({
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel data-required htmlFor={field.name}>
-                Broker Name:
+                Name:
               </FieldLabel>
               <Input
                 id={field.name}
@@ -240,7 +240,7 @@ export const SubmitForm = ({
           name="subcategoryIds"
           render={({ field, fieldState }) => {
             const selectedCategoryIds = form.watch("categoryIds") ?? []
-            const filteredSubcategories = subcategories.filter(s => 
+            const filteredSubcategories = subcategories.filter(s =>
               selectedCategoryIds.length === 0 || selectedCategoryIds.includes(s.categoryId)
             )
 
@@ -277,7 +277,7 @@ export const SubmitForm = ({
         />
 
         <h3 className="col-span-full font-semibold text-xl mt-4 -mb-2">Trading Conditions</h3>
-        
+
         <Controller
           control={form.control}
           name="trading_platforms"
@@ -379,7 +379,7 @@ export const SubmitForm = ({
             </Field>
           )}
         />
-        
+
         <Controller
           control={form.control}
           name="funding_methods"
@@ -419,7 +419,7 @@ export const SubmitForm = ({
             </Field>
           )}
         />
-        
+
         <Controller
           control={form.control}
           name="withdrawal_options"
@@ -513,7 +513,7 @@ export const SubmitForm = ({
             </Field>
           )}
         />
-        
+
         <Controller
           control={form.control}
           name="cons"
