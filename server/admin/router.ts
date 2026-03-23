@@ -11,6 +11,7 @@ import { userRouter } from "~/server/admin/users/router"
 import { postRouter } from "~/server/admin/posts/router"
 import { newsletterRouter } from "~/server/admin/newsletter/router"
 import { contactsRouter } from "~/server/admin/contacts/router"
+import { paymentRouter } from "~/server/admin/payments/router"
 
 // -----------------------------------------------------------------------------
 // Health-check procedure to verify oRPC infrastructure
@@ -36,6 +37,7 @@ export const adminRouter = {
   posts: postRouter,
   newsletter: newsletterRouter,
   contacts: contactsRouter,
+  payments: paymentRouter,
 }
 
 export type AdminRouter = typeof adminRouter

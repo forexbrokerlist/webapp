@@ -37,3 +37,5 @@ export const checkoutSchema = z.object({
   successUrl: z.string(),
   cancelUrl: z.string().optional(),
 })
+
+export type CheckoutInput = z.infer<typeof checkoutSchema>;

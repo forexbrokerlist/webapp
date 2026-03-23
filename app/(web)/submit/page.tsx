@@ -11,9 +11,9 @@ import { getPageData, getPageMetadata } from "~/lib/pages"
 const namespace = "pages.submit"
 
 // Get page data
-const getData = cache(async () => {
+const getData = cache(async (planSlug?: string) => {
   const t = await getTranslations()
-  const url = "/submit"
+  const url = planSlug ? `/submit?plan=${planSlug}` : "/submit"
   const title = t(`${namespace}.title`)
   const description = t(`${namespace}.description`, { siteName: siteConfig.name })
 
@@ -22,23 +22,27 @@ const getData = cache(async () => {
   })
 })
 
-export const generateMetadata = async (): Promise<Metadata> => {
-  const { url, metadata } = await getData()
+export const generateMetadata = async ({ searchParams }: { searchParams: Promise<{ plan?: string, cancelled?: string }> }): Promise<Metadata> => {
+  const { plan: planSlug } = await searchParams
+  const { url, metadata } = await getData(planSlug)
   return getPageMetadata({ url, metadata })
 }
 
 import { findCategories } from "~/server/web/categories/queries"
 import { findSubcategories } from "~/server/web/subcategories/queries"
 import { findTags } from "~/server/web/tags/queries"
+import { findPlanBySlug } from "~/server/web/plans/queries"
 import { getServerSession } from "~/lib/auth"
 import { Hint } from "~/components/common/hint"
 
-export default async function () {
+export default async function ({ searchParams }: { searchParams: Promise<{ plan?: string, cancelled?: string }> }) {
+  const { plan: planSlug, cancelled } = await searchParams
   const session = await getServerSession()
-  const { metadata } = await getData()
+  const { metadata } = await getData(planSlug)
   const categories = await findCategories({ all: true }) // Fetch all categories
   const subcategories = await findSubcategories()
   const tags = await findTags({ all: true })
+  const plan = planSlug ? await findPlanBySlug(planSlug) : null
 
   return (
     <>
@@ -54,7 +58,7 @@ export default async function () {
               You must be logged in to submit a broker.
             </Hint>
           )}
-          <SubmitForm categories={categories} subcategories={subcategories} tags={tags} />
+          <SubmitForm categories={categories} subcategories={subcategories} tags={tags} plan={plan} isCancelled={cancelled === "true"} />
         </Section.Content>
       </Section>
     </>

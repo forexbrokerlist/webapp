@@ -14,6 +14,7 @@ import {
   MessageSquareIcon,
   StarIcon,
   TagIcon,
+  BanknoteIcon,
   TriangleAlertIcon,
   UsersIcon,
 } from "lucide-react"
@@ -113,6 +114,11 @@ export const Sidebar = () => {
           title: "Reports",
           href: "/admin/reports",
           prefix: <TriangleAlertIcon />,
+        },
+        {
+          title: "Payments",
+          href: "/admin/payments",
+          prefix: <BanknoteIcon />,
         },
         {
           title: "Sponsors",

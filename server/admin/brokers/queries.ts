@@ -8,6 +8,12 @@ export const findBrokers = async (params: any = {}) => {
     ...params.where ? { where: params.where } : {},
     ...params.skip !== undefined ? { skip: params.skip } : {},
     ...params.take !== undefined ? { take: params.take } : {},
+    include: {
+      payments: {
+        orderBy: { createdAt: "desc" },
+        take: 1
+      }
+    }
   })
 }
 

@@ -10,13 +10,16 @@ type AdvertisePickersProps = {
 }
 
 export const AdvertisePickers = async ({ searchParams }: AdvertisePickersProps) => {
-  const searchParamsLoader = createLoader({ type: parseAsStringEnum(Object.values(AdType)) })
-  const { type } = searchParamsLoader(await searchParams)
+  const searchParamsLoader = createLoader({ 
+    type: parseAsStringEnum(Object.values(AdType)),
+    cancelled: parseAsStringEnum(["true", "false"])
+  })
+  const { type, cancelled } = searchParamsLoader(await searchParams)
   const [ads, categories, subcategories] = await Promise.all([
     findAds({}),
     findCategories({ all: true }),
     findSubcategories(),
   ])
 
-  return <AdvertiseFlow ads={ads} type={type} categories={categories} subcategories={subcategories} />
+  return <AdvertiseFlow ads={ads} type={type} categories={categories} subcategories={subcategories} isCancelled={cancelled === "true"} />
 }
