@@ -5,7 +5,6 @@ import { formatCurrency, formatNumber } from "@primoui/utils"
 import { AnimatePresence, motion, type Variants } from "motion/react"
 import { useLocale, useTranslations } from "next-intl"
 import type { ComponentProps } from "react"
-import type Stripe from "stripe"
 import { Badge } from "~/components/common/badge"
 import { cx } from "~/lib/utils"
 
@@ -17,12 +16,17 @@ const getDefaultFormat = (currency: string): Format => ({
   trailingZeroDisplay: "stripIfInteger",
 })
 
+type Coupon = {
+  max_redemptions: number | null
+  times_redeemed: number
+}
+
 type PriceProps = ComponentProps<"div"> & {
   price: number
   fullPrice?: number | null
   interval?: string
   discount?: number | null
-  coupon?: Stripe.Coupon
+  coupon?: Coupon
   format?: Format
   currency?: string
   priceClassName?: string

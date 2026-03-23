@@ -21,7 +21,7 @@ import { siteConfig } from "~/config/site"
 import { useProductPrices } from "~/hooks/use-product-prices"
 import { getProductFeatures, type Product, type Price, type ProductInterval } from "~/lib/products"
 import { cx } from "~/lib/utils"
-import { createStripeCheckout } from "~/server/web/products/actions"
+import { createCheckout } from "~/server/web/products/actions"
 
 const productClassName = "items-stretch gap-8 basis-72 grow max-w-80 bg-transparent"
 
@@ -32,7 +32,7 @@ type ProductData = {
 }
 
 type ProductCheckoutData = Omit<
-  InferSafeActionFnInput<typeof createStripeCheckout>["parsedInput"],
+  InferSafeActionFnInput<typeof createCheckout>["parsedInput"],
   "lineItems" | "mode" | "coupon"
 >
 
@@ -63,7 +63,7 @@ const Product = ({
     defaultValue: "month",
   })
 
-  const { execute, isPending } = useAction(createStripeCheckout, {
+  const { execute, isPending } = useAction(createCheckout, {
     onError: ({ error }) => {
       console.error("Checkout error:", error)
       toast.error(error.serverError)

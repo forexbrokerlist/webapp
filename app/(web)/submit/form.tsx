@@ -19,7 +19,7 @@ import { TextArea } from "~/components/common/textarea"
 import { cx } from "~/lib/utils"
 import { submitBroker } from "~/server/web/actions/submit"
 import { createSubmitBrokerSchema } from "~/server/web/shared/schema"
-import { createStripeCheckout } from "~/server/web/products/actions"
+import { createCheckout } from "~/server/web/products/actions"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/common/select"
 import { RelationSelector } from "~/components/common/relation-selector"
@@ -64,7 +64,7 @@ export const SubmitForm = ({
   const schema = createSubmitBrokerSchema(tSchema)
   const resolver = zodResolver(schema)
 
-  const checkoutAction = useAction(createStripeCheckout, {
+  const checkoutAction = useAction(createCheckout, {
     onError: ({ error }) => {
       toast.error(error.serverError || "Failed to initiate payment")
     }

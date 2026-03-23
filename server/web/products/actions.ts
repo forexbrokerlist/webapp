@@ -10,7 +10,7 @@ import { checkoutSchema, type CheckoutInput } from "~/server/web/products/schema
 import { cregis } from "~/services/cregis";
 import { db } from "~/services/db";
 
-export const createStripeCheckout = actionClient
+export const createCheckout = actionClient
   .inputSchema(checkoutSchema)
   .action(
     async ({
