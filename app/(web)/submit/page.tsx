@@ -31,7 +31,7 @@ export const generateMetadata = async ({ searchParams }: { searchParams: Promise
 import { findCategories } from "~/server/web/categories/queries"
 import { findSubcategories } from "~/server/web/subcategories/queries"
 import { findTags } from "~/server/web/tags/queries"
-import { findPlanBySlug } from "~/server/web/plans/queries"
+import { findPlanBySlug, findPlans } from "~/server/web/plans/queries"
 import { getServerSession } from "~/lib/auth"
 import { Hint } from "~/components/common/hint"
 
@@ -43,6 +43,7 @@ export default async function ({ searchParams }: { searchParams: Promise<{ plan?
   const subcategories = await findSubcategories()
   const tags = await findTags({ all: true })
   const plan = planSlug ? await findPlanBySlug(planSlug) : null
+  const allPlans = await findPlans()
 
   return (
     <>
@@ -58,7 +59,14 @@ export default async function ({ searchParams }: { searchParams: Promise<{ plan?
               You must be logged in to submit a broker.
             </Hint>
           )}
-          <SubmitForm categories={categories} subcategories={subcategories} tags={tags} plan={plan} isCancelled={cancelled === "true"} />
+          <SubmitForm 
+            categories={categories} 
+            subcategories={subcategories} 
+            tags={tags} 
+            plan={plan} 
+            plans={allPlans}
+            isCancelled={cancelled === "true"} 
+          />
         </Section.Content>
       </Section>
     </>

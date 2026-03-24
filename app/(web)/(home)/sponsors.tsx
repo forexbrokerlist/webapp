@@ -12,9 +12,8 @@ import { slugify } from "@primoui/utils"
 
 export const Sponsors = async ({ className, ...props }: ComponentProps<"section">) => {
   const dbSponsors = await db.sponsor.findMany({
-    where: { isActive: true },
     include: { Category: true },
-    orderBy: { order: "asc" },
+    orderBy: [{ isActive: "desc" }, { order: "asc" }],
   })
 
   // Only render if sponsors exist
@@ -110,14 +109,18 @@ export const Sponsors = async ({ className, ...props }: ComponentProps<"section"
                     )}
                   </div>
 
+
                   <div className="flex flex-col items-center gap-0.5 px-2">
                     <span className="font-bold text-base tracking-tight text-foreground/80 group-hover/card:text-foreground transition-colors line-clamp-1 text-center">
                       {sponsor.name}
                     </span>
-                    <span className="text-[10px] uppercase tracking-widest font-bold text-primary group-hover/card:text-muted-foreground/50 transition-colors">
-                      Sponsor
-                    </span>
+                    {sponsor.isActive && (
+                      <span className="text-[10px] uppercase tracking-widest font-bold text-primary group-hover/card:text-muted-foreground/50 transition-colors">
+                        Sponsor
+                      </span>
+                    )}
                   </div>
+
                 </Link>
               ))}
             </div>

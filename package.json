@@ -23,6 +23,8 @@
     "@aws-sdk/client-s3": "^3.987.0",
     "@aws-sdk/lib-storage": "^3.987.0",
     "@aws-sdk/s3-request-presigner": "^3.998.0",
+    "@c15t/nextjs": "^1.8.5",
+    "@c15t/scripts": "^1.0.1",
     "@content-collections/core": "^0.13.1",
     "@content-collections/mdx": "^0.2.2",
     "@content-collections/next": "^0.2.10",

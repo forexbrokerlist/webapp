@@ -28,9 +28,10 @@ type PlanCardProps = {
     }
     className?: string
     buttonLabel?: ReactNode
+    onClick?: (plan: PlanData) => void
 }
 
-export const PlanCard = ({ plan, brokerId, checkoutData, className, buttonLabel }: PlanCardProps) => {
+export const PlanCard = ({ plan, brokerId, checkoutData, className, buttonLabel, onClick }: PlanCardProps) => {
     const [isClaiming, setIsClaiming] = useState(false)
     const isFree = plan.slug === "free"
     const isGrowth = plan.slug === "growth"
@@ -55,6 +56,11 @@ export const PlanCard = ({ plan, brokerId, checkoutData, className, buttonLabel 
                 : plan.features
 
     const onAction = () => {
+        if (onClick) {
+            onClick(plan)
+            return
+        }
+
         if (isFree && brokerId) {
             setIsClaiming(true)
             return
@@ -63,7 +69,9 @@ export const PlanCard = ({ plan, brokerId, checkoutData, className, buttonLabel 
         // Here we would normally trigger the checkout
         // For now, we'll redirect to the success URL or handle it as needed
         if (checkoutData?.successUrl) {
-            window.location.href = `${checkoutData.successUrl}&plan=${plan.slug}`
+            const url = new URL(checkoutData.successUrl, window.location.origin)
+            url.searchParams.set("plan", plan.slug)
+            window.location.href = url.toString()
         }
     }
 
