@@ -2,7 +2,6 @@ import { format } from "date-fns"
 // import { getPlausibleVisitors } from "~/lib/analytics"
 import { calculateMetricStats, fillMissingDates, getMetricDateRange } from "~/lib/metrics"
 import { adminProcedure } from "~/lib/orpc"
-import { stripe } from "~/services/stripe"
 
 // -----------------------------------------------------------------------------
 // Dashboard stats: resource counts
@@ -18,25 +17,28 @@ const stats = adminProcedure.handler(async ({ context: { db } }) => {
 })
 
 // -----------------------------------------------------------------------------
-// Revenue metric: Stripe payment intents for last 30 days
+// Revenue metric: Local payments for last 30 days
 // -----------------------------------------------------------------------------
-const revenue = adminProcedure.handler(async () => {
+const revenue = adminProcedure.handler(async ({ context: { db } }) => {
   try {
     const { today, startDate } = getMetricDateRange()
 
-    const { data: paymentIntents } = await stripe.paymentIntents.list({
-      created: { gte: Math.floor(startDate.getTime() / 1000) },
-      limit: 100,
+    const payments = await db.payment.findMany({
+      where: {
+        status: "Paid",
+        createdAt: { gte: startDate },
+      },
+      select: {
+        amount: true,
+        createdAt: true,
+      },
     })
 
-    const revenueByDate = paymentIntents
-      .filter(({ status }) => status === "succeeded")
-      .reduce<Record<string, number>>((acc, paymentIntent) => {
-        const date = format(new Date(paymentIntent.created * 1000), "yyyy-MM-dd")
-        const amount = Math.round(paymentIntent.amount_received / 100)
-        acc[date] = (acc[date] || 0) + amount
-        return acc
-      }, {})
+    const revenueByDate = payments.reduce<Record<string, number>>((acc, payment) => {
+      const date = format(payment.createdAt, "yyyy-MM-dd")
+      acc[date] = (acc[date] || 0) + Math.round(payment.amount)
+      return acc
+    }, {})
 
     const results = fillMissingDates(revenueByDate, startDate, today)
     const { total, average } = calculateMetricStats(results)

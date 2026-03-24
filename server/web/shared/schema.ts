@@ -74,6 +74,28 @@ export const createNewsletterSchema = (t: TFunction) => {
   })
 }
 
+export const createContactUsSchema = (t: TFunction) => {
+  return z.object({
+    captcha: z.literal("").optional(),
+    name: z
+      .string()
+      .trim()
+      .min(1, { error: t("required") })
+      .max(120, { error: issue => t("maxLength", { length: Number(issue.maximum) }) }),
+    email: z.email({ error: t("invalidEmail") }),
+    subject: z
+      .string()
+      .trim()
+      .max(160, { error: issue => t("maxLength", { length: Number(issue.maximum) }) })
+      .optional(),
+    message: z
+      .string()
+      .trim()
+      .min(1, { error: t("required") })
+      .max(4000, { error: issue => t("maxLength", { length: Number(issue.maximum) }) }),
+  })
+}
+
 export const createReportToolSchema = (t: TFunction) => {
   return z.object({
     type: z.string().min(1, { error: t("required") }),
@@ -112,6 +134,8 @@ export const createAdDetailsSchema = (t: TFunction) => {
     websiteUrl: z
       .url({ protocol: /^https?$/, normalize: true, error: t("invalidUrl") })
       .min(1, { error: t("required") }),
+    categoryId: z.string().min(1, { error: t("required") }),
+    subcategoryId: z.string().optional().transform(val => val || undefined),
     faviconUrl: z.string().optional(),
     bannerUrl: z.string().optional(),
     buttonLabel: z.string().optional(),

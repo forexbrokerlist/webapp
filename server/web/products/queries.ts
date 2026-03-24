@@ -1,43 +1,48 @@
-"use server"
-
-import { cacheLife, cacheTag } from "next/cache"
-import { stripe } from "~/services/stripe"
+import { db } from "~/services/db"
+import { sortProductsByPrice, type Price, type Product, type ProductWithPrices } from "~/lib/products"
 
 export const findStripeProducts = async () => {
-  "use cache"
-
-  cacheTag("stripe-products")
-  cacheLife("hours")
-
   try {
-    const { data: products } = await stripe.products.list({
-      active: true,
-      limit: 100,
-      expand: ["data.default_price"],
+    const plans = await db.plan.findMany({
+      where: { isActive: true },
+      orderBy: { price: "asc" },
     })
 
-    return products
+    // Map database Plan to a shape expected by the frontend (previously Stripe.Product)
+    return plans.map((plan) => ({
+      id: plan.id,
+      name: plan.name,
+      description: plan.description ?? "",
+      marketing_features: plan.features.map((feature) => ({ name: feature })),
+      default_price: {
+        id: plan.id,
+        unit_amount: plan.price * 100, // cents for Stripe compatibility in some components
+        currency: plan.currency.toLowerCase(),
+      },
+    }))
   } catch (error) {
-    console.error("Failed to fetch Stripe products:", error)
+    console.error("Failed to fetch products:", error)
     throw new Error("Unable to load products. Please try again later.")
   }
 }
 
 export const findStripePricesByProduct = async (productId: string) => {
-  "use cache"
-
-  cacheTag(`stripe-prices-${productId}`)
-  cacheTag("stripe-prices")
-  cacheLife("days")
-
   try {
-    const { data: prices } = await stripe.prices.list({
-      product: productId,
-      active: true,
-      limit: 100,
+    const plan = await db.plan.findUnique({
+      where: { id: productId },
     })
 
-    return prices
+    if (!plan) return []
+
+    // Return a Stripe-compatible Price object
+    return [
+      {
+        id: plan.id,
+        unit_amount: plan.price * 100,
+        currency: plan.currency.toLowerCase(),
+        recurring: { interval: "month" }, // Default for now
+      },
+    ]
   } catch (error) {
     console.error(`Failed to fetch prices for product ${productId}:`, error)
     throw new Error("Unable to load pricing information. Please try again later.")
@@ -45,26 +50,40 @@ export const findStripePricesByProduct = async (productId: string) => {
 }
 
 export const findStripeCoupon = async (code?: string) => {
-  "use cache"
-
-  cacheTag(`stripe-coupon-${code}`)
-  cacheTag("stripe-coupon")
-  cacheLife("days")
-
   if (!code?.trim()) return undefined
 
-  try {
-    const promoCodes = await stripe.promotionCodes.list({
-      code,
-      limit: 1,
-      active: true,
-      expand: ["data.coupon.applies_to"],
-    })
+  // Stripe coupons are being removed, but if you have a local Promocode model, use it here.
+  // For now, return undefined to disable coupon logic if Stripe is gone.
+  return undefined
+}
 
-    return promoCodes.data[0]?.coupon
-  } catch (error) {
-    console.error(`Failed to fetch coupon ${code}:`, error)
-    // For coupons, we return undefined instead of throwing to allow graceful degradation
-    return undefined
-  }
+/**
+ * Fetch prices for a list of products and prepare them for display.
+ */
+export const getProductsWithPrices = async (
+  products: Product[],
+  coupon?: any,
+): Promise<ProductWithPrices[]> => {
+  return Promise.all(
+    products.map(async product => {
+      const prices = (await findStripePricesByProduct(product.id)) as Price[]
+      return {
+        product,
+        prices,
+        coupon: undefined, // Coupons disabled for now
+      }
+    }),
+  )
+}
+
+/**
+ * Get the products for a listing.
+ */
+export const getProductsForListing = async (discountCode?: string) => {
+  const [products, coupon] = await Promise.all([
+    findStripeProducts() as Promise<Product[]>,
+    findStripeCoupon(discountCode),
+  ])
+
+  return getProductsWithPrices(sortProductsByPrice(products), coupon)
 }

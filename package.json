@@ -43,6 +43,7 @@
     "@types/marked": "^6.0.0",
     "@uiw/react-md-editor": "^4.0.11",
     "ai": "^6.0.79",
+    "axios": "^1.13.6",
     "better-auth": "^1.4.18",
     "change-case": "^5.4.4",
     "cmdk": "^1.1.1",
@@ -78,7 +79,6 @@
     "rss": "^1.2.2",
     "satori": "^0.19.2",
     "sonner": "^2.0.7",
-    "stripe": "^18.5.0",
     "tailwind-merge": "^3.4.0",
     "wretch": "^3.0.6",
     "zod": "^4.3.6"

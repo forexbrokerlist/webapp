@@ -26,6 +26,7 @@ export type RelationSelectorProps<T> = PropsWithChildren<{
   setIds: (ids: string[]) => void
   mapFunction?: (relation: T) => Relation
   sortFunction?: (a: T, b: T) => number
+  multiple?: boolean
 }>
 
 export const RelationSelector = <T extends Relation>({
@@ -35,6 +36,7 @@ export const RelationSelector = <T extends Relation>({
   setIds,
   mapFunction,
   sortFunction,
+  multiple = true,
 }: RelationSelectorProps<T>) => {
   const selectedRelations = relations?.filter(({ id }) => ids.includes(id))
 
@@ -94,9 +96,13 @@ export const RelationSelector = <T extends Relation>({
                     <CommandItem
                       key={relation.id}
                       onSelect={() => {
-                        setIds(
-                          isSelected ? ids.filter(id => id !== relation.id) : [...ids, relation.id],
-                        )
+                        if (multiple) {
+                          setIds(
+                            isSelected ? ids.filter(id => id !== relation.id) : [...ids, relation.id],
+                          )
+                        } else {
+                          setIds(isSelected ? [] : [relation.id])
+                        }
                       }}
                     >
                       <input

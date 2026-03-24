@@ -9,9 +9,12 @@ import {
   GalleryHorizontalEndIcon,
   GemIcon,
   LogOutIcon,
+  MailIcon,
   MegaphoneIcon,
+  MessageSquareIcon,
   StarIcon,
   TagIcon,
+  BanknoteIcon,
   TriangleAlertIcon,
   UsersIcon,
 } from "lucide-react"
@@ -81,11 +84,7 @@ export const Sidebar = () => {
           href: "/admin/categories",
           prefix: <GalleryHorizontalEndIcon />,
         },
-        {
-          title: "Blog",
-          href: "/admin/posts",
-          prefix: <FileTextIcon />,
-        },
+
         {
           title: "Subcategories",
           href: "/admin/subcategories",
@@ -97,14 +96,29 @@ export const Sidebar = () => {
           prefix: <TagIcon />,
         },
         {
+          title: "Blog",
+          href: "/admin/posts",
+          prefix: <FileTextIcon />,
+        },
+        {
           title: "Users",
           href: "/admin/users",
           prefix: <UsersIcon />,
         },
         {
+          title: "Contact Us",
+          href: "/admin/contacts",
+          prefix: <MessageSquareIcon />,
+        },
+        {
           title: "Reports",
           href: "/admin/reports",
           prefix: <TriangleAlertIcon />,
+        },
+        {
+          title: "Payments",
+          href: "/admin/payments",
+          prefix: <BanknoteIcon />,
         },
         {
           title: "Sponsors",
@@ -115,6 +129,11 @@ export const Sidebar = () => {
           title: "Ads",
           href: "/admin/ads",
           prefix: <MegaphoneIcon />,
+        },
+        {
+          title: "Newsletter",
+          href: "/admin/newsletter",
+          prefix: <MailIcon />,
         },
 
         undefined, // Separator

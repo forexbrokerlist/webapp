@@ -3,7 +3,8 @@ import { createLoader, parseAsString, type SearchParams } from "nuqs/server"
 import type { ComponentProps } from "react"
 import { Product } from "~/components/web/products/product"
 import { ProductList } from "~/components/web/products/product-list"
-import { getProductsForListing, type ProductProps, type ProductWithPrices } from "~/lib/products"
+import { type ProductProps, type ProductWithPrices } from "~/lib/products"
+import { getProductsForListing } from "~/server/web/products/queries"
 
 type ProductQueryProps = ComponentProps<typeof ProductList> & {
   searchParams: Promise<SearchParams>
@@ -21,13 +22,16 @@ export const ProductQuery = async ({
   const { discountCode } = await loadSearchParams(searchParams)
   const products = await getProductsForListing(discountCode)
 
-  const items = products
-    .map(item => ({ ...item, customProps: getProductProps?.(item) }))
-    .filter(({ customProps }) => isTruthy(customProps))
+  const items = products.map(item => ({
+    ...item,
+    customProps: getProductProps?.(item),
+  }))
+
+  const filteredItems = getProductProps ? items.filter(({ customProps }) => isTruthy(customProps)) : items
 
   return (
     <ProductList {...props}>
-      {items.map(({ product, prices, coupon, customProps }, index) => (
+      {filteredItems.map(({ product, prices, coupon, customProps }, index) => (
         <Product
           key={product.id}
           data={{ product: { ...product, ...customProps?.product }, prices, coupon }}

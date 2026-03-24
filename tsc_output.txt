@@ -1,0 +1,65 @@
+app/(web)/advertise/success/page.tsx(6,24): error TS2307: Cannot find module '~/app/(web)/advertise/success/ad-form' or its corresponding type declarations.
+app/(web)/advertise/success/page.tsx(7,24): error TS2307: Cannot find module '~/components/web/ads/ad-card' or its corresponding type declarations.
+app/(web)/advertise/success/page.tsx(8,53): error TS2307: Cannot find module '~/components/web/ui/intro' or its corresponding type declarations.
+app/(web)/advertise/success/page.tsx(9,25): error TS2307: Cannot find module '~/components/web/ui/section' or its corresponding type declarations.
+app/(web)/advertise/success/page.tsx(10,28): error TS2307: Cannot find module '~/config/site' or its corresponding type declarations.
+app/(web)/advertise/success/page.tsx(11,46): error TS2307: Cannot find module '~/lib/pages' or its corresponding type declarations.
+app/(web)/advertise/success/page.tsx(12,20): error TS2307: Cannot find module '~/lib/utils' or its corresponding type declarations.
+app/(web)/advertise/success/page.tsx(13,41): error TS2307: Cannot find module '~/lib/media' or its corresponding type declarations.
+app/(web)/advertise/success/page.tsx(14,30): error TS2307: Cannot find module '~/server/web/ads/payloads' or its corresponding type declarations.
+app/(web)/advertise/success/page.tsx(15,20): error TS2307: Cannot find module '~/services/db' or its corresponding type declarations.
+app/(web)/advertise/success/page.tsx(17,14): error TS2304: Cannot find name 'PageProps'.
+app/(web)/advertise/success/page.tsx(59,39): error TS2304: Cannot find name 'PageProps'.
+app/(web)/advertise/success/page.tsx(82,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(web)/advertise/success/page.tsx(83,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(web)/advertise/success/page.tsx(84,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(web)/advertise/success/page.tsx(85,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(web)/advertise/success/page.tsx(88,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(web)/advertise/success/page.tsx(89,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(web)/advertise/success/page.tsx(90,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(web)/advertise/success/page.tsx(94,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(web)/advertise/success/page.tsx(95,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+node_modules/@formatjs/ecma402-abstract/utils.d.ts(45,92): error TS2339: Property 'ListFormat' does not exist on type 'typeof Intl'.
+node_modules/@formatjs/ecma402-abstract/utils.d.ts(45,113): error TS2694: Namespace 'Intl' has no exported member 'ListFormat'.
+node_modules/@types/mdx/types.d.ts(23,38): error TS2503: Cannot find namespace 'JSX'.
+node_modules/@types/mdx/types.d.ts(28,23): error TS2503: Cannot find namespace 'JSX'.
+node_modules/@types/mdx/types.d.ts(47,28): error TS2503: Cannot find namespace 'JSX'.
+node_modules/@types/mdx/types.d.ts(73,46): error TS2503: Cannot find namespace 'JSX'.
+node_modules/next/dist/build/webpack/loaders/next-app-loader/index.d.ts(1,13): error TS2613: Module '"next/dist/compiled/webpack/webpack"' has no default export. Did you mean to use 'import { webpack } from "next/dist/compiled/webpack/webpack"' instead?
+node_modules/next/dist/client/components/error-boundary.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/client/components/http-access-fallback/error-boundary.d.ts(11,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/client/components/layout-router.d.ts(2,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/client/image-component.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/client/link.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/client/script.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/client/with-router.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/lib/metadata/metadata.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/next-devtools/userspace/pages/pages-dev-overlay-setup.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/pages/_app.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/pages/_document.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/pages/_error.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/server/app-render/types.d.ts(10,8): error TS1192: Module '"next/dist/compiled/superstruct"' has no default export.
+node_modules/next/dist/server/web/spec-extension/adapters/headers.d.ts(39,16): error TS2304: Cannot find name 'HeadersIterator'.
+node_modules/next/dist/server/web/spec-extension/adapters/headers.d.ts(40,13): error TS2304: Cannot find name 'HeadersIterator'.
+node_modules/next/dist/server/web/spec-extension/adapters/headers.d.ts(41,15): error TS2304: Cannot find name 'HeadersIterator'.
+node_modules/next/dist/server/web/spec-extension/adapters/headers.d.ts(42,26): error TS2304: Cannot find name 'HeadersIterator'.
+node_modules/next/dist/shared/lib/app-router-context.shared-runtime.d.ts(4,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/shared/lib/app-router-types.d.ts(7,13): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/shared/lib/dynamic.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/shared/lib/head-manager-context.shared-runtime.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/shared/lib/head.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/shared/lib/image-config-context.shared-runtime.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/shared/lib/loadable-context.shared-runtime.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/shared/lib/loadable.shared-runtime.d.ts(21,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/shared/lib/router-context.shared-runtime.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/shared/lib/server-inserted-html.shared-runtime.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/next/dist/shared/lib/utils.d.ts(10,13): error TS1192: Module '"fs"' has no default export.
+node_modules/next/dist/styled-jsx/types/global.d.ts(1,8): error TS1259: Module '"/home/dreamworld/Projects/Rejoice/forex-brokerslist/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/use-intl/core.d.ts(2,15): error TS2846: A declaration file cannot be imported without 'import type'. Did you mean to import an implementation file './dist/types/core' instead?
+node_modules/use-intl/dist/types/core/Formats.d.ts(6,32): error TS2694: Namespace 'Intl' has no exported member 'ListFormatOptions'.
+node_modules/use-intl/dist/types/core/createFormatter.d.ts(35,148): error TS2694: Namespace 'Intl' has no exported member 'ListFormatOptions'.
+node_modules/use-intl/dist/types/core/createFormatter.d.ts(36,178): error TS2694: Namespace 'Intl' has no exported member 'ListFormatOptions'.
+node_modules/use-intl/dist/types/core/formatters.d.ts(8,31): error TS2694: Namespace 'Intl' has no exported member 'ListFormat'.
+node_modules/use-intl/dist/types/core/formatters.d.ts(18,62): error TS2339: Property 'ListFormat' does not exist on type 'typeof Intl'.
+node_modules/use-intl/dist/types/core/formatters.d.ts(18,81): error TS2694: Namespace 'Intl' has no exported member 'ListFormat'.
+node_modules/use-intl/react.d.ts(2,15): error TS2846: A declaration file cannot be imported without 'import type'. Did you mean to import an implementation file './dist/types/react' instead?

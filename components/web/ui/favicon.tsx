@@ -1,5 +1,6 @@
 import Image from "next/image"
 import type { ComponentProps } from "react"
+import { LogoSymbol } from "~/components/web/ui/logo-symbol"
 import type { VariantProps } from "~/lib/utils"
 import { cva, cx } from "~/lib/utils"
 
@@ -30,6 +31,20 @@ export const Favicon = ({
   ...props
 }: FaviconProps) => {
   if (!src) return null
+
+  if (src === "/favicon.png") {
+    return (
+      <div
+        className={cx(
+          faviconVariants({ contained, className }),
+          "flex items-center justify-center",
+        )}
+        style={{ width: size, height: size }}
+      >
+        <LogoSymbol className="w-[65%] h-[65%]" />
+      </div>
+    )
+  }
 
   return (
     <Image

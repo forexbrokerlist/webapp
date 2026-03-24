@@ -164,14 +164,25 @@ export const getFaviconFetchUrl = (url: string) => {
 }
 
 /**
- * Gets the URL of the screenshot API endpoint.
+ * Gets the URL of the screenshot API endpoint with key rotation.
  * @param url - The URL of the website to fetch the screenshot from.
+ * @param keyIndex - Optional index to pick a specific key (for rotation).
  * @returns The URL of the screenshot API endpoint.
  */
-export const getScreenshotFetchUrl = (url: string) => {
+export const getScreenshotFetchUrl = (url: string, keyIndex?: number) => {
+  const keys = [
+    env.SCREENSHOTONE_ACCESS_KEY,
+    env.SCREENSHOTONE_ACCESS_KEY1,
+    env.SCREENSHOTONE_ACCESS_KEY2,
+    env.SCREENSHOTONE_ACCESS_KEY3,
+  ]
+
+  const access_key =
+    keyIndex !== undefined ? keys[keyIndex % keys.length] : keys[Math.floor(Math.random() * keys.length)]
+
   const params = new URLSearchParams({
     url,
-    access_key: env.SCREENSHOTONE_ACCESS_KEY,
+    access_key,
     cache: "true",
 
     // Blockers
@@ -202,9 +213,13 @@ export const fetchAndUploadMedia = async (
   url: string,
   path: string,
   type: "favicon" | "screenshot",
+  keyIndex?: number,
 ) => {
-  const endpoint = type === "favicon" ? getFaviconFetchUrl(url) : getScreenshotFetchUrl(url)
+  const endpoint =
+    type === "favicon" ? getFaviconFetchUrl(url) : getScreenshotFetchUrl(url, keyIndex)
+  console.log("🚀 ~ fetchAndUploadMedia ~ endpoint:", endpoint)
   const { data, error } = await tryCatch(wretch(endpoint).get().arrayBuffer().then(Buffer.from))
+  console.log("🚀 ~ fetchAndUploadMedia ~ data:", data)
 
   if (error) {
     throw new Error(`Failed to fetch ${type} from ${url}: ${getErrorMessage(error)}`)

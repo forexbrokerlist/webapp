@@ -4,6 +4,10 @@
     {
       "path": "/api/cron/publish-tools",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/update-broker-screenshots",
+      "schedule": "0 0 1 * *"
     }
   ]
 }

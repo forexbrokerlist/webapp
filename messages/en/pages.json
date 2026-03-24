@@ -1,14 +1,52 @@
 {
   "about": {
     "title": "About {siteName}",
-    "description": "Learn more about our mission, our story, and the team behind the world's most comprehensive forex brokers listing.",
+    "description": "Learn more about our mission, our story, and the team behind the world's most comprehensive forex brokers directory.",
     "story": {
       "title": "Our Story",
-      "content": "Founded in 2024, {siteName} was born out of a simple observation: the forex market is vast, but finding reliable, transparent, and up-to-date information about brokers is often a challenge. We started as a small community project to list tools and resources for traders, and quickly evolved into a dedicated platform for broker discovery and evaluation."
+      "content": "Founded in 2026, {siteName} was born out of a simple but powerful observation: the forex market is vast and ever-growing, yet finding reliable, transparent, and up-to-date information about brokers remains a genuine challenge for traders at every level. What started as a small community project a humble effort to list useful tools and resources for forex traders quickly evolved into something far greater. As traders from around the world began relying on our platform to discover, compare, and evaluate brokers, we realized the scale of the problem we were solving. Today, {siteName} is home to 480+ brokers, a growing network of industry sponsors, and thousands of traders who trust our platform every day to make smarter, more informed trading decisions."
     },
     "mission": {
       "title": "Our Mission",
-      "content": "Our mission is to empower traders by providing them with the clearest, most accurate data on forex brokers worldwide. We believe in transparency, community-driven insights, and the power of data to help traders make informed decisions."
+      "content": "Our mission is simple: to empower traders with clarity. We believe that every trader whether a beginner or a seasoned professional deserves access to accurate, unbiased, and comprehensive data about the brokers they choose to trust with their capital. We are committed to:",
+      "list": {
+        "transparency": "Transparency – Clearly distinguishing between sponsored listings and organic results",
+        "accuracy": "Accuracy – Regularly updating broker data including spreads, regulations, platforms, and minimum deposits",
+        "community": "Community – Building a platform driven by real trader experiences and insights",
+        "accessibility": "Accessibility – Making professional-grade broker research available to everyone, for free"
+      }
+    },
+    "offer": {
+      "title": "What We Offer",
+      "content": "{siteName} is more than just a directory. Our platform brings together everything a trader needs in one place:",
+      "list": {
+        "listings": "480+ Broker Listings – One of the most comprehensive forex broker databases available",
+        "comparisons": "Side-by-Side Comparisons – Compare spreads, regulations, platforms, and more",
+        "network": "Sponsor & Partner Network – Connecting traders with trusted PSP partners, trading platforms, CRM providers, liquidity partners, and more",
+        "education": "Forex Education & Training – Resources to help traders grow their knowledge",
+        "algorithmic": "Algorithmic Trading Providers – Discover leading bot and algo trading solutions",
+        "updates": "Regular Updates – Our team continuously monitors and refreshes listing data"
+      }
+    },
+    "trust": {
+      "title": "Why Traders Trust Us",
+      "list": {
+        "brokers": "480+ brokers listed and growing",
+        "customers": "200+ happy customers on our paid plans",
+        "subscribers": "5,000+ newsletter subscribers from the trading community",
+        "sponsorship": "Transparent sponsorship – sponsored listings are always clearly labeled",
+        "guarantee": "30-day money-back guarantee on all paid plans",
+        "partners": "Supported by leading industry partners across trading platforms, liquidity, payments, and CRM"
+      }
+    },
+    "part_of_it": {
+      "title": "Want to Be Part of It?",
+      "content": "Whether you're a broker looking to reach thousands of traders, an industry partner seeking visibility, or a trader wanting to stay informed we have a place for you.",
+      "list": {
+        "list": "List your brokerage → Submit your broker",
+        "advertise": "Advertise with us → Reach our professional audience",
+        "subscribe": "Stay updated → Subscribe to our newsletter"
+      }
     },
     "team": {
       "title": "Meet the Team",
@@ -21,9 +59,20 @@
       }
     },
     "contact": {
-      "title": "Get in Touch",
-      "content": "Have questions, suggestions, or want to collaborate? We're always looking for new perspectives and partnerships. Reach out to us anytime.",
+      "title": "Contact Us",
+      "content": "Have questions, suggestions, or partnership inquiries? We'd love to hear from you.",
+      "email": "forexbrokerlist24@gmail.com",
       "button": "Contact Us"
+    }
+  },
+  "contact_us": {
+    "title": "Contact Us",
+    "description": "Need help with listings, advertising, or partnerships? Send us a message and our team will get back to you shortly.",
+    "sidebar": {
+      "title": "We're here to help",
+      "description": "Share your question, suggestion, or partnership idea and we'll follow up by email.",
+      "reply_time": "Most requests receive a reply within 1-2 business days.",
+      "email_label": "Prefer direct email?"
     }
   },
   "advertise": {
@@ -53,9 +102,9 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "description": "Manage your account and tools on {siteName}.",
+    "description": "Manage your account and brokers on {siteName}.",
     "tabs": {
-      "tools": "My Tools",
+      "tools": "My Brokers",
       "bookmarks": "Bookmarks"
     },
     "table": {
@@ -75,12 +124,12 @@
         "name_placeholder": "Search by name..."
       },
       "tools": {
-        "empty_state": "No tools found. Submit or claim a tool to get started.",
-        "submit_button": "Submit a tool",
+        "empty_state": "No brokers found. Submit or claim a broker to get started.",
+        "submit_button": "Submit a broker",
         "upgrade_button": "Upgrade listing"
       },
       "bookmarks": {
-        "empty_state": "No bookmarked tools yet. Browse tools and bookmark them to save for later.",
+        "empty_state": "No bookmarked brokers yet. Browse brokers and bookmark them to save for later.",
         "remove_button": "Remove",
         "success_message": "Bookmark removed"
       }
@@ -147,8 +196,19 @@
     "title": "Privacy Policy",
     "description": "Learn more about how we collect and use your data on {siteName}."
   },
+  "cookies": {
+    "title": "Cookie Policy",
+    "description": "Learn more about how we use cookies on {siteName}."
+  },
   "disclaimer": {
     "title": "Disclaimer",
     "description": "Important disclaimer regarding the information provided on {siteName}."
+  },
+  "tools": {
+    "title": "All Forex Brokers",
+    "description": "Explore our comprehensive list of forex brokers. Compare features, ratings, and trading conditions to find the best fit for your trading strategy.",
+    "search": {
+      "placeholder": "Search brokers..."
+    }
   }
 }

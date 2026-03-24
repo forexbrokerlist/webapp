@@ -1,6 +1,7 @@
 import { LoaderIcon } from "lucide-react"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
+import Link from "next/link"
 import { cache, Suspense } from "react"
 import { AdvertisePickers } from "~/app/(web)/advertise/pickers"
 import { Button } from "~/components/common/button"
@@ -33,7 +34,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
   return getPageMetadata({ url, metadata })
 }
 
-export default async function ({ searchParams }: PageProps<"/advertise">) {
+export default async function ({ searchParams }: any) {
   const { metadata, structuredData } = await getData()
   const t = await getTranslations()
 
@@ -66,9 +67,9 @@ export default async function ({ searchParams }: PageProps<"/advertise">) {
         </IntroDescription>
 
         <Button className="mt-4 min-w-40" asChild>
-          <ExternalLink href={`mailto:${siteConfig.email}`}>
+          <Link href={`/contact`}>
             {t(`${namespace}.cta.button`)}
-          </ExternalLink>
+          </Link>
         </Button>
       </Intro>
 

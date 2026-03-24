@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useHotkeys } from "@mantine/hooks"
 import { getRandomString, slugify } from "@primoui/utils"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { type ComponentProps, useMemo } from "react"
@@ -19,9 +19,10 @@ import { Kbd } from "~/components/common/kbd"
 import { Link } from "~/components/common/link"
 import { Stack } from "~/components/common/stack"
 import { Switch } from "~/components/common/switch"
+import { RelationSelector } from "~/components/common/relation-selector"
 import { orpc } from "~/lib/orpc-query"
+import { useComputedField } from "~/hooks/use-computed-field"
 import { cx } from "~/lib/utils"
-import { SponsorCategory } from "~/.generated/prisma/browser"
 import type { findSponsorById } from "~/server/admin/sponsors/queries"
 import { sponsorSchema } from "~/server/admin/sponsors/schema"
 
@@ -32,17 +33,19 @@ type SponsorFormProps = ComponentProps<"form"> & {
 export function SponsorForm({ className, title, sponsor, ...props }: SponsorFormProps) {
   const router = useRouter()
   const queryClient = useQueryClient()
+  const { data: categories = [] } = useQuery(orpc.categories.lookup.queryOptions())
 
   const form = useForm({
     resolver: zodResolver(sponsorSchema),
     defaultValues: {
       id: sponsor?.id ?? "",
       name: sponsor?.name ?? "",
+      slug: sponsor?.slug ?? "",
       websiteUrl: sponsor?.websiteUrl ?? "",
       logoUrl: sponsor?.logoUrl ?? "",
       isActive: sponsor?.isActive ?? true,
       order: sponsor?.order ?? 0,
-      category: sponsor?.category ?? SponsorCategory.BrokerListing,
+      categoryId: sponsor?.categoryId ?? "",
     },
   })
 
@@ -62,6 +65,15 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
   const onSubmit = form.handleSubmit(data => mutation.mutate(data))
 
   useHotkeys([["mod+enter", () => onSubmit()]], [], true)
+
+  // Set the slug based on the name
+  useComputedField({
+    form,
+    sourceField: "name",
+    computedField: "slug",
+    callback: slugify,
+    enabled: !sponsor,
+  })
 
   const [name, websiteUrl] = form.watch(["name", "websiteUrl"])
 
@@ -92,6 +104,20 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
                 Name
               </FieldLabel>
               <Input id={field.name} data-1p-ignore {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="slug"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                Slug
+              </FieldLabel>
+              <Input id={field.name} {...field} />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -153,21 +179,16 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
 
         <Controller
           control={form.control}
-          name="category"
+          name="categoryId"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Category</FieldLabel>
-              <select 
-                id={field.name} 
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                {...field}
-              >
-                {Object.keys(SponsorCategory).map((key) => (
-                  <option key={key} value={SponsorCategory[key as keyof typeof SponsorCategory]}>
-                    {key.replace(/([A-Z])/g, ' $1').trim()}
-                  </option>
-                ))}
-              </select>
+              <RelationSelector
+                relations={categories}
+                ids={field.value ? [field.value] : []}
+                setIds={ids => field.onChange(ids[0] || "")}
+                multiple={false}
+              />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

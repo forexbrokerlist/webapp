@@ -52,6 +52,7 @@ export async function GET(_: Request, { params }: RouteContext<"/sitemap/[id]">)
       const pages = [
         `${siteUrl}/`,
         `${siteUrl}/about`,
+        `${siteUrl}/contact`,
         `${siteUrl}/categories`,
         `${siteUrl}/tags`,
         `${siteUrl}/blog`,
