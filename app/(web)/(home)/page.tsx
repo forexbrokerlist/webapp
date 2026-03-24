@@ -28,7 +28,7 @@ export default async function (props: any) {
       <Suspense fallback={<ToolListingSkeleton />}>
         <ToolQuery searchParams={props.searchParams} options={{ enableFilters: true }} ad="Tools" />
       </Suspense>
-      <Pricing />
+      {/* <Pricing /> */}
       <StructuredData data={structuredData} />
     </>
   )

@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server"
 import { headers } from "next/headers"
 import { notFound } from "next/navigation"
 import { cache, Suspense } from "react"
+import Image from "next/image"
 import { Badge } from "~/components/common/badge"
 import { Button } from "~/components/common/button"
 import { Card, CardHeader } from "~/components/common/card"
@@ -15,6 +16,7 @@ import { Markdown } from "~/components/web/markdown"
 import { Nav } from "~/components/web/nav"
 import { StructuredData } from "~/components/web/structured-data"
 import { Backdrop } from "~/components/web/ui/backdrop"
+import { Favicon } from "~/components/web/ui/favicon"
 import { IntroDescription } from "~/components/web/ui/intro"
 import { BrokerBookmarkButton } from "~/components/web/brokers/broker-bookmark-button"
 import { BrokerClaimButton } from "~/components/web/brokers/broker-claim-button"
@@ -90,10 +92,31 @@ export default async function (props: Props) {
         <Section.Content className="max-md:contents">
           <Sticky isOverlay>
             <Stack className="@container self-stretch justify-between items-start md:items-center gap-y-4 flex-col md:flex-row">
-              <div className="flex flex-col gap-1 flex-1 min-w-0">
-                <H2 as="h1" className="leading-tight! md:whitespace-normal line-clamp-2">
-                  {broker.broker_name}
-                </H2>
+              <div className="flex flex-col gap-2 flex-1 min-w-0">
+                <div className="flex items-center gap-4">
+                  {(() => {
+                    let domain = "forex.com";
+                    const targetUrl = broker.broker_website || broker.url;
+                    try {
+                      if (targetUrl) {
+                        const urlObj = new URL(targetUrl.startsWith('http') ? targetUrl : `https://${targetUrl}`);
+                        domain = urlObj.hostname;
+                      }
+                    } catch (e) { }
+
+                    return (
+                      <Favicon
+                        src={`https://www.google.com/s2/favicons?domain=${domain}&sz=128`}
+                        title={broker.broker_name || "Broker"}
+                        contained
+                        className="size-10 rounded-xl shadow-sm border border-border/40"
+                      />
+                    );
+                  })()}
+                  <H2 as="h1" className="leading-tight! md:whitespace-normal line-clamp-2">
+                    {broker.broker_name}
+                  </H2>
+                </div>
 
                 {broker.overall_rating && (
                   <Badge variant="primary" size="lg" className="w-fit text-white">
