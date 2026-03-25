@@ -1,3 +1,4 @@
+import seoData from "~/config/seo.json"
 import { LoaderIcon } from "lucide-react"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
@@ -31,7 +32,7 @@ const getData = cache(async () => {
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const { url, metadata } = await getData()
-  return getPageMetadata({ url, metadata })
+  return getPageMetadata({ url, metadata: { ...metadata, ...seoData.advertise } })
 }
 
 export default async function ({ searchParams }: any) {

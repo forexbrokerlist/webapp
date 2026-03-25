@@ -1,3 +1,4 @@
+import seoData from "~/config/seo.json"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { Suspense } from "react"
@@ -28,7 +29,7 @@ const getData = async () => {
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const { url, metadata } = await getData()
-  return getPageMetadata({ url, metadata })
+  return getPageMetadata({ url, metadata: { ...metadata, ...seoData.categories } })
 }
 
 export default async function () {
