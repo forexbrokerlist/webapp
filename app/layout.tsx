@@ -20,8 +20,8 @@ export const generateMetadata = async (): Promise<Metadata> => {
   return {
     metadataBase: new URL(siteConfig.url),
     title: {
-      template: `%s – ${siteConfig.name}`,
-      default: `${t("brand.tagline")} – ${siteConfig.name}`,
+      template: `%s | Forex Brokers List`,
+      default: `Compare 512+ Best Forex Brokers 2026 | Forex Brokers List`,
     },
     description: t("brand.description"),
     icons: {
