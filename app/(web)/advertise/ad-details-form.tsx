@@ -22,7 +22,11 @@ import {
 } from "~/components/common/select"
 import Image from "next/image"
 import { getRandomString, slugify } from "@primoui/utils"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useSession } from "~/lib/auth-client"
+
+export const PENDING_AD_DETAILS_KEY = "pending_ad_details"
 
 import { categoryManyPayload, type CategoryMany } from "~/server/web/categories/payloads"
 
@@ -58,6 +62,10 @@ export const AdDetailsForm = ({
   const schema = createAdDetailsSchema(tSchema).omit({ sessionId: true })
   const resolver = zodResolver(schema)
 
+  const session = useSession()
+  const router = useRouter()
+  const pathname = usePathname()
+
   const form = useForm<AdDetailsValues>({
     resolver,
     defaultValues: {
@@ -72,13 +80,36 @@ export const AdDetailsForm = ({
     },
   })
 
+  useEffect(() => {
+    const saved = localStorage.getItem(PENDING_AD_DETAILS_KEY)
+    if (saved) {
+      try {
+        const values = JSON.parse(saved) as AdDetailsValues
+        form.reset(values)
+        localStorage.removeItem(PENDING_AD_DETAILS_KEY)
+      } catch (e) {
+        console.error("Failed to restore ad details", e)
+      }
+    }
+  }, [form])
+
+  const handleSave = (values: AdDetailsValues) => {
+    if (session.data) {
+      onSave(values)
+      return
+    }
+
+    localStorage.setItem(PENDING_AD_DETAILS_KEY, JSON.stringify(values))
+    router.push(`/auth/login?next=${pathname}`)
+  }
+
   const [name, websiteUrl] = form.watch(["name", "websiteUrl"])
   const path = useMemo(() => `ads/${name ? slugify(name) : getRandomString(12)}`, [name])
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSave)}
+        onSubmit={form.handleSubmit(handleSave)}
         className={cx("grid w-full gap-5 @md:grid-cols-2", className)}
         noValidate
         {...props}
