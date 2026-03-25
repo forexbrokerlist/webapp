@@ -18,4 +18,5 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           request_pty: true
           script: |
-            sudo bash /root/forex-brokerslist-webapp/deploy.sh
+            cd /root/forex-brokerslist-webapp/
+            bash deploy.sh
