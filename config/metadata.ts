@@ -4,6 +4,11 @@ import { siteConfig } from "~/config/site"
 import { getOpenGraphImageUrl } from "~/lib/opengraph"
 
 export const metadataConfig: Metadata = {
+  robots: {
+    index: true,
+    follow: true,
+  },
+  authors: [{ name: "Forex Brokers Listing" }],
   openGraph: {
     url: "/",
     siteName: siteConfig.name,
