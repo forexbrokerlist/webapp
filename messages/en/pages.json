@@ -176,6 +176,7 @@
   "submit": {
     "title": "Submit a Broker",
     "description": "Listing your broker on {siteName} is a great way to get more exposure. We list high-quality brokers that help traders succeed.",
+    "meta_description": "Submit your forex broker and get listed in front of thousands of traders. Reach a global audience of forex trading professionals today.",
     "upgrade": {
       "title": "Upgrade {name}'s Listing",
       "description": "Upgrade {name}'s listing on {siteName} for more exposure, special features, and tailored packages—ranging from free listings to premium placement."

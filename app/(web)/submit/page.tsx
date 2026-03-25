@@ -16,16 +16,20 @@ const getData = cache(async (planSlug?: string) => {
   const url = planSlug ? `/submit?plan=${planSlug}` : "/submit"
   const title = t(`${namespace}.title`)
   const description = t(`${namespace}.description`, { siteName: siteConfig.name })
+  const metaDescription = t(`${namespace}.meta_description`)
 
-  return getPageData(url, title, description, {
-    breadcrumbs: [{ url, title }],
-  })
+  return {
+    ...getPageData(url, title, description, {
+      breadcrumbs: [{ url, title }],
+    }),
+    metaDescription,
+  }
 })
 
 export const generateMetadata = async ({ searchParams }: { searchParams: Promise<{ plan?: string, cancelled?: string }> }): Promise<Metadata> => {
   const { plan: planSlug } = await searchParams
-  const { url, metadata } = await getData(planSlug)
-  return getPageMetadata({ url, metadata })
+  const { url, metadata, metaDescription } = await getData(planSlug)
+  return getPageMetadata({ url, metadata: { ...metadata, description: metaDescription } })
 }
 
 import { findCategories } from "~/server/web/categories/queries"

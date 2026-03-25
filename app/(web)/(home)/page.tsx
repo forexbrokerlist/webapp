@@ -13,10 +13,15 @@ import { getPageData } from "~/lib/pages"
 const getData = cache(async () => {
   const t = await getTranslations()
   const title = `${siteConfig.name} - ${t("brand.tagline")}`
-  const description = t("brand.description")
+  const description = t("brand.meta_description")
 
   return getPageData(siteConfig.url, title, description)
 })
+
+export const generateMetadata = async () => {
+  const { metadata } = await getData()
+  return metadata
+}
 
 export default async function (props: any) {
   const { structuredData } = await getData()
