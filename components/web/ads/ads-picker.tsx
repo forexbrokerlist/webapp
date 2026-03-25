@@ -67,55 +67,77 @@ export const AdsPicker = ({ className, ads, type, adDetails, ...props }: AdsCale
   const { price, selections, hasSelections, findAdSpot, clearSelection, updateSelection } =
     useAds(spots)
 
-  const { execute, isPending } = useAction(createDraftAdAndCheckout, {
-    onError: ({ error }) => {
-      toast.error(error.serverError)
-    },
-  })
+  const [isPending, setIsPending] = useState(false)
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!session?.user) {
       setIsLoginDialogOpen(true)
       return
     }
 
-    type LineItem = z.infer<typeof checkoutSchema>["lineItems"][number]
+    setIsPending(true)
 
-    const validSelections = selections.filter(({ dateRange, duration }) => {
-      return dateRange?.from && dateRange?.to && duration
-    })
+    try {
+      type LineItem = z.infer<typeof checkoutSchema>["lineItems"][number]
 
-    const lineItems = validSelections.map((selection): LineItem => {
-      const adSpot = findAdSpot(selection.type)
+      const validSelections = selections.filter(({ dateRange, duration }) => {
+        return dateRange?.from && dateRange?.to && duration
+      })
 
-      const discountedPrice = price?.discountPercentage
-        ? adSpot.price * (1 - price.discountPercentage / 100)
-        : adSpot.price
+      const lineItems = validSelections.map((selection): LineItem => {
+        const adSpot = findAdSpot(selection.type)
 
-      return {
-        price_data: {
-          currency: siteConfig.currency,
-          product_data: { name: `${selection.type} Ad` },
-          unit_amount: Math.round(discountedPrice * 100),
+        const discountedPrice = price?.discountPercentage
+          ? adSpot.price * (1 - price.discountPercentage / 100)
+          : adSpot.price
+
+        return {
+          price_data: {
+            currency: siteConfig.currency,
+            product_data: { name: `${selection.type} Ad` },
+            unit_amount: Math.round(discountedPrice * 100),
+          },
+          quantity: selection.duration ?? 1,
+        }
+      })
+
+      const adData = validSelections.map(selection => ({
+        type: selection.type,
+        startsAt: selection.dateRange?.from?.getTime() ?? 0,
+        endsAt: selection.dateRange?.to?.getTime() ?? 0,
+      }))
+
+      const response = await fetch("/api/cregis/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        quantity: selection.duration ?? 1,
+        body: JSON.stringify({
+          lineItems,
+          mode: "payment",
+          metadata: { ads: JSON.stringify(adData) },
+          successUrl: "/advertise/success",
+          cancelUrl: "/advertise",
+          ...adDetails,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to initiate checkout")
       }
-    })
 
-    const adData = validSelections.map(selection => ({
-      type: selection.type,
-      startsAt: selection.dateRange?.from?.getTime() ?? 0,
-      endsAt: selection.dateRange?.to?.getTime() ?? 0,
-    }))
-
-    execute({
-      lineItems,
-      mode: "payment",
-      metadata: { ads: JSON.stringify(adData) },
-      successUrl: "/advertise/success",
-      cancelUrl: "/advertise",
-      ...adDetails,
-    })
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl
+      } else {
+        throw new Error("No checkout URL received")
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Something went wrong")
+    } finally {
+      setIsPending(false)
+    }
   }
 
   return (

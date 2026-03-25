@@ -120,13 +120,8 @@ export const SubmitForm = ({
 
         if (!data) return
 
-        let planToUse = activePlan
-        if (!planToUse) {
-          try {
-            const stored = sessionStorage.getItem("submitActivePlan")
-            if (stored) planToUse = JSON.parse(stored)
-          } catch (e) {}
-        }
+        // Automatically find the $200 plan to bypass the plan selection card
+        const planToUse = plans.find(p => p.price === 200) || activePlan
 
         if (planToUse && planToUse.price > 0) {
           checkoutAction.execute({
@@ -139,8 +134,8 @@ export const SubmitForm = ({
           return
         }
 
-        // If no plan is selected yet, move to Step 2 if plans are available
-        if (!planToUse && plans && plans.length > 0) {
+        // Fallback: If no $200 plan or selected plan found, move to Step 2 if plans are available
+        if (plans && plans.length > 0) {
             setSubmittedBroker({ 
               id: data.id, 
               slug: data.slug || "", 
