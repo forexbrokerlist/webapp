@@ -55,16 +55,32 @@ export const cregis = {
 
     const signedPayload = generateSignature(fullPayload, env.CREJIS_API_SECRET)
 
-    const response = await axios.post<CregisResponse>(
-      `${env.CREJIS_PAYMENT_URL}api/v2/checkout`,
-      signedPayload,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    )
+    console.log("🚀 ~ Cregis Request Payload:", JSON.stringify(signedPayload, null, 2));
 
-    return response.data
+    try {
+      const response = await axios.post<CregisResponse>(
+        `${env.CREJIS_PAYMENT_URL}api/v2/checkout`,
+        signedPayload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      )
+      console.log("🚀 ~ Cregis Response:", JSON.stringify(response.data, null, 2));
+      return response.data
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        console.error("🚀 ~ Cregis API Error:", {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          headers: error.response?.headers,
+        });
+      } else {
+        console.error("🚀 ~ Cregis Error:", error.message);
+      }
+      throw error;
+    }
   },
 }
