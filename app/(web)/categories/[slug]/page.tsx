@@ -46,7 +46,31 @@ const getData = cache(async ({ params }: Props) => {
 })
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
+  const { slug } = await props.params
   const { url, metadata } = await getData(props)
+
+  if (slug === 'algorithmic-trading-and-bot-providers') {
+    return getPageMetadata({
+      url,
+      metadata: {
+        ...metadata,
+        title: "Best Algorithmic Trading & Bot Providers",
+        description: "Discover the best algorithmic trading and bot providers. Compare automated trading solutions, expert advisors & forex bots to maximize your trading performance."
+      }
+    })
+  }
+
+  if (slug === 'forex-brokers') {
+    return getPageMetadata({
+      url,
+      metadata: {
+        ...metadata,
+        title: "Best Forex Brokers – Compare & Find Top Brokers",
+        description: "Compare the best forex brokers by spreads, regulations, platforms & minimum deposits. Find the perfect regulated forex broker for your trading needs today."
+      }
+    })
+  }
+
   return getPageMetadata({ url, metadata })
 }
 

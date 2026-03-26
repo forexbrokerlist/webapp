@@ -9,9 +9,12 @@ import {
   GalleryHorizontalEndIcon,
   GemIcon,
   LogOutIcon,
+  MailIcon,
   MegaphoneIcon,
+  MessageSquareIcon,
   StarIcon,
   TagIcon,
+  BanknoteIcon,
   TriangleAlertIcon,
   UsersIcon,
 } from "lucide-react"
@@ -21,7 +24,7 @@ import { Nav } from "~/components/admin/nav"
 import { Button } from "~/components/common/button"
 import { Kbd } from "~/components/common/kbd"
 import { Tooltip } from "~/components/common/tooltip"
-import { LogoSymbol } from "~/components/web/ui/logo-symbol"
+import { Logo } from "~/components/web/ui/logo"
 import { siteConfig } from "~/config/site"
 import { useSearch } from "~/contexts/search-context"
 import { signOut } from "~/lib/auth-client"
@@ -55,7 +58,7 @@ export const Sidebar = () => {
         {
           title: "Dashboard",
           href: "/admin",
-          prefix: <LogoSymbol />,
+          prefix: <Logo hideText />,
           suffix: (
             <Tooltip tooltip="Visit site">
               <Button
@@ -81,11 +84,7 @@ export const Sidebar = () => {
           href: "/admin/categories",
           prefix: <GalleryHorizontalEndIcon />,
         },
-        {
-          title: "Blog",
-          href: "/admin/posts",
-          prefix: <FileTextIcon />,
-        },
+
         {
           title: "Subcategories",
           href: "/admin/subcategories",
@@ -97,14 +96,29 @@ export const Sidebar = () => {
           prefix: <TagIcon />,
         },
         {
+          title: "Blog",
+          href: "/admin/posts",
+          prefix: <FileTextIcon />,
+        },
+        {
           title: "Users",
           href: "/admin/users",
           prefix: <UsersIcon />,
         },
         {
+          title: "Contact Us",
+          href: "/admin/contacts",
+          prefix: <MessageSquareIcon />,
+        },
+        {
           title: "Reports",
           href: "/admin/reports",
           prefix: <TriangleAlertIcon />,
+        },
+        {
+          title: "Payments",
+          href: "/admin/payments",
+          prefix: <BanknoteIcon />,
         },
         {
           title: "Sponsors",
@@ -115,6 +129,11 @@ export const Sidebar = () => {
           title: "Ads",
           href: "/admin/ads",
           prefix: <MegaphoneIcon />,
+        },
+        {
+          title: "Newsletter",
+          href: "/admin/newsletter",
+          prefix: <MailIcon />,
         },
 
         undefined, // Separator

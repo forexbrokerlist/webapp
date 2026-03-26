@@ -143,7 +143,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
   cacheTag("brokers")
   cacheLife("infinite")
 
-  const { q, sort, page, perPage } = search
+  const { q, category, sort, page, perPage } = search
   const skip = (page - 1) * perPage
   const take = perPage
   let [sortBy, sortOrder] = sort.split(".")
@@ -165,6 +165,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
   const whereQuery: Prisma.BrokersWhereInput = { 
     ...safeWhere,
     status: ToolStatus.Published,
+    ...(category && { categories: { some: { slug: category } } }),
   }
 
   if (q) {
@@ -179,7 +180,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
   const [brokers, total] = await Promise.all([
     db.brokers.findMany({
       where: whereQuery,
-      orderBy: sortBy ? { [sortBy]: sortOrder } : [{ year_established: "desc" }, { broker_name: "asc" }],
+      orderBy: sortBy ? ([{ isSponsor: "desc" }, { [sortBy]: sortOrder }] as any) : [{ isSponsor: "desc" }, { year_established: "desc" }, { broker_name: "asc" }],
       take,
       skip,
     }),
@@ -197,10 +198,14 @@ export const findBrokers = async ({ where, orderBy, ...args }: Prisma.BrokersFin
   cacheTag("brokers")
   cacheLife("infinite")
 
+  const finalOrderBy = orderBy 
+    ? (Array.isArray(orderBy) ? [{ isSponsor: "desc" }, ...orderBy] : [{ isSponsor: "desc" }, orderBy])
+    : [{ isSponsor: "desc" }, { year_established: "desc" }, { broker_name: "asc" }]
+
   return db.brokers.findMany({
     ...args,
     where: { status: ToolStatus.Published, ...where },
-    orderBy: orderBy ?? [{ year_established: "desc" }, { broker_name: "asc" }],
+    orderBy: finalOrderBy as any,
   })
 }
 

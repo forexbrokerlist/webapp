@@ -89,8 +89,7 @@ export const AdvertiserDashboardContent = ({ ads, stats }: AdvertiserDashboardCo
     <div className="w-full space-y-6">
       <div className="flex items-center justify-between">
         <H2>Campaign Analytics</H2>
-        <Button onClick={downloadCSV} variant="secondary" size="sm">
-          <DownloadIcon className="mr-2 h-4 w-4" />
+        <Button onClick={downloadCSV} variant="secondary" size="sm" prefix={<DownloadIcon />}>
           Download CSV Report
         </Button>
       </div>

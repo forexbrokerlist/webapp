@@ -12,7 +12,10 @@ import {
 } from "lucide-react"
 import { useQueryStates } from "nuqs"
 import type { ComponentProps } from "react"
-import { type Brokers, ToolStatus } from "~/.generated/prisma/browser"
+import { type Brokers, ToolStatus, PaymentStatus } from "~/.generated/prisma/browser"
+
+export type BrokerRow = Brokers & { payments?: { status: PaymentStatus }[] }
+
 import { ToolActions } from "~/app/admin/brokers/_components/broker-actions"
 import { ToolTableToolbarActions } from "~/app/admin/brokers/_components/broker-table-toolbar-actions"
 import { DateRangePicker } from "~/components/admin/date-range-picker"
@@ -52,7 +55,14 @@ const statusBadges: Record<ToolStatus, ComponentProps<typeof Badge>> = {
   },
 }
 
-const columns: ColumnDef<Brokers>[] = [
+const paymentStatusBadges: Record<PaymentStatus, ComponentProps<typeof Badge>> = {
+  [PaymentStatus.Pending]: { variant: "warning" },
+  [PaymentStatus.Paid]: { variant: "success" },
+  [PaymentStatus.Failed]: { variant: "danger" },
+  [PaymentStatus.Cancelled]: { variant: "soft" },
+}
+
+const columns: ColumnDef<BrokerRow>[] = [
   {
     id: "select",
     enableSorting: false,
@@ -100,12 +110,26 @@ const columns: ColumnDef<Brokers>[] = [
     enableSorting: false,
     size: 320,
     header: ({ column }) => <DataTableColumnHeader column={column} title="Rating" />,
-    cell: ({ row }) => <Note className="truncate">{row.getValue("overall_rating")}</Note>,
+    cell: ({ row }) => {
+      const rating = row.getValue("overall_rating") as string
+      const croppedRating = rating?.split("/")[0]?.trim()
+      return <Note className="truncate">{croppedRating}</Note>
+    },
   },
   {
     accessorKey: "submitterEmail",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Submitter" />,
     cell: ({ row }) => <Note>{row.getValue("submitterEmail")}</Note>,
+  },
+  {
+    id: "paymentStatus",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Payment" />,
+    cell: ({ row }) => {
+      const payment = row.original.payments?.[0];
+      if (!payment) return <Badge variant="soft">Free</Badge>;
+      
+      return <Badge {...paymentStatusBadges[payment.status]}>{payment.status}</Badge>;
+    },
   },
   {
     accessorKey: "status",
@@ -144,7 +168,7 @@ export function ToolTable() {
   )
 
   // Search filters
-  const filterFields: DataTableFilterField<Brokers>[] = [
+  const filterFields: DataTableFilterField<BrokerRow>[] = [
     {
       id: "broker_name",
       label: "Name",

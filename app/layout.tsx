@@ -12,6 +12,7 @@ import { metadataConfig } from "~/config/metadata"
 import { siteConfig } from "~/config/site"
 import { SearchProvider } from "~/contexts/search-context"
 import { fontSans } from "~/lib/fonts"
+import { ConsentManager } from "./consent-manager";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const t = await getTranslations()
@@ -19,11 +20,16 @@ export const generateMetadata = async (): Promise<Metadata> => {
   return {
     metadataBase: new URL(siteConfig.url),
     title: {
-      template: `%s – ${siteConfig.name}`,
-      default: `${t("brand.tagline")} – ${siteConfig.name}`,
+      template: `%s | Forex Brokers List`,
+      default: `Compare 512+ Best Forex Brokers 2026 | Forex Brokers List`,
     },
     description: t("brand.description"),
-    icons: { icon: [{ type: "image/png", url: "/favicon.png" }] },
+    icons: {
+      icon: [
+        { type: "image/svg+xml", url: "/favicon.svg" },
+        { type: "image/png", url: "/favicon.png" }
+      ]
+    },
     ...metadataConfig,
   }
 }
@@ -46,9 +52,11 @@ export default async function ({ children }: LayoutProps<"/">) {
             <TooltipProvider delayDuration={250} skipDelayDuration={250}>
               <SearchProvider>
                 <ThemeProvider attribute="class" disableTransitionOnChange>
-                  <MotionConfig reducedMotion="user">{children}</MotionConfig>
-                  <Toaster />
-                  <Search />
+                  <ConsentManager>
+                    <MotionConfig reducedMotion="user">{children}</MotionConfig>
+                    <Toaster />
+                    <Search />
+                  </ConsentManager>
                 </ThemeProvider>
               </SearchProvider>
             </TooltipProvider>

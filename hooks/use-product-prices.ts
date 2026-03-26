@@ -1,7 +1,6 @@
-import type Stripe from "stripe"
-import type { ProductInterval } from "~/lib/products"
+import type { Price, ProductInterval } from "~/lib/products"
 
-const findPriceForInterval = (prices: Stripe.Price[], interval?: ProductInterval) => {
+const findPriceForInterval = (prices: Price[], interval?: ProductInterval) => {
   if (prices.length === 0) {
     return undefined
   }
@@ -10,7 +9,7 @@ const findPriceForInterval = (prices: Stripe.Price[], interval?: ProductInterval
   return matchingPrice ?? prices[0]
 }
 
-const calculateCouponDiscount = (initialPrice: number, coupon?: Stripe.Coupon | null) => {
+const calculateCouponDiscount = (initialPrice: number, coupon?: any | null) => {
   if (!coupon) return 0
   if (coupon.percent_off) return (initialPrice * coupon.percent_off) / 100
   if (coupon.amount_off) return coupon.amount_off / 100
@@ -22,11 +21,11 @@ const calculateDiscountPercentage = (basePrice: number, discountedPrice: number)
 }
 
 export const useProductPrices = (
-  prices: Stripe.Price[],
-  coupon: Stripe.Coupon | undefined,
+  prices: Price[],
+  coupon: any | undefined,
   interval: ProductInterval,
 ) => {
-  const isSubscription = prices.some(p => p.type === "recurring")
+  const isSubscription = prices.some(p => p.type === "recurring" || p.recurring)
   const currentPrice = findPriceForInterval(prices, isSubscription ? interval : undefined)
   const currentPriceValue = (currentPrice?.unit_amount ?? 0) / 100
   const monthlyPrice = isSubscription ? findPriceForInterval(prices, "month") : currentPrice

@@ -16,13 +16,23 @@ import { cx } from "~/lib/utils"
 import { createAdFromCheckout } from "~/server/web/ads/actions"
 import type { AdOne } from "~/server/web/ads/payloads"
 import { createAdDetailsSchema } from "~/server/web/shared/schema"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/common/select"
+import { findCategories } from "~/server/web/categories/queries"
+import type { CategoryMany } from "~/server/web/categories/payloads"
 
 type AdFormProps = ComponentProps<"form"> & {
   sessionId: string
   ad?: AdOne | null
+  categories: CategoryMany[]
 }
 
-export const AdForm = ({ className, sessionId, ad, ...props }: AdFormProps) => {
+export const AdForm = ({ className, sessionId, ad, categories, ...props }: AdFormProps) => {
   const t = useTranslations("forms.ad_details")
   const tSchema = useTranslations("schema")
 
@@ -37,6 +47,7 @@ export const AdForm = ({ className, sessionId, ad, ...props }: AdFormProps) => {
         name: ad?.name ?? "",
         websiteUrl: ad?.websiteUrl ?? "",
         description: ad?.description ?? "",
+        categoryId: ad?.categoryId ?? "",
         buttonLabel: ad?.buttonLabel ?? "",
       },
     },
@@ -123,6 +134,31 @@ export const AdForm = ({ className, sessionId, ad, ...props }: AdFormProps) => {
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>{t("button_label")}</FieldLabel>
               <Input id={field.name} size="lg" placeholder={t("button_placeholder")} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="categoryId"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                Category
+              </FieldLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <SelectTrigger id={field.name} size="lg">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map(category => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

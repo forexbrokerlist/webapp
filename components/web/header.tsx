@@ -122,7 +122,37 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
               </DropdownMenuContent>
             </DropdownMenu>
 
+            <DropdownMenu>
+              <NavLink
+                className="gap-1"
+                suffix={<ChevronDownIcon className="group-data-[state=open]:-rotate-180" />}
+                asChild
+              >
+                <DropdownMenuTrigger>{t("navigation.ai_tools")}</DropdownMenuTrigger>
+              </NavLink>
+
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem asChild>
+                  <NavLink href="/fx-guru" prefix={<LineChartIcon />}>
+                    {t("navigation.fx_guru")}
+                  </NavLink>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <NavLink href="/stock-guru" prefix={<TrendingUpIcon />}>
+                    {t("navigation.stock_guru")}
+                  </NavLink>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <NavLink href="/deep-scan" prefix={<TelescopeIcon />}>
+                    {t("navigation.deep_research")}
+                  </NavLink>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <NavLink href="/brokers">{t("navigation.tools")}</NavLink>
             <NavLink href="/about">{t("navigation.about")}</NavLink>
+            <NavLink href="/contact">{t("navigation.contact_us")}</NavLink>
             {adsConfig.enabled && <NavLink href="/advertise">{t("navigation.advertise")}</NavLink>}
           </nav>
 
@@ -156,7 +186,9 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
           <NavLink href="/stock-guru">{t("navigation.stock_guru")}</NavLink>
           <NavLink href="/deep-scan">{t("navigation.deep_research")}</NavLink>
           <NavLink href="/submit">{t("navigation.submit")}</NavLink>
+          <NavLink href="/brokers">{t("navigation.tools")}</NavLink>
           <NavLink href="/about">{t("navigation.about")}</NavLink>
+          <NavLink href="/contact">{t("navigation.contact_us")}</NavLink>
           {adsConfig.enabled && <NavLink href="/advertise">{t("navigation.advertise")}</NavLink>}
         </nav>
       </Container>

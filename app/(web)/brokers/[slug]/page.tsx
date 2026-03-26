@@ -1,8 +1,10 @@
 import { HashIcon } from "lucide-react"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
+import { headers } from "next/headers"
 import { notFound } from "next/navigation"
 import { cache, Suspense } from "react"
+import Image from "next/image"
 import { Badge } from "~/components/common/badge"
 import { Button } from "~/components/common/button"
 import { Card, CardHeader } from "~/components/common/card"
@@ -14,14 +16,21 @@ import { Markdown } from "~/components/web/markdown"
 import { Nav } from "~/components/web/nav"
 import { StructuredData } from "~/components/web/structured-data"
 import { Backdrop } from "~/components/web/ui/backdrop"
+import { Favicon } from "~/components/web/ui/favicon"
 import { IntroDescription } from "~/components/web/ui/intro"
 import { BrokerBookmarkButton } from "~/components/web/brokers/broker-bookmark-button"
+import { BrokerClaimButton } from "~/components/web/brokers/broker-claim-button"
+import { BrokerScreenshot } from "~/components/web/brokers/broker-screenshot"
+import { ProductListSkeleton } from "~/components/web/products/product-list"
+import { PlanQuery } from "~/components/web/plans/plan-query"
 import { Section } from "~/components/web/ui/section"
 import { Sticky } from "~/components/web/ui/sticky"
 import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
 import { findBrokerBySlug } from "~/server/web/tools/queries"
+import { getPresignedUrlFromFull, getScreenshotFetchUrl } from "~/lib/media"
+
 type Props = {
   params: {
     slug: string
@@ -33,7 +42,7 @@ type Props = {
 // Get page data
 const getData = cache(async ({ params }: Props) => {
   const { slug } = await params
-  
+
   if (!slug) {
     notFound()
   }
@@ -48,7 +57,6 @@ const getData = cache(async ({ params }: Props) => {
   const url = `/brokers/${broker.slug}`
   const title = `${broker.broker_name || "Unknown Broker"} Review`
   const description = broker.description || broker.pros || ""
-
   const data = getPageData(url, title, description, {
     breadcrumbs: [
       { url: "/", title: t("navigation.tools") },
@@ -57,8 +65,11 @@ const getData = cache(async ({ params }: Props) => {
     structuredData: [generateCollectionPage(url, title, description)],
   })
 
-  return { broker, ...data }
+  const screenshotUrl = await getPresignedUrlFromFull(broker.screenshotUrl)
+
+  return { broker: { ...broker, screenshotUrl }, ...data }
 })
+
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
   const { broker, url, metadata } = await getData(props)
@@ -73,27 +84,63 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 
 export default async function (props: Props) {
   const { broker, metadata, structuredData } = await getData(props)
+  const headerList = await headers()
 
   return (
     <>
       <Section>
         <Section.Content className="max-md:contents">
           <Sticky isOverlay>
-            <Stack className="@container self-stretch justify-between items-center">
-              <Stack className="flex-1 min-w-0">
-                <H2 as="h1" className="leading-tight! truncate">
-                  {broker.broker_name}
-                </H2>
-                
+            <Stack className="@container self-stretch justify-between items-start md:items-center gap-y-4 flex-col md:flex-row">
+              <div className="flex flex-col gap-2 flex-1 min-w-0">
+                <div className="flex items-center gap-4">
+                  {(() => {
+                    let domain = "forex.com";
+                    const targetUrl = broker.broker_website || broker.url;
+                    try {
+                      if (targetUrl) {
+                        const urlObj = new URL(targetUrl.startsWith('http') ? targetUrl : `https://${targetUrl}`);
+                        domain = urlObj.hostname;
+                      }
+                    } catch (e) { }
+
+                    return (
+                      <Favicon
+                        src={`https://www.google.com/s2/favicons?domain=${domain}&sz=128`}
+                        title={broker.broker_name || "Broker"}
+                        contained
+                        className="size-10 rounded-xl shadow-sm border border-border/40"
+                      />
+                    );
+                  })()}
+                  <H2 as="h1" className="leading-tight! md:whitespace-normal line-clamp-2">
+                    {broker.broker_name}
+                  </H2>
+                </div>
+
                 {broker.overall_rating && (
-                  <Badge variant="primary" size="lg" className="ml-2 text-white">
+                  <Badge variant="primary" size="lg" className="w-fit text-white">
                     Rating: {broker.overall_rating} / 5
                   </Badge>
                 )}
-              </Stack>
+              </div>
 
-              <div className="flex items-center gap-2 z-10">
+              <div className="flex items-center flex-wrap gap-2 z-10 w-full md:w-auto justify-start md:justify-end">
                 <BrokerBookmarkButton brokerId={broker.id} showLabel variant="secondary" size="md" />
+                <BrokerClaimButton broker={broker}>
+                  <Suspense fallback={<ProductListSkeleton />}>
+                    <PlanQuery
+                      checkoutData={{
+                        successUrl: `${headerList.get("origin")}/brokers/${broker.slug}?claimed=true`,
+                        cancelUrl: headerList.get("referer") || "",
+                        metadata: {
+                          brokerId: String(broker.id),
+                          type: "claim",
+                        },
+                      }}
+                    />
+                  </Suspense>
+                </BrokerClaimButton>
                 {(broker.broker_website || broker.url) && (
                   <Button asChild variant="fancy" size="md">
                     <a href={broker.broker_website || broker.url || "#"} target="_blank" rel="noopener noreferrer nofollow">
@@ -114,12 +161,9 @@ export default async function (props: Props) {
 
           {(broker.broker_website || broker.url) && (
             <div className="mt-8 rounded-xl overflow-hidden border border-border/50 shadow-sm aspect-video relative max-w-4xl mx-auto bg-muted">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
-                src={`https://api.screenshotone.com/take?access_key=o1oeYRbFCs38-Q&url=${encodeURIComponent((broker.broker_website || broker.url || "").startsWith('http') ? (broker.broker_website || broker.url || "") : `https://${broker.broker_website || broker.url}`)}&format=jpg&block_ads=true&block_cookie_banners=true&block_banners_by_heuristics=false&block_trackers=true&delay=0&timeout=60&response_type=by_format&image_quality=80`}
+              <BrokerScreenshot
+                src={broker.screenshotUrl || getScreenshotFetchUrl((broker.broker_website || broker.url || "").startsWith('http') ? (broker.broker_website || broker.url || "") : `https://${broker.broker_website || broker.url}`)}
                 alt={`${broker.broker_name} Website Screenshot`}
-                className="w-full h-full object-cover object-top"
-                loading="lazy"
               />
             </div>
           )}
@@ -172,78 +216,78 @@ export default async function (props: Props) {
                 <CardHeader className="bg-muted/30 py-4 px-6 border-b">
                   <H5 as="h3" className="mb-0">Trading Conditions</H5>
                 </CardHeader>
-              <dl className="divide-y border-border/10 dark:border-border/50 text-sm">
-                {broker.retail_loss_rate && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">Retail Loss Rate</dt>
-                    <dd className="font-semibold text-right">{broker.retail_loss_rate}</dd>
-                  </div>
-                )}
-                {broker.daily_loss_limit && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">Daily Loss Limit</dt>
-                    <dd className="font-semibold text-right">{broker.daily_loss_limit}</dd>
-                  </div>
-                )}
-                {broker.minimum_raw_spreads && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">Min Raw Spreads</dt>
-                    <dd className="font-semibold text-right">{broker.minimum_raw_spreads}</dd>
-                  </div>
-                )}
-                {broker.minimum_standard_spreads && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">Min Standard Spreads</dt>
-                    <dd className="font-semibold text-right">{broker.minimum_standard_spreads}</dd>
-                  </div>
-                )}
-                {broker.minimum_commission_for_forex && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">Min Forex Commission</dt>
-                    <dd className="font-semibold text-right">{broker.minimum_commission_for_forex}</dd>
-                  </div>
-                )}
-                {broker.profit_share && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">Profit Share</dt>
-                    <dd className="font-semibold text-right">{broker.profit_share}</dd>
-                  </div>
-                )}
-                {broker.trading_hours && (
-                  <div className="flex flex-col px-6 py-4 gap-3">
-                    <dt className="text-muted-foreground font-medium shrink-0">Trading Hours</dt>
-                    <dd className="font-semibold text-left max-w-full">
-                      {(() => {
-                        try {
-                          const parsed = JSON.parse(broker.trading_hours as string);
-                          if (Array.isArray(parsed)) {
-                            return (
-                              <div className="flex flex-col w-full bg-muted/30 rounded-md p-3 gap-1">
-                                {parsed.map((item: any, i: number) => {
-                                  const keys = Object.keys(item);
-                                  if (keys.length < 2) return null;
-                                  const label = String(item[keys[0]] || "").replace(/_/g, " ");
-                                  const valKeys = keys.slice(1);
-                                  const value = valKeys.map(k => String(item[k])).join(" - ");
-                                  return (
-                                    <div key={i} className="flex justify-between items-start gap-4 py-1.5 border-b border-border/30 last:border-0 text-sm font-normal text-left">
-                                      <span className="text-muted-foreground shrink-0">{label}</span>
-                                      <span className="font-medium text-right text-foreground">{value}</span>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            );
+                <dl className="divide-y border-border/10 dark:border-border/50 text-sm">
+                  {broker.retail_loss_rate && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">Retail Loss Rate</dt>
+                      <dd className="font-semibold text-right">{broker.retail_loss_rate}</dd>
+                    </div>
+                  )}
+                  {broker.daily_loss_limit && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">Daily Loss Limit</dt>
+                      <dd className="font-semibold text-right">{broker.daily_loss_limit}</dd>
+                    </div>
+                  )}
+                  {broker.minimum_raw_spreads && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">Min Raw Spreads</dt>
+                      <dd className="font-semibold text-right">{broker.minimum_raw_spreads}</dd>
+                    </div>
+                  )}
+                  {broker.minimum_standard_spreads && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">Min Standard Spreads</dt>
+                      <dd className="font-semibold text-right">{broker.minimum_standard_spreads}</dd>
+                    </div>
+                  )}
+                  {broker.minimum_commission_for_forex && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">Min Forex Commission</dt>
+                      <dd className="font-semibold text-right">{broker.minimum_commission_for_forex}</dd>
+                    </div>
+                  )}
+                  {broker.profit_share && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">Profit Share</dt>
+                      <dd className="font-semibold text-right">{broker.profit_share}</dd>
+                    </div>
+                  )}
+                  {broker.trading_hours && (
+                    <div className="flex flex-col px-6 py-4 gap-3">
+                      <dt className="text-muted-foreground font-medium shrink-0">Trading Hours</dt>
+                      <dd className="font-semibold text-left max-w-full">
+                        {(() => {
+                          try {
+                            const parsed = JSON.parse(broker.trading_hours as string);
+                            if (Array.isArray(parsed)) {
+                              return (
+                                <div className="flex flex-col w-full bg-muted/30 rounded-md p-3 gap-1">
+                                  {parsed.map((item: any, i: number) => {
+                                    const keys = Object.keys(item);
+                                    if (keys.length < 2) return null;
+                                    const label = String(item[keys[0]] || "").replace(/_/g, " ");
+                                    const valKeys = keys.slice(1);
+                                    const value = valKeys.map(k => String(item[k])).join(" - ");
+                                    return (
+                                      <div key={i} className="flex justify-between items-start gap-4 py-1.5 border-b border-border/30 last:border-0 text-sm font-normal text-left">
+                                        <span className="text-muted-foreground shrink-0">{label}</span>
+                                        <span className="font-medium text-right text-foreground">{value}</span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              );
+                            }
+                          } catch (e) {
+                            // Not JSON, continue to fallback
                           }
-                        } catch (e) {
-                          // Not JSON, continue to fallback
-                        }
-                        return broker.trading_hours;
-                      })()}
-                    </dd>
-                  </div>
-                )}
-              </dl>
+                          return broker.trading_hours;
+                        })()}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
               </Card>
             )}
 
@@ -253,59 +297,59 @@ export default async function (props: Props) {
                 <CardHeader className="bg-muted/30 py-4 px-6 border-b">
                   <H5 as="h3" className="mb-0">Accounts & Funding</H5>
                 </CardHeader>
-              <dl className="divide-y border-border/10 dark:border-border/50 text-sm">
-                {broker.funded_account_options && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">Funded Accounts</dt>
-                    <dd className="font-semibold text-right">{broker.funded_account_options}</dd>
-                  </div>
-                )}
-                {broker.funding_methods && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium mt-0.5 shrink-0">Funding Methods</dt>
-                    <dd className="flex flex-wrap justify-end gap-1.5 max-w-[75%]">
-                      {broker.funding_methods.split(/[,;]+/).map((item, i) => {
-                        if (!item.trim()) return null;
-                        return <Badge key={i} variant="outline" className="font-normal text-xs px-2 py-0 border-border/50 whitespace-normal text-right">{item.trim()}</Badge>
-                      })}
-                    </dd>
-                  </div>
-                )}
-                {broker.deposit_options && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium min-w-24 mt-0.5 shrink-0">Deposit Options</dt>
-                    <dd className="flex flex-wrap justify-end gap-1.5 max-w-[75%]">
-                      {broker.deposit_options.split(/[,;]+/).map((item, i) => {
-                        if (!item.trim()) return null;
-                        return <Badge key={i} variant="outline" className="font-normal text-xs px-2 py-0 whitespace-normal text-right">{item.trim()}</Badge>
-                      })}
-                    </dd>
-                  </div>
-                )}
-                {broker.deposit_fees && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">Deposit Fees</dt>
-                    <dd className="font-semibold text-right">{broker.deposit_fees}</dd>
-                  </div>
-                )}
-                {broker.withdrawal_options && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium min-w-24 mt-0.5 shrink-0">Withdrawal Options</dt>
-                    <dd className="flex flex-wrap justify-end gap-1.5 max-w-[75%]">
-                      {broker.withdrawal_options.split(/[,;]+/).map((item, i) => {
-                        if (!item.trim()) return null;
-                        return <Badge key={i} variant="primary" className="font-normal text-xs px-2 py-0 whitespace-normal text-right">{item.trim()}</Badge>
-                      })}
-                    </dd>
-                  </div>
-                )}
-                {broker.withdrawal_fee && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">Withdrawal Fee</dt>
-                    <dd className="font-semibold text-right">{broker.withdrawal_fee}</dd>
-                  </div>
-                )}
-              </dl>
+                <dl className="divide-y border-border/10 dark:border-border/50 text-sm">
+                  {broker.funded_account_options && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">Funded Accounts</dt>
+                      <dd className="font-semibold text-right">{broker.funded_account_options}</dd>
+                    </div>
+                  )}
+                  {broker.funding_methods && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium mt-0.5 shrink-0">Funding Methods</dt>
+                      <dd className="flex flex-wrap justify-end gap-1.5 max-w-[75%]">
+                        {broker.funding_methods.split(/[,;]+/).map((item, i) => {
+                          if (!item.trim()) return null;
+                          return <Badge key={i} variant="outline" className="font-normal text-xs px-2 py-0 border-border/50 whitespace-normal text-right">{item.trim()}</Badge>
+                        })}
+                      </dd>
+                    </div>
+                  )}
+                  {broker.deposit_options && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium min-w-24 mt-0.5 shrink-0">Deposit Options</dt>
+                      <dd className="flex flex-wrap justify-end gap-1.5 max-w-[75%]">
+                        {broker.deposit_options.split(/[,;]+/).map((item, i) => {
+                          if (!item.trim()) return null;
+                          return <Badge key={i} variant="outline" className="font-normal text-xs px-2 py-0 whitespace-normal text-right">{item.trim()}</Badge>
+                        })}
+                      </dd>
+                    </div>
+                  )}
+                  {broker.deposit_fees && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">Deposit Fees</dt>
+                      <dd className="font-semibold text-right">{broker.deposit_fees}</dd>
+                    </div>
+                  )}
+                  {broker.withdrawal_options && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium min-w-24 mt-0.5 shrink-0">Withdrawal Options</dt>
+                      <dd className="flex flex-wrap justify-end gap-1.5 max-w-[75%]">
+                        {broker.withdrawal_options.split(/[,;]+/).map((item, i) => {
+                          if (!item.trim()) return null;
+                          return <Badge key={i} variant="primary" className="font-normal text-xs px-2 py-0 whitespace-normal text-right">{item.trim()}</Badge>
+                        })}
+                      </dd>
+                    </div>
+                  )}
+                  {broker.withdrawal_fee && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">Withdrawal Fee</dt>
+                      <dd className="font-semibold text-right">{broker.withdrawal_fee}</dd>
+                    </div>
+                  )}
+                </dl>
               </Card>
             )}
 
@@ -315,50 +359,50 @@ export default async function (props: Props) {
                 <CardHeader className="bg-muted/30 py-4 px-6 border-b">
                   <H5 as="h3" className="mb-0">Trading Costs & Spreads</H5>
                 </CardHeader>
-              <dl className="divide-y border-border/10 dark:border-border/50 text-sm">
-                {broker.average_trading_cost_eur_usd && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">EUR/USD</dt>
-                    <dd className="font-semibold text-right">{broker.average_trading_cost_eur_usd}</dd>
-                  </div>
-                )}
-                {broker.average_trading_cost_gbp_usd && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">GBP/USD</dt>
-                    <dd className="font-semibold text-right">{broker.average_trading_cost_gbp_usd}</dd>
-                  </div>
-                )}
-                {broker.average_trading_cost_gold && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">Gold</dt>
-                    <dd className="font-semibold text-right">{broker.average_trading_cost_gold}</dd>
-                  </div>
-                )}
-                {broker.average_trading_cost_bitcoin && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">Bitcoin</dt>
-                    <dd className="font-semibold text-right">{broker.average_trading_cost_bitcoin}</dd>
-                  </div>
-                )}
-                {broker.average_trading_cost_wti_crude_oil && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium min-w-24 shrink-0">WTI Crude</dt>
-                    <dd className="font-semibold text-right max-w-xs">{broker.average_trading_cost_wti_crude_oil}</dd>
-                  </div>
-                )}
-                {broker.inactivity_fee && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">Inactivity Fee</dt>
-                    <dd className="font-semibold text-right">{broker.inactivity_fee}</dd>
-                  </div>
-                )}
-                {broker.maximum_evaluation_fee && (
-                  <div className="flex justify-between items-start px-6 py-4 gap-4">
-                    <dt className="text-muted-foreground font-medium shrink-0">Max Evaluation Fee</dt>
-                    <dd className="font-semibold text-right">{broker.maximum_evaluation_fee}</dd>
-                  </div>
-                )}
-              </dl>
+                <dl className="divide-y border-border/10 dark:border-border/50 text-sm">
+                  {broker.average_trading_cost_eur_usd && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">EUR/USD</dt>
+                      <dd className="font-semibold text-right">{broker.average_trading_cost_eur_usd}</dd>
+                    </div>
+                  )}
+                  {broker.average_trading_cost_gbp_usd && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">GBP/USD</dt>
+                      <dd className="font-semibold text-right">{broker.average_trading_cost_gbp_usd}</dd>
+                    </div>
+                  )}
+                  {broker.average_trading_cost_gold && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">Gold</dt>
+                      <dd className="font-semibold text-right">{broker.average_trading_cost_gold}</dd>
+                    </div>
+                  )}
+                  {broker.average_trading_cost_bitcoin && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">Bitcoin</dt>
+                      <dd className="font-semibold text-right">{broker.average_trading_cost_bitcoin}</dd>
+                    </div>
+                  )}
+                  {broker.average_trading_cost_wti_crude_oil && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium min-w-24 shrink-0">WTI Crude</dt>
+                      <dd className="font-semibold text-right max-w-xs">{broker.average_trading_cost_wti_crude_oil}</dd>
+                    </div>
+                  )}
+                  {broker.inactivity_fee && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">Inactivity Fee</dt>
+                      <dd className="font-semibold text-right">{broker.inactivity_fee}</dd>
+                    </div>
+                  )}
+                  {broker.maximum_evaluation_fee && (
+                    <div className="flex justify-between items-start px-6 py-4 gap-4">
+                      <dt className="text-muted-foreground font-medium shrink-0">Max Evaluation Fee</dt>
+                      <dd className="font-semibold text-right">{broker.maximum_evaluation_fee}</dd>
+                    </div>
+                  )}
+                </dl>
               </Card>
             )}
 
@@ -446,34 +490,34 @@ export default async function (props: Props) {
           </div>
 
           {(broker.pros || broker.cons) && (
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                {broker.pros && (
-                  <Card className="p-0 overflow-hidden border-green-500/30 bg-green-500/5 h-full">
-                    <CardHeader className="bg-green-500/10 py-4 px-6 border-b border-green-500/20">
-                      <H5 as="h4" className="text-green-700 dark:text-green-400 mb-0 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                        Pros
-                      </H5>
-                    </CardHeader>
-                    <div className="p-6">
-                      <Markdown code={broker.pros.split("; ").map(p => `- ${p}`).join("\n")} className="text-sm prose-p:my-1 text-green-900/80 dark:text-green-200/80" />
-                    </div>
-                  </Card>
-                )}
-                {broker.cons && (
-                  <Card className="p-0 overflow-hidden border-red-500/30 bg-red-500/5 h-full">
-                    <CardHeader className="bg-red-500/10 py-4 px-6 border-b border-red-500/20">
-                      <H5 as="h4" className="text-red-700 dark:text-red-400 mb-0 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                        Cons
-                      </H5>
-                    </CardHeader>
-                    <div className="p-6">
-                      <Markdown code={broker.cons.split("; ").map(c => `- ${c}`).join("\n")} className="text-sm prose-p:my-1 text-red-900/80 dark:text-red-200/80" />
-                    </div>
-                  </Card>
-                )}
-             </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              {broker.pros && (
+                <Card className="p-0 overflow-hidden border-green-500/30 bg-green-500/5 h-full">
+                  <CardHeader className="bg-green-500/10 py-4 px-6 border-b border-green-500/20">
+                    <H5 as="h4" className="text-green-700 dark:text-green-400 mb-0 flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
+                      Pros
+                    </H5>
+                  </CardHeader>
+                  <div className="p-6">
+                    <Markdown code={broker.pros.split("; ").map(p => `- ${p}`).join("\n")} className="text-sm prose-p:my-1 text-green-900/80 dark:text-green-200/80" />
+                  </div>
+                </Card>
+              )}
+              {broker.cons && (
+                <Card className="p-0 overflow-hidden border-red-500/30 bg-red-500/5 h-full">
+                  <CardHeader className="bg-red-500/10 py-4 px-6 border-b border-red-500/20">
+                    <H5 as="h4" className="text-red-700 dark:text-red-400 mb-0 flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" /></svg>
+                      Cons
+                    </H5>
+                  </CardHeader>
+                  <div className="p-6">
+                    <Markdown code={broker.cons.split("; ").map(c => `- ${c}`).join("\n")} className="text-sm prose-p:my-1 text-red-900/80 dark:text-red-200/80" />
+                  </div>
+                </Card>
+              )}
+            </div>
           )}
 
           <Stack className="w-full md:sticky md:bottom-2 md:z-10 mt-8">

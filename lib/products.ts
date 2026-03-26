@@ -1,13 +1,7 @@
 import { addDays, differenceInMonths } from "date-fns"
 import plur from "plur"
 import type { ReactNode } from "react"
-import type Stripe from "stripe"
 import { submissionsConfig } from "~/config/submissions"
-import {
-  findStripeCoupon,
-  findStripePricesByProduct,
-  findStripeProducts,
-} from "~/server/web/products/queries"
 
 const SYMBOLS = {
   positive: "✓ ",
@@ -25,14 +19,31 @@ export type ProductFeature = {
   type?: keyof typeof SYMBOLS
 }
 
+// Custom types to replace Stripe ones
+export type Product = {
+  id: string
+  name: string
+  description: string
+  marketing_features: { name: string }[]
+  default_price?: Price
+}
+
+export type Price = {
+  id: string
+  unit_amount: number
+  currency: string
+  recurring?: { interval: ProductInterval }
+  type?: "one_time" | "recurring"
+}
+
 export type ProductWithPrices = {
-  product: Stripe.Product
-  prices: Stripe.Price[]
-  coupon: Stripe.Coupon | undefined
+  product: Product
+  prices: Price[]
+  coupon: any | undefined
 }
 
 export type ProductProps = {
-  product?: Partial<Stripe.Product>
+  product?: Partial<Product>
   isDisabled?: boolean
   buttonLabel?: ReactNode
 } | null
@@ -55,78 +66,29 @@ const removeTypeSymbolFromName = (name: string, type?: SymbolType) => {
 }
 
 /**
- * Get the price amount from a Stripe price object or string.
- *
- * @param price - The price to get the amount from.
- * @returns The price amount.
+ * Get the price amount from a Product or Price object.
  */
-const extractPriceAmount = (price?: Stripe.Price | string | null) => {
+const extractPriceAmount = (price?: Price | string | null) => {
   return typeof price === "object" && price !== null ? (price.unit_amount ?? 0) : 0
 }
 
 /*
  * Sort products by price
  */
-export const sortProductsByPrice = (products: Stripe.Product[]) => {
-  return products.sort(
-    (a, b) => extractPriceAmount(a.default_price) - extractPriceAmount(b.default_price),
+export const sortProductsByPrice = (products: Product[]) => {
+  return (products as any).sort(
+    (a: any, b: any) => extractPriceAmount(a.default_price) - extractPriceAmount(b.default_price),
   )
 }
 
 /**
- * Check if a product is eligible for a discount with the given coupon.
- */
-const isProductEligibleForDiscount = (productId: string, coupon?: Stripe.Coupon) => {
-  return !coupon?.applies_to || coupon.applies_to.products.includes(productId)
-}
-
-/**
  * Get the normalized features of a product.
- *
- * @param product - The product to get the features of.
- * @returns The normalized features of the product.
  */
-export const getProductFeatures = (product: Stripe.Product) => {
+export const getProductFeatures = (product: Product) => {
   return product.marketing_features.map(feature => {
     const type = extractFeatureTypeFromName(feature.name)
     const name = removeTypeSymbolFromName(feature.name || "", type)
 
     return { name, type } satisfies ProductFeature
   })
-}
-
-/**
- * Fetch prices for a list of products and prepare them for display.
- */
-export const getProductsWithPrices = async (
-  products: Stripe.Product[],
-  coupon?: Stripe.Coupon,
-): Promise<ProductWithPrices[]> => {
-  return Promise.all(
-    products.map(async product => {
-      const prices = await findStripePricesByProduct(product.id)
-      const isEligibleForDiscount = isProductEligibleForDiscount(product.id, coupon)
-
-      return {
-        product,
-        prices,
-        coupon: isEligibleForDiscount ? coupon : undefined,
-      }
-    }),
-  )
-}
-
-/**
- * Get the products for a listing.
- *
- * @param discountCode - The discount code to apply to the products.
- * @returns A promise that resolves to an array of products with their prices and discount status.
- */
-export const getProductsForListing = async (discountCode?: string) => {
-  const [products, coupon] = await Promise.all([
-    findStripeProducts(),
-    findStripeCoupon(discountCode),
-  ])
-
-  return getProductsWithPrices(sortProductsByPrice(products), coupon)
 }

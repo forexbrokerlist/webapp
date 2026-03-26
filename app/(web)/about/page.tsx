@@ -50,23 +50,41 @@ export default async function () {
 
         <h2>{t(`${namespace}.mission.title`)}</h2>
         <p>{t(`${namespace}.mission.content`, { siteName: siteConfig.name })}</p>
+        <ul className="mt-4 list-disc pl-6 mb-8 text-foreground/80 space-y-2">
+          <li>{t(`${namespace}.mission.list.transparency`)}</li>
+          <li>{t(`${namespace}.mission.list.accuracy`)}</li>
+          <li>{t(`${namespace}.mission.list.community`)}</li>
+          <li>{t(`${namespace}.mission.list.accessibility`)}</li>
+        </ul>
 
-        <section className="not-prose mt-12">
-          <h2 className="text-2xl font-bold mb-8">{t(`${namespace}.team.title`)}</h2>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <Stack direction="column" className="items-center text-center p-6 border rounded-lg bg-accent/5">
-              <Avatar className="size-24 mb-4">
-                <AvatarImage src="https://avatars.githubusercontent.com/u/4151752?v=4" alt={t(`${namespace}.team.members.piotr.name`)} />
-                <AvatarFallback>PK</AvatarFallback>
-              </Avatar>
-              <h3 className="font-bold text-lg">{t(`${namespace}.team.members.piotr.name`)}</h3>
-              <p className="text-sm text-foreground/60 mb-3">{t(`${namespace}.team.members.piotr.role`)}</p>
-              <p className="text-sm leading-relaxed">
-                {t(`${namespace}.team.members.piotr.bio`)}
-              </p>
-            </Stack>
-          </div>
-        </section>
+        <h2>{t(`${namespace}.offer.title`)}</h2>
+        <p>{t(`${namespace}.offer.content`, { siteName: siteConfig.name })}</p>
+        <ul className="mt-4 list-disc pl-6 mb-8 text-foreground/80 space-y-2">
+          <li>{t(`${namespace}.offer.list.listings`)}</li>
+          <li>{t(`${namespace}.offer.list.comparisons`)}</li>
+          <li>{t(`${namespace}.offer.list.network`)}</li>
+          <li>{t(`${namespace}.offer.list.education`)}</li>
+          <li>{t(`${namespace}.offer.list.algorithmic`)}</li>
+          <li>{t(`${namespace}.offer.list.updates`)}</li>
+        </ul>
+
+        <h2>{t(`${namespace}.trust.title`)}</h2>
+        <ul className="mt-4 list-disc pl-6 mb-8 text-foreground/80 space-y-2">
+          <li>{t(`${namespace}.trust.list.brokers`)}</li>
+          <li>{t(`${namespace}.trust.list.customers`)}</li>
+          <li>{t(`${namespace}.trust.list.subscribers`)}</li>
+          <li>{t(`${namespace}.trust.list.sponsorship`)}</li>
+          <li>{t(`${namespace}.trust.list.guarantee`)}</li>
+          <li>{t(`${namespace}.trust.list.partners`)}</li>
+        </ul>
+
+        <h2>{t(`${namespace}.part_of_it.title`)}</h2>
+        <p>{t(`${namespace}.part_of_it.content`)}</p>
+        <ul className="mt-4 list-disc pl-6 mb-8 text-foreground/80 space-y-2">
+          <li>{t(`${namespace}.part_of_it.list.list`)}</li>
+          <li>{t(`${namespace}.part_of_it.list.advertise`)}</li>
+          <li>{t(`${namespace}.part_of_it.list.subscribe`)}</li>
+        </ul>
 
         <section className="not-prose mt-20 p-8 rounded-2xl bg-foreground text-background">
           <Stack direction="column" className="items-center text-center gap-4">
@@ -75,7 +93,7 @@ export default async function () {
               {t(`${namespace}.contact.content`)}
             </p>
             <Button variant="secondary" asChild className="mt-4">
-              <Link href={`mailto:${siteConfig.email}`}>
+              <Link href={`mailto:${t(`${namespace}.contact.email`)}`}>
                 {t(`${namespace}.contact.button`)}
               </Link>
             </Button>

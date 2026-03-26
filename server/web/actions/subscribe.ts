@@ -5,7 +5,6 @@ import { getTranslations } from "next-intl/server"
 import { isRateLimited } from "~/lib/rate-limiter"
 import { actionClient } from "~/lib/safe-actions"
 import { createNewsletterSchema } from "~/server/web/shared/schema"
-import { createResendContact } from "~/services/resend"
 
 /**
  * Subscribe to the newsletter
@@ -25,11 +24,19 @@ export const subscribeToNewsletter = actionClient
       throw new Error(t("errors.rate_limited"))
     }
 
-    // Create a resend contact
-    const { error } = await tryCatch(createResendContact({ email }))
+    const { db } = await import("~/services/db")
 
-    if (error) {
-      console.error("Failed to create resend contact:", error)
+    // Save to the database
+    const { error: dbError } = await tryCatch(
+      db.newsletter.upsert({
+        where: { email },
+        update: {},
+        create: { email },
+      }),
+    )
+
+    if (dbError) {
+      console.error("Failed to save newsletter subscription to database:", dbError)
       throw new Error(t("errors.failed"))
     }
 

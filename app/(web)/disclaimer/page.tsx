@@ -1,3 +1,4 @@
+import seoData from "~/config/seo.json"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { cache } from "react"
@@ -26,7 +27,7 @@ const getData = cache(async () => {
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const { url, metadata } = await getData()
-  return getPageMetadata({ url, metadata })
+  return getPageMetadata({ url, metadata: { ...metadata, ...seoData.disclaimer } })
 }
 
 export default async function () {
@@ -40,54 +41,76 @@ export default async function () {
       </Intro>
 
       <Prose>
-        <h2>1. Financial Advice</h2>
+        <h2>1. General Disclaimer</h2>
         <p>
-          The information provided on {siteConfig.name} is for informational purposes only and
-          does not constitute financial, investment, or trading advice. You should not treat any
-          content on this website as a recommendation to buy or sell any financial instrument.
+          The information provided on Forex Brokers List is for general informational and directory
+          purposes only. We make no representations or warranties of any kind, express or implied,
+          regarding the accuracy, completeness, or suitability of any information on this website.
         </p>
 
-        <h2>2. Risk Warning</h2>
+        <h2>2. Not Financial Advice</h2>
         <p>
-          Trading foreign exchange (forex) on margin carries a high level of risk and may not be
-          suitable for all investors. The high degree of leverage can work against you as well as
-          for you. Before deciding to invest in foreign exchange you should carefully consider your
-          investment objectives, level of experience, and risk appetite.
+          Nothing on this website constitutes financial, investment, or trading advice. Forex
+          trading involves significant risk of loss and is not suitable for all investors. You
+          should always:
         </p>
+        <ul>
+          <li>Conduct your own due diligence before choosing a broker</li>
+          <li>Consult a qualified financial advisor before making investment decisions</li>
+          <li>Understand the risks involved in forex and CFD trading</li>
+        </ul>
+
+        <h2>3. Broker Information Accuracy</h2>
+        <ul>
+          <li>
+            Broker details (spreads, regulations, platforms, minimum deposits) are sourced from
+            publicly available information and broker submissions
+          </li>
+          <li>This information may be outdated or inaccurate always verify directly with the broker</li>
+          <li>
+            Sponsored and featured listings are paid placements and do not represent our endorsement
+            of any broker
+          </li>
+          <li>
+            Inclusion in our directory does not imply that a broker is safe, regulated, or recommended
+          </li>
+        </ul>
+
+        <h2>4. Regulation & Compliance</h2>
         <p>
-          The possibility exists that you could sustain a loss of some or all of your initial
-          investment and therefore you should not invest money that you cannot afford to lose.
+          Forex trading may be regulated differently depending on your country of residence. It is
+          your responsibility to ensure that using any broker listed on our platform complies with
+          the laws and regulations of your jurisdiction.
         </p>
 
-        <h2>3. Accuracy of Information</h2>
+        <h2>5. Affiliate & Commercial Relationships</h2>
         <p>
-          While we strive to provide accurate and up-to-date information, the forex market is
-          dynamic and information can change rapidly. {siteConfig.name} does not warrant the
-          accuracy, completeness, or timeliness of the information provided. Use of the information
-          presented on this website is at your own risk.
+          Some links and listings on this website may be affiliate links or paid sponsorships. We may
+          receive compensation when you click on links or sign up with brokers. This does not
+          influence our listing criteria, though sponsored brokers are clearly labeled.
         </p>
 
-        <h2>4. Broker Listings and Reviews</h2>
+        <h2>6. Third-Party Websites</h2>
         <p>
-          The broker listings, reviews, and ratings are based on information provided by the
-          brokers themselves and user feedback. They are intended to provide a starting point for
-          your own research and due diligence. We do not endorse any specific broker and we are not
-          responsible for any trading losses incurred with any broker listed on our site.
+          Our website contains links to third-party websites. We have no control over the content,
+          privacy practices, or availability of those sites and accept no responsibility for them.
         </p>
 
-        <h2>5. Affiliate Disclaimer</h2>
+        <h2>7. No Liability</h2>
         <p>
-          Some of the links on this website are affiliate links, which means we may receive a
-          commission if you click on a link and sign up with a broker. This helps us maintain and
-          grow {siteConfig.name} at no additional cost to you. However, our reviews and ratings
-          remain independent and unbiased.
+          To the fullest extent permitted by law, Forex Brokers List shall not be liable for any
+          direct, indirect, incidental, or consequential damages arising from:
         </p>
+        <ul>
+          <li>Use of or reliance on information from this website</li>
+          <li>Trading decisions made based on broker listings</li>
+          <li>Any errors or omissions in the content</li>
+        </ul>
 
-        <h2>6. Limitation of Liability</h2>
+        <h2>8. Contact Us</h2>
         <p>
-          {siteConfig.name} and its owner(s) shall not be liable for any loss or damage,
-          financial or otherwise, resulting from the use of or reliance on the information provided
-          on this website.
+          For any questions about this Disclaimer: Email:{" "}
+          <a href="mailto:forexbrokerlist24@gmail.com">forexbrokerlist24@gmail.com</a>
         </p>
       </Prose>
 

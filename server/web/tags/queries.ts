@@ -16,7 +16,6 @@ export const searchTags = async (search: TagsFilterParams, where?: Prisma.TagWhe
   const [sortBy, sortOrder] = sort.split(".")
 
   const whereQuery: Prisma.TagWhereInput = {
-    brokers: { some: { status: ToolStatus.Published } },
     ...(q && { name: { contains: q, mode: "insensitive" } }),
   }
 

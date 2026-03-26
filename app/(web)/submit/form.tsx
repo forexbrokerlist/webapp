@@ -2,8 +2,11 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
+import { useAction } from "next-safe-action/hooks"
 import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { XCircle } from "lucide-react"
 import type { ComponentProps } from "react"
 import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
@@ -16,29 +19,61 @@ import { TextArea } from "~/components/common/textarea"
 import { cx } from "~/lib/utils"
 import { submitBroker } from "~/server/web/actions/submit"
 import { createSubmitBrokerSchema } from "~/server/web/shared/schema"
+import { createCheckout } from "~/server/web/products/actions"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/common/select"
 import { RelationSelector } from "~/components/common/relation-selector"
+import { PlanCard, type PlanData } from "~/components/web/plans/plan-card"
 
-type SubmitFormProps = ComponentProps<"form"> & { 
+type SubmitFormProps = ComponentProps<"form"> & {
   categories?: any[]
-  subcategories?: any[] 
+  subcategories?: any[]
   tags?: any[]
+  plan?: any
+  plans?: any[]
+  isCancelled?: boolean
 }
 
-export const SubmitForm = ({ 
-  className, 
-  categories = [], 
-  subcategories = [], 
+export const SubmitForm = ({
+  className,
+  categories = [],
+  subcategories = [],
   tags = [],
-  ...props 
+  plans = [],
+  ...props
 }: SubmitFormProps) => {
   const router = useRouter()
   const t = useTranslations("forms.submit")
   const tSchema = useTranslations("schema")
+  const [showCancelled, setShowCancelled] = useState(props.isCancelled)
+  const [step, setStep] = useState<1 | 2>(1)
+  const [submittedBroker, setSubmittedBroker] = useState<{ id: number; slug: string; name: string } | null>(null)
+  
+  // Persist plan across redirects (Cregis might drop query parameters on cancel)
+  const [activePlan, setActivePlan] = useState(props.plan)
+
+  useEffect(() => {
+    if (props.plan) {
+      setActivePlan(props.plan)
+      sessionStorage.setItem("submitActivePlan", JSON.stringify(props.plan))
+    } else if (props.isCancelled) {
+      const stored = sessionStorage.getItem("submitActivePlan")
+      if (stored) {
+        try {
+          setActivePlan(JSON.parse(stored))
+        } catch (e) {}
+      }
+    }
+  }, [props.plan, props.isCancelled])
 
   const schema = createSubmitBrokerSchema(tSchema)
   const resolver = zodResolver(schema)
+
+  const checkoutAction = useAction(createCheckout, {
+    onError: ({ error }) => {
+      toast.error(error.serverError || "Failed to initiate payment")
+    }
+  })
 
   const { form, action, handleSubmitWithAction } = useHookFormAction(submitBroker, resolver, {
     formProps: {
@@ -85,6 +120,32 @@ export const SubmitForm = ({
 
         if (!data) return
 
+        // Automatically find the $200 plan to bypass the plan selection card
+        const planToUse = plans.find(p => p.price === 200) || activePlan
+
+        if (planToUse && planToUse.price > 0) {
+          checkoutAction.execute({
+            lineItems: [{ price: planToUse.id, quantity: 1 }],
+            successUrl: `/submit/${data.slug}/success`,
+            cancelUrl: `/submit?plan=${planToUse.slug}`,
+            mode: "payment",
+            metadata: { planId: planToUse.id, brokerId: String(data.id), type: "subscription" }
+          })
+          return
+        }
+
+        // Fallback: If no $200 plan or selected plan found, move to Step 2 if plans are available
+        if (plans && plans.length > 0) {
+            setSubmittedBroker({ 
+              id: data.id, 
+              slug: data.slug || "", 
+              name: data.broker_name || "Broker" 
+            })
+            setStep(2)
+            window.scrollTo({ top: 0, behavior: "smooth" })
+            return
+        }
+
         toast.success(t("submitted_success", { name: data.broker_name || "Broker" }))
         router.push(`/submit/${data.slug}/success`)
       },
@@ -92,6 +153,79 @@ export const SubmitForm = ({
   })
 
   const { serverError } = action.result
+
+  if (showCancelled) {
+    return (
+      <div className="w-full max-w-2xl mx-auto bg-card border border-destructive/20 rounded-xl p-8 sm:p-12 shadow-sm flex flex-col items-center text-center gap-6 animate-in fade-in zoom-in-95 duration-500">
+        <div className="size-16 rounded-full bg-destructive/10 flex items-center justify-center text-destructive">
+          <XCircle className="size-8" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-semibold tracking-tight">Payment Cancelled</h2>
+          <p className="text-muted-foreground">
+            Your payment process was cancelled and no charges were made.
+            If you experienced an issue, you can try again or contact support.
+          </p>
+        </div>
+        <Button 
+          size="lg" 
+          className="mt-4"
+          onClick={() => {
+            setShowCancelled(false)
+            window.history.replaceState(null, '', window.location.pathname + (activePlan ? `?plan=${activePlan.slug}` : ''))
+          }}
+        >
+          Try Again
+        </Button>
+      </div>
+    )
+  }
+
+  if (step === 2 && submittedBroker) {
+    return (
+      <div className="col-span-full flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500 py-8">
+        <div className="flex flex-col gap-3 text-center">
+            <h2 className="text-3xl font-bold tracking-tight">Boost Your Visibility</h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Your broker <span className="text-foreground font-semibold">"{submittedBroker.name}"</span> has been successfully submitted! 
+                Choose a plan below to finalize your listing and reach more traders.
+            </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto w-full">
+            {plans?.map((plan) => (
+                <PlanCard 
+                    key={plan.id}
+                    plan={plan}
+                    brokerId={String(submittedBroker.id)}
+                    className="flex-1"
+                    onClick={(selectedPlan) => {
+                        if (selectedPlan.price === 0) {
+                            toast.success(t("submitted_success", { name: submittedBroker.name }))
+                            router.push(`/submit/${submittedBroker.slug}/success`)
+                            return
+                        }
+                        
+                        checkoutAction.execute({
+                            lineItems: [{ price: selectedPlan.id, quantity: 1 }],
+                            successUrl: `/submit/${submittedBroker.slug}/success`,
+                            cancelUrl: `/submit?plan=${selectedPlan.slug}`,
+                            mode: "payment",
+                            metadata: { planId: selectedPlan.id, brokerId: String(submittedBroker.id), type: "subscription" }
+                        })
+                    }}
+                />
+            ))}
+        </div>
+        
+        <div className="flex justify-center mt-8 pt-6 border-t border-border/10">
+            <Button variant="ghost" className="text-muted-foreground hover:text-foreground" onClick={() => router.push(`/submit/${submittedBroker.slug}/success`)}>
+                Skip for now, keep as standard listing
+            </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <Form {...form}>
@@ -108,7 +242,7 @@ export const SubmitForm = ({
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel data-required htmlFor={field.name}>
-                Broker Name:
+                Name:
               </FieldLabel>
               <Input
                 id={field.name}
@@ -240,7 +374,7 @@ export const SubmitForm = ({
           name="subcategoryIds"
           render={({ field, fieldState }) => {
             const selectedCategoryIds = form.watch("categoryIds") ?? []
-            const filteredSubcategories = subcategories.filter(s => 
+            const filteredSubcategories = subcategories.filter(s =>
               selectedCategoryIds.length === 0 || selectedCategoryIds.includes(s.categoryId)
             )
 
@@ -277,7 +411,7 @@ export const SubmitForm = ({
         />
 
         <h3 className="col-span-full font-semibold text-xl mt-4 -mb-2">Trading Conditions</h3>
-        
+
         <Controller
           control={form.control}
           name="trading_platforms"
@@ -379,7 +513,7 @@ export const SubmitForm = ({
             </Field>
           )}
         />
-        
+
         <Controller
           control={form.control}
           name="funding_methods"
@@ -419,7 +553,7 @@ export const SubmitForm = ({
             </Field>
           )}
         />
-        
+
         <Controller
           control={form.control}
           name="withdrawal_options"
@@ -513,7 +647,7 @@ export const SubmitForm = ({
             </Field>
           )}
         />
-        
+
         <Controller
           control={form.control}
           name="cons"
@@ -547,7 +681,7 @@ export const SubmitForm = ({
         {serverError && <Hint className="col-span-full">{serverError}</Hint>}
 
         <div className="col-span-full">
-          <Button type="submit" variant="primary" isPending={action.isPending} className="flex min-w-32">
+          <Button type="submit" variant="primary" isPending={action.isPending || checkoutAction.isPending} className="flex min-w-32">
             {t("submit_button")}
           </Button>
         </div>

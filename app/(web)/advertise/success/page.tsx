@@ -1,4 +1,3 @@
-import { tryCatch } from "@primoui/utils"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
@@ -13,8 +12,8 @@ import { getPageData, getPageMetadata } from "~/lib/pages"
 import { cx } from "~/lib/utils"
 import { getPresignedUrlFromFull } from "~/lib/media"
 import { adOnePayload } from "~/server/web/ads/payloads"
+import { findCategories } from "~/server/web/categories/queries"
 import { db } from "~/services/db"
-import { stripe } from "~/services/stripe"
 
 type Props = PageProps<"/advertise/success">
 
@@ -25,9 +24,13 @@ const namespace = "pages.advertise.success"
 const getData = cache(async ({ searchParams }: Props) => {
   const searchParamsLoader = createLoader({ sessionId: parseAsString.withDefault("") })
   const { sessionId } = await searchParamsLoader(searchParams)
-  const { data: session, error } = await tryCatch(stripe.checkout.sessions.retrieve(sessionId))
+  
+  // In the new flow, sessionId is our orderId
+  const payment = await db.payment.findUnique({
+    where: { orderId: sessionId },
+  })
 
-  if (error || session.status !== "complete") {
+  if (!payment) {
     notFound()
   }
 
@@ -39,6 +42,12 @@ const getData = cache(async ({ searchParams }: Props) => {
   const data = getPageData(url, title, description, {
     breadcrumbs: [{ url, title }],
   })
+
+  // Provide a session-like object for compatibility
+  const session = {
+     id: payment.orderId!,
+     status: payment.status === "Paid" ? "complete" : "open",
+  }
 
   return { session, ...data }
 })
@@ -52,23 +61,25 @@ export default async function (props: PageProps<"/advertise/success">) {
   const { session, metadata } = await getData(props)
 
   let existingAd = await db.ad.findFirst({
-    where: { sessionId: session.id },
+    where: { sessionId: session.id as string },
     select: adOnePayload,
   })
 
-  // Optimistically set the ad to Pending if the webhook hasn't fired yet
+  // Optimistically set the ad to Pending if the payment is confirmed or pending
   if (existingAd && existingAd.status === "Draft") {
     await db.ad.updateMany({
-      where: { sessionId: session.id },
+      where: { sessionId: session.id as string },
       data: { status: "Pending" },
     })
     existingAd.status = "Pending"
   }
 
   if (existingAd) {
-    existingAd.faviconUrl = (await getPresignedUrlFromFull(existingAd.faviconUrl)) as string | null
-    existingAd.bannerUrl = (await getPresignedUrlFromFull(existingAd.bannerUrl)) as string | null
+    existingAd.faviconUrl = (await getPresignedUrlFromFull(existingAd.faviconUrl)) as string
+    existingAd.bannerUrl = (await getPresignedUrlFromFull(existingAd.bannerUrl)) as string
   }
+
+  const categories = await findCategories({ all: true })
 
   return (
     <>
@@ -79,7 +90,12 @@ export default async function (props: PageProps<"/advertise/success">) {
 
       <Section>
         <Section.Content className={cx(!existingAd && "md:col-span-full")}>
-          <AdForm sessionId={session.id} ad={existingAd} className="w-full max-w-xl mx-auto" />
+          <AdForm
+            sessionId={session.id}
+            ad={existingAd}
+            categories={categories}
+            className="w-full max-w-xl mx-auto"
+          />
         </Section.Content>
 
         {existingAd && (

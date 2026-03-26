@@ -1,9 +1,9 @@
-import { withContentCollections } from "@content-collections/next"
-import type { NextConfig } from "next"
-import createNextIntlPlugin from "next-intl/plugin"
+import { withContentCollections } from "@content-collections/next";
+import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 // import { withPlausibleProxy } from "next-plausible"
 
-const withNextIntl = createNextIntlPlugin("./lib/i18n.ts")
+const withNextIntl = createNextIntlPlugin("./lib/i18n.ts");
 // const withPlausible = withPlausibleProxy({ customDomain: process.env.NEXT_PUBLIC_PLAUSIBLE_URL })
 
 const nextConfig: NextConfig = {
@@ -34,19 +34,20 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
     remotePatterns: (function () {
-      const { S3_PUBLIC_URL, S3_BUCKET, S3_REGION } = process.env
+      const { S3_PUBLIC_URL, S3_BUCKET, S3_REGION } = process.env;
       // Handle empty string or undefined values
-      const publicUrl = S3_PUBLIC_URL && S3_PUBLIC_URL.trim() !== "" 
-        ? S3_PUBLIC_URL 
-        : (S3_BUCKET && S3_REGION 
-          ? `https://${S3_BUCKET}.${S3_REGION}.digitaloceanspaces.com`
-          : undefined)
-      
+      const publicUrl =
+        S3_PUBLIC_URL && S3_PUBLIC_URL.trim() !== ""
+          ? S3_PUBLIC_URL
+          : S3_BUCKET && S3_REGION
+            ? `https://${S3_BUCKET}.${S3_REGION}.digitaloceanspaces.com`
+            : undefined;
+
       if (!publicUrl) {
-        return []
+        return [];
       }
 
-      const url = new URL(publicUrl)
+      const url = new URL(publicUrl);
 
       return [
         {
@@ -55,8 +56,25 @@ const nextConfig: NextConfig = {
           port: "",
           pathname: "/**",
         },
-      ]
+      ];
     })(),
+  },
+
+  // ✅ ADD THIS (fix CORS by unifying domain)
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "www.forexbrokerlist.io",
+          },
+        ],
+        destination: "https://forexbrokerlist.io/:path*",
+        permanent: true,
+      },
+    ];
   },
 
   async rewrites() {
@@ -65,9 +83,9 @@ const nextConfig: NextConfig = {
         source: "/sitemap/:id.xml",
         destination: "/sitemap/:id",
       },
-    ]
+    ];
   },
-}
+};
 
-export default withContentCollections(withNextIntl(nextConfig))
+export default withContentCollections(withNextIntl(nextConfig));
 // export default withContentCollections(withNextIntl(withPlausible(nextConfig)))

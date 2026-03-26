@@ -158,6 +158,12 @@ model Ad {
   status      AdStatus @default(Draft)
   clicks      Int      @default(0)
   impressions Int      @default(0)
+
+  // Relations
+  categoryId    String?
+  Category      Category?    @relation(fields: [categoryId], references: [id])
+  subcategoryId String?
+  Subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
 }
 
 model Tool {
@@ -210,6 +216,8 @@ model Category {
   subcategories Subcategory[]
   tools         Tool[]
   brokers       Brokers[]
+  sponsors      Sponsor[]
+  ads           Ad[]
 
   // Indexes
   @@index([slug])
@@ -231,6 +239,7 @@ model Subcategory {
   // Relations to items
   tools   Tool[]
   brokers Brokers[]
+  ads     Ad[]
 
   // Indexes
   @@index([slug])
@@ -324,6 +333,8 @@ model Brokers {
   withdrawal_fee                     String?
   broker_website                     String?
   slug                               String?    @unique
+  screenshotUrl                      String?
+  isSponsor                          Boolean    @default(false)
   bookmarks                          Bookmark[]
 
   // Admin & Submission fields
@@ -356,11 +367,14 @@ model Brokers {
 model Sponsor {
   id         String          @id @default(cuid())
   name       String          @db.Citext
+  slug       String?
   logoUrl    String
   websiteUrl String?
   isActive   Boolean         @default(true)
   order      Int             @default(0)
   category   SponsorCategory @default(BrokerListing)
+  categoryId String?
+  Category   Category?       @relation(fields: [categoryId], references: [id])
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
 
@@ -376,6 +390,19 @@ model Newsletter {
   updatedAt DateTime @updatedAt
 
   @@index([email])
+}
+
+model ContactUs {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([createdAt])
 }
 
 model Plan {
@@ -455,11 +482,11 @@ model Payment {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  brokerId Int
-  broker   Brokers @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+  brokerId Int?
+  broker   Brokers? @relation(fields: [brokerId], references: [id], onDelete: Cascade)
 
-  planId String
-  plan   Plan   @relation(fields: [planId], references: [id])
+  planId String?
+  plan   Plan?   @relation(fields: [planId], references: [id])
 
   amount   Float
   currency String @default("USD")
