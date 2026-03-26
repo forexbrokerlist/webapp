@@ -8,7 +8,7 @@ import { ExternalLink } from "~/components/web/external-link"
 import { linksConfig } from "~/config/links"
 import { siteConfig } from "~/config/site"
 import { cx } from "~/lib/utils"
-import { LogoSymbol } from "./ui/logo-symbol"
+import { Logo } from "./ui/logo"
 
 type BuiltWithProps = ComponentProps<typeof Stack> & {
   medium?: string
@@ -30,8 +30,7 @@ export const BuiltWith = ({ className, medium, ...props }: BuiltWithProps) => {
       <ExternalLink href={href} doTrack doFollow>
         {t("common.built_with")}
         <Stack wrap={false} className="gap-[0.35em] font-medium text-foreground" asChild>
-          <LogoSymbol className="size-5" />
-          Forex Brokers Listing
+          <Logo className="size-5" />
         </Stack>
       </ExternalLink>
     </Stack>

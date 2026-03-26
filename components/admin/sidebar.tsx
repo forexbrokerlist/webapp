@@ -24,7 +24,7 @@ import { Nav } from "~/components/admin/nav"
 import { Button } from "~/components/common/button"
 import { Kbd } from "~/components/common/kbd"
 import { Tooltip } from "~/components/common/tooltip"
-import { LogoSymbol } from "~/components/web/ui/logo-symbol"
+import { Logo } from "~/components/web/ui/logo"
 import { siteConfig } from "~/config/site"
 import { useSearch } from "~/contexts/search-context"
 import { signOut } from "~/lib/auth-client"
@@ -58,7 +58,7 @@ export const Sidebar = () => {
         {
           title: "Dashboard",
           href: "/admin",
-          prefix: <LogoSymbol />,
+          prefix: <Logo hideText />,
           suffix: (
             <Tooltip tooltip="Visit site">
               <Button

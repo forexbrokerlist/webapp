@@ -1,5 +1,5 @@
 import { getExcerpt } from "@primoui/utils"
-import { LogoSymbol } from "~/components/web/ui/logo-symbol"
+import { LogoSymbol } from "~/components/web/ui/dark-logo-symbol"
 import type { OpenGraphParams } from "~/lib/opengraph"
 
 type OgBaseProps = OpenGraphParams & {
