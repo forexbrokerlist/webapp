@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { Send, Loader2, FileText, User, Image as ImageIcon, X } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { Button } from "~/components/common/button"
 import { TextArea } from "~/components/common/textarea"
 import { Avatar, AvatarFallback } from "~/components/common/avatar"
@@ -12,19 +13,31 @@ import remarkGfm from "remark-gfm"
 import { apiClient } from "~/lib/api-client"
 import { Card } from "~/components/common/card"
 import { Stack } from "~/components/common/stack"
+import { useSession } from "~/lib/auth-client"
 interface Message {
   id: string
-  content: any   // 🔥 change from string → any
+  content: any
   sender: "user" | "assistant"
   timestamp: string
+  type: "text" | "image"   // ✅ ADD THIS
   short_response?: any
   full_report?: any
   image_url?: string
 }
-
 const STOCK_GURU_MC_PATH = "/stock-guru/api/v1"
 
 export function StockGuruChat() {
+  const { data: session } = useSession()
+  const router = useRouter()
+
+  // Check if user is authenticated, redirect to signin if not
+  useEffect(() => {
+    if (!session) {
+      router.push('/auth/login')
+    }
+  }, [session, router])
+
+
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState("")
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -37,6 +50,68 @@ export function StockGuruChat() {
   const [contentPanelScrollKey, setContentPanelScrollKey] = useState(0)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Load conversation from localStorage on component mount
+  useEffect(() => {
+    if (session) {
+      const savedMessages = localStorage.getItem(`stock-guru-chat-${session.user.id}`)
+      const savedChatId = localStorage.getItem(`stock-guru-chat-id-${session.user.id}`)
+      const savedReport = localStorage.getItem(`stock-guru-report-${session.user.id}`)
+      const savedShortReport = localStorage.getItem(`stock-guru-short-report-${session.user.id}`)
+
+      if (savedMessages) {
+        try {
+          setMessages(JSON.parse(savedMessages))
+        } catch (error) {
+          console.error('Error loading saved messages:', error)
+        }
+      }
+
+      if (savedChatId) {
+        setCurrentChatId(savedChatId)
+      }
+
+      if (savedReport) {
+        setSelectedReport(savedReport)
+      }
+
+      if (savedShortReport) {
+        setSelectedShortReport(savedShortReport)
+      }
+    }
+  }, [session])
+
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    if (session && messages.length > 0) {
+      localStorage.setItem(`stock-guru-chat-${session.user.id}`, JSON.stringify(messages))
+    }
+  }, [messages, session])
+
+  // Save chat ID whenever it changes
+  useEffect(() => {
+    if (session && currentChatId) {
+      localStorage.setItem(`stock-guru-chat-id-${session.user.id}`, currentChatId)
+    }
+  }, [currentChatId, session])
+
+  // Save selected reports whenever they change
+  useEffect(() => {
+    if (session && selectedReport) {
+      localStorage.setItem(`stock-guru-report-${session.user.id}`, selectedReport)
+    }
+  }, [selectedReport, session])
+
+  useEffect(() => {
+    if (session && selectedShortReport) {
+      localStorage.setItem(`stock-guru-short-report-${session.user.id}`, selectedShortReport)
+    }
+  }, [selectedShortReport, session])
+
+  // Don't render component if user is not authenticated
+  if (!session) {
+    return null
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -54,18 +129,36 @@ export function StockGuruChat() {
     }
   }
 
+  const clearConversation = () => {
+    if (session) {
+      // Clear localStorage for this user
+      localStorage.removeItem(`stock-guru-chat-${session.user.id}`)
+      localStorage.removeItem(`stock-guru-chat-id-${session.user.id}`)
+      localStorage.removeItem(`stock-guru-report-${session.user.id}`)
+      localStorage.removeItem(`stock-guru-short-report-${session.user.id}`)
+
+      // Clear state
+      setMessages([])
+      setCurrentChatId(null)
+      setSelectedReport(null)
+      setSelectedShortReport(null)
+      setRawResponse(null)
+      setContentPanelScrollKey(prev => prev + 1)
+    }
+  }
+
   const handleSend = async () => {
     if ((!inputValue.trim() && !selectedFile) || isLoading) return
 
     const hasFile = !!selectedFile
     const messageContent = hasFile ? (selectedFile?.name || "Uploaded Image") : inputValue
-
     const userMessage: Message = {
       id: Date.now().toString(),
       content: messageContent,
       sender: "user",
       timestamp: new Date().toLocaleTimeString(),
       image_url: previewFile || undefined,
+      type: hasFile ? "image" : "text",   // ✅ KEY LINE
     }
 
     setMessages((prev) => [...prev, userMessage])
@@ -124,7 +217,7 @@ export function StockGuruChat() {
         }
 
         const formatResponseContent = (response: any) => {
-          if (typeof response === "string") return [{ title: "Response", content: response }]
+          if (typeof response === "string") return response
 
           const sections: any[] = []
 
@@ -180,19 +273,20 @@ export function StockGuruChat() {
 
           return sections
         }
-const contentSections = formatResponseContent(rawResponse)
-const reportSections =
-  typeof fullReport === "string"
-    ? [{ title: "Report", content: fullReport }]
-    : formatResponseContent(fullReport)
+        const contentSections = formatResponseContent(rawResponse)
+        const reportSections =
+          typeof fullReport === "string"
+            ? [{ title: "Report", content: fullReport }]
+            : formatResponseContent(fullReport)
         const assistantMessage: Message = {
-  id: (Date.now() + 1).toString(),
-  content: contentSections,
-  sender: "assistant",
-  timestamp: new Date().toLocaleTimeString(),
-  short_response: contentSections,
-  full_report: reportSections,
-}
+          id: (Date.now() + 1).toString(),
+          content: contentSections,
+          sender: "assistant",
+          timestamp: new Date().toLocaleTimeString(),
+          short_response: contentSections,
+          full_report: reportSections,
+          type: hasFile ? "image" : "text",   // ✅ MATCH USER INPUT TYPE
+        }
 
         setMessages((prev) => [...prev, assistantMessage])
         setSelectedReport(reportSections)
@@ -368,12 +462,7 @@ const reportSections =
                     variant="secondary"
                     size="sm"
                     className="text-xs border border-border"
-                    onClick={() => {
-                      setMessages([])
-                      setCurrentChatId(null)
-                      clearFile()
-                      setInputValue("")
-                    }}
+                    onClick={clearConversation}
                   >
                     New Chat
                   </Button>
@@ -409,53 +498,76 @@ const reportSections =
                         </div>
                       )}
                       <div className="prose prose-sm max-w-none dark:prose-invert [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-indigo-600 dark:[&_h2]:text-indigo-400 [&_h2]:mb-4 [&_h2]:pb-2 [&_h2]:border-b [&_h2]:border-border [&_p]:text-base [&_p]:leading-relaxed [&_strong]:font-semibold [&_strong]:text-foreground">
-                      
-                          {message.sender === "assistant" ? (
-  <div className="space-y-4">
-    {Array.isArray(message.content) ? (
-      message.content.map((section: any, idx: number) => (
-        <div key={idx} className="rounded-xl border p-4 bg-muted/40">
 
-          {/* TITLE */}
-          <div className="text-sm font-semibold text-indigo-600 mb-2">
-            {section.title}
-          </div>
+                        {message.sender === "assistant" ? (
+                          <div className="space-y-4">
 
-          {/* CONTENT */}
-          {typeof section.content === "string" ? (
-            <p className="text-sm leading-relaxed">
-              {section.content}
-            </p>
-          ) : (
-            <div className="space-y-2 text-sm">
-              {Object.entries(section.content).map(([key, value]: any, i) => (
-                <div key={i}>
-                  <span className="font-medium">{key}: </span>
+                            {/* 🖼 IMAGE RESPONSE */}
+                            {message.image_url && (
+                              <div className="mb-3">
+                                <img
+                                  src={message.image_url}
+                                  alt="AI Response"
+                                  className="rounded-lg max-h-64 object-cover border"
+                                />
+                              </div>
+                            )}
 
-                  {Array.isArray(value) ? (
-                    <ul className="list-disc ml-5">
-                      {value.map((v: any, j: number) => (
-                        <li key={j}>{v}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <span>{value}</span>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      ))
-    ) : (
-      <p>{message.content}</p>
-    )}
-  </div>
-) : (
-  message.content.split("\n").map((line, index) => (
-    <p key={index}>{line}</p>
-  ))
-)}
+                            {/* 📊 STRUCTURED RESPONSE */}
+                            {Array.isArray(message.content) ? (
+                              message.content.map((section: any, idx: number) => (
+                                <div key={idx} className="rounded-xl border p-4 bg-muted/40">
+
+                                  <div className="text-sm font-semibold text-indigo-600 mb-2">
+                                    {section.title}
+                                  </div>
+
+                                  {typeof section.content === "string" ? (
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                      {section.content}
+                                    </ReactMarkdown>
+                                  ) : (
+                                    <div className="space-y-2 text-sm">
+                                      {Object.entries(section.content).map(([key, value]: any, i) => (
+                                        <div key={i}>
+                                          <span className="font-medium">{key}: </span>
+
+                                          {Array.isArray(value) ? (
+                                            <ul className="list-disc ml-5">
+                                              {value.map((v: any, j: number) => (
+                                                <li key={j}>{v}</li>
+                                              ))}
+                                            </ul>
+                                          ) : (
+                                            <span>{value}</span>
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              ))
+                            ) : typeof message.content === "string" ? (
+
+                              /* 📝 TEXT RESPONSE (MARKDOWN SUPPORT) */
+                              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                {message.content}
+                              </ReactMarkdown>
+
+                            ) : (
+
+                              /* 🧪 FALLBACK */
+                              <pre className="text-xs bg-muted p-2 rounded">
+                                {JSON.stringify(message.content, null, 2)}
+                              </pre>
+
+                            )}
+                          </div>
+                        ) : (
+                          message.content.split("\n").map((line, index) => (
+                            <p key={index}>{line}</p>
+                          ))
+                        )}
                       </div>
 
                       <div className="flex justify-between items-center mt-2.5">
