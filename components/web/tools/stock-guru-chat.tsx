@@ -12,14 +12,13 @@ import remarkGfm from "remark-gfm"
 import { apiClient } from "~/lib/api-client"
 import { Card } from "~/components/common/card"
 import { Stack } from "~/components/common/stack"
-
 interface Message {
   id: string
-  content: string
+  content: any   // 🔥 change from string → any
   sender: "user" | "assistant"
   timestamp: string
-  short_response?: string
-  full_report?: string
+  short_response?: any
+  full_report?: any
   image_url?: string
 }
 
@@ -117,169 +116,87 @@ export function StockGuruChat() {
         const rawResponse = resultData.chats[0].response || resultData.answer || resultData.response?.short_response || {}
         const fullReport = resultData.deep_research_answer || resultData.full_report || resultData.answer || {}
 
-        // Format the object response into readable content
+        const renderSection = (title: string, content: any) => {
+          return {
+            title,
+            content,
+          }
+        }
+
         const formatResponseContent = (response: any) => {
-          if (typeof response === 'string') return response
+          if (typeof response === "string") return [{ title: "Response", content: response }]
 
-          let content = ""
+          const sections: any[] = []
 
-          // Handle different response structures
+          if (response.overall_summary) {
+            sections.push(renderSection("Overall Summary", response.overall_summary))
+          }
+
           if (response.overall_trend) {
-            content += `##Market Analysis\n\n`
-            content += `**Overall Trend:** ${response.overall_trend?.trend || 'N/A'}\n\n`
-
-            if (response.overall_trend?.confidence) {
-              content += `**Confidence:** ${response.overall_trend.confidence}\n\n`
-            }
+            sections.push(
+              renderSection("Market Analysis", {
+                "Trend Type": response.overall_trend.trend_type,
+                "Trend Strength": response.overall_trend.trend_strength,
+                "Description": response.overall_trend.description,
+              })
+            )
           }
 
           if (response.market_structure) {
-            content += `##Market Structure\n\n`
-            const ms = response.market_structure
-            if (ms.current_structure) content += `**Current Structure:** ${ms.current_structure}\n`
-            if (ms.key_levels) content += `**Key Levels:** ${ms.key_levels}\n`
-            if (ms.breakout_potential) content += `**Breakout Potential:** ${ms.breakout_potential}\n`
-            content += '\n'
+            sections.push(
+              renderSection("Market Structure", {
+                "Structure State": response.market_structure.structure_state,
+                "Pattern":
+                  response.market_structure.swing_sequence?.higher_high_lower_high_pattern,
+              })
+            )
           }
 
           if (response.support_and_resistance) {
-            content += `##Support & Resistance\n\n`
-            const sr = response.support_and_resistance
-            if (sr.support_levels) {
-              if (Array.isArray(sr.support_levels)) {
-                content += `**Support Levels:** ${sr.support_levels.map((level: any) => {
-                  if (typeof level === 'object') {
-                    // Extract meaningful value from complex object
-                    const value = level.level_description || level.price || level.level || level.value ||
-                      (level.zone_location && `Zone at ${level.zone_location}`) ||
-                      JSON.stringify(level);
-                    return value;
-                  }
-                  return level;
-                }).join(', ')}\n`
-              } else {
-                content += `**Support Levels:** ${sr.support_levels}\n`
-              }
-            }
-            if (sr.resistance_levels) {
-              if (Array.isArray(sr.resistance_levels)) {
-                content += `**Resistance Levels:** ${sr.resistance_levels.map((level: any) => {
-                  if (typeof level === 'object') {
-                    // Extract meaningful value from complex object
-                    const value = level.level_description || level.price || level.level || level.value ||
-                      (level.zone_location && `Zone at ${level.zone_location}`) ||
-                      JSON.stringify(level);
-                    return value;
-                  }
-                  return level;
-                }).join(', ')}\n`
-              } else {
-                content += `**Resistance Levels:** ${sr.resistance_levels}\n`
-              }
-            }
-            content += '\n'
+            sections.push(
+              renderSection("Support & Resistance", {
+                Support: response.support_and_resistance.support_levels?.map(
+                  (s: any) => s.level_description
+                ),
+                Resistance: response.support_and_resistance.resistance_levels?.map(
+                  (r: any) => r.level_description
+                ),
+              })
+            )
           }
 
           if (response.supply_and_demand_zones) {
-            content += `##Supply & Demand Zones\n\n`
-            const sd = response.supply_and_demand_zones
-            if (sd.supply_zones) {
-              if (Array.isArray(sd.supply_zones)) {
-                content += `**Supply Zones:** ${sd.supply_zones.map((zone: any) => {
-                  if (typeof zone === 'object') {
-                    // Extract meaningful value from complex object
-                    const value = zone.zone_location && `Zone at ${zone.zone_location}` ||
-                      zone.rejection_evidence && `Rejection: ${zone.rejection_evidence}` ||
-                      zone.range || zone.zone || zone.price ||
-                      JSON.stringify(zone);
-                    return value;
-                  }
-                  return zone;
-                }).join(', ')}\n`
-              } else {
-                content += `**Supply Zones:** ${sd.supply_zones}\n`
-              }
-            }
-            if (sd.demand_zones) {
-              if (Array.isArray(sd.demand_zones)) {
-                content += `**Demand Zones:** ${sd.demand_zones.map((zone: any) => {
-                  if (typeof zone === 'object') {
-                    // Extract meaningful value from complex object
-                    const value = zone.zone_location && `Zone at ${zone.zone_location}` ||
-                      zone.acceptance_evidence && `Acceptance: ${zone.acceptance_evidence}` ||
-                      zone.range || zone.zone || zone.price ||
-                      JSON.stringify(zone);
-                    return value;
-                  }
-                  return zone;
-                }).join(', ')}\n`
-              } else {
-                content += `**Demand Zones:** ${sd.demand_zones}\n`
-              }
-            }
-            content += '\n'
-          }
-
-          if (response.fair_value_gaps && response.fair_value_gaps.length > 0) {
-            content += `## 🕳️ Fair Value Gaps\n\n`
-            response.fair_value_gaps.forEach((fvg: any, index: number) => {
-              content += `**FVG ${index + 1}:** ${fvg.range || fvg.level || 'N/A'}\n`
-            })
-            content += '\n'
-          }
-
-          if (response.recommendations) {
-            content += `##Recommendations\n\n`
-            if (Array.isArray(response.recommendations)) {
-              response.recommendations.forEach((rec: any, index: number) => {
-                content += `${index + 1}. ${rec.action || rec.text || rec}\n`
+            sections.push(
+              renderSection("Supply & Demand", {
+                Supply: response.supply_and_demand_zones.supply_zones?.map(
+                  (z: any) => z.zone_location
+                ),
+                Demand: response.supply_and_demand_zones.demand_zones?.map(
+                  (z: any) => z.zone_location
+                ),
               })
-            } else {
-              content += response.recommendations
-            }
-            content += '\n'
+            )
           }
 
-          if (response.risk_factors) {
-            content += `##Risk Factors\n\n`
-            if (Array.isArray(response.risk_factors)) {
-              response.risk_factors.forEach((risk: any) => {
-                content += `• ${risk.factor || risk.text || risk}\n`
-              })
-            } else {
-              content += response.risk_factors
-            }
-            content += '\n'
-          }
-
-          if (response.time_horizon) {
-            content += `##Time Horizon\n\n`
-            content += `**Recommended Timeframe:** ${response.time_horizon}\n\n`
-          }
-
-          // If no structured data found, stringify the object
-          if (!content) {
-            content = JSON.stringify(response, null, 2)
-          }
-
-          return content
+          return sections
         }
-
-        const contentText = formatResponseContent(rawResponse)
-        const reportText = typeof fullReport === 'string' ? fullReport : formatResponseContent(fullReport)
-
+const contentSections = formatResponseContent(rawResponse)
+const reportSections =
+  typeof fullReport === "string"
+    ? [{ title: "Report", content: fullReport }]
+    : formatResponseContent(fullReport)
         const assistantMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          content: contentText,
-          sender: "assistant",
-          timestamp: new Date().toLocaleTimeString(),
-          short_response: contentText,
-          full_report: reportText,
-        }
+  id: (Date.now() + 1).toString(),
+  content: contentSections,
+  sender: "assistant",
+  timestamp: new Date().toLocaleTimeString(),
+  short_response: contentSections,
+  full_report: reportSections,
+}
 
         setMessages((prev) => [...prev, assistantMessage])
-        setSelectedReport(reportText)
-        setSelectedShortReport(contentText)
+        setSelectedReport(reportSections)
+        setSelectedShortReport(contentSections)
         setRawResponse(rawResponse)
       } else {
         throw new Error("API returned error status")
@@ -312,7 +229,7 @@ export function StockGuruChat() {
   }
 
   return (
-    <div className="flex-1 w-full flex flex-col bg-muted/20 dark:bg-background overflow-hidden relative">
+    <div className="h-[calc(100vh-174px-var(--header-height))] overflow-y-auto w-full flex flex-col bg-muted/20 dark:bg-background overflow-hidden relative">
       <AnimatePresence mode="wait">
         {messages.length === 0 ? (
           // Fullscreen chat panel only
@@ -432,16 +349,16 @@ export function StockGuruChat() {
         ) : (
           // Two-column layout with chat left and content right
           <motion.div
-            key="split"
-            className="flex flex-col md:flex-row flex-1 w-full min-h-[calc(100vh-174px-var(--header-height))]"
+            key="centered"
+            className="flex flex-1 flex-col md:flex-row flex-1 w-full h-screen overflow-hidden"
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 100 }}
             transition={{ duration: 0.7, type: "tween", ease: "easeInOut" }}
             layout
           >
-            {/* Chat area (left) */}
-            <div className="w-full md:w-[400px] lg:w-[450px] shrink-0 flex flex-col border-r border-border bg-background z-10 overflow-hidden">
+            {/* Chat area (left) - now full width */}
+            <div className="w-full flex flex-col bg-background z-10 overflow-hidden">
               <div className="sticky top-0 z-10 p-4 border-b border-border bg-background shadow-xs">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -491,18 +408,54 @@ export function StockGuruChat() {
                           <img src={message.image_url} alt="Uploaded" className="rounded-lg max-h-48 object-cover border border-primary-foreground/20" />
                         </div>
                       )}
-                      <div className="prose prose-sm max-w-none dark:prose-invert">
-                        {message.sender === "assistant" ? (
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                            {message.content}
-                          </ReactMarkdown>
-                        ) : (
-                          message.content.split("\n").map((line, index) => (
-                            <p key={index} className="m-0 text-inherit">
-                              {line}
-                            </p>
-                          ))
-                        )}
+                      <div className="prose prose-sm max-w-none dark:prose-invert [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-indigo-600 dark:[&_h2]:text-indigo-400 [&_h2]:mb-4 [&_h2]:pb-2 [&_h2]:border-b [&_h2]:border-border [&_p]:text-base [&_p]:leading-relaxed [&_strong]:font-semibold [&_strong]:text-foreground">
+                      
+                          {message.sender === "assistant" ? (
+  <div className="space-y-4">
+    {Array.isArray(message.content) ? (
+      message.content.map((section: any, idx: number) => (
+        <div key={idx} className="rounded-xl border p-4 bg-muted/40">
+
+          {/* TITLE */}
+          <div className="text-sm font-semibold text-indigo-600 mb-2">
+            {section.title}
+          </div>
+
+          {/* CONTENT */}
+          {typeof section.content === "string" ? (
+            <p className="text-sm leading-relaxed">
+              {section.content}
+            </p>
+          ) : (
+            <div className="space-y-2 text-sm">
+              {Object.entries(section.content).map(([key, value]: any, i) => (
+                <div key={i}>
+                  <span className="font-medium">{key}: </span>
+
+                  {Array.isArray(value) ? (
+                    <ul className="list-disc ml-5">
+                      {value.map((v: any, j: number) => (
+                        <li key={j}>{v}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <span>{value}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))
+    ) : (
+      <p>{message.content}</p>
+    )}
+  </div>
+) : (
+  message.content.split("\n").map((line, index) => (
+    <p key={index}>{line}</p>
+  ))
+)}
                       </div>
 
                       <div className="flex justify-between items-center mt-2.5">
@@ -610,24 +563,7 @@ export function StockGuruChat() {
             </div>
 
             {/* ContentPanel (right, larger) */}
-            <motion.div
-              className="flex-1 w-full bg-background"
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 40 }}
-              transition={{ duration: 0.7, type: "tween", ease: "easeInOut" }}
-              layout
-            >
-              <ContentPanel
-                fullReport={selectedReport}
-                selectedShortReport={selectedShortReport}
-                rawResponse={rawResponse}
-                isLoading={isLoading}
-                blogLoading={false}
-                scrollToTopSignal={contentPanelScrollKey}
-                handleGenerateBlog={() => { }} // StockGuru may not need blog generation initially
-              />
-            </motion.div>
+
           </motion.div>
         )}
       </AnimatePresence>
