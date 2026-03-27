@@ -26,7 +26,7 @@ import { Stack } from "~/components/common/stack"
 import { ThemeSwitcher } from "~/components/web/theme-switcher"
 import { Container } from "~/components/web/ui/container"
 import { Hamburger } from "~/components/web/ui/hamburger"
-import { Logo } from "~/components/web/ui/logo"
+import { FullLogo } from "~/components/web/ui/full-logo"
 import { NavLink } from "~/components/web/ui/nav-link"
 import { UserMenu } from "~/components/web/user-menu"
 import { adsConfig } from "~/config/ads"
@@ -62,7 +62,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
               <Hamburger className="size-7" />
             </button>
 
-            <Logo className="min-w-0" />
+            <FullLogo className="h-6 w-auto" />
           </Stack>
 
           <nav className="flex flex-wrap gap-x-4 gap-y-0.5 flex-1 max-lg:hidden">
