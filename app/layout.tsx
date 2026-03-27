@@ -26,9 +26,17 @@ export const generateMetadata = async (): Promise<Metadata> => {
     description: t("brand.description"),
     icons: {
       icon: [
-        { type: "image/svg+xml", url: "/favicon.svg" },
-        { type: "image/png", url: "/favicon.png" }
-      ]
+        {
+          media: "(prefers-color-scheme: light)",
+          url: "/favicon-dark.svg",
+          href: "/favicon-dark.svg",
+        },
+        {
+          media: "(prefers-color-scheme: dark)",
+          url: "/favicon.svg",
+          href: "/favicon.svg",
+        },
+      ],
     },
     ...metadataConfig,
   }
