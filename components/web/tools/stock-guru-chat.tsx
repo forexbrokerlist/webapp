@@ -33,6 +33,7 @@ export function StockGuruChat() {
   const [isLoading, setIsLoading] = useState(false)
   const [selectedReport, setSelectedReport] = useState<string | null>(null)
   const [selectedShortReport, setSelectedShortReport] = useState<string | null>(null)
+  const [rawResponse, setRawResponse] = useState<any>(null)
   const [currentChatId, setCurrentChatId] = useState<string | null>(null)
   const [contentPanelScrollKey, setContentPanelScrollKey] = useState(0)
 
@@ -77,19 +78,19 @@ export function StockGuruChat() {
         body.append("image", selectedFile)
       }
       body.append("query", hasFile ? selectedFile.name : inputValue.trim())
-      
+
       if (!currentChatId) {
-        const title = hasFile 
-          ? selectedFile.name 
+        const title = hasFile
+          ? selectedFile.name
           : (inputValue.trim() ? inputValue.trim().slice(0, 50) : "New chat")
         body.append("title", title)
       }
       body.append("chat_type", hasFile ? "With_Image" : "Only_Text")
-      
+
       if (currentChatId) {
         body.append("conversation_id", currentChatId)
       }
-      
+
       // Default to allowed SEBI guidelines based on typical prod usage
       body.append("allowed_SEBI_guidelines", "true")
 
@@ -112,22 +113,174 @@ export function StockGuruChat() {
         if (resultData.conversation_id && !currentChatId) {
           setCurrentChatId(resultData.conversation_id)
         }
+        console.log(resultData.chats[0].response)
+        const rawResponse = resultData.chats[0].response || resultData.answer || resultData.response?.short_response || {}
+        const fullReport = resultData.deep_research_answer || resultData.full_report || resultData.answer || {}
 
-        const answerText = resultData.answer || resultData.response?.short_response || "Here is your response."
-        const fullReport = resultData.deep_research_answer || resultData.full_report || resultData.answer || "No full report generated."
-        
+        // Format the object response into readable content
+        const formatResponseContent = (response: any) => {
+          if (typeof response === 'string') return response
+
+          let content = ""
+
+          // Handle different response structures
+          if (response.overall_trend) {
+            content += `##Market Analysis\n\n`
+            content += `**Overall Trend:** ${response.overall_trend?.trend || 'N/A'}\n\n`
+
+            if (response.overall_trend?.confidence) {
+              content += `**Confidence:** ${response.overall_trend.confidence}\n\n`
+            }
+          }
+
+          if (response.market_structure) {
+            content += `##Market Structure\n\n`
+            const ms = response.market_structure
+            if (ms.current_structure) content += `**Current Structure:** ${ms.current_structure}\n`
+            if (ms.key_levels) content += `**Key Levels:** ${ms.key_levels}\n`
+            if (ms.breakout_potential) content += `**Breakout Potential:** ${ms.breakout_potential}\n`
+            content += '\n'
+          }
+
+          if (response.support_and_resistance) {
+            content += `##Support & Resistance\n\n`
+            const sr = response.support_and_resistance
+            if (sr.support_levels) {
+              if (Array.isArray(sr.support_levels)) {
+                content += `**Support Levels:** ${sr.support_levels.map((level: any) => {
+                  if (typeof level === 'object') {
+                    // Extract meaningful value from complex object
+                    const value = level.level_description || level.price || level.level || level.value ||
+                      (level.zone_location && `Zone at ${level.zone_location}`) ||
+                      JSON.stringify(level);
+                    return value;
+                  }
+                  return level;
+                }).join(', ')}\n`
+              } else {
+                content += `**Support Levels:** ${sr.support_levels}\n`
+              }
+            }
+            if (sr.resistance_levels) {
+              if (Array.isArray(sr.resistance_levels)) {
+                content += `**Resistance Levels:** ${sr.resistance_levels.map((level: any) => {
+                  if (typeof level === 'object') {
+                    // Extract meaningful value from complex object
+                    const value = level.level_description || level.price || level.level || level.value ||
+                      (level.zone_location && `Zone at ${level.zone_location}`) ||
+                      JSON.stringify(level);
+                    return value;
+                  }
+                  return level;
+                }).join(', ')}\n`
+              } else {
+                content += `**Resistance Levels:** ${sr.resistance_levels}\n`
+              }
+            }
+            content += '\n'
+          }
+
+          if (response.supply_and_demand_zones) {
+            content += `##Supply & Demand Zones\n\n`
+            const sd = response.supply_and_demand_zones
+            if (sd.supply_zones) {
+              if (Array.isArray(sd.supply_zones)) {
+                content += `**Supply Zones:** ${sd.supply_zones.map((zone: any) => {
+                  if (typeof zone === 'object') {
+                    // Extract meaningful value from complex object
+                    const value = zone.zone_location && `Zone at ${zone.zone_location}` ||
+                      zone.rejection_evidence && `Rejection: ${zone.rejection_evidence}` ||
+                      zone.range || zone.zone || zone.price ||
+                      JSON.stringify(zone);
+                    return value;
+                  }
+                  return zone;
+                }).join(', ')}\n`
+              } else {
+                content += `**Supply Zones:** ${sd.supply_zones}\n`
+              }
+            }
+            if (sd.demand_zones) {
+              if (Array.isArray(sd.demand_zones)) {
+                content += `**Demand Zones:** ${sd.demand_zones.map((zone: any) => {
+                  if (typeof zone === 'object') {
+                    // Extract meaningful value from complex object
+                    const value = zone.zone_location && `Zone at ${zone.zone_location}` ||
+                      zone.acceptance_evidence && `Acceptance: ${zone.acceptance_evidence}` ||
+                      zone.range || zone.zone || zone.price ||
+                      JSON.stringify(zone);
+                    return value;
+                  }
+                  return zone;
+                }).join(', ')}\n`
+              } else {
+                content += `**Demand Zones:** ${sd.demand_zones}\n`
+              }
+            }
+            content += '\n'
+          }
+
+          if (response.fair_value_gaps && response.fair_value_gaps.length > 0) {
+            content += `## 🕳️ Fair Value Gaps\n\n`
+            response.fair_value_gaps.forEach((fvg: any, index: number) => {
+              content += `**FVG ${index + 1}:** ${fvg.range || fvg.level || 'N/A'}\n`
+            })
+            content += '\n'
+          }
+
+          if (response.recommendations) {
+            content += `##Recommendations\n\n`
+            if (Array.isArray(response.recommendations)) {
+              response.recommendations.forEach((rec: any, index: number) => {
+                content += `${index + 1}. ${rec.action || rec.text || rec}\n`
+              })
+            } else {
+              content += response.recommendations
+            }
+            content += '\n'
+          }
+
+          if (response.risk_factors) {
+            content += `##Risk Factors\n\n`
+            if (Array.isArray(response.risk_factors)) {
+              response.risk_factors.forEach((risk: any) => {
+                content += `• ${risk.factor || risk.text || risk}\n`
+              })
+            } else {
+              content += response.risk_factors
+            }
+            content += '\n'
+          }
+
+          if (response.time_horizon) {
+            content += `##Time Horizon\n\n`
+            content += `**Recommended Timeframe:** ${response.time_horizon}\n\n`
+          }
+
+          // If no structured data found, stringify the object
+          if (!content) {
+            content = JSON.stringify(response, null, 2)
+          }
+
+          return content
+        }
+
+        const contentText = formatResponseContent(rawResponse)
+        const reportText = typeof fullReport === 'string' ? fullReport : formatResponseContent(fullReport)
+
         const assistantMessage: Message = {
           id: (Date.now() + 1).toString(),
-          content: answerText,
+          content: contentText,
           sender: "assistant",
           timestamp: new Date().toLocaleTimeString(),
-          short_response: answerText,
-          full_report: fullReport,
+          short_response: contentText,
+          full_report: reportText,
         }
 
         setMessages((prev) => [...prev, assistantMessage])
-        setSelectedReport(fullReport)
-        setSelectedShortReport(answerText)
+        setSelectedReport(reportText)
+        setSelectedShortReport(contentText)
+        setRawResponse(rawResponse)
       } else {
         throw new Error("API returned error status")
       }
@@ -192,7 +345,7 @@ export function StockGuruChat() {
                 <div className="flex flex-col items-center max-w-[320px] w-full group">
                   <div className="relative z-20 -mb-16 transition-transform duration-500 group-hover:-translate-y-4">
                     <div className="w-40 h-44 bg-linear-to-br from-blue-700 to-indigo-900 rounded-t-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-slate-800">
-                        <span className="text-5xl">📈</span>
+                      <span className="text-5xl">📈</span>
                     </div>
                   </div>
                   <Card className="pt-20 pb-6 px-6 text-center shadow-xl w-full border-white/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-[32px] min-h-[220px]">
@@ -207,7 +360,7 @@ export function StockGuruChat() {
                 <div className="flex flex-col items-center max-w-[320px] w-full group">
                   <div className="relative z-20 -mb-16 transition-transform duration-500 group-hover:-translate-y-4">
                     <div className="w-40 h-44 bg-linear-to-br from-slate-900 to-black rounded-t-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-slate-800">
-                        <span className="text-5xl">🐻</span>
+                      <span className="text-5xl">🐻</span>
                     </div>
                   </div>
                   <Card className="pt-20 pb-6 px-6 text-center shadow-xl w-full border-white/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-[32px] min-h-[220px]">
@@ -226,7 +379,7 @@ export function StockGuruChat() {
                     <div className="relative w-fit mb-2 ml-2">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={previewFile} alt="Preview" className="h-20 w-auto rounded-lg object-cover border" />
-                      <button 
+                      <button
                         onClick={clearFile}
                         className="absolute -top-2 -right-2 bg-background border border-border rounded-full p-1"
                       >
@@ -235,8 +388,8 @@ export function StockGuruChat() {
                     </div>
                   )}
                   <div className="flex flex-row items-center w-full">
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       onClick={() => fileInputRef.current?.click()}
                       className="rounded-full w-10 h-10 p-0 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800 shrink-0"
                     >
@@ -249,9 +402,9 @@ export function StockGuruChat() {
                       accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
                       onChange={handleFileChange}
                     />
-                    
-                    <input 
-                      type="text" 
+
+                    <input
+                      type="text"
                       placeholder={selectedFile ? "File uploaded. Submit to continue." : "Ask Anything About Stocks Or Investments..."}
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
@@ -259,9 +412,9 @@ export function StockGuruChat() {
                       className="flex-1 bg-transparent border-none outline-none px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:ring-0 disabled:opacity-50"
                       onKeyDown={handleKeyPress}
                     />
-                    
-                    <Button 
-                      className="rounded-full w-10 h-10 p-0 shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition-transform active:scale-95" 
+
+                    <Button
+                      className="rounded-full w-10 h-10 p-0 shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition-transform active:scale-95"
                       onClick={handleSend}
                       disabled={isLoading || (!inputValue.trim() && !selectedFile)}
                     >
@@ -294,15 +447,15 @@ export function StockGuruChat() {
                   <div className="flex items-center gap-2">
                     <div className="font-bold text-lg text-indigo-600 dark:text-indigo-400">StockGuru</div>
                   </div>
-                  <Button 
-                    variant="secondary" 
+                  <Button
+                    variant="secondary"
                     size="sm"
                     className="text-xs border border-border"
                     onClick={() => {
-                        setMessages([])
-                        setCurrentChatId(null)
-                        clearFile()
-                        setInputValue("")
+                      setMessages([])
+                      setCurrentChatId(null)
+                      clearFile()
+                      setInputValue("")
                     }}
                   >
                     New Chat
@@ -312,97 +465,94 @@ export function StockGuruChat() {
 
               {/* Messages */}
               <div className="flex-1 overflow-y-auto w-full p-4 space-y-6">
-                  {messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex gap-3 w-full ${
-                        message.sender === "user" ? "justify-end" : "justify-start"
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex gap-3 w-full ${message.sender === "user" ? "justify-end" : "justify-start"
                       }`}
-                    >
-                      {message.sender === "assistant" && (
-                        <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
-                          <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
-                            AI
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                      
-                      <div
-                        className={`p-4 rounded-2xl shadow-xs text-sm max-w-[85%] ${
-                          message.sender === "user"
-                            ? "bg-primary text-primary-foreground rounded-tr-sm"
-                            : "bg-card border border-border rounded-tl-sm"
-                        }`}
-                      >
-                        {message.image_url && (
-                          <div className="mb-3">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={message.image_url} alt="Uploaded" className="rounded-lg max-h-48 object-cover border border-primary-foreground/20" />
-                          </div>
-                        )}
-                        <div className="prose prose-sm max-w-none dark:prose-invert">
-                          {message.sender === "assistant" ? (
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                              {message.content}
-                            </ReactMarkdown>
-                          ) : (
-                            message.content.split("\n").map((line, index) => (
-                              <p key={index} className="m-0 text-inherit">
-                                {line}
-                              </p>
-                            ))
-                          )}
-                        </div>
-                        
-                        <div className="flex justify-between items-center mt-2.5">
-                          {message.sender === "assistant" && message.full_report ? (
-                            <Button
-                              variant="secondary"
-                              size="sm"
-                              onClick={() => handleViewReport(message.full_report!, message.short_response!)}
-                              className="h-7 text-xs px-3 rounded-full bg-background border shadow-xs hover:border-primary/30 hover:bg-muted/50 transition-all"
-                            >
-                              <FileText className="h-3 w-3 mr-1.5" />
-                              View Full Report
-                            </Button>
-                          ) : (
-                            <span />
-                          )}
-                          <div
-                            className={`text-[10px] opacity-70 ${
-                              message.sender === "user" ? "text-primary-foreground" : "text-muted-foreground"
-                            }`}
-                          >
-                            {message.timestamp}
-                          </div>
-                        </div>
-                      </div>
-
-                      {message.sender === "user" && (
-                        <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
-                          <AvatarFallback className="bg-muted text-muted-foreground">
-                            <User className="h-4 w-4" />
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                    </div>
-                  ))}
-
-                  {isLoading && (
-                    <div className="flex gap-3 justify-start animate-in fade-in zoom-in duration-300">
+                  >
+                    {message.sender === "assistant" && (
                       <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
                         <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
                           AI
                         </AvatarFallback>
                       </Avatar>
-                      <div className="bg-card border border-border p-4 rounded-2xl rounded-tl-sm shadow-xs flex items-center gap-2">
-                        <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                        <span className="text-sm text-foreground/80">
-                          {selectedFile ? "Analyzing image..." : "Analyzing market data..."}
-                        </span>
+                    )}
+
+                    <div
+                      className={`p-4 rounded-2xl shadow-xs text-sm max-w-[85%] ${message.sender === "user"
+                        ? "bg-primary text-primary-foreground rounded-tr-sm"
+                        : "bg-card border border-border rounded-tl-sm"
+                        }`}
+                    >
+                      {message.image_url && (
+                        <div className="mb-3">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={message.image_url} alt="Uploaded" className="rounded-lg max-h-48 object-cover border border-primary-foreground/20" />
+                        </div>
+                      )}
+                      <div className="prose prose-sm max-w-none dark:prose-invert">
+                        {message.sender === "assistant" ? (
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {message.content}
+                          </ReactMarkdown>
+                        ) : (
+                          message.content.split("\n").map((line, index) => (
+                            <p key={index} className="m-0 text-inherit">
+                              {line}
+                            </p>
+                          ))
+                        )}
+                      </div>
+
+                      <div className="flex justify-between items-center mt-2.5">
+                        {message.sender === "assistant" && message.full_report ? (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => handleViewReport(message.full_report!, message.short_response!)}
+                            className="h-7 text-xs px-3 rounded-full bg-background border shadow-xs hover:border-primary/30 hover:bg-muted/50 transition-all"
+                          >
+                            <FileText className="h-3 w-3 mr-1.5" />
+                            View Full Report
+                          </Button>
+                        ) : (
+                          <span />
+                        )}
+                        <div
+                          className={`text-[10px] opacity-70 ${message.sender === "user" ? "text-primary-foreground" : "text-muted-foreground"
+                            }`}
+                        >
+                          {message.timestamp}
+                        </div>
                       </div>
                     </div>
-                  )}
+
+                    {message.sender === "user" && (
+                      <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
+                        <AvatarFallback className="bg-muted text-muted-foreground">
+                          <User className="h-4 w-4" />
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+                  </div>
+                ))}
+
+                {isLoading && (
+                  <div className="flex gap-3 justify-start animate-in fade-in zoom-in duration-300">
+                    <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
+                        AI
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="bg-card border border-border p-4 rounded-2xl rounded-tl-sm shadow-xs flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                      <span className="text-sm text-foreground/80">
+                        {selectedFile ? "Analyzing image..." : "Analyzing market data..."}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Layout Sidebar Input Area */}
@@ -411,7 +561,7 @@ export function StockGuruChat() {
                   <div className="relative w-fit mb-3">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={previewFile} alt="Preview" className="h-16 w-auto rounded-lg object-cover border" />
-                    <button 
+                    <button
                       onClick={clearFile}
                       className="absolute -top-2 -right-2 bg-background border border-border rounded-full p-1 shadow-sm"
                     >
@@ -420,35 +570,35 @@ export function StockGuruChat() {
                   </div>
                 )}
                 <div className="relative flex flex-row items-center border border-input rounded-xl focus-within:ring-1 focus-within:ring-primary focus-within:border-primary bg-background shadow-sm pr-2">
-                    <Button 
-                      variant="ghost" 
-                      onClick={() => fileInputRef.current?.click()}
-                      className="rounded-full w-10 h-10 p-0 text-slate-500 hover:text-primary hover:bg-muted ml-1"
-                    >
-                      <ImageIcon className="size-4" />
-                    </Button>
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      className="hidden"
-                      accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
-                      onChange={handleFileChange}
-                    />
+                  <Button
+                    variant="ghost"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="rounded-full w-10 h-10 p-0 text-slate-500 hover:text-primary hover:bg-muted ml-1"
+                  >
+                    <ImageIcon className="size-4" />
+                  </Button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
+                    onChange={handleFileChange}
+                  />
 
-                    <input
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      onKeyDown={handleKeyPress}
-                      placeholder={selectedFile ? "File uploaded." : "Ask a question..."}
-                      className="flex-1 min-h-[40px] p-2 bg-transparent text-sm border-none outline-none focus:ring-0 disabled:opacity-50"
-                      disabled={isLoading || !!selectedFile}
-                    />
-                    <Button
-                      onClick={handleSend}
-                      size="sm"
-                      className="h-8 w-8 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-transform active:scale-95 shrink-0"
-                      disabled={(!inputValue.trim() && !selectedFile) || isLoading}
-                    >
+                  <input
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                    placeholder={selectedFile ? "File uploaded." : "Ask a question..."}
+                    className="flex-1 min-h-[40px] p-2 bg-transparent text-sm border-none outline-none focus:ring-0 disabled:opacity-50"
+                    disabled={isLoading || !!selectedFile}
+                  />
+                  <Button
+                    onClick={handleSend}
+                    size="sm"
+                    className="h-8 w-8 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-transform active:scale-95 shrink-0"
+                    disabled={(!inputValue.trim() && !selectedFile) || isLoading}
+                  >
                     {isLoading ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
@@ -471,10 +621,11 @@ export function StockGuruChat() {
               <ContentPanel
                 fullReport={selectedReport}
                 selectedShortReport={selectedShortReport}
+                rawResponse={rawResponse}
                 isLoading={isLoading}
                 blogLoading={false}
                 scrollToTopSignal={contentPanelScrollKey}
-                handleGenerateBlog={() => {}} // StockGuru may not need blog generation initially
+                handleGenerateBlog={() => { }} // StockGuru may not need blog generation initially
               />
             </motion.div>
           </motion.div>

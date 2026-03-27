@@ -6,7 +6,7 @@ import satori from "satori"
 import { ToolStatus } from "~/.generated/prisma/client"
 import { LogoSymbol } from "~/components/web/ui/logo-symbol"
 import { siteConfig } from "~/config/site"
-import { fonts } from "~/lib/fonts"
+import { getFonts } from "~/lib/fonts"
 import { isToolPublished } from "~/lib/tools"
 import { findTool } from "~/server/web/tools/queries"
 
@@ -134,6 +134,7 @@ export async function GET({ url }: NextRequest, { params }: RouteContext<"/[slug
 
   const t = await getTranslations()
   const label = t(`common.${isToolPublished(tool) ? "featured" : "coming_soon"}`)
+  const fonts = await getFonts()
   const svg = await satori(<SvgBadge theme={theme} label={label} />, { width, height, fonts })
 
   return new Response(svg, {
