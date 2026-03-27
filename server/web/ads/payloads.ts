@@ -23,6 +23,7 @@ export const adManyPayload = {
   bannerUrl: true,
   buttonLabel: true,
   type: true,
+  status: true,
   startsAt: true,
   endsAt: true,
   categoryId: true,

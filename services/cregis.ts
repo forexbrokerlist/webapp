@@ -47,8 +47,12 @@ export type CregisResponse = {
 
 export const cregis = {
   createCheckout: async (payload: Omit<CregisPayload, "sign" | "pid" | "tokens">) => {
+    // Round order_amount to 2 decimal places to avoid precision errors
+    const roundedAmount = Math.round(payload.order_amount * 100) / 100;
+
     const fullPayload: CregisPayload = {
       ...payload,
+      order_amount: roundedAmount,
       pid: env.CREJIS_PROJECT_ID,
       tokens: env.CREJIS_TOKENS,
     }
