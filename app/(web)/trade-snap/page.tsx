@@ -11,6 +11,10 @@ import {
 import { motion } from "framer-motion";
 import { useToast } from "@/components/web/ui/use-toast";
 import React from "react";
+import { apiClient, createApiClient } from "~/lib/api-client";
+
+// Create API client instance for FormData requests (no Content-Type header)
+const formDataApiClient = createApiClient('https://gaylene-levo-unremittingly.ngrok-free.dev/trade-snap');
 
 function Dashboard() {
   const [isSharing, setIsSharing] = useState(false);
@@ -202,19 +206,21 @@ function Dashboard() {
         formData.append('user_id', userId);
       }
 
-      const response = await fetch('https://api-chart-analysis.rejoicehub.com/analyze', {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-        },
-        body: formData,
-      });
+    const response = await formDataApiClient.post(
+  '/api/v1/analyze',
+  formData,
+  {
+    headers: {
+      'Content-Type': 'multipart/form-data', // or just REMOVE completely
+    },
+  }
+);
 
-      if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
+      if (!response.data) {
+        throw new Error(`API request failed`);
       }
 
-      const result = await response.json();
+      const result = response.data;
 
       console.log('API Response:', result); // Log the full API response
 
@@ -367,13 +373,22 @@ function Dashboard() {
       formData.append('files', blob2, 'screenshot2.png');
       const userId = localStorage.getItem('user_id');
       if (userId) formData.append('user_id', userId);
-      const response = await fetch('https://api-chart-analysis.rejoicehub.com/analyze', {
-        method: 'POST',
-        headers: { 'accept': 'application/json' },
-        body: formData,
-      });
-      if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
-      const result = await response.json();
+      
+      
+      const response = await formDataApiClient.post(
+  '/api/v1/analyze',
+  formData,
+  {
+    headers: {
+      'Content-Type': 'multipart/form-data', // or just REMOVE completely
+    },
+  }
+);
+      if (!response.data) {
+        throw new Error(`API request failed`);
+      }
+
+      const result = response.data;
       if (result.ai_response?.error) {
         setError(result.ai_response.raw || 'No valid chart found in the image');
         setShowSnapshot1(true);
@@ -393,7 +408,6 @@ function Dashboard() {
     }
   };
 
-  // Higher timeframe capture/analyze
   const captureScreenshot2 = useCallback(() => {
     if (!videoRef2.current || !canvasRef.current) {
       setError('Unable to capture screenshot - video not available');
@@ -928,7 +942,7 @@ function Dashboard() {
                   <div className="bg-gray-50 p-3 rounded-lg">
                     <div className="text-xs text-gray-500 font-semibold mb-1">Support</div>
                     <div className="text-sm font-medium text-gray-900">
-                      {trade.Support_price?.split('-')[0].trim() || 'N/A'}
+                      {typeof trade.Support_price === 'string' ? trade.Support_price.split('-')[0].trim() : trade.Support_price || 'N/A'}
                     </div>
                   </div>
                   <div className="mt-3 bg-gray-50 p-3 rounded-lg">
@@ -1067,7 +1081,7 @@ function Dashboard() {
       <div className={`${activeTab === 'multi' ? 'w-12xl px-2' : 'container mx-auto px-4'} py-6`}>
         <div className={`grid ${activeTab === 'multi' ? 'grid-cols-1' : 'grid-cols-1 xl:grid-cols-3'} gap-6`}>
           {/* Left Column - Screen Preview */}
-          <div className={`${activeTab === 'multi' ? 'w-full' : 'xl:col-span-2'} space-y-6`}>
+          <div className={`${activeTab === 'multi' ? 'w-full' : 'xl:col-span-1  '} space-y-6`}>
             {activeTab === 'single' ? (
               <div className="bg-card dark:bg-card border border-border rounded-2xl shadow-lg overflow-hidden backdrop-blur">
                 <div className={`bg-muted/50 border-b border-border/40 px-6 py-4 flex justify-between items-center`}>
