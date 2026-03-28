@@ -43,8 +43,8 @@ export function StockGuruChat() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewFile, setPreviewFile] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedReport, setSelectedReport] = useState<string | null>(null)
-  const [selectedShortReport, setSelectedShortReport] = useState<string | null>(null)
+  const [selectedReport, setSelectedReport] = useState<any>(null)
+  const [selectedShortReport, setSelectedShortReport] = useState<any>(null)
   const [rawResponse, setRawResponse] = useState<any>(null)
   const [currentChatId, setCurrentChatId] = useState<string | null>(null)
   const [contentPanelScrollKey, setContentPanelScrollKey] = useState(0)
@@ -302,6 +302,7 @@ export function StockGuruChat() {
         content: "Sorry, I encountered an error while processing your request. Please try again.",
         sender: "assistant",
         timestamp: new Date().toLocaleTimeString(),
+        type: "text",
       }
       setMessages((prev) => [...prev, errorMessage])
     } finally {
@@ -564,7 +565,7 @@ export function StockGuruChat() {
                             )}
                           </div>
                         ) : (
-                          message.content.split("\n").map((line, index) => (
+                          message.content.split("\n").map((line: any, index: any) => (
                             <p key={index}>{line}</p>
                           ))
                         )}
