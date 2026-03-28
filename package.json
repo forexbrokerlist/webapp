@@ -96,6 +96,7 @@
     "@types/react": "^19.2.13",
     "@types/react-dom": "^19.2.3",
     "@types/rss": "^0.0.32",
+    "@types/uuid": "^10.0.0",
     "dotenv": "^17.2.4",
     "oxfmt": "^0.31.0",
     "oxlint": "^1.46.0",

@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { FxGuruChat } from "~/components/web/tools/fx-guru-chat"
 
 export const metadata: Metadata = {
-  title: "FxGURU - AI Forex Assistant",
-  description: "Get market intelligence with the FxGURU AI Assistant",
+  title: "FxGURU - AI Market Assistant",
+  description: "Get actionable insights from stock charts and market analysis",
 }
 
 export default function FxGuruPage() {

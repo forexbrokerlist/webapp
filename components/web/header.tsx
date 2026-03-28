@@ -117,8 +117,8 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
                   </NavLink>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <NavLink href="/stock-guru" prefix={<TrendingUpIcon />}>
-                    {t("navigation.stock_guru")}
+                  <NavLink href="/fx-guru" prefix={<TrendingUpIcon />}>
+                    {t("navigation.fx_guru")}
                   </NavLink>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
@@ -161,10 +161,10 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
           <NavLink href="/?sort=publishedAt.desc">{t("navigation.latest_tools")}</NavLink>
           <NavLink href="/categories">{t("navigation.categories")}</NavLink>
           <NavLink href="/tags">{t("navigation.tags")}</NavLink>
-          {/* <NavLink href="/fx-guru">{t("navigation.fx_guru")}</NavLink>  */}
+          <NavLink href="/fx-guru">{t("navigation.fx_guru")}</NavLink> 
           <NavLink href="/trade-snap">{t("navigation.trade_snap")}</NavLink>
 
-          <NavLink href="/stock-guru">{t("navigation.stock_guru")}</NavLink>
+          {/* <NavLink href="/stock-guru">{t("navigation.stock_guru")}</NavLink> */}
           <NavLink href="/deep-scan">{t("navigation.deep_research")}</NavLink>
           <NavLink href="/submit">{t("navigation.submit")}</NavLink>
           <NavLink href="/brokers">{t("navigation.tools")}</NavLink>
