@@ -9,10 +9,10 @@ import { BrandGitHubIcon } from "~/components/common/icons/brand-github"
 import { Note } from "~/components/common/note"
 import { Stack } from "~/components/common/stack"
 import { Tooltip } from "~/components/common/tooltip"
-import { BuiltWith } from "~/components/web/built-with"
 import { CTAForm } from "~/components/web/cta-form"
 import { ExternalLink } from "~/components/web/external-link"
 import { ThemeSwitcher } from "~/components/web/theme-switcher"
+import { FullLogo } from "~/components/web/ui/full-logo"
 import { NavLink, navLinkVariants } from "~/components/web/ui/nav-link"
 import { adsConfig } from "~/config/ads"
 import { linksConfig } from "~/config/links"
@@ -91,7 +91,7 @@ export const Footer = ({ children, className, ...props }: ComponentProps<"div">)
         </Stack>
       </div>
 
-      <BuiltWith medium="footer" className="self-start" />
+      <FullLogo className="h-6 w-auto self-start" />
 
       {children}
     </footer>
