@@ -106,7 +106,6 @@ export const getPresignedUrl = async (key: string, expiresIn = 3600) => {
     Key: key,
   })
 
-  // @ts-expect-error - Type mismatch between different versions of AWS SDK packages
   return await getSignedUrl(s3Client, command, { expiresIn })
 }
 

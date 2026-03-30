@@ -8,6 +8,7 @@ import { ToolListingSkeleton } from "~/components/web/tools/tool-listing"
 import { ToolQuery } from "~/components/web/tools/tool-query"
 import { siteConfig } from "~/config/site"
 import { getPageData } from "~/lib/pages"
+import FAQ from "./faq"
 
 // Get page data
 const getData = cache(async () => {
@@ -33,6 +34,7 @@ export default async function (props: any) {
       <Suspense fallback={<ToolListingSkeleton />}>
         <ToolQuery searchParams={props.searchParams} options={{ enableFilters: true }} ad="Tools" />
       </Suspense>
+      <FAQ />
       {/* <Pricing /> */}
       <StructuredData data={structuredData} />
     </>

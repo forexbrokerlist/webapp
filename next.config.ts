@@ -8,7 +8,9 @@ const withNextIntl = createNextIntlPlugin("./lib/i18n.ts");
 
 const nextConfig: NextConfig = {
   typedRoutes: true,
-
+  allowedDevOrigins: [
+    "https://gaylene-levo-unremittingly.ngrok-free.dev"
+  ],
   cacheLife: {
     infinite: {
       stale: Number.POSITIVE_INFINITY,
