@@ -450,6 +450,7 @@ model Post {
   // Relations
   author   User?   @relation(fields: [authorId], references: [id])
   authorId String?
+  faqs     FAQ[]
 
   // Additional fields
   locale String @default("en")
@@ -458,7 +459,36 @@ model Post {
   @@index([status])
   @@index([authorId])
 }
+model FAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String   @db.Text
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  // Relations
+  postId String?
+  post   Post?   @relation(fields: [postId], references: [id])
+
+  @@index([order])
+  @@index([isActive])
+  @@index([postId])
+}
+
+model StandaloneFAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String   @db.Text
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@index([isActive])
+}
 model BrokerSubscription {
   id String @id @default(cuid())
 

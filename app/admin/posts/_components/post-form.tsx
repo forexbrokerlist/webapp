@@ -21,6 +21,7 @@ import { Stack } from "~/components/common/stack"
 import { TextArea } from "~/components/common/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/common/select"
 import { MarkdownEditor } from "~/components/admin/markdown-editor"
+import { FAQField } from "~/components/admin/faq-field"
 import { useComputedField } from "~/hooks/use-computed-field"
 import { orpc } from "~/lib/orpc-query"
 import { cx } from "~/lib/utils"
@@ -47,6 +48,13 @@ export function PostForm({ className, title, post, ...props }: PostFormProps) {
       status: (post?.status as any) ?? "Published",
       authorId: post?.authorId ?? undefined,
       locale: post?.locale ?? "en",
+      faqs: post?.faqs?.map(faq => ({
+        id: faq.id,
+        question: faq.question,
+        answer: faq.answer,
+        order: faq.order,
+        isActive: faq.isActive
+      })) ?? [],
     },
   })
 
@@ -222,6 +230,12 @@ export function PostForm({ className, title, post, ...props }: PostFormProps) {
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
+        />
+
+        <FAQField
+          control={form.control}
+          register={form.register}
+          errors={form.formState.errors}
         />
 
         <div className="flex justify-between gap-4 col-span-full">

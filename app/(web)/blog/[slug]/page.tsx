@@ -16,6 +16,7 @@ import { Breadcrumbs } from "~/components/web/ui/breadcrumbs"
 import { Favicon } from "~/components/web/ui/favicon"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { Section } from "~/components/web/ui/section"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/common/accordion"
 import { blogConfig } from "~/config/blog"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateArticle } from "~/lib/structured-data"
@@ -71,8 +72,8 @@ export default async function ({ params }: { params: Promise<{ slug: string }> }
   // Find the tools and sort them by the order they appear in the post
   const tools = postTools.length
     ? await findTools({ where: { slug: { in: postTools } } }).then(tools =>
-        tools.sort((a, b) => postTools.indexOf(a.slug) - postTools.indexOf(b.slug)),
-      )
+      tools.sort((a, b) => postTools.indexOf(a.slug) - postTools.indexOf(b.slug)),
+    )
     : []
 
   return (
@@ -116,6 +117,24 @@ export default async function ({ params }: { params: Promise<{ slug: string }> }
           )}
 
           <Markdown html={String(await marked(post.content))} />
+
+          {post.faqs && post.faqs.length > 0 && (
+            <div className="mt-12">
+              <h2 className="text-2xl font-semibold mb-6">Frequently Asked Questions</h2>
+              <Accordion type="single" collapsible className="space-y-4 max-w-7xl">
+                {post.faqs.map((faq) => (
+                  <AccordionItem key={faq.id} value={`faq-${faq.id}`}>
+                    <AccordionTrigger className="text-left w-full">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          )}
         </Section.Content>
 
         <Section.Sidebar className="max-h-(--sidebar-max-height)">
