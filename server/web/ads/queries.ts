@@ -13,7 +13,7 @@ export const findAds = async ({ orderBy, ...args }: Prisma.AdFindManyArgs) => {
   const ads = await db.ad.findMany({
     ...args,
     orderBy: orderBy ?? { startsAt: "asc" },
-    where: { status: { in: [AdStatus.Scheduled, AdStatus.Published] }, ...args.where },
+    where: { status: { in: [AdStatus.Pending, AdStatus.Scheduled, AdStatus.Published] }, ...args.where },
     select: adManyPayload,
   })
 
