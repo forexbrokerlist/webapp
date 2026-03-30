@@ -1081,7 +1081,7 @@ function Dashboard() {
       <div className={`${activeTab === 'multi' ? 'w-12xl px-2' : 'container mx-auto px-4'} py-6`}>
         <div className={`grid ${activeTab === 'multi' ? 'grid-cols-1' : 'grid-cols-1 xl:grid-cols-3'} gap-6`}>
           {/* Left Column - Screen Preview */}
-          <div className={`${activeTab === 'multi' ? 'w-full' : 'xl:col-span-1  '} space-y-6`}>
+          <div className={`${activeTab === 'multi' ? 'w-full' : 'xl:col-span-2 '} space-y-6`}>
             {activeTab === 'single' ? (
               <div className="bg-card dark:bg-card border border-border rounded-2xl shadow-lg overflow-hidden backdrop-blur">
                 <div className={`bg-muted/50 border-b border-border/40 px-6 py-4 flex justify-between items-center`}>
