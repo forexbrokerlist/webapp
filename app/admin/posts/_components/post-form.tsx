@@ -45,9 +45,12 @@ export function PostForm({ className, title, post, ...props }: PostFormProps) {
       description: post?.description ?? "",
       content: post?.content ?? "",
       image: post?.image ?? "",
-      status: (post?.status as any) ?? "Published",
+      status: post?.status ?? "Published",
       authorId: post?.authorId ?? undefined,
       locale: post?.locale ?? "en",
+      meta_title: post?.meta_title ?? "",
+      meta_description: post?.meta_description ?? "",
+      og_image: post?.og_image ?? "",
       faqs: post?.faqs?.map(faq => ({
         id: faq.id,
         question: faq.question,
@@ -178,6 +181,42 @@ export function PostForm({ className, title, post, ...props }: PostFormProps) {
                     <SelectItem value="de">German</SelectItem>
                   </SelectContent>
                 </Select>
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="meta_title"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Meta Title</FieldLabel>
+                <Input id={field.name} {...field} placeholder="Enter meta title for SEO" />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="meta_description"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Meta Description</FieldLabel>
+                <TextArea id={field.name} {...field} rows={3} placeholder="Enter meta description for SEO" />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="og_image"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>OG Image</FieldLabel>
+                <Input id={field.name} {...field} placeholder="Enter OG image URL" />
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}

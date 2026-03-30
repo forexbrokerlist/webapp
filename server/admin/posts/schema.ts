@@ -37,6 +37,9 @@ export const postSchema = z.object({
   publishedAt: z.date().optional(),
   authorId: z.string().optional(),
   locale: z.string().default("en"),
+  meta_title: z.string().optional(),
+  meta_description: z.string().optional(),
+  og_image: z.string().optional(),
   faqs: z
     .array(
       z.object({

@@ -446,7 +446,9 @@ model Post {
   publishedAt DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   status      ToolStatus @default(Draft)
-
+  meta_title  String?
+  meta_description String?
+  og_image String?
   // Relations
   author   User?   @relation(fields: [authorId], references: [id])
   authorId String?
