@@ -44,7 +44,7 @@ export function PostForm({ className, title, post, ...props }: PostFormProps) {
       description: post?.description ?? "",
       content: post?.content ?? "",
       image: post?.image ?? "",
-      status: (post?.status as any) ?? "Published",
+      status: post?.status ?? "Published",
       authorId: post?.authorId ?? undefined,
       locale: post?.locale ?? "en",
     },

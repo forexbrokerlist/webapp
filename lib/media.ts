@@ -1,11 +1,15 @@
-import { DeleteObjectCommand, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3"
-import { Upload } from "@aws-sdk/lib-storage"
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-import { getDomain, getErrorMessage, tryCatch } from "@primoui/utils"
-import { fileTypeFromBuffer } from "file-type"
-import wretch from "wretch"
-import { env, isProd } from "~/env"
-import { s3Client } from "~/services/s3"
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  ListObjectsV2Command,
+} from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { getDomain, getErrorMessage, tryCatch } from "@primoui/utils";
+import { fileTypeFromBuffer } from "file-type";
+import wretch from "wretch";
+import { env, isProd } from "~/env";
+import { s3Client } from "~/services/s3";
 
 /**
  * Uploads a file to Digital Ocean Spaces (S3-compatible) and returns the file location.
@@ -14,9 +18,11 @@ import { s3Client } from "~/services/s3"
  * @returns The Spaces URL of the uploaded file.
  */
 export const uploadToS3Storage = async (file: Buffer, key: string) => {
-  const endpoint = env.S3_PUBLIC_URL ?? `https://${env.S3_BUCKET}.${env.S3_REGION}.digitaloceanspaces.com`
-  const fileType = await fileTypeFromBuffer(file)
-  const s3Key = `${key}.${fileType?.ext ?? "png"}`
+  const endpoint =
+    env.S3_PUBLIC_URL ??
+    `https://${env.S3_BUCKET}.${env.S3_REGION}.digitaloceanspaces.com`;
+  const fileType = await fileTypeFromBuffer(file);
+  const s3Key = `${key}.${fileType?.ext ?? "png"}`;
 
   const upload = new Upload({
     client: s3Client,
@@ -29,20 +35,22 @@ export const uploadToS3Storage = async (file: Buffer, key: string) => {
     queueSize: 4,
     partSize: 1024 * 1024 * 5,
     leavePartsOnError: false,
-  })
+  });
 
-  const { data, error } = await tryCatch(upload.done())
+  const { data, error } = await tryCatch(upload.done());
 
   if (error) {
-    throw new Error(`Failed to upload ${key} to Digital Ocean Spaces: ${getErrorMessage(error)}`)
+    throw new Error(
+      `Failed to upload ${key} to Digital Ocean Spaces: ${getErrorMessage(error)}`,
+    );
   }
 
   if (!data.Key) {
-    throw new Error(`Failed to upload ${key} to Digital Ocean Spaces`)
+    throw new Error(`Failed to upload ${key} to Digital Ocean Spaces`);
   }
 
-  return `${endpoint}/${data.Key}?v=${Date.now()}`
-}
+  return `${endpoint}/${data.Key}?v=${Date.now()}`;
+};
 
 /**
  * Removes a list of directories from Digital Ocean Spaces.
@@ -50,9 +58,9 @@ export const uploadToS3Storage = async (file: Buffer, key: string) => {
  */
 export const removeS3Directories = async (directories: string[]) => {
   for (const directory of directories) {
-    await removeS3Directory(directory)
+    await removeS3Directory(directory);
   }
-}
+};
 
 /**
  * Removes a directory from Digital Ocean Spaces.
@@ -60,26 +68,26 @@ export const removeS3Directories = async (directories: string[]) => {
  */
 export const removeS3Directory = async (directory: string) => {
   // Safety flag to prevent accidental deletion of Spaces files
-  if (!isProd) return
+  if (!isProd) return;
 
   const listCommand = new ListObjectsV2Command({
     Bucket: env.S3_BUCKET,
     Prefix: `${directory}/`,
-  })
+  });
 
-  let continuationToken: string | undefined
+  let continuationToken: string | undefined;
 
   do {
-    const listResponse = await s3Client.send(listCommand)
+    const listResponse = await s3Client.send(listCommand);
     for (const object of listResponse.Contents || []) {
       if (object.Key) {
-        await removeS3File(object.Key)
+        await removeS3File(object.Key);
       }
     }
-    continuationToken = listResponse.NextContinuationToken
-    listCommand.input.ContinuationToken = continuationToken
-  } while (continuationToken)
-}
+    continuationToken = listResponse.NextContinuationToken;
+    listCommand.input.ContinuationToken = continuationToken;
+  } while (continuationToken);
+};
 
 /**
  * Removes a file from Digital Ocean Spaces.
@@ -89,10 +97,10 @@ export const removeS3File = async (key: string) => {
   const deleteCommand = new DeleteObjectCommand({
     Bucket: env.S3_BUCKET,
     Key: key,
-  })
+  });
 
-  return await s3Client.send(deleteCommand)
-}
+  return await s3Client.send(deleteCommand);
+};
 
 /**
  * Generates a presigned URL for a Digital Ocean Spaces file.
@@ -104,11 +112,10 @@ export const getPresignedUrl = async (key: string, expiresIn = 3600) => {
   const command = new GetObjectCommand({
     Bucket: env.S3_BUCKET,
     Key: key,
-  })
+  });
 
-  // @ts-expect-error - Type mismatch between different versions of AWS SDK packages
-  return await getSignedUrl(s3Client, command, { expiresIn })
-}
+  return await getSignedUrl(s3Client, command, { expiresIn });
+};
 
 /**
  * Extracts the S3 key from a full URL and returns a presigned URL.
@@ -117,37 +124,42 @@ export const getPresignedUrl = async (key: string, expiresIn = 3600) => {
  * @param expiresIn - Expiration time in seconds (default is 1 hour).
  * @returns The presigned URL or the original URL.
  */
-export const getPresignedUrlFromFull = async (url: string | null | undefined, expiresIn = 3600) => {
-  if (!url) return url
+export const getPresignedUrlFromFull = async (
+  url: string | null | undefined,
+  expiresIn = 3600,
+) => {
+  if (!url) return url;
 
   try {
-    const spacesDomain = `${env.S3_BUCKET}.${env.S3_REGION}.digitaloceanspaces.com`
-    const parsedUrl = new URL(url)
-    
+    const spacesDomain = `${env.S3_BUCKET}.${env.S3_REGION}.digitaloceanspaces.com`;
+    const parsedUrl = new URL(url);
+
     // Check if the URL is from our DO Spaces
-    const customPublicUrl = env.S3_PUBLIC_URL ? new URL(env.S3_PUBLIC_URL) : null
+    const customPublicUrl = env.S3_PUBLIC_URL
+      ? new URL(env.S3_PUBLIC_URL)
+      : null;
     const isSpacesUrl =
       (customPublicUrl && parsedUrl.hostname === customPublicUrl.hostname) ||
       parsedUrl.hostname === spacesDomain ||
-      parsedUrl.hostname.includes('digitaloceanspaces.com')
+      parsedUrl.hostname.includes("digitaloceanspaces.com");
 
     if (!isSpacesUrl) {
-      return url
+      return url;
     }
 
     // Extract key from pathname (removing leading slash)
-    let key = parsedUrl.pathname.substring(1)
-    
+    let key = parsedUrl.pathname.substring(1);
+
     if (key.startsWith(`${env.S3_BUCKET}/`)) {
-      key = key.substring(env.S3_BUCKET.length + 1)
+      key = key.substring(env.S3_BUCKET.length + 1);
     }
 
-    return await getPresignedUrl(decodeURIComponent(key), expiresIn)
+    return await getPresignedUrl(decodeURIComponent(key), expiresIn);
   } catch (err) {
-    console.error("Failed to generate presigned URL from:", url, err)
-    return url
+    console.error("Failed to generate presigned URL from:", url, err);
+    return url;
   }
-}
+};
 
 /**
  * Gets the URL of the favicon API endpoint.
@@ -158,10 +170,10 @@ export const getFaviconFetchUrl = (url: string) => {
   const options = new URLSearchParams({
     domain_url: getDomain(url),
     sz: "128",
-  })
+  });
 
-  return `https://www.google.com/s2/favicons?${options.toString()}`
-}
+  return `https://www.google.com/s2/favicons?${options.toString()}`;
+};
 
 /**
  * Gets the URL of the screenshot API endpoint with key rotation.
@@ -175,10 +187,12 @@ export const getScreenshotFetchUrl = (url: string, keyIndex?: number) => {
     env.SCREENSHOTONE_ACCESS_KEY1,
     env.SCREENSHOTONE_ACCESS_KEY2,
     env.SCREENSHOTONE_ACCESS_KEY3,
-  ]
+  ];
 
   const access_key =
-    keyIndex !== undefined ? keys[keyIndex % keys.length] : keys[Math.floor(Math.random() * keys.length)]
+    keyIndex !== undefined
+      ? keys[keyIndex % keys.length]
+      : keys[Math.floor(Math.random() * keys.length)];
 
   const params = new URLSearchParams({
     url,
@@ -197,10 +211,10 @@ export const getScreenshotFetchUrl = (url: string, keyIndex?: number) => {
     viewport_width: "1280",
     viewport_height: "720",
     image_quality: "90",
-  })
+  });
 
-  return `https://api.screenshotone.com/take?${params.toString()}`
-}
+  return `https://api.screenshotone.com/take?${params.toString()}`;
+};
 
 /**
  * Fetches media (favicon or screenshot) from a URL and uploads it to Digital Ocean Spaces.
@@ -216,14 +230,20 @@ export const fetchAndUploadMedia = async (
   keyIndex?: number,
 ) => {
   const endpoint =
-    type === "favicon" ? getFaviconFetchUrl(url) : getScreenshotFetchUrl(url, keyIndex)
-  console.log("🚀 ~ fetchAndUploadMedia ~ endpoint:", endpoint)
-  const { data, error } = await tryCatch(wretch(endpoint).get().arrayBuffer().then(Buffer.from))
-  console.log("🚀 ~ fetchAndUploadMedia ~ data:", data)
+    type === "favicon"
+      ? getFaviconFetchUrl(url)
+      : getScreenshotFetchUrl(url, keyIndex);
+  console.log("🚀 ~ fetchAndUploadMedia ~ endpoint:", endpoint);
+  const { data, error } = await tryCatch(
+    wretch(endpoint).get().arrayBuffer().then(Buffer.from),
+  );
+  console.log("🚀 ~ fetchAndUploadMedia ~ data:", data);
 
   if (error) {
-    throw new Error(`Failed to fetch ${type} from ${url}: ${getErrorMessage(error)}`)
+    throw new Error(
+      `Failed to fetch ${type} from ${url}: ${getErrorMessage(error)}`,
+    );
   }
 
-  return uploadToS3Storage(data, path)
-}
+  return uploadToS3Storage(data, path);
+};
