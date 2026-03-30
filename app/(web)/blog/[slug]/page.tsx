@@ -1,7 +1,6 @@
 import { getReadTime } from "@primoui/utils"
 import type { Metadata } from "next"
 import { getFormatter, getTranslations } from "next-intl/server"
-import Image from "next/image"
 import { notFound } from "next/navigation"
 import { cache, Suspense } from "react"
 import { marked } from "marked"
@@ -14,6 +13,7 @@ import { TableOfContents } from "~/components/web/table-of-contents"
 import { Author } from "~/components/web/ui/author"
 import { Breadcrumbs } from "~/components/web/ui/breadcrumbs"
 import { Favicon } from "~/components/web/ui/favicon"
+import { PresignedImage } from "~/components/common/presigned-image"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { Section } from "~/components/web/ui/section"
 import { blogConfig } from "~/config/blog"
@@ -105,7 +105,7 @@ export default async function ({ params }: { params: Promise<{ slug: string }> }
       <Section>
         <Section.Content>
           {post.image && (
-            <Image
+            <PresignedImage
               src={post.image}
               alt={post.title}
               width={1200}
