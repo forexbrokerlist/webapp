@@ -6,6 +6,7 @@ import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { Section } from "~/components/web/ui/section"
 import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
+import seoData from "~/config/seo.json"
 
 // I18n page namespace
 const namespace = "pages.submit"
@@ -16,24 +17,20 @@ const getData = cache(async (planSlug?: string) => {
   const url = planSlug ? `/submit?plan=${planSlug}` : "/submit"
   const title = t(`${namespace}.title`)
   const description = t(`${namespace}.description`, { siteName: siteConfig.name })
-  const metaDescription = t(`${namespace}.meta_description`)
 
-  return {
-    ...getPageData(url, title, description, {
-      breadcrumbs: [{ url, title }],
-    }),
-    metaDescription,
-  }
+  return getPageData(url, title, description, {
+    breadcrumbs: [{ url, title }],
+  })
 })
 
 export const generateMetadata = async ({ searchParams }: { searchParams: Promise<{ plan?: string, cancelled?: string }> }): Promise<Metadata> => {
   const { plan: planSlug } = await searchParams
-  const { url, metadata, metaDescription } = await getData(planSlug)
-  const mergedMetadata = { ...metadata, description: metaDescription }
+  const { url, metadata } = await getData(planSlug)
+  const mergedMetadata = { ...metadata, ...seoData.submit }
   return getPageMetadata({
     url,
-    title: mergedMetadata.title,
-    description: mergedMetadata.description,
+    title: seoData.submit.title,
+    description: seoData.submit.description,
     metadata: mergedMetadata
   })
 }
