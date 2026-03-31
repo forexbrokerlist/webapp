@@ -43,7 +43,12 @@ const getData = cache(async ({ params }: Props) => {
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
   const { url, metadata } = await getData(props)
-  return getPageMetadata({ url, metadata })
+  return getPageMetadata({
+    url,
+    title: metadata.title,
+    description: metadata.description,
+    metadata
+  })
 }
 
 import { CheckCircle2 } from "lucide-react"
@@ -58,7 +63,7 @@ export default async function (props: Props) {
         <IntroTitle>{metadata.title}</IntroTitle>
         <IntroDescription>{metadata.description}</IntroDescription>
       </Intro>
-      
+
       {order_id && (
         <div className="mt-8 p-6 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800 rounded-xl flex flex-col items-center gap-3 animate-in fade-in zoom-in-95">
           <CheckCircle2 className="size-8 text-green-600 dark:text-green-500" />

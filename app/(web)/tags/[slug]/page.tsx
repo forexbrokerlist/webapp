@@ -46,7 +46,12 @@ const getData = cache(async ({ params }: Props) => {
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
   const { url, metadata } = await getData(props)
-  return getPageMetadata({ url, metadata })
+  return getPageMetadata({
+    url,
+    title: metadata.title,
+    description: metadata.description,
+    metadata
+  })
 }
 
 export default async function (props: Props) {

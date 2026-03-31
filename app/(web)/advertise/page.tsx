@@ -25,14 +25,20 @@ const getData = cache(async () => {
   const title = t(`${namespace}.title`)
   const description = t(`${namespace}.description`, { siteName: siteConfig.name })
 
-  return getPageData(url, title, description, {
+  return await getPageData(url, title, description, {
     breadcrumbs: [{ url, title }],
   })
 })
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const { url, metadata } = await getData()
-  return getPageMetadata({ url, metadata: { ...metadata, ...seoData.advertise } })
+  const mergedMetadata = { ...metadata, ...seoData.advertise }
+  return getPageMetadata({
+    url,
+    title: mergedMetadata.title,
+    description: mergedMetadata.description,
+    metadata: mergedMetadata
+  })
 }
 
 export default async function ({ searchParams }: any) {

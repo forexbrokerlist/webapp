@@ -27,7 +27,9 @@ const getData = cache(async () => {
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const { url, metadata } = await getData()
-  return getPageMetadata({ url, metadata: { ...metadata, ...seoData.terms } })
+  const title = metadata.title as string
+  const description = metadata.description as string
+  return getPageMetadata({ url, title, description, metadata: { ...metadata, ...seoData.terms } })
 }
 
 export default async function () {

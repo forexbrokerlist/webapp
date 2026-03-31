@@ -24,10 +24,13 @@ const Intro = ({ className, alignment, ...props }: IntroProps) => {
   return <div className={cx(introVariants({ alignment, className }))} {...props} />
 }
 
-const IntroTitle = ({ size = "h2", ...props }: HeadingProps) => {
+const IntroTitle = ({ size = "h1", ...props }: HeadingProps) => {
   return <Heading size={size} {...props} />
 }
 
+const IntroSubTitle = ({ size = "h2", ...props }: HeadingProps) => {
+  return <Heading size={size} {...props} />
+}
 const IntroDescription = ({ className, ...props }: ComponentProps<"h2">) => {
   return (
     <h2
@@ -40,4 +43,4 @@ const IntroDescription = ({ className, ...props }: ComponentProps<"h2">) => {
   )
 }
 
-export { Intro, IntroTitle, IntroDescription }
+export { Intro, IntroTitle, IntroDescription,IntroSubTitle }

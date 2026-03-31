@@ -45,7 +45,8 @@ export const getPageData = (
 
 type GetPageMetadataProps = {
   url: string;
-  ogImage?: OpenGraphParams;
+  title: string;
+  description: string;
   metadata?: Metadata;
 };
 
@@ -60,6 +61,7 @@ const pageOgImages: Record<string, string> = {
   "/terms": "/assets/Terms of Service.webp",
   "/cookies": "/assets/cookies.webp",
   "/disclaimer": "/assets/disclaimer.webp",
+  "/":"/assets/Compare the Best Forex Brokers.webp"
 };
 
 /**
@@ -71,18 +73,17 @@ const pageOgImages: Record<string, string> = {
  */
 export const getPageMetadata = ({
   url,
-  ogImage,
+  title,
+  description,
   metadata,
 }: GetPageMetadataProps) => {
   const defaultMetadata = Object.assign({}, metadataConfig, metadata);
-  const { title, description, alternates, openGraph, ...rest } =
-    defaultMetadata;
+  const { alternates, openGraph, ...rest } = defaultMetadata;
 
-  // Use static OG image if mapped, otherwise use dynamic generator
+  // Use static OG image if mapped, otherwise use default image
   const staticOgImage = pageOgImages[url];
   const ogImageUrl =
-    staticOgImage ||
-    getOpenGraphImageUrl(ogImage ?? { title: String(title), description });
+    staticOgImage || "/assets/Compare the Best Forex Brokers.webp";
 
   return {
     title,
@@ -91,6 +92,8 @@ export const getPageMetadata = ({
     openGraph: {
       ...openGraph,
       url,
+      title,
+      description,
       images: [
         {
           url: ogImageUrl,

@@ -1,7 +1,7 @@
 import { ArrowRight, ExternalLink } from "lucide-react"
 import type { ComponentProps } from "react"
 import { Button } from "~/components/common/button"
-import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
+import { Intro, IntroDescription, IntroTitle,IntroSubTitle } from "~/components/web/ui/intro"
 import { cx } from "~/lib/utils"
 import { db } from "~/services/db"
 import Image from "next/image"
@@ -43,9 +43,9 @@ export const Sponsors = async ({ className, ...props }: ComponentProps<"section"
   return (
     <section className={cx("flex flex-col gap-y-12 w-full py-12 md:py-16", className)} {...props}>
       <Intro alignment="center">
-        <IntroTitle className="text-3xl md:text-4xl font-extrabold tracking-tight">
+        <IntroSubTitle className="text-3xl md:text-4xl font-extrabold tracking-tight">
           Supported by the best
-        </IntroTitle>
+        </IntroSubTitle>
         <IntroDescription className="max-w-2xl mx-auto text-muted-foreground mt-4 text-base md:text-lg">
           Our platform is supported by incredible partners and sponsors who make it possible for our team to maintain this directory.
         </IntroDescription>

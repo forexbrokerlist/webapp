@@ -79,7 +79,12 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
     description: String(broker.description),
   }
 
-  return getPageMetadata({ url, metadata, ogImage })
+  return getPageMetadata({
+    url,
+    title: metadata.title,
+    description: metadata.description,
+    metadata
+  })
 }
 
 export default async function (props: Props) {
