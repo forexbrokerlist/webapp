@@ -20,9 +20,8 @@ const namespace = "pages.about"
 const getData = cache(async () => {
   const t = await getTranslations()
   const url = "/about"
-  const title = t(`${namespace}.title`, { siteName: siteConfig.name })
-  const description = t(`${namespace}.description`, { siteName: siteConfig.name })
-
+  const title = seoData.about.title
+  const description = seoData.about.description
   return getPageData(url, title, description, {
     breadcrumbs: [{ url, title }],
     structuredData: [generateAboutPage(url, title, description)],
