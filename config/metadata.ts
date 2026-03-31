@@ -17,7 +17,7 @@ export const metadataConfig: Metadata = {
     images: { url: getOpenGraphImageUrl({}), width: 1200, height: 630 },
   },
   twitter: {
-    site: "@Forex Brokers Listing",
+    site: "@forexbrokerslisting",
     creator: "@piotrkulpinski",
     card: "summary_large_image",
   },
