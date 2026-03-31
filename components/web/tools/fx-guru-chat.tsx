@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Send, Loader2, FileText, User, Image as ImageIcon, X, ArrowLeft, MessageSquare, Plus } from "lucide-react"
+import { Send, Loader2, FileText, User, Image as ImageIcon, X, ArrowLeft, MessageSquare, Plus, TrendingUp, Layers, Zap, Shield, Target, Activity } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Button } from "~/components/common/button"
 import { Avatar, AvatarFallback } from "~/components/common/avatar"
@@ -33,40 +33,66 @@ const STOCK_GURU_MC_PATH = "/stock-guru/api/v1"
 
 const renderSection = (title: string, content: any) => ({ title, content })
 
-const formatResponseContent = (response: any) => {
-  if (typeof response === "string") return response
+const formatResponseContent = (response: any): any => {
+  if (typeof response === "string") {
+    try {
+      const cleanJson = response.replace(/^```json\n?|\n?```$/g, "").trim()
+      
+      // Robust JSON repair for truncated strings
+      const repairJson = (str: string) => {
+        let repaired = str;
+        // Close an open string if it ends abruptly
+        const lastQuoteIndex = repaired.lastIndexOf('"');
+        const lastColonIndex = repaired.lastIndexOf(':');
+        if (lastQuoteIndex < lastColonIndex || (lastQuoteIndex > -1 && repaired.split('"').length % 2 === 0)) {
+           repaired += '"';
+        }
+        
+        // Count brackets and close them
+        const stack: string[] = [];
+        for (let char of repaired) {
+          if (char === '{') stack.push('}');
+          else if (char === '[') stack.push(']');
+          else if (char === '}' || char === ']') {
+            if (stack.length > 0 && stack[stack.length - 1] === char) stack.pop();
+          }
+        }
+        while (stack.length > 0) repaired += stack.pop();
+        return repaired;
+      }
+
+      try {
+        return formatResponseContent(JSON.parse(cleanJson))
+      } catch (e) {
+        try {
+          return formatResponseContent(JSON.parse(repairJson(cleanJson)))
+        } catch {
+          return response
+        }
+      }
+    } catch (e) {
+      return response
+    }
+  }
+
+  if (typeof response !== "object" || response === null) return response
+
   const sections: any[] = []
   if (response.overall_summary) sections.push(renderSection("Overall Summary", response.overall_summary))
-  if (response.overall_trend) {
-    sections.push(renderSection("Market Analysis", {
-      "Trend Type": response.overall_trend.trend_type,
-      "Trend Strength": response.overall_trend.trend_strength,
-      "Description": response.overall_trend.description,
-    }))
-  }
-  if (response.market_structure) {
-    sections.push(renderSection("Market Structure", {
-      "Structure State": response.market_structure.structure_state,
-      "Pattern": response.market_structure.swing_sequence?.higher_high_lower_high_pattern,
-    }))
-  }
-  if (response.support_and_resistance) {
-    sections.push(renderSection("Support & Resistance", {
-      Support: response.support_and_resistance.support_levels?.map((s: any) => s.level_description),
-      Resistance: response.support_and_resistance.resistance_levels?.map((r: any) => r.level_description),
-    }))
-  }
-  if (response.supply_and_demand_zones) {
-    sections.push(renderSection("Supply & Demand", {
-      Supply: response.supply_and_demand_zones.supply_zones?.map((z: any) => z.zone_location),
-      Demand: response.supply_and_demand_zones.demand_zones?.map((z: any) => z.zone_location),
-    }))
+  if (response.overall_trend) sections.push({ type: "trend", title: "Market Analysis", content: response.overall_trend })
+  if (response.market_structure) sections.push({ type: "structure", title: "Market Structure", content: response.market_structure })
+  if (response.supply_and_demand_zones) sections.push({ type: "zones", title: "Supply & Demand", content: response.supply_and_demand_zones })
+  if (response.support_and_resistance) sections.push({ type: "levels", title: "Support & Resistance", content: response.support_and_resistance })
+
+  if (sections.length === 0 && !response.overall_summary) {
+    sections.push(renderSection("Analysis Details", response))
   }
   return sections
 }
 
 const buildAssistantMessage = (resultData: any, hasFile: boolean): Message => {
-  const rawResponse = resultData.chats?.[0]?.response || resultData.answer || resultData.response?.short_response || {}
+  const lastChat = resultData.chats?.[resultData.chats?.length - 1]
+  const rawResponse = lastChat?.response || resultData.answer || resultData.response?.short_response || resultData.response || {}
   const fullReport = resultData.deep_research_answer || resultData.full_report || resultData.answer || {}
   const contentSections = formatResponseContent(rawResponse)
   const reportSections =
@@ -111,7 +137,7 @@ function MessageBubble({ message, onViewReport }: {
           </div>
         )}
 
-        <div className="prose prose-sm max-w-none dark:prose-invert [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-indigo-600 dark:[&_h2]:text-indigo-400 [&_h2]:mb-4 [&_h2]:pb-2 [&_h2]:border-b [&_h2]:border-border [&_p]:text-base [&_p]:leading-relaxed [&_strong]:font-semibold [&_strong]:text-foreground">
+        <div className={message.sender === "assistant" ? "prose prose-sm max-w-none dark:prose-invert [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-indigo-600 dark:[&_h2]:text-indigo-400 [&_h2]:mb-4 [&_h2]:pb-2 [&_h2]:border-b [&_h2]:border-border [&_p]:text-base [&_p]:leading-relaxed [&_strong]:font-semibold [&_strong]:text-foreground" : ""}>
           {message.sender === "assistant" ? (
             <div className="space-y-4">
               {message.image_url && (
@@ -122,35 +148,164 @@ function MessageBubble({ message, onViewReport }: {
               )}
 
               {Array.isArray(message.content) ? (
-                message.content.map((section: any, idx: number) => (
-                  <div key={idx} className="rounded-xl border p-4 bg-muted/40">
-                    <div className="text-sm font-semibold text-indigo-600 mb-2">{section.title}</div>
-                    {typeof section.content === "string" ? (
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{section.content}</ReactMarkdown>
-                    ) : (
-                      <div className="space-y-2 text-sm">
-                        {Object.entries(section.content).map(([key, value]: any, i) => (
-                          <div key={i}>
-                            <span className="font-medium">{key}: </span>
-                            {Array.isArray(value) ? (
-                              <ul className="list-disc ml-5">{value.map((v: any, j: number) => <li key={j}>{v}</li>)}</ul>
-                            ) : (
-                              <span>{value}</span>
+                message.content.map((section: any, idx: number) => {
+                   const isRichSection = !!section.type;
+                   
+                   return (
+                    <div key={idx} className={`rounded-xl border shadow-xs overflow-hidden transition-all duration-300 ${isRichSection ? "bg-card dark:border-indigo-500/10 dark:shadow-[0_0_20px_-12px_rgba(99,102,241,0.3)]" : "p-4 bg-muted/40"}`}>
+                      {isRichSection ? (
+                        <>
+                          <div className={`px-4 py-2.5 border-b flex items-center gap-2 bg-linear-to-r shadow-xs/5 relative overflow-hidden ${
+                            section.type === 'trend' ? "from-indigo-600/20 to-transparent dark:from-indigo-500/15" :
+                            section.type === 'structure' ? "from-emerald-600/20 to-transparent dark:from-emerald-500/15" :
+                            section.type === 'zones' ? "from-amber-600/20 to-transparent dark:from-amber-500/15" :
+                            "from-blue-600/20 to-transparent dark:from-blue-500/15"
+                          }`}>
+                            <div className="absolute inset-0 bg-linear-to-b from-white/5 to-transparent pointer-events-none" />
+                            {section.type === 'trend' && <TrendingUp className="h-4 w-4 text-indigo-600 dark:text-indigo-400 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]" />}
+                            {section.type === 'structure' && <Layers className="h-4 w-4 text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" />}
+                            {section.type === 'zones' && <Zap className="h-4 w-4 text-amber-600 dark:text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" />}
+                            {section.type === 'levels' && <Shield className="h-4 w-4 text-blue-600 dark:text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />}
+                            <div className="text-[11px] font-bold uppercase tracking-widest text-foreground/90 dark:text-foreground/80">{section.title}</div>
+                          </div>
+                          
+                          <div className="p-4">
+                            {section.type === 'trend' && (
+                              <div className="space-y-3">
+                                <div className="flex gap-2 items-center">
+                                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tight shadow-sm ${
+                                    section.content.trend_type?.toLowerCase().includes('up') ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border dark:border-emerald-500/30' :
+                                    section.content.trend_type?.toLowerCase().includes('down') ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300 dark:border dark:border-red-500/30' :
+                                    'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                                  }`}>
+                                    {section.content.trend_type}
+                                  </span>
+                                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tight shadow-sm bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 dark:border dark:border-indigo-500/30">
+                                    {section.content.trend_strength}
+                                  </span>
+                                </div>
+                                <p className="text-sm leading-relaxed text-muted-foreground italic">
+                                  "{section.content.description}"
+                                </p>
+                              </div>
+                            )}
+
+                            {section.type === 'structure' && (
+                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                 <div className="space-y-1">
+                                   <div className="text-[10px] font-semibold text-muted-foreground uppercase">State</div>
+                                   <div className="text-sm font-medium">{section.content.structure_state}</div>
+                                 </div>
+                                 <div className="space-y-1">
+                                   <div className="text-[10px] font-semibold text-muted-foreground uppercase">Pattern</div>
+                                   <div className="text-sm font-medium">{section.content.swing_sequence?.higher_high_lower_high_pattern}</div>
+                                 </div>
+                                 <div className="space-y-1">
+                                   <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Recent High</div>
+                                   <div className="text-sm font-bold text-red-600 dark:text-red-400 drop-shadow-[0_0_4px_rgba(220,38,38,0.3)]">{section.content.swing_sequence?.recent_swing_high}</div>
+                                 </div>
+                                 <div className="space-y-1">
+                                   <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Recent Low</div>
+                                   <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_4px_rgba(16,185,129,0.3)]">{section.content.swing_sequence?.recent_swing_low}</div>
+                                 </div>
+                               </div>
+                            )}
+
+                            {section.type === 'zones' && (
+                              <div className="space-y-4">
+                                {section.content.supply_zones?.length > 0 && (
+                                  <div>
+                                    <div className="text-[10px] font-semibold text-red-600 uppercase mb-2 flex items-center gap-1">
+                                      <Target className="h-3 w-3" /> Supply Zones
+                                    </div>
+                                    <div className="space-y-2">
+                                      {section.content.supply_zones.map((zone: any, i: number) => (
+                                        <div key={i} className="bg-red-50/50 dark:bg-red-500/5 p-3 rounded-xl border border-red-100 dark:border-red-500/20 transition-colors hover:bg-red-50 dark:hover:bg-red-500/10">
+                                          <div className="text-sm font-bold text-red-700 dark:text-red-400 tracking-tight">{zone.zone_location}</div>
+                                          <div className="text-[11px] text-red-600/80 dark:text-red-300/60 mt-1 leading-relaxed">{zone.rejection_evidence}</div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                                {section.content.demand_zones?.length > 0 && (
+                                  <div>
+                                    <div className="text-[10px] font-semibold text-emerald-600 uppercase mb-2 flex items-center gap-1">
+                                      <Activity className="h-3 w-3" /> Demand Zones
+                                    </div>
+                                    <div className="space-y-2">
+                                      {section.content.demand_zones.map((zone: any, i: number) => (
+                                        <div key={i} className="bg-emerald-50/50 dark:bg-emerald-500/5 p-3 rounded-xl border border-emerald-100 dark:border-emerald-500/20 transition-colors hover:bg-emerald-50 dark:hover:bg-emerald-500/10">
+                                          <div className="text-sm font-bold text-emerald-700 dark:text-emerald-400 tracking-tight">{zone.zone_location}</div>
+                                          <div className="text-[11px] text-emerald-600/80 dark:text-emerald-300/60 mt-1 leading-relaxed">{zone.acceptance_evidence}</div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {section.type === 'levels' && (
+                              <div className="space-y-4">
+                                 <div>
+                                    <div className="text-[10px] font-semibold text-muted-foreground uppercase mb-2">Resistance Levels</div>
+                                    <div className="flex flex-wrap gap-2">
+                                      {section.content.resistance_levels?.map((lvl: any, i: number) => (
+                                        <div key={i} className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-mono border border-border shadow-xs">
+                                          {lvl.level_description}
+                                        </div>
+                                      )) || "None"}
+                                    </div>
+                                 </div>
+                                 <div>
+                                    <div className="text-[10px] font-semibold text-muted-foreground uppercase mb-3 tracking-widest">Support Levels</div>
+                                    <div className="flex flex-wrap gap-2.5">
+                                      {section.content.support_levels?.map((lvl: any, i: number) => (
+                                        <div key={i} className="bg-white/50 dark:bg-slate-800/80 px-3 py-1.5 rounded-lg text-xs font-mono font-bold border border-border shadow-xs dark:text-emerald-400 text-emerald-700 hover:scale-105 transition-transform">
+                                          {lvl.level_description}
+                                        </div>
+                                      )) || "None"}
+                                    </div>
+                                 </div>
+                              </div>
                             )}
                           </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))
+                        </>
+                      ) : (
+                        <>
+                          <div className="text-sm font-semibold text-indigo-600 mb-2">{section.title}</div>
+                          {typeof section.content === "string" ? (
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{section.content}</ReactMarkdown>
+                          ) : (
+                            <div className="space-y-2 text-sm">
+                              {Object.entries(section.content).map(([key, value]: any, i) => (
+                                <div key={i}>
+                                  <span className="font-medium">{key}: </span>
+                                  {Array.isArray(value) ? (
+                                    <ul className="list-disc ml-5">{value.map((v: any, j: number) => <li key={j}>{v}</li>)}</ul>
+                                  ) : (
+                                    <span>{value}</span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )
+                })
               ) : typeof message.content === "string" ? (
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
               ) : (
-                <pre className="text-xs bg-muted p-2 rounded">{JSON.stringify(message.content, null, 2)}</pre>
+                <pre className="text-xs bg-muted p-2 rounded overflow-x-auto">{JSON.stringify(message.content, null, 2)}</pre>
               )}
             </div>
           ) : (
-            message.content.split("\n").map((line: any, index: any) => <p key={index}>{line}</p>)
+            <div className="text-base leading-relaxed whitespace-pre-wrap font-medium">
+              {message.content}
+            </div>
           )}
         </div>
 
@@ -582,7 +737,13 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
       type: hasFile ? "image" : "text",
     }
 
-    setMessages((prev) => [...prev, userMessage])
+    setMessages((prev) => {
+      const updated = [...prev, userMessage]
+      if (session?.user?.id && chatId) {
+        localStorage.setItem(`fx-guru-${session.user.id}-${chatId}`, JSON.stringify(updated))
+      }
+      return updated
+    })
     setIsLoading(true)
 
     try {
@@ -609,7 +770,15 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
       if (data.success || data.status === "success" || data.data) {
         const resultData = data.data || data
         const assistantMessage = buildAssistantMessage(resultData, hasFile)
-        setMessages((prev) => [...prev, assistantMessage])
+        setMessages((prev) => {
+          const updated = [...prev, assistantMessage]
+          // Sync to localStorage
+          if (session?.user?.id && chatId) {
+            const storageKey = `fx-guru-${session.user.id}-${chatId}`
+            localStorage.setItem(storageKey, JSON.stringify(updated))
+          }
+          return updated
+        })
 
         if (resultData.conversation_id && resultData.session_id) {
           saveFxGuruConversation({
