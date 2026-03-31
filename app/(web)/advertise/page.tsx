@@ -23,7 +23,7 @@ const getData = cache(async () => {
   const t = await getTranslations()
   const url = "/advertise"
   const title = t(`${namespace}.title`)
-  const description =seoData.about.description
+  const description = t(`${namespace}.description`, { siteName: siteConfig.name })
 
   return await getPageData(url, title, description, {
     breadcrumbs: [{ url, title }],
