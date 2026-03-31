@@ -1,51 +1,62 @@
-import { NextResponse } from "next/server"
-import { siteConfig } from "~/config/site"
-import { findCategorySlugs } from "~/server/web/categories/queries"
-import { findTagSlugs } from "~/server/web/tags/queries"
-import { findToolSlugs } from "~/server/web/tools/queries"
-import { getPosts } from "~/server/web/posts/queries"
+import { NextResponse } from "next/server";
+import { siteConfig } from "~/config/site";
+import { findCategorySlugs } from "~/server/web/categories/queries";
+import { findTagSlugs } from "~/server/web/tags/queries";
+import { findToolSlugs } from "~/server/web/tools/queries";
+import { getPosts } from "~/server/web/posts/queries";
+import { findBrokerSlugs } from "~/server/admin/brokers/queries";
 
-export const sitemaps = ["pages", "tools", "categories", "tags", "posts"] as const
+export const sitemaps = [
+  "pages",
+  "tools",
+  "categories",
+  "tags",
+  "posts",
+  "brokers",
+] as const;
 
 type SitemapEntry = {
-  url: string
-  lastModified?: Date
-  changeFrequency?: "daily" | "weekly" | "monthly"
-  priority?: number
-}
+  url: string;
+  lastModified?: Date;
+  changeFrequency?: "daily" | "weekly" | "monthly";
+  priority?: number;
+};
 
 const buildSitemapXML = (entries: SitemapEntry[]) => {
-  let xml = '<?xml version="1.0" encoding="UTF-8"?>'
-  xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+  let xml = '<?xml version="1.0" encoding="UTF-8"?>';
+  xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
   for (const entry of entries) {
-    xml += "<url>"
-    xml += `<loc>${entry.url}</loc>`
+    xml += "<url>";
+    xml += `<loc>${entry.url}</loc>`;
     if (entry.lastModified) {
-      xml += `<lastmod>${entry.lastModified.toISOString().split("T")[0]}</lastmod>`
+      xml += `<lastmod>${entry.lastModified.toISOString().split("T")[0]}</lastmod>`;
     }
     if (entry.changeFrequency) {
-      xml += `<changefreq>${entry.changeFrequency}</changefreq>`
+      xml += `<changefreq>${entry.changeFrequency}</changefreq>`;
     }
     if (entry.priority) {
-      xml += `<priority>${entry.priority}</priority>`
+      xml += `<priority>${entry.priority}</priority>`;
     }
-    xml += "</url>"
+    xml += "</url>";
   }
 
-  xml += "</urlset>"
-  return xml
-}
+  xml += "</urlset>";
+  return xml;
+};
 
 export async function generateStaticParams() {
-  return sitemaps.map(id => ({ id }))
+  return sitemaps.map((id) => ({ id }));
 }
 
-export async function GET(_: Request, { params }: RouteContext<"/sitemap/[id]">) {
-  const { id } = await params
-  const siteUrl = siteConfig.url
+export async function GET(
+  _: Request,
+  { params }: RouteContext<"/sitemap/[id]">,
+) {
+  const { id } = await params;
+  const siteUrl = siteConfig.url;
 
-  let entries: SitemapEntry[] = []
+  let entries: SitemapEntry[] = [];
 
   switch (id) {
     case "pages": {
@@ -58,72 +69,84 @@ export async function GET(_: Request, { params }: RouteContext<"/sitemap/[id]">)
         `${siteUrl}/blog`,
         `${siteUrl}/advertise`,
         `${siteUrl}/submit`,
-      ]
+      ];
 
-      entries = pages.map(url => ({
+      entries = pages.map((url) => ({
         url,
         lastModified: new Date(),
         changeFrequency: "daily",
         priority: 0.8,
-      }))
-      break
+      }));
+      break;
     }
 
     case "tools": {
-      const tools = await findToolSlugs({})
+      const tools = await findToolSlugs({});
 
-      entries = tools.map(tool => ({
+      entries = tools.map((tool) => ({
         url: `${siteUrl}/${tool.slug}`,
         lastModified: tool.updatedAt,
         changeFrequency: "daily",
         priority: 0.8,
-      }))
-      break
+      }));
+      break;
     }
 
     case "categories": {
-      const categories = await findCategorySlugs({})
+      const categories = await findCategorySlugs({});
 
-      entries = categories.map(category => ({
+      entries = categories.map((category) => ({
         url: `${siteUrl}/categories/${category.slug}`,
         lastModified: category.updatedAt,
         changeFrequency: "weekly",
         priority: 0.7,
-      }))
-      break
+      }));
+      break;
     }
 
     case "tags": {
-      const tags = await findTagSlugs({})
+      const tags = await findTagSlugs({});
 
-      entries = tags.map(tag => ({
+      entries = tags.map((tag) => ({
         url: `${siteUrl}/tags/${tag.slug}`,
         lastModified: tag.updatedAt,
         changeFrequency: "weekly",
         priority: 0.6,
-      }))
-      break
+      }));
+      break;
     }
 
     case "posts": {
-      const posts = await getPosts()
+      const posts = await getPosts();
 
-      entries = posts.map(post => ({
+      entries = posts.map((post) => ({
         url: `${siteUrl}/blog/${post.slug}`,
         lastModified: post.updatedAt,
         changeFrequency: "monthly",
         priority: 0.7,
-      }))
-      break
+      }));
+      break;
+    }
+
+    case "brokers": {
+      const brokers = await findBrokerSlugs({});
+
+      entries = brokers.map((broker) => ({
+        url: `${siteUrl}/brokers/${broker.slug}`,
+        lastModified: broker.updatedAt,
+        changeFrequency: "weekly",
+        priority: 0.8,
+      }));
+      break;
     }
   }
 
-  const xml = buildSitemapXML(entries)
+  const xml = buildSitemapXML(entries);
 
   return new NextResponse(xml, {
     headers: {
       "Content-Type": "application/xml",
       "Content-Length": Buffer.byteLength(xml).toString(),
     },
-  })
+  });
 }
