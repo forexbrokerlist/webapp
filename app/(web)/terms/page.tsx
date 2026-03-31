@@ -27,9 +27,13 @@ const getData = cache(async () => {
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const { url, metadata } = await getData()
-  const title = metadata.title as string
-  const description = metadata.description as string
-  return getPageMetadata({ url, title, description, metadata: { ...metadata, ...seoData.terms } })
+  const mergedMetadata = { ...metadata, ...seoData.terms }
+  return getPageMetadata({
+    url,
+    title: seoData.terms.title,
+    description: seoData.terms.description,
+    metadata: mergedMetadata
+  })
 }
 
 export default async function () {
