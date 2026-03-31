@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { FxGuruChat } from "~/components/web/tools/fx-guru-chat"
+import { FxGuruLanding } from "~/components/web/tools/fx-guru-chat"
 
 export const metadata: Metadata = {
   title: "FxGURU - AI Market Assistant",
@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 
 export default function FxGuruPage() {
   return (
-    <div className="flex flex-col min-h-[calc(100vh-160px-var(--header-height))] bg-[#f0f4f8] dark:bg-background">
-      <FxGuruChat />
+    <div className="flex flex-col h-[calc(100vh-var(--header-height)-80px)] bg-[#f0f4f8] dark:bg-background overflow-hidden rounded-xl border border-border shadow-sm">
+      <FxGuruLanding />
     </div>
   )
 }
