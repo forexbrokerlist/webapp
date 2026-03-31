@@ -5,7 +5,7 @@ import { createLoader } from "nuqs/server"
 import type { ComponentProps } from "react"
 import { OgBase } from "~/components/web/og/og-base"
 import { siteConfig } from "~/config/site"
-import { fonts } from "~/lib/fonts"
+import { getFonts } from "~/lib/fonts"
 import { openGraphSearchParams } from "~/lib/opengraph"
 
 export const contentType = "image/png"
@@ -15,6 +15,7 @@ export const size = { width: 1200, height: 630 }
 export async function GET(req: NextRequest) {
   const t = await getTranslations()
   const { title, description, faviconUrl } = createLoader(openGraphSearchParams)(req)
+  const fonts = await getFonts()
 
   const params: ComponentProps<typeof OgBase> = {
     title: title ?? siteConfig.name,

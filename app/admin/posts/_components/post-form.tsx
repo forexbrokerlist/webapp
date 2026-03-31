@@ -21,6 +21,7 @@ import { Stack } from "~/components/common/stack"
 import { TextArea } from "~/components/common/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/common/select"
 import { MarkdownEditor } from "~/components/admin/markdown-editor"
+import { FAQField } from "~/components/admin/faq-field"
 import { useComputedField } from "~/hooks/use-computed-field"
 import { orpc } from "~/lib/orpc-query"
 import { cx } from "~/lib/utils"
@@ -45,8 +46,19 @@ export function PostForm({ className, title, post, ...props }: PostFormProps) {
       content: post?.content ?? "",
       image: post?.image ?? "",
       status: post?.status ?? "Published",
+      publishedAt: post?.publishedAt,
       authorId: post?.authorId ?? undefined,
       locale: post?.locale ?? "en",
+      meta_title: post?.meta_title ?? "",
+      meta_description: post?.meta_description ?? "",
+      og_image: post?.og_image ?? "",
+      faqs: post?.faqs?.map(faq => ({
+        id: faq.id,
+        question: faq.question,
+        answer: faq.answer,
+        order: faq.order,
+        isActive: faq.isActive ?? true
+      })) ?? [],
     },
   })
 
@@ -177,6 +189,42 @@ export function PostForm({ className, title, post, ...props }: PostFormProps) {
 
           <Controller
             control={form.control}
+            name="meta_title"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Meta Title</FieldLabel>
+                <Input id={field.name} {...field} placeholder="Enter meta title for SEO" />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="meta_description"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Meta Description</FieldLabel>
+                <TextArea id={field.name} {...field} rows={3} placeholder="Enter meta description for SEO" />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="og_image"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>OG Image</FieldLabel>
+                <Input id={field.name} {...field} placeholder="Enter OG image URL" />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
             name="image"
             render={({ field, fieldState }) => (
               <Field className="col-span-full" data-invalid={fieldState.invalid}>
@@ -222,6 +270,16 @@ export function PostForm({ className, title, post, ...props }: PostFormProps) {
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
+        />
+
+        {/* @ts-ignore */}
+        <FAQField
+          /* @ts-ignore */
+          control={form.control}
+          /* @ts-ignore */
+          register={form.register}
+          /* @ts-ignore */
+          errors={form.formState.errors}
         />
 
         <div className="flex justify-between gap-4 col-span-full">

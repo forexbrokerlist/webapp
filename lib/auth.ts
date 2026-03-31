@@ -41,19 +41,19 @@ export const auth = betterAuth({
   },
 
   onAPIError: {
-    onError: error => console.error(error),
+    onError: (error) => console.error(error),
   },
 
   hooks: {
     after: createAuthMiddleware(async ({ path, context }) => {
-      const { responseHeaders } = context
+      const { responseHeaders } = context;
 
       // Revalidate the callback URL after login
       if (path.startsWith("/callback/:id")) {
-        const callbackURL = responseHeaders?.get("location")
+        const callbackURL = responseHeaders?.get("location");
 
         if (callbackURL) {
-          revalidatePath(callbackURL)
+          revalidatePath(callbackURL);
         }
       }
     }),
@@ -62,9 +62,9 @@ export const auth = betterAuth({
   plugins: [
     magicLink({
       sendMagicLink: async ({ email, url }) => {
-        const to = email
-        const subject = `Your ${siteConfig.name} Login Link`
-        await sendEmail({ to, subject, react: EmailMagicLink({ to, url }) })
+        const to = email;
+        const subject = `Your ${siteConfig.name} Login Link`;
+        await sendEmail({ to, subject, react: EmailMagicLink({ to, url }) });
       },
     }),
 
@@ -75,12 +75,12 @@ export const auth = betterAuth({
 
     admin(),
   ],
-})
+});
 
 export const getServerSession = cache(async (request?: NextRequest) => {
   return auth.api.getSession({
     headers: request?.headers ?? (await headers()),
-  })
-})
+  });
+});
 
-export type Session = typeof auth.$Infer.Session
+export type Session = typeof auth.$Infer.Session;

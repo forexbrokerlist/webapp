@@ -2,10 +2,10 @@
 
 import { getReadTime } from "@primoui/utils"
 import { useFormatter, useTranslations } from "next-intl"
-import Image from "next/image"
-import type { ComponentProps } from "react"
+import { type ComponentProps } from "react"
 import type { Post } from "~/lib/posts"
 import { Card, CardDescription, CardFooter, CardHeader } from "~/components/common/card"
+import { PresignedImage } from "~/components/common/presigned-image"
 import { H4 } from "~/components/common/heading"
 import { Link } from "~/components/common/link"
 import { cx } from "~/lib/utils"
@@ -22,7 +22,7 @@ export const PostCard = ({ className, post, ...props }: PostCardProps) => {
     <Card className={cx("overflow-clip", className)} asChild {...props}>
       <Link href={`/blog/${post.slug}`}>
         {post.image && (
-          <Image
+          <PresignedImage
             src={post.image}
             alt={post.title}
             width={1200}

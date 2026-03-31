@@ -1,5 +1,11 @@
 {
   "home": "Home",
+  "ai_tools": "Tools",
+  
+  "stock_guru": "Stock Guru",
+  "fx_guru": "FX Guru",
+  "trade_snap": "Trade Snap" ,  
+  "deep_research": "Deep Research",
   "tools": "Brokers",
   "categories": "Categories",
   "tags": "Tags",

@@ -14,7 +14,7 @@ export const Hero = async ({ className, ...props }: ComponentProps<"section">) =
         <div className="absolute inset-y-0 left-1/2 w-screen -translate-x-1/2 opacity-60 dark:opacity-100 -z-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(150, 150, 150, 0.3) 1px, transparent 0)', backgroundSize: '24px 24px' }} />
 
         <Intro alignment="center" className="relative z-10 px-4">
-          <IntroTitle className="max-w-[16em] lg:text-5xl/[1.1]!">{t("brand.tagline")}</IntroTitle>
+          <IntroTitle className="max-w-[16em] lg:text-5xl/[1.1]!">Discover and Compare the Best Forex Brokers</IntroTitle>
           <IntroDescription className="lg:mt-2">{t("brand.description")}</IntroDescription>
 
           <Suspense fallback={<CountBadgeSkeleton />}>

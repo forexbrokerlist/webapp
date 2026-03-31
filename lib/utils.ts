@@ -1,13 +1,18 @@
-import { defineConfig } from "cva"
-import { extendTailwindMerge } from "tailwind-merge"
+import { defineConfig } from "cva";
+import { extendTailwindMerge } from "tailwind-merge";
+import { type ClassValue, clsx } from "clsx";
 
-const customTwMerge = extendTailwindMerge({})
+const customTwMerge = extendTailwindMerge({});
+
+export function cn(...inputs: ClassValue[]) {
+  return clsx(inputs);
+}
 
 export const { cva, cx, compose } = defineConfig({
   hooks: {
-    onComplete: className => customTwMerge(className),
+    onComplete: (className) => customTwMerge(className),
   },
-})
+});
 
 export const popoverAnimationClasses = [
   "origin-(--radix-popper-transform-origin)",
@@ -18,6 +23,6 @@ export const popoverAnimationClasses = [
   "data-[side=left]:data-[state=open]:slide-in-from-right-2 data-[side=left]:data-[state=closed]:slide-out-to-right-2",
   "data-[side=right]:data-[state=open]:slide-in-from-left-2 data-[side=right]:data-[state=closed]:slide-out-to-left-2",
   "data-[side=top]:data-[state=open]:slide-in-from-bottom-2 data-[side=top]:data-[state=closed]:slide-out-to-bottom-2",
-]
+];
 
-export type { VariantProps } from "cva"
+export type { VariantProps } from "cva";

@@ -27,6 +27,7 @@ const buttonVariants = cva({
       sm: "px-2 py-1 gap-[0.66ch]",
       md: "px-3 py-2 gap-[0.75ch]",
       lg: "px-4 py-2.5 gap-[1ch] rounded-lg sm:text-sm/tight",
+      icon: "p-0 aspect-square overflow-visible",
     },
     isPending: {
       true: "relative [&>*]:opacity-0! select-none after:absolute after:size-[1.1em] after:rounded-full after:border-[1.5px] after:border-[light-dark(var(--color-foreground),var(--color-background))] after:border-t-transparent after:animate-spin",

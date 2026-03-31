@@ -30,7 +30,7 @@ export const BuiltWith = ({ className, medium, ...props }: BuiltWithProps) => {
       <ExternalLink href={href} doTrack doFollow>
         {t("common.built_with")}
         <Stack wrap={false} className="gap-[0.35em] font-medium text-foreground" asChild>
-          <Logo className="size-5" />
+          <Logo />
         </Stack>
       </ExternalLink>
     </Stack>

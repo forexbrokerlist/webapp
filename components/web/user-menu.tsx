@@ -52,12 +52,12 @@ export const UserMenu = () => {
     >
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Box hover focus>
-            <Avatar className="size-6 duration-100">
-              <AvatarImage src={session.user.image ?? undefined} />
-              <AvatarFallback>{getInitials(session.user.name)}</AvatarFallback>
+          <button className="group flex size-6 shrink-0 items-center justify-center rounded-md outline-none">
+            <Avatar className="size-full transition duration-100 group-hover:ring-2 group-hover:ring-border group-focus-visible:ring-2 group-focus-visible:ring-border">
+              {session.user.image && <AvatarImage src={session.user.image} />}
+              <AvatarFallback className="text-[10px]">{getInitials(session.user.name)}</AvatarFallback>
             </Avatar>
-          </Box>
+          </button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent side="bottom" align="end">
