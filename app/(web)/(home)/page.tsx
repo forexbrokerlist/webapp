@@ -13,7 +13,7 @@ import FAQ from "./faq"
 // Get page data
 const getData = cache(async () => {
   const t = await getTranslations()
-  const title = `${siteConfig.name} - ${t("brand.tagline")} | ${siteConfig.name}`
+  const title = `${t("brand.tagline")} | ${siteConfig.name}`
   const description = t("brand.meta_description")
 
   return getPageData(siteConfig.url, title, description)
