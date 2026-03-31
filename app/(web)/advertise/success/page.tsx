@@ -24,7 +24,7 @@ const namespace = "pages.advertise.success"
 const getData = cache(async ({ searchParams }: Props) => {
   const searchParamsLoader = createLoader({ sessionId: parseAsString.withDefault("") })
   const { sessionId } = await searchParamsLoader(searchParams)
-  
+
   // In the new flow, sessionId is our orderId
   const payment = await db.payment.findUnique({
     where: { orderId: sessionId },
@@ -45,8 +45,8 @@ const getData = cache(async ({ searchParams }: Props) => {
 
   // Provide a session-like object for compatibility
   const session = {
-     id: payment.orderId!,
-     status: payment.status === "Paid" ? "complete" : "open",
+    id: payment.orderId!,
+    status: payment.status === "Paid" ? "complete" : "open",
   }
 
   return { session, ...data }
@@ -54,7 +54,12 @@ const getData = cache(async ({ searchParams }: Props) => {
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
   const { url, metadata } = await getData(props)
-  return getPageMetadata({ url, metadata })
+  return getPageMetadata({
+    url,
+    title: metadata.title,
+    description: metadata.description,
+    metadata
+  })
 }
 
 export default async function (props: PageProps<"/advertise/success">) {

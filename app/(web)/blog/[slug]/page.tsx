@@ -57,7 +57,13 @@ export const generateMetadata = async ({ params }: { params: Promise<{ slug: str
     authors: post.author?.name,
   }
 
-  return getPageMetadata({ url, metadata: { ...metadata, openGraph } })
+  const mergedMetadata = { ...metadata, openGraph }
+  return getPageMetadata({
+    url,
+    title: mergedMetadata.title,
+    description: mergedMetadata.description,
+    metadata: mergedMetadata
+  })
 }
 
 export default async function ({ params }: { params: Promise<{ slug: string }> }) {

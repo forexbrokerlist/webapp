@@ -27,7 +27,13 @@ const getData = cache(async () => {
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const { url, metadata } = await getData()
-  return getPageMetadata({ url, metadata: { ...metadata, ...seoData.privacy } })
+  const mergedMetadata = { ...metadata, ...seoData.privacy }
+  return getPageMetadata({
+    url,
+    title: mergedMetadata.title,
+    description: mergedMetadata.description,
+    metadata: mergedMetadata
+  })
 }
 
 export default async function () {
@@ -62,7 +68,7 @@ export default async function () {
           </li>
           <li>
             <strong>Cookies & Tracking Data:</strong> We use cookies and similar tracking
-          technologies to enhance your experience (see our Cookie Policy for details).
+            technologies to enhance your experience (see our Cookie Policy for details).
           </li>
           <li>
             <strong>Communications:</strong> Any messages or inquiries you send us via contact forms

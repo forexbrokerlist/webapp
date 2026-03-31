@@ -29,7 +29,13 @@ const getData = cache(async (planSlug?: string) => {
 export const generateMetadata = async ({ searchParams }: { searchParams: Promise<{ plan?: string, cancelled?: string }> }): Promise<Metadata> => {
   const { plan: planSlug } = await searchParams
   const { url, metadata, metaDescription } = await getData(planSlug)
-  return getPageMetadata({ url, metadata: { ...metadata, description: metaDescription } })
+  const mergedMetadata = { ...metadata, description: metaDescription }
+  return getPageMetadata({
+    url,
+    title: mergedMetadata.title,
+    description: mergedMetadata.description,
+    metadata: mergedMetadata
+  })
 }
 
 import { findCategories } from "~/server/web/categories/queries"
@@ -63,13 +69,13 @@ export default async function ({ searchParams }: { searchParams: Promise<{ plan?
               You must be logged in to submit a broker.
             </Hint>
           )}
-          <SubmitForm 
-            categories={categories} 
-            subcategories={subcategories} 
-            tags={tags} 
-            plan={plan} 
+          <SubmitForm
+            categories={categories}
+            subcategories={subcategories}
+            tags={tags}
+            plan={plan}
             plans={allPlans}
-            isCancelled={cancelled === "true"} 
+            isCancelled={cancelled === "true"}
           />
         </Section.Content>
       </Section>

@@ -52,6 +52,8 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
   if (slug === 'algorithmic-trading-and-bot-providers') {
     return getPageMetadata({
       url,
+      title: "Best Algorithmic Trading & Bot Providers",
+      description: "Discover the best algorithmic trading and bot providers. Compare automated trading solutions, expert advisors & forex bots to maximize your trading performance.",
       metadata: {
         ...metadata,
         title: "Best Algorithmic Trading & Bot Providers",
@@ -63,6 +65,8 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
   if (slug === 'forex-brokers') {
     return getPageMetadata({
       url,
+      title: "Best Forex Brokers – Compare & Find Top Brokers",
+      description: "Compare the best forex brokers by spreads, regulations, platforms & minimum deposits. Find the perfect regulated forex broker for your trading needs today.",
       metadata: {
         ...metadata,
         title: "Best Forex Brokers – Compare & Find Top Brokers",
@@ -71,7 +75,12 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
     })
   }
 
-  return getPageMetadata({ url, metadata })
+  return getPageMetadata({
+    url,
+    title: metadata.title,
+    description: metadata.description,
+    metadata
+  })
 }
 
 export default async function (props: Props) {

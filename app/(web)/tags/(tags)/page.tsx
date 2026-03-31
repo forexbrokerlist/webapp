@@ -29,7 +29,13 @@ const getData = cache(async () => {
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const { url, metadata } = await getData()
-  return getPageMetadata({ url, metadata: { ...metadata, ...seoData.tags } })
+  const mergedMetadata = { ...metadata, ...seoData.tags }
+  return getPageMetadata({
+    url,
+    title: mergedMetadata.title,
+    description: mergedMetadata.description,
+    metadata: mergedMetadata
+  })
 }
 
 export default async function (props: PageProps<"/tags">) {

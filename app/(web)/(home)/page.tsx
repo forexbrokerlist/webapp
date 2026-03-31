@@ -7,7 +7,7 @@ import { StructuredData } from "~/components/web/structured-data"
 import { ToolListingSkeleton } from "~/components/web/tools/tool-listing"
 import { ToolQuery } from "~/components/web/tools/tool-query"
 import { siteConfig } from "~/config/site"
-import { getPageData } from "~/lib/pages"
+import { getPageData, getPageMetadata } from "~/lib/pages"
 import FAQ from "./faq"
 
 // Get page data
@@ -20,8 +20,10 @@ const getData = cache(async () => {
 })
 
 export const generateMetadata = async () => {
-  const { metadata } = await getData()
-  return metadata
+  const { url, metadata } = await getData()
+  const title = metadata.title as string
+  const description = metadata.description as string
+  return getPageMetadata({ url, title, description, metadata })
 }
 
 export default async function (props: any) {
