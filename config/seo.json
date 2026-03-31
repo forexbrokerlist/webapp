@@ -1,55 +1,59 @@
 {
   "about": {
-    "title": "About Us - Top Forex Broker Directory",
+    "title": "About Us - Top Forex Broker Directory | Forex Brokers List",
     "description": "Learn about our mission to help traders find the best regulated forex brokers worldwide. Discover the team behind the most trusted forex broker comparison directory."
   },
   "contact": {
-    "title": "Contact Us - Listings & Partnerships",
+    "title": "Contact Us - Listings & Partnerships | Forex Brokers List",
     "description": "Have questions about listings, advertising or partnerships? Contact the Forex Brokers Listing team and we will get back to you shortly."
   },
   "advertise": {
-    "title": "Advertise & Reach 5000+ Forex Traders",
+    "title": "Advertise & Reach 5000+ Forex Traders | Forex Brokers List",
     "description": "Learn about our mission to help traders find the best regulated forex brokers. Discover the team behind our trusted forex broker comparison directory."
   },
   "blog": {
-    "title": "Forex Trading Blog - Tips & Reviews",
+    "title": "Forex Trading Blog - Tips & Reviews | Forex Brokers List",
     "description": "Read the latest forex broker reviews, trading tips, regulation updates & industry news. Make smarter trading decisions with our expert content."
   },
   "categories": {
-    "title": "Browse Forex Broker Categories",
+    "title": "Browse Forex Broker Categories | Forex Brokers List",
     "description": "Explore forex broker categories including ECN brokers, regulated brokers, MT4/MT5 platforms & liquidity providers. Find the right trading solution fast."
   },
   "tags": {
-    "title": "Browse Forex Broker Tags",
+    "title": "Browse Forex Broker Tags | Forex Brokers List",
     "description": "Filter forex brokers by specific tags including spreads, regulations, platforms & trading features. Discover brokers that match your exact needs."
   },
   "submit": {
-    "title": "Submit Your Forex Broker",
+    "title": "Submit Your Forex Broker | Forex Brokers List",
     "description": "Submit your forex broker and get listed in front of thousands of traders. Reach a global audience of forex trading professionals today."
   },
   "terms": {
-    "title": "Terms of Service",
+    "title": "Terms of Service | Forex Brokers List",
     "description": "Please read our terms of service carefully before using Forex Brokers Listing. Understand your rights and responsibilities as a user of our platform."
   },
   "privacy": {
-    "title": "Privacy Policy",
+    "title": "Privacy Policy | Forex Brokers List",
     "description": "Read our privacy policy to understand how Forex Brokers Listing collects, uses and protects your personal data when you use our platform."
   },
   "cookies": {
-    "title": "Cookie Policy",
+    "title": "Cookie Policy | Forex Brokers List",
     "description": "Learn how Forex Brokers Listing uses cookies to improve your browsing experience and provide personalized content on our platform."
   },
   "disclaimer": {
-    "title": "Disclaimer - Important Trading Info",
+    "title": "Disclaimer - Important Trading Info | Forex Brokers List",
     "description": "Read our important disclaimer regarding forex broker information, trading risks and financial advice provided on Forex Brokers Listing."
+  },
+  "login": {
+    "title": "Submit Your Forex Broker | Forex Brokers List",
+    "description": "Submit your forex broker and get listed in front of thousands of traders. Reach a global audience of forex trading professionals today."
   },
   "dynamicCategories": {
     "algorithmic-trading-and-bot-providers": {
-      "title": "Best Algorithmic Trading & Bot Providers",
+      "title": "Best Algorithmic Trading & Bot Providers | Forex Brokers List",
       "description": "Discover the best algorithmic trading and bot providers. Compare automated trading solutions, expert advisors & forex bots to maximize your trading performance."
     },
     "forex-brokers": {
-      "title": "Best Forex Brokers – Compare & Find Top Brokers",
+      "title": "Best Forex Brokers – Compare & Find Top Brokers | Forex Brokers List",
       "description": "Compare the best forex brokers by spreads, regulations, platforms & minimum deposits. Find the perfect regulated forex broker for your trading needs today."
     }
   }

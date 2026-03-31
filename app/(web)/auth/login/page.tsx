@@ -6,11 +6,11 @@ import { Login } from "~/components/web/auth/login"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
+import seoData from "~/config/seo.json"
+import { generateWebPage } from "~/lib/structured-data"
 
-// I18n page namespace
 const namespace = "pages.auth.login"
 
-// Get page data
 const getData = cache(async () => {
   const t = await getTranslations()
   const url = "/auth/login"
@@ -19,15 +19,17 @@ const getData = cache(async () => {
 
   return getPageData(url, title, description, {
     breadcrumbs: [{ url, title }],
+    structuredData: [generateWebPage(url, title, description)],
   })
 })
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const { url, metadata } = await getData()
+  const mergedMetadata = { ...metadata, ...seoData.login }
   return getPageMetadata({
     url,
-    title: metadata.title,
-    description: metadata.description,
+    title: mergedMetadata.title,
+    description: mergedMetadata.description,
     metadata
   })
 }
