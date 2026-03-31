@@ -25,7 +25,7 @@ const getData = cache(async () => {
   const title = t(`${namespace}.title`)
   const description = seoData.advertise.description
 
-  return await getPageData(url, title, description, {
+  return getPageData(url, title, description, {
     breadcrumbs: [{ url, title }],
   })
 })
