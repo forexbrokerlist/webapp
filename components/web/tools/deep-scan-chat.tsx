@@ -24,7 +24,7 @@ interface ScanItem {
   deep_research_answer?: string
 }
 
-const DEEP_SCAN_MC_PATH = "/deep-research/deep-research/v1"
+const DEEP_SCAN_MC_PATH = "/deep-research/v1"
 
 const Model_List = [
   { Value: "lite", Name: "CORE", Duration: "2MIN – 10MIN" },
