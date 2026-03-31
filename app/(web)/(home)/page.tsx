@@ -8,15 +8,56 @@ import { ToolListingSkeleton } from "~/components/web/tools/tool-listing"
 import { ToolQuery } from "~/components/web/tools/tool-query"
 import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
+import { generateWebPage, generateFAQ } from "~/lib/structured-data"
 import FAQ from "./faq"
 
 // Get page data
 const getData = cache(async () => {
   const t = await getTranslations()
-  const title = `${t("brand.tagline")} | ${siteConfig.name}`
+  const title = `${siteConfig.name} - ${t("brand.tagline")}`
+
   const description = t("brand.meta_description")
 
-  return getPageData(siteConfig.url, title, description)
+  // FAQ data for structured data
+  const faqData = [
+    {
+      question: "What is ForexBrokerList.io?",
+      answer: "A comprehensive directory to discover and compare 512+ forex brokers and industry service providers. We help traders find the right broker based on spreads, regulation, platforms, and more."
+    },
+    {
+      question: "How do I find the right forex broker?",
+      answer: "Browse our directory and filter brokers by regulation, minimum deposit, platform, and trading conditions. Each listing has detailed info to help you make a confident, informed decision."
+    },
+    {
+      question: "Are the brokers on your list regulated?",
+      answer: "Every listing displays regulatory information and the number of licenses a broker holds. Always verify a broker's regulation before depositing any funds."
+    },
+    {
+      question: "How can my broker get listed on the site?",
+      answer: "Simply visit our Submit page and fill in your broker or service details for review. Sponsored placements are also available for maximum visibility across our platform."
+    },
+    {
+      question: "What is the difference between a regular and sponsored listing?",
+      answer: "Regular listings appear in the standard directory, while sponsored listings get priority placement at the top of their category. Sponsored spots offer significantly more visibility to our professional audience."
+    },
+    {
+      question: "Is ForexBrokerList.io free for traders?",
+      answer: "Yes, browsing and comparing all brokers on our platform is 100% free. No sign-up is required to explore listings and access broker information."
+    },
+    {
+      question: "How do I stay updated with new listings?",
+      answer: "Subscribe to our newsletter and join 5,000+ members who get updates directly to your inbox. New brokers, platform changes, and industry news all in one place."
+    }
+  ]
+
+  const structuredData = [
+    generateWebPage(siteConfig.url, title, description),
+    generateFAQ(faqData)
+  ]
+
+  return getPageData(siteConfig.url, title, description, {
+    structuredData
+  })
 })
 
 export const generateMetadata = async () => {
