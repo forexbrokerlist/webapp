@@ -14,6 +14,7 @@ import { Testimonial } from "~/components/web/testimonial"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
+import { generateWebPage } from "~/lib/structured-data"
 
 // I18n page namespace
 const namespace = "pages.advertise"
@@ -27,6 +28,7 @@ const getData = cache(async () => {
 
   return getPageData(url, title, description, {
     breadcrumbs: [{ url, title }],
+    structuredData: [generateWebPage(url, title, description)],
   })
 })
 
