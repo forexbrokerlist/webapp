@@ -11,6 +11,7 @@ import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateAboutPage } from "~/lib/structured-data"
+import seoData from "~/config/seo.json"
 
 // I18n page namespace
 const namespace = "pages.about"
@@ -30,11 +31,12 @@ const getData = cache(async () => {
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const { url, metadata } = await getData()
+  const mergedMetadata = { ...metadata, ...seoData.about }
   return getPageMetadata({
     url,
-    title: metadata.title,
-    description: metadata.description,
-    metadata
+    title: seoData.about.title,
+    description: seoData.about.description,
+    metadata: mergedMetadata
   })
 }
 
