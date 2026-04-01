@@ -14,6 +14,8 @@ import { getPosts } from "~/server/web/posts/queries"
 // I18n page namespace
 const namespace = "pages.blog"
 
+export const dynamic = "force-dynamic"
+
 // Get page data
 const getData = cache(async () => {
   const posts = await getPosts()

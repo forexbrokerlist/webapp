@@ -14,6 +14,8 @@ import { generateCollectionPage } from "~/lib/structured-data"
 // I18n page namespace
 const namespace = "pages.tags"
 
+export const dynamic = "force-dynamic"
+
 // Get page data
 const getData = cache(async () => {
   const t = await getTranslations()

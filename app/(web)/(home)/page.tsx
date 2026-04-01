@@ -11,6 +11,8 @@ import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateWebPage, generateFAQ } from "~/lib/structured-data"
 import FAQ from "./faq"
 
+export const dynamic = "force-dynamic"
+
 // Get page data
 const getData = cache(async () => {
   const t = await getTranslations()

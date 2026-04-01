@@ -16,6 +16,8 @@ type Props = {
 // I18n page namespace
 const namespace = "pages.tools"
 
+export const dynamic = "force-dynamic"
+
 // Get page data
 const getData = cache(async () => {
   const t = await getTranslations()
