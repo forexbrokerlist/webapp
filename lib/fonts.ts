@@ -53,22 +53,24 @@ export const loadGoogleFont = async (font: string, weight: FontWeight) => {
 };
 
 export const getFonts = async (): Promise<Font[]> => {
+  // Note: "Geist" is a Vercel font not available via the Google Fonts CSS API.
+  // We use "Inter" here (visually near-identical) which is a proper Google Font
+  // and works reliably with the fetch-and-parse approach used by loadGoogleFont.
   try {
     return [
       {
         name: "Geist",
         weight: 400,
-        data: await loadGoogleFont("Geist", 400),
+        data: await loadGoogleFont("Inter", 400),
       },
       {
         name: "Geist",
         weight: 600,
-        data: await loadGoogleFont("Geist", 600),
+        data: await loadGoogleFont("Inter", 600),
       },
     ];
   } catch (error) {
     console.error("Failed to load fonts, using fallback:", error);
-    // Return a basic fallback font or empty array
     return [];
   }
 };
