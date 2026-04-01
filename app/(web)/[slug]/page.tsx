@@ -30,6 +30,8 @@ import { generateCollectionPage } from "~/lib/structured-data"
 import { isToolPublished, isToolStandardTier } from "~/lib/tools"
 import { findTool, findToolSlugs } from "~/server/web/tools/queries"
 
+export const dynamic = "force-dynamic"
+
 type Props = PageProps<"/[slug]">
 
 // Get page data
@@ -57,10 +59,6 @@ const getData = cache(async ({ params }: Props) => {
   return { tool, ...data }
 })
 
-export const generateStaticParams = async () => {
-  const tools = await findToolSlugs({})
-  return tools.map(({ slug }) => ({ slug }))
-}
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
   const { tool, url, metadata } = await getData(props)

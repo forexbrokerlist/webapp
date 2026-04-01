@@ -45,9 +45,7 @@ const buildSitemapXML = (entries: SitemapEntry[]) => {
   return xml;
 };
 
-export async function generateStaticParams() {
-  return sitemaps.map((id) => ({ id }));
-}
+export const dynamic = "force-dynamic";
 
 export async function GET(
   _: Request,
