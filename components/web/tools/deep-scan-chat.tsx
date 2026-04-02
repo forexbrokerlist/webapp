@@ -87,6 +87,7 @@ export function DeepScanChat() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [scanToDelete, setScanToDelete] = useState<string | null>(null)
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const stepsEndRef = useRef<HTMLDivElement>(null)
 
   const stopPolling = useCallback(() => {
     if (pollIntervalRef.current) {
@@ -99,6 +100,12 @@ export function DeepScanChat() {
     return () => stopPolling()
   }, [stopPolling])
 
+  useEffect(() => {
+    if (stepsEndRef.current) {
+      stepsEndRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" })
+    }
+  }, [currentProcessing?.steps])
+
   const updateProcessingStep = useCallback((message: string, progress?: number) => {
     setCurrentProcessing(prev => {
       if (!prev) return null
@@ -110,6 +117,13 @@ export function DeepScanChat() {
       const messageExists = updatedSteps.some(step => step.text === message)
 
       if (!messageExists) {
+        // Mark all previous in_progress/pending steps as completed
+        for (let i = 0; i < updatedSteps.length; i++) {
+          if (updatedSteps[i].status === 'in_progress' || updatedSteps[i].status === 'pending') {
+            updatedSteps[i] = { ...updatedSteps[i], status: 'completed' }
+          }
+        }
+
         // Add the backend message as a new step
         const newStep: ProcessingStep = {
           id: Date.now().toString(),
@@ -522,46 +536,54 @@ export function DeepScanChat() {
                 <Accordion type="single" value={currentProcessing.isExpanded ? "processing" : ""} className="w-full">
                   <AccordionItem value="processing" className="border border-border rounded-xl bg-white dark:bg-card shadow-sm">
                     <AccordionTrigger className="px-3 py-2 hover:no-underline">
-                      <div className="flex items-center justify-between w-full">
-                        <div className="flex items-center gap-2">
-                          <ChevronUp className="w-3 h-3 text-muted-foreground" />
-                          <span className="text-xs font-medium text-foreground truncate max-w-[180px]">
-                            {currentProcessing.query}
-                          </span>
-                          <span className="px-1.5 py-0.5 text-[8px] font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-md uppercase tracking-wider">
-                            {Model_List.find(m => m.Value === currentProcessing.model)?.Name || "CORE"}
-                          </span>
-                        </div>
-                        <div
-                          className="w-6 h-6 p-0 flex items-center justify-center rounded-md hover:bg-muted/50 transition-colors cursor-pointer"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            stopPolling()
-                            setCurrentProcessing(null)
-                          }}
-                        >
-                          <Trash2 className="w-3 h-3 text-muted-foreground hover:text-foreground" />
-                        </div>
+                      <div className="flex items-center gap-2 overflow-hidden w-full">
+                        <ChevronUp className="w-3 h-3 text-muted-foreground shrink-0" />
+                        <span className="text-xs font-medium text-foreground truncate flex-1">
+                          {currentProcessing.query}
+                        </span>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="px-3 pb-3">
-                      <div className="space-y-2">
-                        {currentProcessing.steps.map((step) => (
-                          <div key={step.id} className="flex items-center gap-2">
-                            <div className="shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center">
-                              {step.status === 'completed' ? (
-                                <Check className="w-2.5 h-2.5 text-green-600" />
-                              ) : step.status === 'in_progress' ? (
-                                <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" />
-                              ) : (
-                                <div className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
-                              )}
+                     <AccordionContent className="px-3 pb-3">
+                      <div className="flex items-center gap-2 mb-3 px-1">
+                        <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold">Research Model:</span>
+                        <span className="px-1.5 py-0.5 text-[8px] font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-md uppercase tracking-wider">
+                          {Model_List.find(m => m.Value === currentProcessing.model)?.Name || "CORE"}
+                        </span>
+                      </div>
+                      <div 
+                        className="space-y-2 max-h-[160px] overflow-y-auto pr-1 scroll-smooth"
+                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                      >
+                        <style dangerouslySetInnerHTML={{__html: `
+                          .no-scrollbar::-webkit-scrollbar { display: none; }
+                        `}} />
+                        <div className="no-scrollbar space-y-2">
+                          {currentProcessing.steps.map((step) => (
+                            <div key={step.id} className="flex items-center gap-2">
+                              <div className={`shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${
+                                step.status === 'completed' ? 'border-white/20' : 
+                                step.status === 'in_progress' ? 'border-blue-600/50' : 
+                                'border-border'
+                              }`}>
+                                {step.status === 'completed' ? (
+                                  <Check className="w-2.5 h-2.5 text-white" />
+                                ) : step.status === 'in_progress' ? (
+                                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" />
+                                ) : (
+                                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
+                                )}
+                              </div>
+                              <span className={`text-[11px] transition-colors ${
+                                step.status === 'completed' ? 'text-white font-normal' : 
+                                step.status === 'in_progress' ? 'text-blue-600 font-medium' : 
+                                'text-muted-foreground/40'
+                              }`}>
+                                {step.text}
+                              </span>
                             </div>
-                            <span className={`text-xs ${step.status === 'completed' ? 'text-green-600' : step.status === 'in_progress' ? 'text-blue-600 font-medium' : 'text-gray-400'}`}>
-                              {step.text}
-                            </span>
-                          </div>
-                        ))}
+                          ))}
+                          <div ref={stepsEndRef} />
+                        </div>
                       </div>
                     </AccordionContent>
                   </AccordionItem>

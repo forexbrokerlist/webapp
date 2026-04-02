@@ -528,7 +528,7 @@ export function ContentPanel({
               <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest mt-0.5">Comprehensive Forex Insights</p>
             )}
           </div>
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <Button
               variant="fancy"
               size="sm"
@@ -539,27 +539,26 @@ export function ContentPanel({
             >
               Export Report
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
-
-      {/* Content Area */}
-      <div className="flex-1 overflow-y-auto w-full">
+{
+  isLoading?(
+<div className="flex-1 overflow-y-auto w-full">
         <div className="p-6" ref={scrollContentRef}>
           <Card className="border-0 shadow-none bg-transparent">
             <div className="p-0">
               <div className="prose text-base markdown-text prose-sm max-w-none dark:prose-invert">
-                {isLoading ? (
-                  <div className="flex flex-col items-center justify-center min-h-[50vh] py-12 px-4 text-center animate-in fade-in zoom-in duration-700">
+                  <div className="flex flex-col items-center justify-center min-h-[70vh] py-12 px-4 text-center animate-in fade-in zoom-in duration-700">
                     <div className="relative mb-6">
                       <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full animate-pulse" />
                       <div className="relative bg-linear-to-b from-blue-500/10 to-transparent p-6 rounded-full border border-blue-500/10">
                         <Loader2 className="h-12 w-12 text-blue-500 animate-spin" strokeWidth={1.5} />
                       </div>
                     </div>
-                    <h4 className="text-xl md:text-2xl font-bold text-foreground mb-3 tracking-tight">Analyzing Market Data</h4>
+                    <h4 className="text-xl md:text-2xl font-bold text-foreground mb-3 tracking-tight">Query Processing In Progress</h4>
                     <p className="text-muted-foreground max-w-sm text-sm md:text-base leading-relaxed mb-8">
-                      Our AI agents are scanning multiple data sources to provide you with the most accurate market insights. This may take a few moments...
+                       AI agents are actively scanning multiple market data sources to provide you with accurate insights. This comprehensive analysis may take a few moments...
                     </p>
                     <div className="flex items-center justify-center gap-3">
                       <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.3s]"></div>
@@ -567,6 +566,9 @@ export function ContentPanel({
                       <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce"></div>
                     </div>
                   </div>
+  
+    {/* Content Area */}
+      
                 ) : rawResponse ? (
                   <StructuredMarketAnalysis data={rawResponse} />
                 ) : fullReport ? (
@@ -574,7 +576,7 @@ export function ContentPanel({
                     {fullReport}
                   </ReactMarkdown>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-20 px-4 text-center animate-in fade-in zoom-in duration-700">
+                  <div className="flex flex-col items-center justify-center min-h-[70vh] py-20 px-4 text-center animate-in fade-in zoom-in duration-700">
                     <div className="relative mb-8">
                       <div className="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full" />
                       <div className="relative bg-linear-to-b from-indigo-500/10 to-transparent p-8 rounded-full border border-indigo-500/10">
