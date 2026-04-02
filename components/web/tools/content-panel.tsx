@@ -550,13 +550,22 @@ export function ContentPanel({
             <div className="p-0">
               <div className="prose text-base markdown-text prose-sm max-w-none dark:prose-invert">
                 {isLoading ? (
-                  <div className="animate-pulse">
-                    <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded w-3/4 mb-4"></div>
-                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-full mb-2"></div>
-                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-5/6 mb-2"></div>
-                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-2/3 mb-2"></div>
-                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/2 mb-2"></div>
-                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4 mb-2"></div>
+                  <div className="flex flex-col items-center justify-center min-h-[50vh] py-12 px-4 text-center animate-in fade-in zoom-in duration-700">
+                    <div className="relative mb-6">
+                      <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full animate-pulse" />
+                      <div className="relative bg-linear-to-b from-blue-500/10 to-transparent p-6 rounded-full border border-blue-500/10">
+                        <Loader2 className="h-12 w-12 text-blue-500 animate-spin" strokeWidth={1.5} />
+                      </div>
+                    </div>
+                    <h4 className="text-xl md:text-2xl font-bold text-foreground mb-3 tracking-tight">Analyzing Market Data</h4>
+                    <p className="text-muted-foreground max-w-sm text-sm md:text-base leading-relaxed mb-8">
+                      Our AI agents are scanning multiple data sources to provide you with the most accurate market insights. This may take a few moments...
+                    </p>
+                    <div className="flex items-center justify-center gap-3">
+                      <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.3s]"></div>
+                      <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.15s]"></div>
+                      <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce"></div>
+                    </div>
                   </div>
                 ) : rawResponse ? (
                   <StructuredMarketAnalysis data={rawResponse} />
@@ -574,7 +583,7 @@ export function ContentPanel({
                     </div>
                     <h4 className="text-2xl font-bold text-foreground mb-3 tracking-tight">Ready for Analysis</h4>
                     <p className="text-muted-foreground max-w-sm text-base leading-relaxed">
-                      Select a currency pair in the chat and ask FxGURU for any market insights or professional analysis reports.
+                      Enter a query in the chat and select a model to start a Deep Scan. Our AI will research and generate a comprehensive report for you.
                     </p>
                     <div className="mt-8 flex gap-2">
                       <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/40"></div>

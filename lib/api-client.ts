@@ -7,7 +7,7 @@ const API_SECRET = process.env.NEXT_PUBLIC_API_SECRET || "gKlOOMqk8N9Lbw"
 /**
  * Generates a signed JWT token using HS256 algorithm
  */
-const getSignedToken = async () => {
+export const getSignedToken = async () => {
   const secret = new TextEncoder().encode(API_SECRET)
   return await new SignJWT({})
     .setProtectedHeader({ alg: "HS256" })
