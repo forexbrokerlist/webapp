@@ -569,7 +569,7 @@ export function FxGuruLanding() {
               <div className="text-base md:text-lg text-muted-foreground mb-2 px-4">Stock insights are waiting. Talk to the FX Guru Assistant.</div>
             </div>
 
-            <Stack className="items-center justify-center flex-1 z-10 w-full mb-8 md:mb-0" direction="col" size="lg" wrap={true}>
+            <Stack className="items-center justify-center flex-1 z-10 w-full mb-8 md:mb-0" direction="column" size="lg" wrap={true}>
               <div className="flex flex-col md:flex-row gap-6 items-center justify-center w-full max-w-4xl">
               <div className="flex flex-col items-center max-w-[320px] w-full group">
                 <div className="relative z-20 -mb-16 transition-transform duration-500 group-hover:-translate-y-4">
@@ -615,7 +615,7 @@ export function FxGuruLanding() {
                     </button>
                   </div>
                 )}
-                <div className="flex flex-row items-center w-full px-1">
+                <div className="flex flex-row items-center w-full px-1 flex-wrap md:flex-nowrap gap-y-2">
                   <Button
                     variant="ghost"
                     onClick={() => fileInputRef.current?.click()}
@@ -636,7 +636,7 @@ export function FxGuruLanding() {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     disabled={isLoading || !!selectedFile}
-                    className="flex-1 bg-transparent border-none outline-none px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:ring-0 disabled:opacity-50"
+                    className="flex-1 min-w-0 bg-transparent border-none outline-none px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:ring-0 disabled:opacity-50"
                     onKeyDown={handleKeyPress}
                   />
                   <Button
@@ -958,7 +958,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
                 </button>
               </div>
             )}
-            <div className="relative flex flex-row items-center border border-input rounded-2xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary bg-background shadow-xs transition-all duration-200 pr-2 py-1">
+            <div className="relative flex flex-row items-center flex-wrap md:flex-nowrap gap-y-2 border border-input rounded-2xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary bg-background shadow-xs transition-all duration-200 pr-2 py-1">
               <Button
                 variant="ghost"
                 onClick={() => fileInputRef.current?.click()}
@@ -978,7 +978,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
                 placeholder={selectedFile ? "File uploaded." : "Ask a follow-up question..."}
-                className="flex-1 min-h-[40px] p-2 bg-transparent text-sm border-none outline-none focus:ring-0 disabled:opacity-50"
+                className="flex-1 min-w-0 min-h-[40px] p-2 bg-transparent text-sm border-none outline-none focus:ring-0 disabled:opacity-50"
                 disabled={isLoading || !!selectedFile}
               />
               <Button

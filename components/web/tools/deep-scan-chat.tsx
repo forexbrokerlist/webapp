@@ -178,7 +178,7 @@ export function DeepScanChat() {
   const fetchHistory = useCallback(async () => {
     setHistoryLoading(true)
     try {
-      const response = await apiClient.get(`${DEEP_SCAN_MC_PATH}/history?create_by=${userId}&page=1&limit=50`)
+      const response = await apiClient.get(`${DEEP_SCAN_MC_PATH}/history?created_by=${userId}&page=1&limit=50`)
       if (response.data?.data?.history) {
         setHistory(response.data.data.history)
       }
@@ -237,7 +237,7 @@ export function DeepScanChat() {
         // Increasing wait time
         await new Promise(resolve => setTimeout(resolve, 3000 + attempts * 1000))
         
-        const response = await apiClient.get(`${DEEP_SCAN_MC_PATH}/history?create_by=${userId}&page=1&limit=50`)
+        const response = await apiClient.get(`${DEEP_SCAN_MC_PATH}/history?created_by=${userId}&page=1&limit=50`)
         const historyList = response.data?.data?.history || response.data?.history || response.data?.data || []
         const result = Array.isArray(historyList) ? historyList.find((s: any) => s.task_id === taskId) : null
 
@@ -407,7 +407,7 @@ export function DeepScanChat() {
       const payload = {
         query: query.trim(),
         model: selectedModel,
-        create_by: userId,
+        created_by: userId,
         use_async: true,
       }
 
@@ -754,7 +754,7 @@ export function DeepScanChat() {
 
               {/* Input Area */}
               <div className="w-full max-w-[800px] mb-8">
-                <div className="relative flex flex-col md:flex-row items-center p-2 rounded-2xl md:rounded-[20px] border border-blue-400/30 dark:border-border bg-white dark:bg-background shadow-xs transition-all focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10">
+                <div className="relative flex flex-row items-center flex-wrap md:flex-nowrap p-2 rounded-2xl md:rounded-[20px] border border-blue-400/30 dark:border-border bg-white dark:bg-background shadow-xs transition-all focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10">
                   <input
                     type="text"
                     placeholder="Dig deeper. Win smarter."
@@ -765,7 +765,7 @@ export function DeepScanChat() {
                     onKeyDown={handleKeyPress}
                   />
 
-                  <div className="flex items-center gap-2 w-full md:w-auto px-2 pb-2 md:p-0 border-t border-border mt-2 pt-2 md:border-0 md:mt-0">
+                  <div className="flex items-center gap-2 w-full md:w-auto px-2 pb-1 md:p-0 mt-1 md:mt-0">
                     <Select value={selectedModel} onValueChange={setSelectedModel}>
                       <SelectTrigger className="w-auto min-w-[120px] rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-muted/50 h-[44px] shadow-none flex justify-between px-3">
                         <SelectValue placeholder="Mode">
