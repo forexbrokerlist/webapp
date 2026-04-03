@@ -542,63 +542,64 @@ export function ContentPanel({
           </div> */}
         </div>
       </div>
-{
-  isLoading?(
-<div className="flex-1 overflow-y-auto w-full">
-        <div className="p-6" ref={scrollContentRef}>
-          <Card className="border-0 shadow-none bg-transparent">
-            <div className="p-0">
-              <div className="prose text-base markdown-text prose-sm max-w-none dark:prose-invert">
-                  <div className="flex flex-col items-center justify-center min-h-[70vh] py-12 px-4 text-center animate-in fade-in zoom-in duration-700">
-                    <div className="relative mb-6">
-                      <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full animate-pulse" />
-                      <div className="relative bg-linear-to-b from-blue-500/10 to-transparent p-6 rounded-full border border-blue-500/10">
-                        <Loader2 className="h-12 w-12 text-blue-500 animate-spin" strokeWidth={1.5} />
-                      </div>
-                    </div>
-                    <h4 className="text-xl md:text-2xl font-bold text-foreground mb-3 tracking-tight">Query Processing In Progress</h4>
-                    <p className="text-muted-foreground max-w-sm text-sm md:text-base leading-relaxed mb-8">
-                       AI agents are actively scanning multiple market data sources to provide you with accurate insights. This comprehensive analysis may take a few moments...
-                    </p>
-                    <div className="flex items-center justify-center gap-3">
-                      <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.3s]"></div>
-                      <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.15s]"></div>
-                      <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce"></div>
-                    </div>
-                  </div>
-  
-    {/* Content Area */}
-      
-                ) : rawResponse ? (
-                  <StructuredMarketAnalysis data={rawResponse} />
-                ) : fullReport ? (
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {fullReport}
-                  </ReactMarkdown>
-                ) : (
-                  <div className="flex flex-col items-center justify-center min-h-[70vh] py-20 px-4 text-center animate-in fade-in zoom-in duration-700">
-                    <div className="relative mb-8">
-                      <div className="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full" />
-                      <div className="relative bg-linear-to-b from-indigo-500/10 to-transparent p-8 rounded-full border border-indigo-500/10">
-                        <FileText className="h-16 w-16 text-indigo-500/40" strokeWidth={1} />
-                      </div>
-                    </div>
-                    <h4 className="text-2xl font-bold text-foreground mb-3 tracking-tight">Ready for Analysis</h4>
-                    <p className="text-muted-foreground max-w-sm text-base leading-relaxed">
-                      Enter a query in the chat and select a model to start a Deep Scan. Our AI will research and generate a comprehensive report for you.
-                    </p>
-                    <div className="mt-8 flex gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/40"></div>
-                      <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/20"></div>
-                      <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/10"></div>
-                    </div>
-                  </div>
-                )}
+      {isLoading ? (
+        <div className="flex-1 flex flex-col items-center justify-center w-full z-10" ref={scrollContentRef}>
+          <div className="flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in duration-700">
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full animate-pulse" />
+              <div className="relative bg-linear-to-b from-blue-500/10 to-transparent p-6 rounded-full border border-blue-500/10">
+                <Loader2 className="h-12 w-12 text-blue-500 animate-spin" strokeWidth={1.5} />
               </div>
             </div>
-          </Card>
+            <h4 className="text-xl md:text-2xl font-bold text-foreground mb-3 tracking-tight">Query Processing In Progress</h4>
+            <p className="text-muted-foreground max-w-sm text-sm md:text-base leading-relaxed mb-8 mx-auto">
+               AI agents are actively scanning multiple market data sources to provide you with accurate insights. This comprehensive analysis may take a few moments...
+            </p>
+            <div className="flex items-center justify-center gap-3">
+              <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.3s]"></div>
+              <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.15s]"></div>
+              <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce"></div>
+            </div>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex-1 overflow-y-auto w-full">
+          <div className="p-6" ref={scrollContentRef}>
+            <Card className="border-0 shadow-none bg-transparent">
+              <div className="p-0">
+                <div className="prose text-base markdown-text prose-sm max-w-none dark:prose-invert">
+                  {/* Content Area */}
+                  {rawResponse ? (
+                    <StructuredMarketAnalysis data={rawResponse} />
+                  ) : fullReport ? (
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {fullReport}
+                    </ReactMarkdown>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center min-h-[70vh] py-20 px-4 text-center animate-in fade-in zoom-in duration-700">
+                      <div className="relative mb-8">
+                        <div className="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full" />
+                        <div className="relative bg-linear-to-b from-indigo-500/10 to-transparent p-8 rounded-full border border-indigo-500/10">
+                          <FileText className="h-16 w-16 text-indigo-500/40" strokeWidth={1} />
+                        </div>
+                      </div>
+                      <h4 className="text-2xl font-bold text-foreground mb-3 tracking-tight">Ready for Analysis</h4>
+                      <p className="text-muted-foreground max-w-sm text-base leading-relaxed">
+                        Enter a query in the chat and select a model to start a Deep Scan. Our AI will research and generate a comprehensive report for you.
+                      </p>
+                      <div className="mt-8 flex gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/40"></div>
+                        <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/20"></div>
+                        <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/10"></div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
