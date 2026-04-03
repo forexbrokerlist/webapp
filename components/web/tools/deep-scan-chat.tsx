@@ -623,7 +623,9 @@ export function DeepScanChat() {
                       </AccordionItem>
                     </Accordion>
                   )}
-                  {history.map((scan) => (
+                  {history
+                    .filter(scan => !(currentProcessing && (scan.status === 'in_progress' || scan.status === 'pending') && scan.question === currentProcessing.query))
+                    .map((scan) => (
                     <div
                       key={scan.task_id}
                       className={`relative group w-full p-0 rounded-xl border transition-all text-sm overflow-hidden ${activeScan?.task_id === scan.task_id
