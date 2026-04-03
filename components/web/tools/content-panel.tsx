@@ -73,13 +73,15 @@ export function ContentPanel({
     report += '           FOREX MARKET ANALYSIS REPORT\n'
     report += '='.repeat(60) + '\n\n'
 
-    const formatDate = () => new Date().toLocaleString('en-US', {
+    const formatDate = () => new Date().toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      hour12: false
     })
 
     report += `Generated on: ${formatDate()}\n`

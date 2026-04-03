@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import { Send, Loader2, PanelLeftClose, PanelLeft, Plus, Trash2, ChevronUp, Check, MoreVertical } from "lucide-react"
 import { Button } from "~/components/common/button"
 import { motion, AnimatePresence } from "framer-motion"
+import { useSession } from "~/lib/auth-client"
+import { useRouter } from "next/navigation"
 import { apiClient, getSignedToken } from "~/lib/api-client"
 import { ContentPanel } from "./content-panel"
 import {
@@ -73,9 +75,19 @@ const Template_INFO = [
 ]
 
 export function DeepScanChat() {
+  const { data: session, isPending } = useSession()
+  const router = useRouter()
+  const userId = session?.user?.id || "User"
+
   const [history, setHistory] = useState<ScanItem[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.push("/auth/login")
+    }
+  }, [session, isPending, router])
 
   const [activeScan, setActiveScan] = useState<ScanItem | null>(null)
   const [currentProcessing, setCurrentProcessing] = useState<QueryProcessing | null>(null)
@@ -166,7 +178,7 @@ export function DeepScanChat() {
   const fetchHistory = useCallback(async () => {
     setHistoryLoading(true)
     try {
-      const response = await apiClient.get(`${DEEP_SCAN_MC_PATH}/history?created_by=User&page=1&limit=50`)
+      const response = await apiClient.get(`${DEEP_SCAN_MC_PATH}/history?create_by=${userId}&page=1&limit=50`)
       if (response.data?.data?.history) {
         setHistory(response.data.data.history)
       }
@@ -175,7 +187,7 @@ export function DeepScanChat() {
     } finally {
       setHistoryLoading(false)
     }
-  }, [])
+  }, [userId])
 
   const handleProcessingComplete = useCallback(async (data: any, query: string) => {
     const taskResponse = data.data || data
@@ -225,7 +237,7 @@ export function DeepScanChat() {
         // Increasing wait time
         await new Promise(resolve => setTimeout(resolve, 3000 + attempts * 1000))
         
-        const response = await apiClient.get(`${DEEP_SCAN_MC_PATH}/history?created_by=User&page=1&limit=50`)
+        const response = await apiClient.get(`${DEEP_SCAN_MC_PATH}/history?create_by=${userId}&page=1&limit=50`)
         const historyList = response.data?.data?.history || response.data?.history || response.data?.data || []
         const result = Array.isArray(historyList) ? historyList.find((s: any) => s.task_id === taskId) : null
 
@@ -395,7 +407,7 @@ export function DeepScanChat() {
       const payload = {
         query: query.trim(),
         model: selectedModel,
-        created_by: "User",
+        create_by: userId,
         use_async: true,
       }
 

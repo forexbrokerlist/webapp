@@ -11,12 +11,23 @@ import {
 import { motion } from "framer-motion";
 import { useToast } from "@/components/web/ui/use-toast";
 import React from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "~/lib/auth-client";
 import { apiClient, createApiClient } from "~/lib/api-client";
 
 // Create API client instance for FormData requests (no Content-Type header)
 const formDataApiClient = createApiClient('https://gaylene-levo-unremittingly.ngrok-free.dev/trade-snap');
 
 function Dashboard() {
+  const { data: session, isPending } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.push("/auth/login");
+    }
+  }, [session, isPending, router]);
+
   const [isSharing, setIsSharing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -24,6 +35,9 @@ function Dashboard() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [showSnapshot, setShowSnapshot] = useState(false);
+
+  if (isPending || !session) return null;
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [allAnalyses, setAllAnalyses] = useState<{ data: any[]; timestamp: string }[]>([]);
