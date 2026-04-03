@@ -725,18 +725,7 @@ export function DeepScanChat() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col bg-white dark:bg-card rounded-2xl md:rounded-[24px] shadow-sm border border-border overflow-hidden relative">
-        <div className="absolute top-4 left-4 z-20">
-          {!isSidebarOpen && (
-            <Button
-              variant="secondary"
-              onClick={() => setIsSidebarOpen(true)}
-              className="w-10 h-10 rounded-xl bg-background border-border shadow-xs p-0 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted"
-              title="Open Sidebar"
-            >
-              <PanelLeft className="w-5 h-5" />
-            </Button>
-          )}
-        </div>
+
 
         {!activeScan && !currentProcessing ? (
           // Landing View
@@ -818,23 +807,35 @@ export function DeepScanChat() {
         ) : (
           // Active Scan View (Playground)
           <div className="flex-1 w-full h-full flex flex-col relative bg-background">
-            <div className="p-5 md:p-6 border-b border-border bg-card">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="px-2 py-1 text-[10px] font-bold bg-muted text-muted-foreground rounded-md uppercase tracking-wider">
-                  {Model_List.find(m => m.Value === (activeScan?.model_used || currentProcessing?.model))?.Name || "MODEL"}
-                </span>
-                <span className="text-[11px] text-muted-foreground">
-                  {activeScan?.created_at ? new Date(activeScan.created_at).toLocaleString() : 'Processing...'}
-                </span>
-                {activeScan && (
-                  <span className="px-2 py-1 text-[10px] font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-md uppercase tracking-wider ml-auto">
-                    {activeScan.status.replace("_", " ")}
+            <div className="p-4 md:p-6 border-b border-border bg-card flex items-start gap-4">
+              {!isSidebarOpen && (
+                <Button
+                  variant="secondary"
+                  onClick={() => setIsSidebarOpen(true)}
+                  className="w-10 h-10 rounded-xl bg-background border-border shadow-xs p-0 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted shrink-0 mt-0.5"
+                  title="Open Sidebar"
+                >
+                  <PanelLeft className="w-5 h-5" />
+                </Button>
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center flex-wrap gap-x-3 gap-y-1.5 mb-2">
+                  <span className="px-2 py-1 text-[10px] font-bold bg-muted text-muted-foreground rounded-md uppercase tracking-wider">
+                    {Model_List.find(m => m.Value === (activeScan?.model_used || currentProcessing?.model))?.Name || "MODEL"}
                   </span>
-                )}
+                  <span className="text-[11px] text-muted-foreground">
+                    {activeScan?.created_at ? new Date(activeScan.created_at).toLocaleString() : 'Processing...'}
+                  </span>
+                  {activeScan && (
+                    <span className="px-2 py-1 text-[10px] font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-md uppercase tracking-wider ml-auto whitespace-nowrap">
+                      {activeScan.status}
+                    </span>
+                  )}
+                </div>
+                <h2 className="text-lg md:text-xl font-bold text-foreground leading-snug break-words">
+                  {activeScan?.question || currentProcessing?.query}
+                </h2>
               </div>
-              <h2 className="text-lg md:text-xl font-bold text-foreground leading-snug">
-                {activeScan?.question || currentProcessing?.query}
-              </h2>
             </div>
 
             <div className="flex-1 overflow-y-auto w-full relative">
