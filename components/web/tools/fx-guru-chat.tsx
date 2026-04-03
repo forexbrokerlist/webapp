@@ -36,7 +36,7 @@ const renderSection = (title: string, content: any) => ({ title, content })
 const formatToIST = (date: Date | string) => {
   const d = typeof date === "string" ? new Date(date) : date
   return d.toLocaleTimeString("en-IN", {
-    timeZone: "Asia/Kolkata",
+    timeZone: "UTC",
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
@@ -102,7 +102,7 @@ const formatResponseContent = (response: any): any => {
 }
 
 const buildAssistantMessage = (resultData: any, hasFile: boolean): Message => {
-  const lastChat = resultData.chats?.[resultData.chats?.length - 1]
+  const lastChat = resultData.chats?.[resultData.chats?.length - 1] || resultData.chats?.[0]
   const rawResponse = lastChat?.response || resultData.answer || resultData.response?.short_response || resultData.response || {}
   const fullReport = resultData.deep_research_answer || resultData.full_report || resultData.answer || {}
   const contentSections = formatResponseContent(rawResponse)
@@ -110,11 +110,12 @@ const buildAssistantMessage = (resultData: any, hasFile: boolean): Message => {
     typeof fullReport === "string"
       ? [{ title: "Report", content: fullReport }]
       : formatResponseContent(fullReport)
+
   return {
     id: (Date.now() + 1).toString(),
     content: contentSections,
     sender: "assistant",
-    timestamp: formatToIST(new Date()),
+    timestamp: formatToIST(lastChat?.time || resultData.time || new Date()),
     short_response: contentSections,
     full_report: reportSections,
     type: hasFile ? "image" : "text",
@@ -514,6 +515,10 @@ export function FxGuruLanding() {
           resultData.chats?.[0]?.chat_id ||
           Date.now().toString()
 
+        // Update user message timestamp if backend time is available
+        const assistantTime = resultData.chats?.[0]?.time || resultData.time || new Date()
+        userMessage.timestamp = formatToIST(assistantTime)
+
         const storageKey = `fx-guru-${session.user.id}-${conversationId}`
         localStorage.setItem(storageKey, JSON.stringify([userMessage, assistantMessage]))
 
@@ -578,7 +583,7 @@ export function FxGuruLanding() {
                   </div>
                 </div>
                 <Card className="pt-20 pb-6 px-6 text-center shadow-xl w-full border-white/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-[32px] min-h-[220px]">
-                  <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400 mb-3 leading-tight">Turn Charts Into Actionable Insights</h3>
+                  <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400 mb-3  leading-tight">Turn Charts Into Actionable Insights</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed px-2">
                     Instantly Turn Raw Charts Into Clear, Actionable Trade Insights With AI That Identifies Trends, Key Levels, Market Structure, And High-Probability Setups.
                   </p>
@@ -829,13 +834,23 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
         const resultData = data.data || data
         const assistantMessage = buildAssistantMessage(resultData, hasFile)
         setMessages((prev) => {
-          const updated = [...prev, assistantMessage]
+          // Update the last user message's timestamp with the backend time
+          const updated = [...prev]
+          const lastUserIndex = updated.map(m => m.sender).lastIndexOf("user")
+          const assistantTime = resultData.chats?.[0]?.time || resultData.time || new Date()
+          
+          if (lastUserIndex !== -1) {
+            updated[lastUserIndex] = { ...updated[lastUserIndex], timestamp: formatToIST(assistantTime) }
+          }
+          
+          const finalMessages = [...updated, assistantMessage]
+          
           // Sync to localStorage
           if (session?.user?.id && chatId) {
             const storageKey = `fx-guru-${session.user.id}-${chatId}`
-            localStorage.setItem(storageKey, JSON.stringify(updated))
+            localStorage.setItem(storageKey, JSON.stringify(finalMessages))
           }
-          return updated
+          return finalMessages
         })
 
         if (resultData.conversation_id && resultData.session_id) {
