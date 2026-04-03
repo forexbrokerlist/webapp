@@ -495,7 +495,7 @@ export function DeepScanChat() {
   }
 
   return (
-    <div className="flex-1 w-full flex bg-[#eef2f6] dark:bg-background p-2 md:p-4 gap-4 overflow-hidden relative min-h-[calc(100vh-174px-var(--header-height))]">
+    <div className="flex-1 w-full flex bg-[#eef2f6] dark:bg-background p-2 md:p-4 gap-4 overflow-hidden relative min-h-[calc(100vh-80px-var(--header-height))] max-h-[calc(100vh-80px-var(--header-height))]">
       {/* Left Sidebar */}
       <AnimatePresence initial={false}>
         {isSidebarOpen && (
@@ -530,75 +530,77 @@ export function DeepScanChat() {
               <div className="h-px bg-border flex-1"></div>
             </div>
 
-            {/* Processing History Accordion */}
-            {currentProcessing && (
-              <div className="px-3 lg:px-4 pb-2">
-                <Accordion type="single" value={currentProcessing.isExpanded ? "processing" : ""} className="w-full">
-                  <AccordionItem value="processing" className="border border-border rounded-xl bg-white dark:bg-card shadow-sm">
-                    <AccordionTrigger className="px-3 py-2 hover:no-underline">
-                      <div className="flex items-center gap-2 overflow-hidden w-full">
-                        <ChevronUp className="w-3 h-3 text-muted-foreground shrink-0" />
-                        <span className="text-xs font-medium text-foreground truncate flex-1">
-                          {currentProcessing.query}
-                        </span>
-                      </div>
-                    </AccordionTrigger>
-                     <AccordionContent className="px-3 pb-3">
-                      <div className="flex items-center gap-2 mb-3 px-1">
-                        <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold">Research Model:</span>
-                        <span className="px-1.5 py-0.5 text-[8px] font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-md uppercase tracking-wider">
-                          {Model_List.find(m => m.Value === currentProcessing.model)?.Name || "CORE"}
-                        </span>
-                      </div>
-                      <div 
-                        className="space-y-2 max-h-[160px] overflow-y-auto pr-1 scroll-smooth"
-                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                      >
-                        <style dangerouslySetInnerHTML={{__html: `
-                          .no-scrollbar::-webkit-scrollbar { display: none; }
-                        `}} />
-                        <div className="no-scrollbar space-y-2">
-                          {currentProcessing.steps.map((step) => (
-                            <div key={step.id} className="flex items-center gap-2">
-                              <div className={`shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${
-                                step.status === 'completed' ? 'border-white/20' : 
-                                step.status === 'in_progress' ? 'border-blue-600/50' : 
-                                'border-border'
-                              }`}>
-                                {step.status === 'completed' ? (
-                                  <Check className="w-2.5 h-2.5 text-white" />
-                                ) : step.status === 'in_progress' ? (
-                                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" />
-                                ) : (
-                                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
-                                )}
-                              </div>
-                              <span className={`text-[11px] transition-colors ${
-                                step.status === 'completed' ? 'text-white font-normal' : 
-                                step.status === 'in_progress' ? 'text-blue-600 font-medium' : 
-                                'text-muted-foreground/40'
-                              }`}>
-                                {step.text}
-                              </span>
-                            </div>
-                          ))}
-                          <div ref={stepsEndRef} />
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </div>
-            )}
-
-            <div className="flex-1 p-3 lg:p-4 overflow-y-auto">
+            <div className="flex-1 p-3 lg:p-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {historyLoading ? (
                 <div className="flex flex-col items-center justify-center h-full gap-3 text-muted-foreground">
                   <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
                   <span className="text-sm">Loading history...</span>
                 </div>
-              ) : history.length > 0 ? (
+              ) : history.length > 0 || currentProcessing ? (
                 <div className="flex flex-col gap-2">
+                  {/* Processing History Accordion */}
+                  {currentProcessing && (
+                    <Accordion 
+                      type="single" 
+                      collapsible
+                      value={currentProcessing.isExpanded ? "processing" : ""}
+                      onValueChange={(val) => setCurrentProcessing(prev => prev ? { ...prev, isExpanded: !!val } : null)} 
+                      className="w-full shrink-0"
+                    >
+                      <AccordionItem value="processing" className="border border-border rounded-xl bg-white dark:bg-card shadow-sm">
+                        <AccordionTrigger className="px-3 py-2 hover:no-underline [&>svg]:w-4 [&>svg]:h-4">
+                          <div className="flex items-center gap-2 overflow-hidden w-full">
+                            <span className="text-xs font-medium text-foreground truncate flex-1" title={currentProcessing.query}>
+                              {currentProcessing.query?.length > 26 ? currentProcessing.query.substring(0, 26) + "..." : currentProcessing.query}
+                            </span>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-3 pb-3">
+                          <div className="flex items-center gap-2 mb-3 px-1">
+                            <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold">Research Model:</span>
+                            <span className="px-1.5 py-0.5 text-[8px] font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-md uppercase tracking-wider">
+                              {Model_List.find(m => m.Value === currentProcessing.model)?.Name || "CORE"}
+                            </span>
+                          </div>
+                          <div 
+                            className="space-y-2 max-h-[160px] overflow-y-auto pr-1 scroll-smooth"
+                            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                          >
+                            <style dangerouslySetInnerHTML={{__html: `
+                              .no-scrollbar::-webkit-scrollbar { display: none; }
+                            `}} />
+                            <div className="no-scrollbar space-y-2">
+                              {currentProcessing.steps.map((step) => (
+                                <div key={step.id} className="flex items-center gap-2">
+                                  <div className={`shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${
+                                    step.status === 'completed' ? 'border-white/20' : 
+                                    step.status === 'in_progress' ? 'border-blue-600/50' : 
+                                    'border-border'
+                                  }`}>
+                                    {step.status === 'completed' ? (
+                                      <Check className="w-2.5 h-2.5 text-white" />
+                                    ) : step.status === 'in_progress' ? (
+                                      <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" />
+                                    ) : (
+                                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
+                                    )}
+                                  </div>
+                                  <span className={`text-[11px] transition-colors ${
+                                    step.status === 'completed' ? 'text-white font-normal' : 
+                                    step.status === 'in_progress' ? 'text-blue-600 font-medium' : 
+                                    'text-muted-foreground/40'
+                                  }`}>
+                                    {step.text}
+                                  </span>
+                                </div>
+                              ))}
+                              <div ref={stepsEndRef} />
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  )}
                   {history.map((scan) => (
                     <div
                       key={scan.task_id}
@@ -614,7 +616,9 @@ export function DeepScanChat() {
                         }}
                         className="w-full text-left p-3 pr-10"
                       >
-                        <div className="font-medium text-foreground truncate mb-1">{scan.question}</div>
+                        <div className="font-medium text-foreground truncate mb-1" title={scan.question}>
+                          {scan.question?.length > 26 ? scan.question.substring(0, 26) + "..." : scan.question}
+                        </div>
                         <div className="text-[10px] text-muted-foreground uppercase flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-500 block"></span>
                           {scan.status.replace("_", " ")}
@@ -642,7 +646,7 @@ export function DeepScanChat() {
                     </div>
                   ))}
                 </div>
-              ) : currentProcessing ? null : (
+              ) : (
                 <div className="h-full border border-blue-100 dark:border-border rounded-[20px] flex flex-col items-center p-6 text-center mt-2 mx-1 shadow-xs bg-linear-to-b from-transparent to-blue-50/20 dark:to-transparent">
                   <div className="mb-4 mt-8 relative">
                     <div className="relative z-10 w-16 h-16 rounded-full border-[1.5px] border-blue-400 bg-white dark:bg-background flex items-center justify-center shadow-sm">
