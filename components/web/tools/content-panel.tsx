@@ -73,13 +73,15 @@ export function ContentPanel({
     report += '           FOREX MARKET ANALYSIS REPORT\n'
     report += '='.repeat(60) + '\n\n'
 
-    const formatDate = () => new Date().toLocaleString('en-US', {
+    const formatDate = () => new Date().toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      hour12: false
     })
 
     report += `Generated on: ${formatDate()}\n`
@@ -516,7 +518,7 @@ export function ContentPanel({
   }
 
   return (
-    <div className="flex-1 bg-background sm:bg-card/30 border-l border-border h-full min-h-[calc(100vh-(174px+var(--header-height)))] max-h-[calc(100vh-(174px+var(--header-height)))] overflow-hidden flex flex-col">
+    <div className="flex-1 bg-background sm:bg-card/30 border-l border-border h-full min-h-[calc(100vh-(80px+var(--header-height)))] max-h-[calc(100vh-(80px+var(--header-height)))] overflow-hidden flex flex-col">
       {/* Sticky Action Bar */}
       <div className="sticky top-0 z-20 p-5 border-b border-border/60 bg-background/60 backdrop-blur-2xl shadow-sm">
         <div className="flex items-center justify-between">
@@ -528,7 +530,7 @@ export function ContentPanel({
               <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest mt-0.5">Comprehensive Forex Insights</p>
             )}
           </div>
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <Button
               variant="fancy"
               size="sm"
@@ -539,55 +541,67 @@ export function ContentPanel({
             >
               Export Report
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
-
-      {/* Content Area */}
-      <div className="flex-1 overflow-y-auto w-full">
-        <div className="p-6" ref={scrollContentRef}>
-          <Card className="border-0 shadow-none bg-transparent">
-            <div className="p-0">
-              <div className="prose text-base markdown-text prose-sm max-w-none dark:prose-invert">
-                {isLoading ? (
-                  <div className="animate-pulse">
-                    <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded w-3/4 mb-4"></div>
-                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-full mb-2"></div>
-                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-5/6 mb-2"></div>
-                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-2/3 mb-2"></div>
-                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/2 mb-2"></div>
-                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4 mb-2"></div>
-                  </div>
-                ) : rawResponse ? (
-                  <StructuredMarketAnalysis data={rawResponse} />
-                ) : fullReport ? (
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {fullReport}
-                  </ReactMarkdown>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-20 px-4 text-center animate-in fade-in zoom-in duration-700">
-                    <div className="relative mb-8">
-                      <div className="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full" />
-                      <div className="relative bg-linear-to-b from-indigo-500/10 to-transparent p-8 rounded-full border border-indigo-500/10">
-                        <FileText className="h-16 w-16 text-indigo-500/40" strokeWidth={1} />
-                      </div>
-                    </div>
-                    <h4 className="text-2xl font-bold text-foreground mb-3 tracking-tight">Ready for Analysis</h4>
-                    <p className="text-muted-foreground max-w-sm text-base leading-relaxed">
-                      Select a currency pair in the chat and ask FxGURU for any market insights or professional analysis reports.
-                    </p>
-                    <div className="mt-8 flex gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/40"></div>
-                      <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/20"></div>
-                      <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/10"></div>
-                    </div>
-                  </div>
-                )}
+      {isLoading ? (
+        <div className="flex-1 flex flex-col items-center justify-center w-full z-10" ref={scrollContentRef}>
+          <div className="flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in duration-700">
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full animate-pulse" />
+              <div className="relative bg-linear-to-b from-blue-500/10 to-transparent p-6 rounded-full border border-blue-500/10">
+                <Loader2 className="h-12 w-12 text-blue-500 animate-spin" strokeWidth={1.5} />
               </div>
             </div>
-          </Card>
+            <h4 className="text-xl md:text-2xl font-bold text-foreground mb-3 tracking-tight">Query Processing In Progress</h4>
+            <p className="text-muted-foreground max-w-sm text-sm md:text-base leading-relaxed mb-8 mx-auto">
+               AI agents are actively scanning multiple market data sources to provide you with accurate insights. This comprehensive analysis may take a few moments...
+            </p>
+            <div className="flex items-center justify-center gap-3">
+              <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.3s]"></div>
+              <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.15s]"></div>
+              <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce"></div>
+            </div>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex-1 overflow-y-auto w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="p-6" ref={scrollContentRef}>
+            <Card className="border-0 shadow-none bg-transparent">
+              <div className="p-0">
+                <div className="prose text-base markdown-text prose-sm max-w-none dark:prose-invert">
+                  {/* Content Area */}
+                  {rawResponse ? (
+                    <StructuredMarketAnalysis data={rawResponse} />
+                  ) : fullReport ? (
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {fullReport}
+                    </ReactMarkdown>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center min-h-[70vh] py-20 px-4 text-center animate-in fade-in zoom-in duration-700">
+                      <div className="relative mb-8">
+                        <div className="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full" />
+                        <div className="relative bg-linear-to-b from-indigo-500/10 to-transparent p-8 rounded-full border border-indigo-500/10">
+                          <FileText className="h-16 w-16 text-indigo-500/40" strokeWidth={1} />
+                        </div>
+                      </div>
+                      <h4 className="text-2xl font-bold text-foreground mb-3 tracking-tight">Ready for Analysis</h4>
+                      <p className="text-muted-foreground max-w-sm text-base leading-relaxed">
+                        Enter a query in the chat and select a model to start a Deep Scan. Our AI will research and generate a comprehensive report for you.
+                      </p>
+                      <div className="mt-8 flex gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/40"></div>
+                        <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/20"></div>
+                        <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/10"></div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

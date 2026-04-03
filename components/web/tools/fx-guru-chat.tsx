@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Send, Loader2, FileText, User, Image as ImageIcon, X, ArrowLeft, MessageSquare, Plus, TrendingUp, Layers, Zap, Shield, Target, Activity } from "lucide-react"
+import { Send, Loader2, FileText, User, Image as ImageIcon, X, ArrowLeft, MessageSquare, Plus, TrendingUp, Layers, Zap, Shield, Target, Activity, Menu } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Button } from "~/components/common/button"
 import { Avatar, AvatarFallback } from "~/components/common/avatar"
@@ -32,6 +32,17 @@ const STOCK_GURU_MC_PATH = "/stock-guru/api/v1"
 // ─────────────────────────────────────────────────────────
 
 const renderSection = (title: string, content: any) => ({ title, content })
+
+const formatToIST = (date: Date | string) => {
+  const d = typeof date === "string" ? new Date(date) : date
+  return d.toLocaleTimeString("en-IN", {
+    timeZone: "UTC",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  })
+}
 
 const formatResponseContent = (response: any): any => {
   if (typeof response === "string") {
@@ -91,7 +102,7 @@ const formatResponseContent = (response: any): any => {
 }
 
 const buildAssistantMessage = (resultData: any, hasFile: boolean): Message => {
-  const lastChat = resultData.chats?.[resultData.chats?.length - 1]
+  const lastChat = resultData.chats?.[resultData.chats?.length - 1] || resultData.chats?.[0]
   const rawResponse = lastChat?.response || resultData.answer || resultData.response?.short_response || resultData.response || {}
   const fullReport = resultData.deep_research_answer || resultData.full_report || resultData.answer || {}
   const contentSections = formatResponseContent(rawResponse)
@@ -99,11 +110,12 @@ const buildAssistantMessage = (resultData: any, hasFile: boolean): Message => {
     typeof fullReport === "string"
       ? [{ title: "Report", content: fullReport }]
       : formatResponseContent(fullReport)
+
   return {
     id: (Date.now() + 1).toString(),
     content: contentSections,
     sender: "assistant",
-    timestamp: new Date().toLocaleTimeString(),
+    timestamp: formatToIST(lastChat?.time || resultData.time || new Date()),
     short_response: contentSections,
     full_report: reportSections,
     type: hasFile ? "image" : "text",
@@ -344,7 +356,7 @@ function MessageBubble({ message, onViewReport }: {
 // Sidebar component for chat history
 // ─────────────────────────────────────────────────────────
 
-export function FxGuruSidebar({ currentChatId }: { currentChatId?: string }) {
+export function FxGuruSidebar({ currentChatId, isOpen, onClose }: { currentChatId?: string, isOpen?: boolean, onClose?: () => void }) {
   const [chats, setChats] = useState<any[]>([])
   const router = useRouter()
 
@@ -353,37 +365,61 @@ export function FxGuruSidebar({ currentChatId }: { currentChatId?: string }) {
   }, [])
 
   return (
-    <div className="hidden md:flex flex-col w-64 border-r border-border bg-card/50 h-full overflow-hidden shrink-0 z-10 relative">
-      <div className="p-3 border-b border-border shrink-0">
-        <button
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors"
-          onClick={() => router.push('/fx-guru')}
-        >
-          <Plus className="h-4 w-4" />
-          New Chat
-        </button>
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 z-30 md:hidden backdrop-blur-[2px]"
+          onClick={onClose}
+        />
+      )}
+      
+      <div className={`
+        fixed inset-y-0 left-0 z-40 w-72 md:relative md:z-10 md:flex flex-col md:w-64 border-r border-border bg-card/50 h-full overflow-hidden shrink-0 transition-transform duration-300 ease-in-out
+        ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+      `}>
+        <div className="p-3 border-b border-border shrink-0 flex items-center justify-between">
+          <button
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors"
+            onClick={() => {
+              router.push('/fx-guru')
+              if (onClose) onClose()
+            }}
+          >
+            <Plus className="h-4 w-4" />
+            New Chat
+          </button>
+          {onClose && (
+            <Button variant="ghost" size="icon" className="md:hidden ml-2" onClick={onClose}>
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+        <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
+          <div className="text-[11px] font-semibold text-muted-foreground mb-2 px-2 uppercase tracking-wider">Recent</div>
+          {chats.length === 0 ? (
+            <div className="text-xs text-center text-muted-foreground p-4">No past chats.</div>
+          ) : (
+            chats.map(chat => (
+              <button
+                key={chat.id}
+                onClick={() => {
+                  router.push(`/fx-guru/${chat.conversationId}`)
+                  if (onClose) onClose()
+                }}
+                className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-[13px] text-left transition-colors ${currentChatId === chat.conversationId
+                  ? "bg-indigo-600/10 text-indigo-500 font-medium"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                  }`}
+              >
+                <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-60" />
+                <span className="truncate">{chat.title || "New Chat"}</span>
+              </button>
+            ))
+          )}
+        </div>
       </div>
-      <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
-        <div className="text-[11px] font-semibold text-muted-foreground mb-2 px-2 uppercase tracking-wider">Recent</div>
-        {chats.length === 0 ? (
-          <div className="text-xs text-center text-muted-foreground p-4">No past chats.</div>
-        ) : (
-          chats.map(chat => (
-            <button
-              key={chat.id}
-              onClick={() => router.push(`/fx-guru/${chat.conversationId}`)}
-              className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-[13px] text-left transition-colors ${currentChatId === chat.conversationId
-                ? "bg-indigo-600/10 text-indigo-500 font-medium"
-                : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
-                }`}
-            >
-              <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-60" />
-              <span className="truncate">{chat.title || "New Chat"}</span>
-            </button>
-          ))
-        )}
-      </div>
-    </div>
+    </>
   )
 }
 
@@ -399,6 +435,7 @@ export function FxGuruLanding() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewFile, setPreviewFile] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -411,6 +448,11 @@ export function FxGuruLanding() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0]
+      if (!file.type.startsWith('image/')) {
+        alert("Please upload an image file only (PNG, JPG, etc.).")
+        clearFile()
+        return
+      }
       setSelectedFile(file)
       setPreviewFile(URL.createObjectURL(file))
     }
@@ -435,7 +477,7 @@ export function FxGuruLanding() {
       id: Date.now().toString(),
       content: hasFile ? (selectedFile?.name || "Uploaded Image") : inputValue,
       sender: "user",
-      timestamp: new Date().toLocaleTimeString(),
+      timestamp: formatToIST(new Date()),
       image_url: previewFile || undefined,
       type: hasFile ? "image" : "text",
     }
@@ -473,6 +515,10 @@ export function FxGuruLanding() {
           resultData.chats?.[0]?.chat_id ||
           Date.now().toString()
 
+        // Update user message timestamp if backend time is available
+        const assistantTime = resultData.chats?.[0]?.time || resultData.time || new Date()
+        userMessage.timestamp = formatToIST(assistantTime)
+
         const storageKey = `fx-guru-${session.user.id}-${conversationId}`
         localStorage.setItem(storageKey, JSON.stringify([userMessage, assistantMessage]))
 
@@ -503,8 +549,8 @@ export function FxGuruLanding() {
   }
 
   return (
-    <div className="h-full flex flex-row w-full bg-muted/20 dark:bg-background overflow-hidden relative">
-      <FxGuruSidebar />
+    <div className="h-full flex flex-col md:flex-row w-full bg-muted/20 dark:bg-background overflow-hidden relative">
+      <FxGuruSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <div className="flex-1 w-full flex flex-col overflow-y-auto overflow-x-hidden relative">
         <motion.div
           className="w-full min-h-full flex flex-col justify-center items-center relative"
@@ -512,17 +558,24 @@ export function FxGuruLanding() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, type: "tween", ease: "easeInOut" }}
         >
-          <div className="flex-1 w-full flex flex-col items-center justify-center relative pt-8 p-4 max-w-5xl rounded-3xl overflow-hidden gap-6">
+          <div className="flex-1 w-full flex flex-col items-center md:justify-center relative pt-8 md:pt-12 p-4 max-w-5xl rounded-3xl gap-4 md:gap-6">
+            {/* Mobile Header Toggle */}
+            <div className="md:hidden absolute top-4 left-4 z-30">
+              <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(true)}>
+                <Menu className="h-5 w-5" />
+              </Button>
+            </div>
             <div className="absolute top-0 right-0 -mr-32 -mt-32 w-96 h-96 rounded-full bg-blue-300/40 mix-blend-multiply filter blur-3xl opacity-50 pointer-events-none dark:bg-blue-900/40" />
             <div className="absolute top-20 right-40 w-72 h-72 rounded-full bg-purple-300/30 mix-blend-multiply filter blur-3xl opacity-50 pointer-events-none dark:bg-purple-900/30" />
             <div className="absolute top-40 left-10 w-80 h-80 rounded-full bg-cyan-200/40 mix-blend-multiply filter blur-3xl opacity-50 pointer-events-none dark:bg-cyan-900/40" />
 
-            <div className="text-center pt-8 pb-4 flex flex-col items-center justify-center max-w-lg mx-auto z-20">
-              <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">Welcome to FXGuru</div>
-              <div className="text-lg text-muted-foreground mb-2">Stock insights are waiting. Talk to the FX Guru Assistant.</div>
+            <div className="text-center pt-12 md:pt-8 pb-4 flex flex-col items-center justify-center max-w-lg mx-auto z-20">
+              <div className="text-2xl md:text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-2 whitespace-nowrap">Welcome to FXGuru</div>
+              <div className="text-base md:text-lg text-muted-foreground mb-2 px-4">Stock insights are waiting. Talk to the FX Guru Assistant.</div>
             </div>
 
-            <Stack className="items-center justify-center flex-1 z-10 w-full" direction="row" size="lg" wrap={true}>
+            <Stack className="items-center justify-center flex-1 z-10 w-full mb-8 md:mb-0" direction="column" size="lg" wrap={true}>
+              <div className="flex flex-col md:flex-row gap-6 items-center justify-center w-full max-w-4xl">
               <div className="flex flex-col items-center max-w-[320px] w-full group">
                 <div className="relative z-20 -mb-16 transition-transform duration-500 group-hover:-translate-y-4">
                   <div className="w-40 h-44 bg-linear-to-br from-blue-700 to-indigo-900 rounded-t-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-slate-800">
@@ -530,7 +583,7 @@ export function FxGuruLanding() {
                   </div>
                 </div>
                 <Card className="pt-20 pb-6 px-6 text-center shadow-xl w-full border-white/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-[32px] min-h-[220px]">
-                  <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400 mb-3 leading-tight">Turn Charts Into Actionable Insights</h3>
+                  <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400 mb-3  leading-tight">Turn Charts Into Actionable Insights</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed px-2">
                     Instantly Turn Raw Charts Into Clear, Actionable Trade Insights With AI That Identifies Trends, Key Levels, Market Structure, And High-Probability Setups.
                   </p>
@@ -549,21 +602,25 @@ export function FxGuruLanding() {
                     Unlock Market Intelligence With The FXGuru Assistant — Ask Anything About Stocks, Analysis, Or Strategies And Get Expert-Level Insights In Seconds.
                   </p>
                 </Card>
+                </div>
               </div>
             </Stack>
 
             <div className="w-full max-w-3xl z-20 pb-12 mt-auto mx-auto px-4 align-bottom">
-              <div className="relative flex flex-col p-2 rounded-2xl border-2 border-indigo-200 dark:border-indigo-800/50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm transition-all focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-100 dark:focus-within:ring-indigo-900/30">
+              <div className="relative flex flex-col p-2 rounded-3xl border-2 border-indigo-500/20 dark:border-indigo-500/30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 focus-within:border-indigo-500 focus-within:shadow-[0_0_20px_rgba(99,102,241,0.2)] focus-within:ring-1 focus-within:ring-indigo-500">
                 {previewFile && (
-                  <div className="relative w-fit mb-2 ml-2">
+                  <div className="relative w-fit mb-3 ml-2 group animate-in zoom-in duration-200">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={previewFile} alt="Preview" className="h-20 w-auto rounded-lg object-cover border" />
-                    <button onClick={clearFile} className="absolute -top-2 -right-2 bg-background border border-border rounded-full p-1">
-                      <X className="w-3 h-3 text-muted-foreground" />
+                    <img src={previewFile} alt="Preview" className="h-24 md:h-32 w-auto rounded-2xl object-cover border-2 border-indigo-500/20 shadow-md" />
+                    <button 
+                      onClick={clearFile} 
+                      className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full p-1.5 shadow-lg hover:bg-red-600 transition-colors"
+                    >
+                      <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 )}
-                <div className="flex flex-row items-center w-full">
+                <div className="flex flex-row items-center w-full px-1 flex-wrap md:flex-nowrap gap-y-2">
                   <Button
                     variant="ghost"
                     onClick={() => fileInputRef.current?.click()}
@@ -584,7 +641,7 @@ export function FxGuruLanding() {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     disabled={isLoading || !!selectedFile}
-                    className="flex-1 bg-transparent border-none outline-none px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:ring-0 disabled:opacity-50"
+                    className="flex-1 min-w-0 bg-transparent border-none outline-none px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:ring-0 disabled:opacity-50"
                     onKeyDown={handleKeyPress}
                   />
                   <Button
@@ -622,6 +679,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   useEffect(() => {
     if (!isPending && !session) router.push("/auth/login")
@@ -677,12 +735,12 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
                 id: `user-${item.message_id}`,
                 content: item.question,
                 sender: "user",
-                timestamp: new Date(item.time).toLocaleTimeString(),
+                timestamp: formatToIST(item.time),
                 type: item.chat_type === "With_Image" ? "image" : "text",
               })
               const assistantMsg = buildAssistantMessage({ answer: item.response, response: item.response, chats: [item] }, false)
               assistantMsg.id = `assistant-${item.message_id}`
-              assistantMsg.timestamp = new Date(item.time).toLocaleTimeString()
+              assistantMsg.timestamp = formatToIST(item.time)
               loaded.push(assistantMsg)
             })
             setMessages(loaded)
@@ -710,6 +768,11 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0]
+      if (!file.type.startsWith('image/')) {
+        alert("Please upload an image file only (PNG, JPG, etc.).")
+        clearFile()
+        return
+      }
       setSelectedFile(file)
       setPreviewFile(URL.createObjectURL(file))
     }
@@ -732,7 +795,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
       id: Date.now().toString(),
       content: hasFile ? (selectedFile?.name || "Uploaded Image") : inputValue,
       sender: "user",
-      timestamp: new Date().toLocaleTimeString(),
+      timestamp: formatToIST(new Date()),
       image_url: previewFile || undefined,
       type: hasFile ? "image" : "text",
     }
@@ -771,13 +834,23 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
         const resultData = data.data || data
         const assistantMessage = buildAssistantMessage(resultData, hasFile)
         setMessages((prev) => {
-          const updated = [...prev, assistantMessage]
+          // Update the last user message's timestamp with the backend time
+          const updated = [...prev]
+          const lastUserIndex = updated.map(m => m.sender).lastIndexOf("user")
+          const assistantTime = resultData.chats?.[0]?.time || resultData.time || new Date()
+          
+          if (lastUserIndex !== -1) {
+            updated[lastUserIndex] = { ...updated[lastUserIndex], timestamp: formatToIST(assistantTime) }
+          }
+          
+          const finalMessages = [...updated, assistantMessage]
+          
           // Sync to localStorage
           if (session?.user?.id && chatId) {
             const storageKey = `fx-guru-${session.user.id}-${chatId}`
-            localStorage.setItem(storageKey, JSON.stringify(updated))
+            localStorage.setItem(storageKey, JSON.stringify(finalMessages))
           }
-          return updated
+          return finalMessages
         })
 
         if (resultData.conversation_id && resultData.session_id) {
@@ -796,7 +869,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
         id: (Date.now() + 1).toString(),
         content: "Sorry, I encountered an error while processing your request. Please try again.",
         sender: "assistant",
-        timestamp: new Date().toLocaleTimeString(),
+        timestamp: formatToIST(new Date()),
         type: "text",
       }
       setMessages((prev) => [...prev, errorMessage])
@@ -813,8 +886,8 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
   }
 
   return (
-    <div className="h-full w-full flex flex-row bg-background overflow-hidden">
-      <FxGuruSidebar currentChatId={chatId} />
+    <div className="h-full w-full flex flex-col md:flex-row bg-background overflow-hidden relative">
+      <FxGuruSidebar currentChatId={chatId} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <AnimatePresence mode="wait">
         <motion.div
           key="chat-detail"
@@ -829,13 +902,21 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
               <div className="flex items-center gap-3">
                 <Button
                   variant="ghost"
+                  size="icon"
+                  className="md:hidden text-muted-foreground mr-1"
+                  onClick={() => setIsSidebarOpen(true)}
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+                <Button
+                  variant="ghost"
                   size="sm"
-                  className="rounded-full w-9 h-9 p-0 text-muted-foreground hover:text-foreground"
+                  className="rounded-full w-8 h-8 md:w-9 md:h-9 p-0 text-muted-foreground hover:text-foreground"
                   onClick={() => router.push("/fx-guru")}
                 >
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
-                <div className="font-bold text-lg text-indigo-600 dark:text-indigo-400">FXGuru</div>
+                <div className="font-bold text-base md:text-lg text-indigo-600 dark:text-indigo-400">FXGuru</div>
               </div>
               <Button
                 variant="secondary"
@@ -881,19 +962,22 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
 
           <div className="p-4 bg-background border-t border-border z-10 shrink-0">
             {previewFile && (
-              <div className="relative w-fit mb-3">
+              <div className="relative w-fit mb-3 group animate-in zoom-in duration-200">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={previewFile} alt="Preview" className="h-16 w-auto rounded-lg object-cover border" />
-                <button onClick={clearFile} className="absolute -top-2 -right-2 bg-background border border-border rounded-full p-1 shadow-sm">
-                  <X className="w-3 h-3 text-muted-foreground" />
+                <img src={previewFile} alt="Preview" className="h-20 w-auto rounded-xl object-cover border-2 border-primary/20 shadow-sm" />
+                <button 
+                  onClick={clearFile} 
+                  className="absolute -top-2.5 -right-2.5 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors"
+                >
+                  <X className="w-3 h-3" />
                 </button>
               </div>
             )}
-            <div className="relative flex flex-row items-center border border-input rounded-xl focus-within:ring-1 focus-within:ring-primary focus-within:border-primary bg-background shadow-sm pr-2">
+            <div className="relative flex flex-row items-center flex-wrap md:flex-nowrap gap-y-2 border border-input rounded-2xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary bg-background shadow-xs transition-all duration-200 pr-2 py-1">
               <Button
                 variant="ghost"
                 onClick={() => fileInputRef.current?.click()}
-                className="rounded-full w-10 h-10 p-0 text-slate-500 hover:text-primary hover:bg-muted ml-1"
+                className="rounded-full w-9 h-9 p-0 text-slate-500 hover:text-primary hover:bg-primary/5 ml-1"
               >
                 <ImageIcon className="size-4" />
               </Button>
@@ -909,13 +993,13 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
                 placeholder={selectedFile ? "File uploaded." : "Ask a follow-up question..."}
-                className="flex-1 min-h-[40px] p-2 bg-transparent text-sm border-none outline-none focus:ring-0 disabled:opacity-50"
+                className="flex-1 min-w-0 min-h-[40px] p-2 bg-transparent text-sm border-none outline-none focus:ring-0 disabled:opacity-50"
                 disabled={isLoading || !!selectedFile}
               />
               <Button
                 onClick={handleSend}
                 size="sm"
-                className="h-8 w-8 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-transform active:scale-95 shrink-0"
+                className="h-9 w-9 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground transition-all active:scale-95 shrink-0 shadow-sm"
                 disabled={(!inputValue.trim() && !selectedFile) || isLoading}
               >
                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
