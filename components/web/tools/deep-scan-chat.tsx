@@ -88,6 +88,7 @@ export function DeepScanChat() {
   const [scanToDelete, setScanToDelete] = useState<string | null>(null)
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const stepsEndRef = useRef<HTMLDivElement>(null)
+  const hasAutoResumed = useRef(false)
 
   const stopPolling = useCallback(() => {
     if (pollIntervalRef.current) {
@@ -329,6 +330,27 @@ export function DeepScanChat() {
   useEffect(() => {
     fetchHistory()
   }, [fetchHistory])
+
+  useEffect(() => {
+    if (!hasAutoResumed.current && history.length > 0) {
+      const activeTask = history.find(s => s.status === 'in_progress' || s.status === 'pending')
+      if (activeTask && !currentProcessing && !activeScan) {
+        console.log("[DeepScan] Auto-resuming active task on load:", activeTask.task_id)
+        hasAutoResumed.current = true
+        setCurrentProcessing({
+          query: activeTask.question,
+          model: activeTask.model_used || "CORE",
+          steps: [{ id: "1", text: "Reconnecting to live progress...", status: "in_progress" }],
+          isExpanded: true
+        })
+        setActiveScan(null)
+        setIsLoading(true)
+        pollTaskStatus(activeTask.task_id, activeTask.question)
+      } else if (!activeTask) {
+        hasAutoResumed.current = true
+      }
+    }
+  }, [history, currentProcessing, activeScan, pollTaskStatus])
 
   const handleDeleteHistory = (taskId: string) => {
     setScanToDelete(taskId)
@@ -612,7 +634,21 @@ export function DeepScanChat() {
                       <button
                         onClick={() => {
                           stopPolling()
-                          setActiveScan(scan)
+                          if (scan.status === 'in_progress' || scan.status === 'pending') {
+                            setCurrentProcessing({
+                              query: scan.question,
+                              model: scan.model_used || "CORE",
+                              steps: [{ id: "1", text: "Reconnecting to live progress...", status: "in_progress" }],
+                              isExpanded: true
+                            })
+                            setActiveScan(null)
+                            setIsLoading(true)
+                            pollTaskStatus(scan.task_id, scan.question)
+                          } else {
+                            setActiveScan(scan)
+                            setCurrentProcessing(null)
+                            setIsLoading(false)
+                          }
                         }}
                         className="w-full text-left p-3 pr-10"
                       >
