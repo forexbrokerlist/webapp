@@ -589,30 +589,30 @@ export function DeepScanChat() {
                             </span>
                           </div>
                         </AccordionTrigger>
-                        <AccordionContent className="px-3 pb-3">
-                          <div className="flex items-center gap-2 mb-3 px-1">
+                        <AccordionContent className="px-3 pb-2">
+                          <div className="flex items-center gap-2 mb-2 px-1">
                             <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold">Research Model:</span>
                             <span className="px-1.5 py-0.5 text-[8px] font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-md uppercase tracking-wider">
                               {Model_List.find(m => m.Value === currentProcessing.model)?.Name || "CORE"}
                             </span>
                           </div>
                           <div 
-                            className="space-y-2 max-h-[160px] overflow-y-auto pr-1 scroll-smooth"
+                            className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1 scroll-smooth"
                             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                           >
                             <style dangerouslySetInnerHTML={{__html: `
                               .no-scrollbar::-webkit-scrollbar { display: none; }
                             `}} />
-                            <div className="no-scrollbar space-y-2">
+                            <div className="no-scrollbar space-y-1.5">
                               {currentProcessing.steps.map((step) => (
                                 <div key={step.id} className="flex items-center gap-2">
                                   <div className={`shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${
-                                    step.status === 'completed' ? 'border-white/20' : 
+                                    step.status === 'completed' ? 'border-blue-500/30 bg-blue-500/10' : 
                                     step.status === 'in_progress' ? 'border-blue-600/50' : 
                                     'border-border'
                                   }`}>
                                     {step.status === 'completed' ? (
-                                      <Check className="w-2.5 h-2.5 text-white" />
+                                      <Check className="w-2.5 h-2.5 text-blue-600 dark:text-blue-400" />
                                     ) : step.status === 'in_progress' ? (
                                       <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" />
                                     ) : (
@@ -620,9 +620,9 @@ export function DeepScanChat() {
                                     )}
                                   </div>
                                   <span className={`text-[11px] transition-colors ${
-                                    step.status === 'completed' ? 'text-white font-normal' : 
+                                    step.status === 'completed' ? 'text-blue-700 dark:text-blue-400 font-medium' : 
                                     step.status === 'in_progress' ? 'text-blue-600 font-medium' : 
-                                    'text-muted-foreground/40'
+                                    'text-muted-foreground/60'
                                   }`}>
                                     {step.text}
                                   </span>

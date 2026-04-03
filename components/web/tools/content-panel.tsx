@@ -553,14 +553,14 @@ export function ContentPanel({
                 <Loader2 className="h-12 w-12 text-blue-500 animate-spin" strokeWidth={1.5} />
               </div>
             </div>
-            <h4 className="text-xl md:text-2xl font-bold text-foreground mb-3 tracking-tight">Query Processing In Progress</h4>
-            <p className="text-muted-foreground max-w-sm text-sm md:text-base leading-relaxed mb-8 mx-auto">
-               AI agents are actively scanning multiple market data sources to provide you with accurate insights. This comprehensive analysis may take a few moments...
+            <h4 className="text-xl font-bold text-foreground mb-1.5 tracking-tight">Query Processing In Progress</h4>
+            <p className="text-muted-foreground max-w-sm text-xs md:text-sm leading-relaxed mb-4 mx-auto">
+               AI agents are actively scanning multiple market data sources to provide you with accurate insights...
             </p>
             <div className="flex items-center justify-center gap-3">
-              <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.3s]"></div>
-              <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.15s]"></div>
-              <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce"></div>
+              <div className="h-1 w-1 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.3s]"></div>
+              <div className="h-1 w-1 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.15s]"></div>
+              <div className="h-1 w-1 rounded-full bg-blue-500 animate-bounce"></div>
             </div>
           </div>
         </div>
@@ -578,18 +578,18 @@ export function ContentPanel({
                       {fullReport}
                     </ReactMarkdown>
                   ) : (
-                    <div className="flex flex-col items-center justify-center min-h-[70vh] py-20 px-4 text-center animate-in fade-in zoom-in duration-700">
-                      <div className="relative mb-8">
+                    <div className="flex flex-col items-center justify-center min-h-[30vh] py-0 px-4 text-center animate-in fade-in zoom-in duration-700">
+                      <div className="relative mb-6">
                         <div className="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full" />
-                        <div className="relative bg-linear-to-b from-indigo-500/10 to-transparent p-8 rounded-full border border-indigo-500/10">
-                          <FileText className="h-16 w-16 text-indigo-500/40" strokeWidth={1} />
+                        <div className="relative bg-linear-to-b from-indigo-500/10 to-transparent p-6 rounded-full border border-indigo-500/10">
+                          <FileText className="h-12 w-12 text-indigo-500/40" strokeWidth={1} />
                         </div>
                       </div>
-                      <h4 className="text-2xl font-bold text-foreground mb-3 tracking-tight">Ready for Analysis</h4>
-                      <p className="text-muted-foreground max-w-sm text-base leading-relaxed">
+                      <h4 className="text-xl font-bold text-foreground mb-2 tracking-tight">Ready for Analysis</h4>
+                      <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">
                         Enter a query in the chat and select a model to start a Deep Scan. Our AI will research and generate a comprehensive report for you.
                       </p>
-                      <div className="mt-8 flex gap-2">
+                      <div className="mt-6 flex gap-2">
                         <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/40"></div>
                         <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/20"></div>
                         <div className="h-1.5 w-1.5 rounded-full bg-indigo-500/10"></div>
