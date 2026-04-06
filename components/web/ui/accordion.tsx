@@ -35,8 +35,9 @@ function AccordionItem({
 function AccordionTrigger({
     className,
     children,
+    hideIcon, 
     ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+}: React.ComponentProps<typeof AccordionPrimitive.Trigger> & { hideIcon?: boolean }) {
     return (
         <AccordionPrimitive.Header className="flex w-full">
             <AccordionPrimitive.Trigger
@@ -48,14 +49,18 @@ function AccordionTrigger({
                 {...props}
             >
                 {children}
-                <ChevronDownIcon
-                    data-slot="accordion-trigger-icon"
-                    className="pointer-events-none shrink-0 transition-transform duration-200 group-aria-expanded/accordion-trigger:hidden"
-                />
-                <ChevronUpIcon
-                    data-slot="accordion-trigger-icon"
-                    className="pointer-events-none hidden shrink-0 transition-transform duration-200 group-aria-expanded/accordion-trigger:inline"
-                />
+                {!hideIcon && ( // 👈 only render if not hidden
+                    <>
+                        <ChevronDownIcon
+                            data-slot="accordion-trigger-icon"
+                            className="pointer-events-none shrink-0 transition-transform duration-200 group-aria-expanded/accordion-trigger:hidden"
+                        />
+                        <ChevronUpIcon
+                            data-slot="accordion-trigger-icon"
+                            className="pointer-events-none hidden shrink-0 transition-transform duration-200 group-aria-expanded/accordion-trigger:inline"
+                        />
+                    </>
+                )}
             </AccordionPrimitive.Trigger>
         </AccordionPrimitive.Header>
     )

@@ -1,13 +1,15 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
-import { Send, Loader2, PanelLeftClose, PanelLeft, Plus, Trash2, ChevronUp, Check, MoreVertical } from "lucide-react"
+import { Send, Loader2, PanelLeftClose, PanelLeft, Plus, Trash2, ChevronUp, ChevronDown, Check } from "lucide-react"
 import { Button } from "~/components/common/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { useSession } from "~/lib/auth-client"
 import { useRouter } from "next/navigation"
-import { apiClient, getSignedToken } from "~/lib/api-client"
+import { apiClient,getSignedToken } from "~/lib/api-client"
 import { ContentPanel } from "./content-panel"
+import { useStreamingTask } from "~/hooks/useStreamingTask"
+import { MultiTaskProgress } from "./multi-task-progress"
 import {
   Select,
   SelectContent,
@@ -16,24 +18,18 @@ import {
   SelectValue,
 } from "~/components/common/select"
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "~/components/common/dialog"
-import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "~/components/common/accordion"
+} from "~/components/web/ui/accordion"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/common/dropdown-menu"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/common/dialog"
 
 interface ScanItem {
   task_id: string
@@ -45,19 +41,6 @@ interface ScanItem {
   deep_research_answer?: string
 }
 
-interface ProcessingStep {
-  id: string
-  text: string
-  status: 'pending' | 'in_progress' | 'completed'
-  progress?: number
-}
-
-interface QueryProcessing {
-  query: string
-  model: string
-  steps: ProcessingStep[]
-  isExpanded: boolean
-}
 
 const DEEP_SCAN_MC_PATH = "/deep-research/v1"
 
@@ -76,428 +59,132 @@ const Template_INFO = [
 
 export function DeepScanChat() {
   const { data: session, isPending } = useSession()
+   
+  const userId = session?.user?.id 
   const router = useRouter()
-  const userId = session?.user?.id || "User"
-
   const [history, setHistory] = useState<ScanItem[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-
-  useEffect(() => {
+useEffect(() => {
     if (!isPending && !session) {
       router.push("/auth/login")
     }
   }, [session, isPending, router])
-
   const [activeScan, setActiveScan] = useState<ScanItem | null>(null)
-  const [currentProcessing, setCurrentProcessing] = useState<QueryProcessing | null>(null)
-
   const [inputValue, setInputValue] = useState("")
   const [selectedModel, setSelectedModel] = useState(Model_List[0].Value)
-  const [isLoading, setIsLoading] = useState(false)
+  const [pendingRequests, setPendingRequests] = useState(0)
+  const isLoading = pendingRequests > 0
   const [contentPanelScrollKey, setContentPanelScrollKey] = useState(0)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [scanToDelete, setScanToDelete] = useState<string | null>(null)
-  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null)
-  const stepsEndRef = useRef<HTMLDivElement>(null)
-  const hasAutoResumed = useRef(false)
 
-  const stopPolling = useCallback(() => {
-    if (pollIntervalRef.current) {
-      clearInterval(pollIntervalRef.current)
-      pollIntervalRef.current = null
-    }
-  }, [])
-
-  useEffect(() => {
-    return () => stopPolling()
-  }, [stopPolling])
-
-  useEffect(() => {
-    if (stepsEndRef.current) {
-      stepsEndRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" })
-    }
-  }, [currentProcessing?.steps])
-
-  const updateProcessingStep = useCallback((message: string, progress?: number) => {
-    setCurrentProcessing(prev => {
-      if (!prev) return null
-
-      // Update existing step or add new one based on message content
-      const updatedSteps = [...prev.steps]
-
-      // Check if this message already exists to avoid duplicates
-      const messageExists = updatedSteps.some(step => step.text === message)
-
-      if (!messageExists) {
-        // Mark all previous in_progress/pending steps as completed
-        for (let i = 0; i < updatedSteps.length; i++) {
-          if (updatedSteps[i].status === 'in_progress' || updatedSteps[i].status === 'pending') {
-            updatedSteps[i] = { ...updatedSteps[i], status: 'completed' }
-          }
-        }
-
-        // Add the backend message as a new step
-        const newStep: ProcessingStep = {
-          id: Date.now().toString(),
-          text: message,
-          status: 'in_progress',
-          progress: progress || undefined
-        }
-        updatedSteps.push(newStep)
-      } else {
-        // Update existing step with progress if provided
-        const existingStepIndex = updatedSteps.findIndex(step => step.text === message)
-        if (existingStepIndex !== -1 && progress !== undefined) {
-          updatedSteps[existingStepIndex] = { ...updatedSteps[existingStepIndex], progress }
-        }
-      }
-
-      return { ...prev, steps: updatedSteps }
-    })
-  }, [])
-
-  const markStepCompleted = useCallback((_status: string) => {
-    setCurrentProcessing(prev => {
-      if (!prev) return null
-
-      const updatedSteps = [...prev.steps]
-
-      // Mark the last in-progress step as completed
-      for (let i = updatedSteps.length - 1; i >= 0; i--) {
-        if (updatedSteps[i].status === 'in_progress') {
-          updatedSteps[i] = { ...updatedSteps[i], status: 'completed' }
-          break
-        }
-      }
-
-      return { ...prev, steps: updatedSteps }
-    })
-  }, [])
+  // Use the new streaming task hook
+  const { tasks, startTask, pollTask, cancelTask, clearTask, clearAllTasks } = useStreamingTask()
 
   const fetchHistory = useCallback(async () => {
     setHistoryLoading(true)
     try {
       const response = await apiClient.get(`${DEEP_SCAN_MC_PATH}/history?created_by=${userId}&page=1&limit=50`)
       if (response.data?.data?.history) {
-        setHistory(response.data.data.history)
+        const fetchedHistory = response.data.data.history
+        setHistory(fetchedHistory)
+        
+        // Start polling for any tasks that are still running
+        fetchedHistory.forEach((item: ScanItem) => {
+          if (item.status === 'in_progress' || item.status === 'running') {
+            pollTask(item.task_id, item.task_id, item.question, item.model_used)
+          }
+        })
       }
     } catch (error) {
       console.error("Failed to fetch history", error)
     } finally {
       setHistoryLoading(false)
     }
-  }, [userId])
+  }, [pollTask,userId])
 
-  const handleProcessingComplete = useCallback(async (data: any, query: string) => {
-    const taskResponse = data.data || data
-    const taskId = taskResponse.task_id || data.task_id || (typeof data === 'string' ? data : null)
-
-    if (activeScan?.task_id === taskId && activeScan?.status === 'completed') return
-
-    console.log(`[DeepScan] Handling processing complete for task: ${taskId}`)
-    stopPolling()
-
-    if (!taskId) {
-      console.error("[DeepScan] Cannot fetch result: No taskId found", data)
-      setIsLoading(false)
-      return
-    }
-
-    updateProcessingStep("Research completed successfully. Finalizing report...", 100)
-    markStepCompleted("completed")
-
-    const eventAnswer = taskResponse.answer || taskResponse.Deep_Research_answer || taskResponse.deep_research_answer
-    if (eventAnswer) {
-      const newScan: ScanItem = {
-        task_id: taskId,
-        question: query.trim(),
-        model_used: selectedModel,
-        status: "completed",
-        created_at: taskResponse.created_at || new Date().toISOString(),
-        answer: eventAnswer,
-        deep_research_answer: eventAnswer,
-      }
-      setCurrentProcessing(null)
-      setActiveScan(newScan)
-      setHistory(prev => (prev.some(s => s.task_id === taskId) ? prev : [newScan, ...prev]))
-      setContentPanelScrollKey(prev => prev + 1)
-      setIsLoading(false)
+  useEffect(() => {
+    if (userId) {
       fetchHistory()
-      return
     }
+  }, [fetchHistory, userId])
 
-    setIsLoading(true)
-    let attempts = 0
-    const maxAttempts = 8 // Increased retries
-
-    while (attempts < maxAttempts) {
-      try {
-        console.log(`[DeepScan] Attempt ${attempts + 1} to fetch final results for task: ${taskId}...`)
-        // Increasing wait time
-        await new Promise(resolve => setTimeout(resolve, 3000 + attempts * 1000))
-        
-        const response = await apiClient.get(`${DEEP_SCAN_MC_PATH}/history?created_by=${userId}&page=1&limit=50`)
-        const historyList = response.data?.data?.history || response.data?.history || response.data?.data || []
-        const result = Array.isArray(historyList) ? historyList.find((s: any) => s.task_id === taskId) : null
-
-        if (result && (result.answer || result.Deep_Research_answer || result.deep_research_answer)) {
-          console.log("[DeepScan] Found completed research in history.")
-          const finalizedAnswer = result.Deep_Research_answer || result.deep_research_answer || result.answer
-          
-          const newScan: ScanItem = {
-            task_id: taskId,
-            question: query.trim(),
-            model_used: selectedModel,
-            status: "completed",
-            created_at: result.created_at || new Date().toISOString(),
-            answer: finalizedAnswer,
-            deep_research_answer: finalizedAnswer,
-          }
-          
-          setCurrentProcessing(null)
-          setActiveScan(newScan)
-          setHistory(prev => (prev.some(s => s.task_id === taskId) ? prev : [newScan, ...prev]))
-          setContentPanelScrollKey(prev => prev + 1)
-          setIsLoading(false)
-          fetchHistory() // Sync the sidebar finally
-          return
-        }
-        console.log(`[DeepScan] Task result not ready in history table (attempt ${attempts + 1})...`)
-        attempts++
-      } catch (e) {
-        console.error(`[DeepScan] Error during attempt ${attempts + 1}:`, e)
-        attempts++
+  // Unified list of scans (history + active tasks)
+  const displayedScans = (() => {
+    const combined = [...history]
+    Object.values(tasks).forEach(task => {
+      const existingIndex = combined.findIndex(item => item.task_id === task.task_id)
+      const scanFromTask: ScanItem = {
+        task_id: task.task_id,
+        question: task.query,
+        model_used: task.model,
+        status: task.status === 'running' ? 'in_progress' : task.status,
+        created_at: task.created_at,
+        answer: task.result?.answer || task.result?.response?.short_response,
+        deep_research_answer: task.result?.full_report || task.result?.answer,
       }
-    }
 
-    console.error(`[DeepScan] Failed to find task ${taskId} results after ${maxAttempts} attempts. State may be inconsistent or backend delayed.`)
-    setIsLoading(false)
-    // Don't clear currentProcessing yet if it's the only feedback we have, 
-    // unless you want the UI to "reset" to landing page.
-    // In this case, clearing it reset the landing page, which is what the user dislikes.
-    // So let's keep the steps visible or show an error.
-    setCurrentProcessing(prev => prev ? { ...prev, isExpanded: true } : null)
-  }, [selectedModel, fetchHistory, stopPolling, updateProcessingStep, markStepCompleted, activeScan?.task_id, activeScan?.status])
+      if (existingIndex !== -1) {
+        combined[existingIndex] = { ...combined[existingIndex], ...scanFromTask }
+      } else {
+        combined.unshift(scanFromTask)
+      }
+    })
+    return combined
+  })()
 
-  const pollTaskStatus = useCallback(async (taskId: string, query: string) => {
-    console.log("Starting polling for task:", taskId)
+  // Update history when tasks complete
+  useEffect(() => {
+    const completedTasks = Object.values(tasks).filter(task => task.status === 'completed' && task.result)
 
-    stopPolling() // Clear any existing poll
+    completedTasks.forEach(task => {
+      const newScan: ScanItem = {
+        task_id: task.task_id,
+        question: task.query,
+        model_used: task.model,
+        status: "completed",
+        created_at: task.created_at,
+        answer: task.result.answer || task.result.response?.short_response || "Deep Scan completed.",
+        deep_research_answer: task.result.full_report || task.result.answer || "Deep Scan completed.",
+      }
 
-    pollIntervalRef.current = setInterval(async () => {
-      try {
-        console.log(`[DeepScan] Polling status for ${taskId}...`)
-        const response = await apiClient.get(`${DEEP_SCAN_MC_PATH}/status?task_id=${taskId}`)
-        let rawData = response.data
-
-        // Handle SSE-style "data: " prefix if it's a string
-        if (typeof rawData === 'string' && rawData.startsWith('data: ')) {
-          try {
-            rawData = JSON.parse(rawData.replace(/^data: /, '').trim())
-            console.log("[DeepScan] Parsed SSE-style string response")
-          } catch (e) {
-            console.warn("[DeepScan] Failed to parse string status response", e)
-          }
-        }
-
-        if (!rawData) {
-          console.warn("[DeepScan] No data in status response")
-          return
-        }
-
-        const taskInfo = rawData.data || rawData
-        const status = taskInfo.status || rawData.type
-
-        console.log("[DeepScan] Polling update:", { status, message: taskInfo.message, progress: taskInfo.progress })
-
-        // Update the processing steps
-        if (taskInfo.message) {
-          updateProcessingStep(taskInfo.message, taskInfo.progress)
-        }
-
-        // If task is completed, handle total completion
-        if (status === 'completed' || status === 'success' || rawData.type === 'research.completed') {
-          console.log("[DeepScan] Task COMPLETED via polling:", taskId)
-          stopPolling()
-          handleProcessingComplete(rawData, query)
-        } else if (status === 'failed' || status === 'error') {
-          console.error("[DeepScan] Task FAILED via polling:", taskId)
-          stopPolling()
-          setIsLoading(false)
-          setCurrentProcessing(null)
-        }
-      } catch (error: any) {
-        if (error.response?.status === 404) {
-          console.log("[DeepScan] Task no longer available at status endpoint (likely completed). Finalizing...")
-          stopPolling()
-          handleProcessingComplete({ task_id: taskId }, query)
+      setHistory(prev => {
+        const index = prev.findIndex(item => item.task_id === task.task_id)
+        if (index === -1) {
+          return [newScan, ...prev]
         } else {
-          console.error("[DeepScan] Polling request error:", error)
+          const updated = [...prev]
+          updated[index] = newScan
+          return updated
         }
-      }
-    }, 3000)
-  }, [stopPolling, updateProcessingStep, handleProcessingComplete])
-
-  useEffect(() => {
-    fetchHistory()
-  }, [fetchHistory])
-
-  useEffect(() => {
-    if (!hasAutoResumed.current && history.length > 0) {
-      const activeTask = history.find(s => s.status === 'in_progress' || s.status === 'pending')
-      if (activeTask && !currentProcessing && !activeScan) {
-        console.log("[DeepScan] Auto-resuming active task on load:", activeTask.task_id)
-        hasAutoResumed.current = true
-        setCurrentProcessing({
-          query: activeTask.question,
-          model: activeTask.model_used || "CORE",
-          steps: [{ id: "1", text: "Reconnecting to live progress...", status: "in_progress" }],
-          isExpanded: true
-        })
-        setActiveScan(null)
-        setIsLoading(true)
-        pollTaskStatus(activeTask.task_id, activeTask.question)
-      } else if (!activeTask) {
-        hasAutoResumed.current = true
-      }
-    }
-  }, [history, currentProcessing, activeScan, pollTaskStatus])
-
-  const handleDeleteHistory = (taskId: string) => {
-    setScanToDelete(taskId)
-    setIsDeleteDialogOpen(true)
-  }
-
-  const confirmDelete = async () => {
-    if (!scanToDelete) return
-
-    console.log("[DeepScan] Confirming deletion of:", scanToDelete)
-    try {
-      const response = await apiClient.delete(`${DEEP_SCAN_MC_PATH}/history?task_id=${scanToDelete}`)
-      if (response.data?.success || response.status === 200) {
-        setHistory(prev => prev.filter(item => item.task_id !== scanToDelete))
-        if (activeScan?.task_id === scanToDelete) {
-          setActiveScan(null)
-        }
-      }
-    } catch (error) {
-      console.error("[DeepScan] Failed to delete history item", error)
-    } finally {
-      setIsDeleteDialogOpen(false)
-      setScanToDelete(null)
-    }
-  }
-
-  const handleSend = async (queryOverride?: string) => {
-    const query = queryOverride || inputValue
-    console.log("[DeepScan] handleSend started. Query:", query)
-    if (!query.trim() || isLoading) {
-      console.log("[DeepScan] handleSend aborted. Empty query or already loading.")
-      return
-    }
-
-    setIsLoading(true)
-    setInputValue("")
-
-    // Initialize processing state
-    initializeProcessing(query, selectedModel)
-
-    try {
-      const payload = {
-        query: query.trim(),
-        model: selectedModel,
-        created_by: userId,
-        use_async: true,
-      }
-
-      // Use native fetch to handle streaming response (Axios buffers)
-      console.log("[DeepScan] (Stream Call) Initiating fetch with streaming reader...")
-      const apiKey = await getSignedToken()
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || ""
-      const fullUrl = `${baseUrl}${DEEP_SCAN_MC_PATH}/query-stream`
-
-      const response = await fetch(fullUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apiKey': apiKey,
-          'ngrok-skip-browser-warning': 'true',
-        },
-        body: JSON.stringify(payload)
       })
 
-      if (!response.ok) {
-        throw new Error(`API returned status ${response.status}`)
+      // Set as active scan if no active scan
+      if (!activeScan) {
+        setActiveScan(newScan)
+        setContentPanelScrollKey(prev => prev + 1)
       }
+    })
+  }, [tasks, activeScan])
 
-      // Initializing reader for stream
-      const reader = response.body?.getReader()
-      if (!reader) throw new Error("ReadableStream not supported")
+  const handleSend = (queryOverride?: string) => {
+    const query = queryOverride || inputValue
+    if (!query.trim()) return
 
-      const decoder = new TextDecoder()
-      let partialData = ""
+    setPendingRequests(p => p + 1)
+    setInputValue("")
 
-      // Read chunks as they arrive
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-
-        const chunk = decoder.decode(value, { stream: true })
-        partialData += chunk
-
-        // Process lines in the chunk (SSE format: "data: { ... }")
-        const lines = partialData.split("\n")
-        partialData = lines.pop() || "" // Keep the last partial line
-
-        for (const line of lines) {
-          if (!line.trim().startsWith("data: ")) continue
-
-          try {
-            const dataStr = line.replace(/^data: /, "").trim()
-            const data = JSON.parse(dataStr)
-            console.log("[DeepScan] Stream Data Item:", data)
-
-            // Handle the response data for processing
-            const taskData = data.data || data
-            const type = data.type || taskData.type
-            const taskId = taskData.task_id || data.task_id
-            const status = taskData.status || type
-
-            if (type === 'research.task_submitted' || taskId) {
-              const message = taskData.message || "Task submitted successfully"
-              const progress = taskData.progress || 0
-              updateProcessingStep(message, progress)
-
-              if (taskId) {
-                console.log("[DeepScan] (Stream) taskId found, starting status polling as backup...")
-                pollTaskStatus(taskId, query)
-              }
-            } else if (type === 'research.status' || type === 'enhancement.status') {
-              console.log("[DeepScan] (Stream) Status update:", taskData.message)
-              updateProcessingStep(taskData.message, taskData.progress)
-
-              if (taskData.status && taskData.status !== 'queued') {
-                markStepCompleted(taskData.status)
-              }
-
-              if (status === 'completed' || status === 'success' || type === 'research.completed') {
-                console.log("[DeepScan] (Stream) Task COMPLETED signal received")
-                handleProcessingComplete(data, query)
-                return
-              }
-            }
-          } catch (e) {
-            console.warn("[DeepScan] Error parsing stream chunk line:", e)
-          }
-        }
+    // Execute the task in the background to ensure immediate UI responsiveness
+    ;(async () => {
+      try {
+        await startTask(query, selectedModel)
+      } catch (error) {
+        console.error("Error starting task:", error)
+      } finally {
+        setPendingRequests(p => p - 1)
       }
-      
-    } catch (error) {
-      console.error("Error calling API:", error)
-      setCurrentProcessing(null)
-      setIsLoading(false)
-    }
+    })()
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -508,28 +195,36 @@ export function DeepScanChat() {
   }
 
   const startNewScan = () => {
-    stopPolling()
     setActiveScan(null)
     setInputValue("")
-    setCurrentProcessing(null)
   }
 
-  const initializeProcessing = (query: string, model: string) => {
-    const steps: ProcessingStep[] = [
-      { id: "1", text: "Initializing deep scan...", status: "pending" },
-      { id: "2", text: "Waiting for backend response...", status: "pending" },
-    ]
+  const handleDeleteHistory = (taskId: string) => {
+    setScanToDelete(taskId)
+    setIsDeleteDialogOpen(true)
+  }
 
-    setCurrentProcessing({
-      query,
-      model,
-      steps,
-      isExpanded: true,
-    })
+  const confirmDelete = async () => {
+    if (!scanToDelete) return
+
+    try {
+      const response = await apiClient.delete(`${DEEP_SCAN_MC_PATH}/history?task_id=${scanToDelete}`)
+      if (response.data?.success || response.status === 200) {
+        setHistory(prev => prev.filter(item => item.task_id !== scanToDelete))
+        if (activeScan?.task_id === scanToDelete) {
+          setActiveScan(null)
+        }
+      }
+    } catch (error) {
+      console.error("Failed to delete history item", error)
+    } finally {
+      setIsDeleteDialogOpen(false)
+      setScanToDelete(null)
+    }
   }
 
   return (
-    <div className="flex-1 w-full flex bg-[#eef2f6] dark:bg-background p-2 md:p-4 gap-4 overflow-hidden relative min-h-[calc(100vh-80px-var(--header-height))] max-h-[calc(100vh-80px-var(--header-height))]">
+    <div data-slot="deep-scan-container" className="flex-1 w-full flex bg-[#eef2f6] dark:bg-background p-2 md:p-4 gap-4 overflow-hidden relative min-h-[calc(100vh-174px-var(--header-height))] max-h-[calc(100vh-174px-var(--header-height))] no-scrollbar">
       {/* Left Sidebar */}
       <AnimatePresence initial={false}>
         {isSidebarOpen && (
@@ -564,139 +259,170 @@ export function DeepScanChat() {
               <div className="h-px bg-border flex-1"></div>
             </div>
 
-            <div className="flex-1 p-3 lg:p-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex-1 p-3 lg:p-4 overflow-y-auto no-scrollbar scroll-smooth">
               {historyLoading ? (
                 <div className="flex flex-col items-center justify-center h-full gap-3 text-muted-foreground">
                   <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
                   <span className="text-sm">Loading history...</span>
                 </div>
-              ) : history.length > 0 || currentProcessing ? (
-                <div className="flex flex-col gap-2">
-                  {/* Processing History Accordion */}
-                  {currentProcessing && (
-                    <Accordion 
-                      type="single" 
-                      collapsible
-                      value={currentProcessing.isExpanded ? "processing" : ""}
-                      onValueChange={(val) => setCurrentProcessing(prev => prev ? { ...prev, isExpanded: !!val } : null)} 
-                      className="w-full shrink-0"
-                    >
-                      <AccordionItem value="processing" className="border border-border rounded-xl bg-white dark:bg-card shadow-sm">
-                        <AccordionTrigger className="px-3 py-2 hover:no-underline [&>svg]:w-4 [&>svg]:h-4">
-                          <div className="flex items-center gap-2 overflow-hidden w-full">
-                            <span className="text-xs font-medium text-foreground truncate flex-1" title={currentProcessing.query}>
-                              {currentProcessing.query?.length > 26 ? currentProcessing.query.substring(0, 26) + "..." : currentProcessing.query}
-                            </span>
-                          </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="px-3 pb-2">
-                          <div className="flex items-center gap-2 mb-2 px-1">
-                            <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold">Research Model:</span>
-                            <span className="px-1.5 py-0.5 text-[8px] font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-md uppercase tracking-wider">
-                              {Model_List.find(m => m.Value === currentProcessing.model)?.Name || "CORE"}
-                            </span>
-                          </div>
-                          <div 
-                            className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1 scroll-smooth"
-                            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                          >
-                            <style dangerouslySetInnerHTML={{__html: `
-                              .no-scrollbar::-webkit-scrollbar { display: none; }
-                            `}} />
-                            <div className="no-scrollbar space-y-1.5">
-                              {currentProcessing.steps.map((step) => (
-                                <div key={step.id} className="flex items-center gap-2">
-                                  <div className={`shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${
-                                    step.status === 'completed' ? 'border-blue-500/30 bg-blue-500/10' : 
-                                    step.status === 'in_progress' ? 'border-blue-600/50' : 
-                                    'border-border'
-                                  }`}>
-                                    {step.status === 'completed' ? (
-                                      <Check className="w-2.5 h-2.5 text-blue-600 dark:text-blue-400" />
-                                    ) : step.status === 'in_progress' ? (
-                                      <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" />
-                                    ) : (
-                                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
-                                    )}
-                                  </div>
-                                  <span className={`text-[11px] transition-colors ${
-                                    step.status === 'completed' ? 'text-blue-700 dark:text-blue-400 font-medium' : 
-                                    step.status === 'in_progress' ? 'text-blue-600 font-medium' : 
-                                    'text-muted-foreground/60'
-                                  }`}>
-                                    {step.text}
-                                  </span>
-                                </div>
-                              ))}
-                              <div ref={stepsEndRef} />
-                            </div>
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  )}
-                  {history
-                    .filter(scan => !(currentProcessing && (scan.status === 'in_progress' || scan.status === 'pending') && scan.question === currentProcessing.query))
-                    .map((scan) => (
-                    <div
-                      key={scan.task_id}
-                      className={`relative group w-full p-0 rounded-xl border transition-all text-sm overflow-hidden ${activeScan?.task_id === scan.task_id
-                        ? "bg-blue-50/50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800"
-                        : "bg-transparent border-transparent hover:bg-muted"
-                        }`}
-                    >
-                      <button
-                        onClick={() => {
-                          stopPolling()
-                          if (scan.status === 'in_progress' || scan.status === 'pending') {
-                            setCurrentProcessing({
-                              query: scan.question,
-                              model: scan.model_used || "CORE",
-                              steps: [{ id: "1", text: "Reconnecting to live progress...", status: "in_progress" }],
-                              isExpanded: true
-                            })
-                            setActiveScan(null)
-                            setIsLoading(true)
-                            pollTaskStatus(scan.task_id, scan.question)
-                          } else {
-                            setActiveScan(scan)
-                            setCurrentProcessing(null)
-                            setIsLoading(false)
-                          }
-                        }}
-                        className="w-full text-left p-3 pr-10"
-                      >
-                        <div className="font-medium text-foreground truncate mb-1" title={scan.question}>
-                          {scan.question?.length > 26 ? scan.question.substring(0, 26) + "..." : scan.question}
-                        </div>
-                        <div className="text-[10px] text-muted-foreground uppercase flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 block"></span>
-                          {scan.status.replace("_", " ")}
-                        </div>
-                      </button>
+              ) : displayedScans.length > 0 ? (
+          <Accordion type="single" collapsible className="flex flex-col gap-3">
+  {displayedScans.map((scan) => {
+    // Find task in hook state - either by its key (timestamp or backend id) 
+    // or by looking for a task whose internal task_id matches scan.task_id
+    const task = tasks[scan.task_id] || Object.values(tasks).find(t => t.task_id === scan.task_id)
+    const stages = task?.stages || []
+    const isRunning = scan.status === 'in_progress' || scan.status === 'running'
 
-                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-slate-200 dark:hover:bg-slate-700">
-                              <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="bg-white dark:bg-card border-border shadow-xl">
-                            <DropdownMenuItem
-                              onClick={() => handleDeleteHistory(scan.task_id)}
-                              className="text-red-500 focus:text-red-500 flex items-center gap-2 py-2 cursor-pointer"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                              <span>Delete Scan</span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
+    return (
+      <AccordionItem key={scan.task_id} value={scan.task_id} className="border-none bg-transparent">
+        <div className={`relative rounded-3xl transition-all border ${
+          activeScan?.task_id === scan.task_id
+            ? "bg-blue-50/40 border-blue-200 dark:bg-blue-900/10 dark:border-blue-900"
+            : "bg-white dark:bg-slate-900 border-border"
+        }`}>
+
+          {/* Trigger: question on left, chevron circle on right */}
+         <AccordionTrigger hideIcon={true} className="hover:no-underline pl-4 pr-5 pt-3 pb-2 flex items-center gap-3 w-full">
+  <div className="flex-1 text-left min-w-0">
+              <div className="font-medium text-slate-700 dark:text-slate-200 text-[13px] leading-tight break-words whitespace-normal">
+                {scan.question.length > 26 ? scan.question.slice(0, 26) + "..." : scan.question}
+              </div>
+  </div>
+
+  <div className="relative shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white shadow-sm
+    transition-colors duration-200
+    group-aria-expanded/accordion-trigger:bg-blue-500">
+    
+    <ChevronDown className="w-4 h-4 transition-transform duration-300 ease-in-out group-aria-expanded/accordion-trigger:rotate-180" />
+  </div>
+</AccordionTrigger>
+
+          {/* Content */}
+          <AccordionContent className="border-none px-4">
+            <div className="space-y-1">
+              {/* Mode and Delete */}
+              <div className="flex flex-col border-t border-slate-100 dark:border-slate-800 pt-2 gap-1.5">
+                {isRunning && (
+                  <div className="self-start mb-1 bg-blue-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-md whitespace-nowrap shadow-sm animate-in fade-in slide-in-from-bottom-1 uppercase">
+                    In Progress
+                  </div>
+                )}
+                
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
+                    <div className="p-1.5 rounded-md bg-blue-50 dark:bg-blue-900/20">
+                      <span className="text-sm">⚛️</span>
                     </div>
-                  ))}
+                    <span className="text-[11px] font-bold uppercase tracking-wider">
+                      {Model_List.find(m => m.Value === scan.model_used)?.Name || "CORE"}
+                    </span>
+                  </div>
+                  
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDeleteHistory(scan.task_id)
+                    }}
+                    className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  >
+                    <Trash2 size={16} />
+                  </Button>
                 </div>
+              </div>
+
+              {/* Progress Steps */}
+              <div className="space-y-0 relative pl-1 mt-4">
+                {stages.length > 0 ? (
+                  <div className="flex flex-col gap-3 max-h-[160px] overflow-y-auto scroll-smooth no-scrollbar p-1">
+                    <style dangerouslySetInnerHTML={{__html: `
+                      .no-scrollbar::-webkit-scrollbar { display: none; }
+                      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+                      
+                      /* Hide all scrollbars within this component's scope */
+                      [data-slot="deep-scan-container"] *::-webkit-scrollbar { 
+                        display: none !important; 
+                      }
+                      [data-slot="deep-scan-container"] * { 
+                        -ms-overflow-style: none !important; 
+                        scrollbar-width: none !important; 
+                      }
+                    `}} />
+                    {stages.map((stage, idx) => (
+                      <div key={idx} className="flex items-center gap-3 group">
+                        <div className="relative flex flex-col items-center">
+                          <div className={`z-10 w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${
+                            stage.status === 'completed'
+                              ? "bg-green-500 text-white"
+                              : stage.status === 'in_progress'
+                                ? "bg-blue-200 dark:bg-blue-900 animate-pulse"
+                                : "bg-slate-200 dark:bg-slate-800"
+                          }`}>
+                            {stage.status === 'completed' ? (
+                              <Check size={10} strokeWidth={4} />
+                            ) : (
+                              <div className={`w-1.5 h-1.5 rounded-full ${
+                                stage.status === 'in_progress' ? 'bg-blue-600' : 'bg-slate-400'
+                              }`} />
+                            )}
+                          </div>
+                          {idx !== stages.length - 1 && (
+                            <div className={`w-0.5 h-6 -mb-3 ${
+                              stage.status === 'completed' ? 'bg-green-500' : 'bg-slate-200 dark:bg-slate-800'
+                            }`} />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-[11px] font-medium leading-tight truncate ${
+                            stage.status === 'completed'
+                              ? "text-slate-700 dark:text-slate-300"
+                              : stage.status === 'in_progress'
+                                ? "text-blue-600 font-bold"
+                                : "text-slate-400"
+                          }`}>
+                            {stage.text}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                    <AutoScrollToBottom />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center text-white shrink-0">
+                      <Check size={10} strokeWidth={4} />
+                    </div>
+                    <p className="text-[11px] font-medium text-slate-700 dark:text-slate-300 uppercase tracking-tight">
+                      {scan.status === 'completed' ? 'Research Completed' : 'Waiting for system...'}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <Button
+                onClick={() => {
+                  setActiveScan(scan)
+                  if (window.innerWidth < 768) {
+                    setIsSidebarOpen(false)
+                  }
+                }}
+                className="w-full mt-2 h-8 text-[11px] font-bold rounded-xl bg-blue-600/10 hover:bg-blue-600 hover:text-white text-blue-600 transition-all border-none"
+              >
+                View Detailed Report
+              </Button>
+
+            </div>
+          </AccordionContent>
+
+        </div>
+      </AccordionItem>
+    )
+  })}
+</Accordion>
               ) : (
+
                 <div className="h-full border border-blue-100 dark:border-border rounded-[20px] flex flex-col items-center p-6 text-center mt-2 mx-1 shadow-xs bg-linear-to-b from-transparent to-blue-50/20 dark:to-transparent">
                   <div className="mb-4 mt-8 relative">
                     <div className="relative z-10 w-16 h-16 rounded-full border-[1.5px] border-blue-400 bg-white dark:bg-background flex items-center justify-center shadow-sm">
@@ -713,8 +439,8 @@ export function DeepScanChat() {
                     <span className="absolute -top-2 -left-3 text-blue-400 text-xs">+</span>
                     <span className="absolute top-2 -right-4 text-blue-400 text-[10px]">+</span>
                   </div>
-                  <p className="text-blue-600 dark:text-blue-400 font-semibold text-[13px] leading-relaxed mt-4 text-center mx-auto max-w-[200px] uppercase tracking-tight">
-                    No Deep Scan History<br /> Has Been Recorded
+                  <p className="text-blue-600 dark:text-blue-400 font-semibold text-[13px] leading-relaxed mt-4 max-w-[150px]">
+                    No Deep Scan <br/> History Has Been Recorded
                   </p>
                 </div>
               )}
@@ -725,9 +451,20 @@ export function DeepScanChat() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col bg-white dark:bg-card rounded-2xl md:rounded-[24px] shadow-sm border border-border overflow-hidden relative">
+        {/* <div className="absolute top-4 left-4 z-20">
+          {!isSidebarOpen && (
+            <Button
+              variant="secondary"
+              onClick={() => setIsSidebarOpen(true)}
+              className="w-10 h-10 rounded-xl bg-background border-border shadow-xs p-0 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted"
+              title="Open Sidebar"
+            >
+              <PanelLeft className="w-5 h-5" />
+            </Button>
+          )}
+        </div> */}
 
-
-        {!activeScan && !currentProcessing ? (
+        {!activeScan ? (
           // Landing View
           <div className="flex-1 w-full h-full flex flex-col items-center justify-center p-4 lg:p-8 overflow-y-auto">
             <div className="w-full max-w-3xl flex flex-col items-center text-center mt-6 z-10">
@@ -749,7 +486,6 @@ export function DeepScanChat() {
                     placeholder="Dig deeper. Win smarter."
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    disabled={isLoading}
                     className="flex-1 w-full min-w-0 bg-transparent border-0 outline-none px-4 py-3 md:px-5 md:py-4 text-slate-800 dark:text-foreground placeholder:text-slate-400 text-[15px] md:text-base focus:ring-0"
                     onKeyDown={handleKeyPress}
                   />
@@ -776,7 +512,7 @@ export function DeepScanChat() {
                     <Button
                       className="w-[44px] h-[44px] rounded-xl bg-blue-600 hover:bg-blue-700 text-white shrink-0 p-0 shadow-sm transition-transform active:scale-95"
                       onClick={() => handleSend()}
-                      disabled={!inputValue.trim() || isLoading}
+                      disabled={!inputValue.trim()}
                     >
                       {isLoading ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -807,21 +543,23 @@ export function DeepScanChat() {
         ) : (
           // Active Scan View (Playground)
           <div className="flex-1 w-full h-full flex flex-col relative bg-background">
-            <div className="p-4 md:p-6 border-b border-border bg-card flex items-start gap-4">
-              {!isSidebarOpen && (
-                <Button
-                  variant="secondary"
-                  onClick={() => setIsSidebarOpen(true)}
-                  className="w-10 h-10 rounded-xl bg-background border-border shadow-xs p-0 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted shrink-0 mt-0.5"
-                  title="Open Sidebar"
-                >
-                  <PanelLeft className="w-5 h-5" />
-                </Button>
-              )}
+            <div className="p-4 md:p-6 border-b border-border bg-card flex items-start gap-4 h-[100px] md:h-auto">
+              <div className="relative w-0 md:w-auto h-full flex items-center">
+                {!isSidebarOpen && (
+                  <Button
+                    variant="secondary"
+                    onClick={() => setIsSidebarOpen(true)}
+                    className="absolute left-0 md:relative w-10 h-10 rounded-xl bg-background border-border shadow-xs p-0 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted shrink-0"
+                    title="Open Sidebar"
+                  >
+                    <PanelLeft className="w-5 h-5" />
+                  </Button>
+                )}
+              </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center flex-wrap gap-x-3 gap-y-1.5 mb-2">
                   <span className="px-2 py-1 text-[10px] font-bold bg-muted text-muted-foreground rounded-md uppercase tracking-wider">
-                    {Model_List.find(m => m.Value === (activeScan?.model_used || currentProcessing?.model))?.Name || "MODEL"}
+                    {Model_List.find(m => m.Value === activeScan?.model_used)?.Name || "MODEL"}
                   </span>
                   <span className="text-[11px] text-muted-foreground">
                     {activeScan?.created_at ? new Date(activeScan.created_at).toLocaleString() : 'Processing...'}
@@ -832,13 +570,13 @@ export function DeepScanChat() {
                     </span>
                   )}
                 </div>
-                <h2 className="text-lg md:text-xl font-bold text-foreground leading-snug break-words">
-                  {activeScan?.question || currentProcessing?.query}
+                <h2 className="text-lg md:text-xl  font-bold text-foreground leading-snug break-words">
+                  {activeScan?.question}
                 </h2>
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto w-full relative">
+            <div className="flex-1 overflow-y-auto w-full relative no-scrollbar scroll-smooth">
               <ContentPanel
                 fullReport={activeScan?.deep_research_answer || activeScan?.answer || null}
                 selectedShortReport={activeScan?.answer}
@@ -884,6 +622,23 @@ export function DeepScanChat() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <MultiTaskProgress 
+        tasks={tasks} 
+        onCancelTask={cancelTask} 
+        onClearTask={clearTask} 
+        onClearAllTasks={clearAllTasks} 
+      />
     </div>
   )
+}
+
+function AutoScrollToBottom() {
+  const elementRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (elementRef.current) {
+      elementRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  })
+  return <div ref={elementRef} />
 }
