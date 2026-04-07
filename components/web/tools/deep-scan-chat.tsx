@@ -1,12 +1,12 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
-import { Send, Loader2, PanelLeftClose, PanelLeft, Plus, Trash2, ChevronUp, ChevronDown, Check } from "lucide-react"
+import { Send, Loader2, PanelLeftClose, PanelLeft, Plus, Trash2, ChevronDown, Check } from "lucide-react"
 import { Button } from "~/components/common/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { useSession } from "~/lib/auth-client"
 import { useRouter } from "next/navigation"
-import { apiClient,getSignedToken } from "~/lib/api-client"
+import { apiClient } from "~/lib/api-client"
 import { ContentPanel } from "./content-panel"
 import { useStreamingTask } from "~/hooks/useStreamingTask"
 import { MultiTaskProgress } from "./multi-task-progress"
@@ -64,7 +64,14 @@ export function DeepScanChat() {
   const router = useRouter()
   const [history, setHistory] = useState<ScanItem[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  
+  // Set sidebar open by default on desktop after mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      setIsSidebarOpen(true)
+    }
+  }, [])
 useEffect(() => {
     if (!isPending && !session) {
       router.push("/auth/login")
@@ -197,6 +204,9 @@ useEffect(() => {
   const startNewScan = () => {
     setActiveScan(null)
     setInputValue("")
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false)
+    }
   }
 
   const handleDeleteHistory = (taskId: string) => {
@@ -224,16 +234,29 @@ useEffect(() => {
   }
 
   return (
-    <div data-slot="deep-scan-container" className="flex-1 w-full flex bg-[#eef2f6] dark:bg-background p-2 md:p-4 gap-4 overflow-hidden relative min-h-[calc(100vh-174px-var(--header-height))] max-h-[calc(100vh-174px-var(--header-height))] no-scrollbar">
+    <div data-slot="deep-scan-container" className="flex-1 w-full flex bg-[#eef2f6] dark:bg-background p-2 md:p-4 gap-0 md:gap-4 overflow-hidden relative min-h-[calc(100vh-174px-var(--header-height))] max-h-[calc(100vh-174px-var(--header-height))] no-scrollbar">
+      {/* Mobile Sidebar Overlay */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsSidebarOpen(false)}
+            className="absolute inset-0 bg-black/40 backdrop-blur-[2px] z-30 md:hidden"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Left Sidebar */}
       <AnimatePresence initial={false}>
         {isSidebarOpen && (
           <motion.div
-            initial={{ width: 0, opacity: 0, marginLeft: -16 }}
-            animate={{ width: 300, opacity: 1, marginLeft: 0 }}
-            exit={{ width: 0, opacity: 0, marginLeft: -16 }}
+            initial={{ x: "-100%", opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: "-100%", opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="shrink-0 flex flex-col bg-white dark:bg-card rounded-2xl md:rounded-[24px] shadow-sm border border-border overflow-hidden whitespace-nowrap"
+            className="absolute inset-y-0 left-0 z-40 w-[280px] md:relative md:inset-auto md:z-auto md:w-[300px] shrink-0 flex flex-col bg-white dark:bg-card rounded-r-2xl md:rounded-[24px] shadow-xl md:shadow-sm border-r md:border border-border overflow-hidden whitespace-nowrap"
           >
             <div className="p-4 flex gap-2">
               <Button
@@ -451,18 +474,18 @@ useEffect(() => {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col bg-white dark:bg-card rounded-2xl md:rounded-[24px] shadow-sm border border-border overflow-hidden relative">
-        {/* <div className="absolute top-4 left-4 z-20">
-          {!isSidebarOpen && (
+        {!isSidebarOpen && (
+          <div className="absolute top-4 left-4 z-50">
             <Button
               variant="secondary"
               onClick={() => setIsSidebarOpen(true)}
-              className="w-10 h-10 rounded-xl bg-background border-border shadow-xs p-0 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted"
+              className="w-10 h-10 rounded-xl bg-background border border-border shadow-md p-0 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted"
               title="Open Sidebar"
             >
               <PanelLeft className="w-5 h-5" />
             </Button>
-          )}
-        </div> */}
+          </div>
+        )}
 
         {!activeScan ? (
           // Landing View

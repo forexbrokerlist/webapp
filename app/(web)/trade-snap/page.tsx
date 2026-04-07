@@ -16,7 +16,7 @@ import { useSession } from "~/lib/auth-client";
 import { apiClient, createApiClient } from "~/lib/api-client";
 
 // Create API client instance for FormData requests (no Content-Type header)
-const formDataApiClient = createApiClient('https://gaylene-levo-unremittingly.ngrok-free.dev/trade-snap');
+const formDataApiClient = createApiClient('https://prone-inceptively-jonah.ngrok-free.dev/trade-snap');
 
 function Dashboard() {
   const { data: session, isPending } = useSession();
