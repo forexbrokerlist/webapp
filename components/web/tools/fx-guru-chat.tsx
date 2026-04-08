@@ -138,7 +138,7 @@ function MessageBubble({ message, onViewReport }: {
         </Avatar>
       )}
 
-      <div className={`p-4 rounded-2xl shadow-xs text-sm max-w-[85%] ${message.sender === "user"
+      <div className={`p-4 rounded-2xl shadow-xs text-sm max-w-[85%] min-w-0 ${message.sender === "user"
         ? "bg-primary text-primary-foreground rounded-tr-sm"
         : "bg-card border border-border rounded-tl-sm"
         }`}>
@@ -149,7 +149,7 @@ function MessageBubble({ message, onViewReport }: {
           </div>
         )}
 
-        <div className={message.sender === "assistant" ? "prose prose-sm max-w-none dark:prose-invert [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-indigo-600 dark:[&_h2]:text-indigo-400 [&_h2]:mb-4 [&_h2]:pb-2 [&_h2]:border-b [&_h2]:border-border [&_p]:text-base [&_p]:leading-relaxed [&_strong]:font-semibold [&_strong]:text-foreground" : ""}>
+        <div className={message.sender === "assistant" ? "prose prose-sm max-w-full dark:prose-invert break-words overflow-x-hidden w-full [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-indigo-600 dark:[&_h2]:text-indigo-400 [&_h2]:mb-4 [&_h2]:pb-2 [&_h2]:border-b [&_h2]:border-border [&_p]:text-base [&_p]:leading-relaxed [&_strong]:font-semibold [&_strong]:text-foreground" : ""}>
           {message.sender === "assistant" ? (
             <div className="space-y-4">
               {message.image_url && (
@@ -315,7 +315,7 @@ function MessageBubble({ message, onViewReport }: {
               )}
             </div>
           ) : (
-            <div className="text-base leading-relaxed whitespace-pre-wrap font-medium">
+            <div className="text-base leading-relaxed whitespace-pre-wrap font-medium break-words">
               {message.content}
             </div>
           )}

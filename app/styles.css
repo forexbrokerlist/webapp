@@ -270,3 +270,13 @@
     display: none;
   }
 }
+
+@utility markdown-text {
+  & * {
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    white-space: normal !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}

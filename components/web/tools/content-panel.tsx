@@ -518,7 +518,7 @@ export function ContentPanel({
   }
 
   return (
-    <div className="flex-1 bg-background sm:bg-card/30 border-l border-border h-full min-h-[calc(100vh-(80px+var(--header-height)))] max-h-[calc(100vh-(80px+var(--header-height)))] overflow-hidden flex flex-col">
+    <div className="flex-1 bg-background sm:bg-card/30 border-l border-border h-full min-h-[calc(100vh-(80px+var(--header-height)))] max-h-[calc(100vh-(80px+var(--header-height)))] overflow-hidden flex flex-col min-w-0">
       {/* Sticky Action Bar */}
       <div className="sticky top-0 z-20 p-5 border-b border-border/60 bg-background/60 backdrop-blur-2xl shadow-sm">
         <div className="flex items-center justify-between">
@@ -568,11 +568,11 @@ export function ContentPanel({
           </div>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-          <div className="p-6" ref={scrollContentRef}>
-            <Card className="border-0 shadow-none bg-transparent">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="p-6 min-w-0" ref={scrollContentRef}>
+            <Card className="border-0 shadow-none bg-transparent min-w-0">
               <div className="p-0">
-                <div className="prose text-base markdown-text prose-sm max-w-none dark:prose-invert">
+                <div className="prose text-base markdown-text prose-sm max-w-full dark:prose-invert break-words overflow-x-hidden w-full">
                   {/* Content Area */}
                   {rawResponse ? (
                     <StructuredMarketAnalysis data={rawResponse} />

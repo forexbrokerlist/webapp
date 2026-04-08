@@ -474,7 +474,7 @@ useEffect(() => {
       </AnimatePresence>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col bg-white dark:bg-card rounded-2xl md:rounded-[24px] shadow-sm border border-border overflow-hidden relative">
+      <div className="flex-1 flex flex-col bg-white dark:bg-card rounded-2xl md:rounded-[24px] shadow-sm border border-border overflow-hidden relative min-w-0">
         {!isSidebarOpen && (
           <div className="absolute top-4 left-4 z-50">
             <Button
@@ -566,7 +566,7 @@ useEffect(() => {
           </div>
         ) : (
           // Active Scan View (Playground)
-          <div className="flex-1 w-full h-full flex flex-col relative bg-background">
+          <div className="flex-1 w-full h-full flex flex-col relative bg-background min-w-0">
             <div className="p-4 md:p-6 border-b border-border bg-card flex items-start gap-4 h-[100px] md:h-auto">
               <div className="relative w-0 md:w-auto h-full flex items-center">
               </div>
