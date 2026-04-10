@@ -1,6 +1,10 @@
 import { getTranslations } from "next-intl/server"
 import { cache, Suspense } from "react"
+import { unstable_noStore as noStore } from "next/cache"
 import { db } from "~/services/db"
+
+
+export const revalidate = 0
 import { getPresignedUrlFromFull } from "~/lib/media"
 import { Hero } from "~/app/(web)/(home)/hero"
 import { Pricing } from "~/app/(web)/(home)/pricing"
@@ -22,7 +26,7 @@ import OurPartners from "./our-partners"
 import BidgeAndPlug from "./bridge-and-plug"
 import InvestInEverything from "./invest-in-everything"
 
-export const dynamic = "force-dynamic"
+
 
 // Get page data
 const getData = cache(async () => {
@@ -81,6 +85,7 @@ export const generateMetadata = async () => {
 }
 
 export default async function (props: any) {
+  noStore();
   const { structuredData } = await getData()
   const dbSponsors = await db.sponsor.findMany({
     where: { isActive: true },
@@ -143,22 +148,59 @@ export default async function (props: any) {
 
   const crmCategory = await db.category.findUnique({
     where: { slug: "crm-and-back-office-software" },
-    include: {
-      brokers: {
-        where: { status: { in: ["Published", "Scheduled"] } },
-        take: 8,
-      },
+  })
+
+  const crmSponsors = await db.sponsor.findMany({
+    where: { 
+      categoryId: crmCategory?.id,
+      isActive: true,
     },
+    orderBy: { order: "asc" },
+    take: 4,
   })
 
   const crmSolutions = await Promise.all(
-    (crmCategory?.brokers || []).map(async (broker) => ({
-      id: broker.id,
-      name: broker.broker_name || "",
-      subtitle: broker.subtitle || broker.execution_types || "Global Exchange & Liquidity Provider",
-      logo: await getLogo(broker),
+    crmSponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      subtitle: sponsor.title || "Forex CRM Solution",
+      description: sponsor.description,
+      logo: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint,
+      socialProof: sponsor.socialProof,
     }))
   )
+
+  const bridgeCategory = await db.category.findUnique({
+    where: { slug: "bridge-and-plug-in-partners" },
+  })
+
+  const bridgeSponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: bridgeCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 6,
+  })
+
+  const bridgePartners = await Promise.all(
+    bridgeSponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      title: sponsor.title || "Technology Partner",
+      description: sponsor.description,
+      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint, 
+      socialProof: sponsor.socialProof,
+    }))
+  )
+
+  console.log('--- DEBUG: Sponsors ---')
+  console.log('Bridge[0] socialProof:', bridgePartners[0]?.socialProof)
+  console.log('CRM[0] socialProof:', crmSolutions[0]?.socialProof)
 
   return (
     <>
@@ -167,7 +209,7 @@ export default async function (props: any) {
       <TrustedTrading platforms={trustedPlatforms} />
       <CrmBackOffice solutions={crmSolutions} />
       <ForexEducation />
-      <BidgeAndPlug />
+      <BidgeAndPlug partners={bridgePartners} />
       <InvestInEverything />
       <OurPartners />
       <ForexBrokers />

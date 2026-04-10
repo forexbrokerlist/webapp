@@ -38,6 +38,7 @@ export const sponsorSchema = z.object({
   description: z.string().optional().or(z.literal("")),
   bannerImage: z.string().optional().or(z.literal("")),
   features: z.array(z.string()).default([]),
+  socialProof: z.string().optional().or(z.literal("")),
   highlightedPoint: z.string().optional().or(z.literal("")),
 })
 

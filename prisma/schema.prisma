@@ -381,7 +381,8 @@ model Sponsor {
   title   String? 
   description String? 
   bannerImage String? 
-  features    String[]
+  features    String[]  
+  socialProof String? 
   highlightedPoint String? 
   @@index([isActive, order])
 }

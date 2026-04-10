@@ -53,6 +53,7 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
       bannerImage: sponsor?.bannerImage ?? "",
       highlightedPoint: sponsor?.highlightedPoint ?? "",
       features: sponsor?.features ?? [],
+      socialProof: sponsor?.socialProof ?? "",  
     },
   })
 
@@ -165,6 +166,20 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>
                 Highlighted Point
+              </FieldLabel>
+              <Input id={field.name} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="socialProof"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>
+                Social Proof
               </FieldLabel>
               <Input id={field.name} {...field} />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
