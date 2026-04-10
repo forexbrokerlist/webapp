@@ -10,6 +10,15 @@ import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateWebPage, generateFAQ } from "~/lib/structured-data"
 import FAQ from "./faq"
+import ClientLogo from "./client-logo"
+import TrustedTrading from "./trusted-trading"
+import CrmBackOffice from "./crm-back-office"
+import ForexEducation from "./forex-education"
+import BlogSection from "./blog-section"
+import ForexBrokers from "./forex-brokers"
+import OurPartners from "./our-partners"
+import BidgeAndPlug from "./bridge-and-plug"
+import InvestInEverything from "./invest-in-everything"
 
 export const dynamic = "force-dynamic"
 
@@ -75,12 +84,16 @@ export default async function (props: any) {
   return (
     <>
       <Hero />
-      <Sponsors />
-      <Suspense fallback={<ToolListingSkeleton />}>
-        <ToolQuery searchParams={props.searchParams} options={{ enableFilters: true }} ad="Tools" />
-      </Suspense>
+      <ClientLogo />
+      <TrustedTrading />
+      <CrmBackOffice />
+      <ForexEducation />
+      <BidgeAndPlug />
+      <InvestInEverything />
+      <OurPartners />
+      <ForexBrokers />
+      <BlogSection />
       <FAQ />
-      {/* <Pricing /> */}
       <StructuredData data={structuredData} />
     </>
   )

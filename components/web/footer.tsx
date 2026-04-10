@@ -16,84 +16,99 @@ import { FullLogo } from "~/components/web/ui/full-logo"
 import { NavLink, navLinkVariants } from "~/components/web/ui/nav-link"
 import { adsConfig } from "~/config/ads"
 import { linksConfig } from "~/config/links"
-import { cx } from "~/lib/utils"
+import { cx } from "~/lib/utils";
+const FooterLogo = '/assets/images/footer-logo.svg';
 
 export const Footer = ({ children, className, ...props }: ComponentProps<"div">) => {
   const t = useTranslations()
 
   return (
-    <footer className="flex flex-col gap-y-8 mt-auto pt-fluid-md border-t border-foreground/10">
-      <div
-        className={cx("grid grid-cols-3 gap-y-8 gap-x-4 md:gap-x-6 md:grid-cols-16", className)}
-        {...props}
-      >
-        <Stack
-          direction="column"
-          className="flex flex-col items-start gap-4 col-span-full md:col-span-6"
-        >
-          <Stack size="lg" direction="column" className="min-w-0 max-w-64">
-            <H5 as="strong" className="px-0.5">
-              {t("components.footer.cta_title")}
-            </H5>
+    <>
+      <footer className="pt-[70px] pb-100 max-tab:pb-16 max-mobile:pb-[40px]">
+        <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto">
+          <div className="flex justify-center pb-5">
+            <img src={FooterLogo} alt="Footer Logo" />
+          </div>
+          <h2 className="text-2xl max-mobile:text-xl max-mobile:leading-10 font-bold text-black100 text-center mb-1">
+            {t("components.footer.cta_title")}
+          </h2>
+          <p className="text-base max-mobile:text-sm font-medium text-black700 text-center mb-[30px]">
+            {t("components.footer.cta_description", { count: formatNumber(5000, "standard") })}
+          </p>
+        </div>
+        <div className="max-w-[500px] mx-auto max-mobile:px-4">
+          <CTAForm />
+        </div>
+        <div className="max-w-[872px] mx-auto w-full pt-[60px] max-laptop:px-16 max-tab:px-5 max-mobile:px-4 max-mobile:pt-[40px]">
+          <div className="flex justify-between gap-5 max-mobile:grid max-mobile:grid-cols-1 max-mobile:gap-5">
+            <div>
+              <FullLogo className="h-6 max-w-[175px] w-full" />
+              <p className="text-base font-medium text-black700 max-w-[364px] mt-5">
+                A powerful trading platform to explore, compare,
+                and trade with top brokers worldwide. Make
+                smarter decisions with real-time insight.
+              </p>
+              <div className="pt-6 flex items-center gap-2.5">
+                <Tooltip tooltip={t("navigation.toggle_theme")}>
+                  <div className="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center">
+                    <ThemeSwitcher className="text-primary text-2xl" />
+                  </div>
+                </Tooltip>
 
-            <Note className="-mt-2 px-0.5 first:mt-0">
-              {t("components.footer.cta_description", { count: formatNumber(5000, "standard") })}
-            </Note>
+                <Tooltip tooltip={t("navigation.rss_feed")}>
+                  <ExternalLink href={linksConfig.feed} className={navLinkVariants()}>
+                    <div className="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center">
+                      <RssIcon className="text-primary text-2xl" />
+                    </div>
+                  </ExternalLink>
+                </Tooltip>
 
-            <CTAForm />
-          </Stack>
+                <Tooltip tooltip={t("navigation.contact_us")}>
+                  <NavLink href="/contact" className={navLinkVariants()}>
+                    <div className="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center">
+                      <AtSignIcon className="text-primary text-2xl" />
+                    </div>
+                  </NavLink>
+                </Tooltip>
+              </div>
+            </div>
+            <div className="flex gap-18 max-tab:gap-10 ">
+              <div>
+                <h6 className="text-lg mb-3 text-black font-medium">{t("navigation.browse")}:</h6>
+                <NavLink className="text-base font-medium text-black700 block pb-2" href="/">{t("navigation.tools")}</NavLink>
+                <NavLink className="text-base font-medium text-black700 block pb-2" href="/categories">{t("navigation.categories")}</NavLink>
+                <NavLink className="text-base font-medium text-black700 block pb-2" href="/tags">{t("navigation.tags")}</NavLink>
+                <NavLink className="text-base font-medium text-black700 block " href="/blog">{t("navigation.blog")}</NavLink>
+              </div>
+              <div>
+                <h6 className="text-lg mb-3 text-black font-medium">{t("navigation.quick_links")}:</h6>
 
-          <Stack className="text-lg opacity-75">
-            <Tooltip tooltip={t("navigation.toggle_theme")}>
-              <ThemeSwitcher />
-            </Tooltip>
+                <NavLink className="text-base font-medium text-black700 block pb-2" href="/submit">{t("navigation.submit")}</NavLink>
+                <NavLink className="text-base font-medium text-black700 block pb-2" href="/about">{t("navigation.about")}</NavLink>
+                <NavLink className="text-base font-medium text-black700 block pb-2" href="/contact">{t("navigation.contact_us")}</NavLink>
+                <NavLink className="text-base font-medium text-black700 block pb-2" href="/privacy">{t("navigation.privacy")}</NavLink>
+                <NavLink className="text-base font-medium text-black700 block pb-2" href="/terms">{t("navigation.terms")}</NavLink>
+                <NavLink className="text-base font-medium text-black700 block pb-2" href="/disclaimer">{t("navigation.disclaimer")}</NavLink>
+                <NavLink className="text-base font-medium text-black700 block pb-2" href="/cookies">{t("navigation.cookies")}</NavLink>
+                {adsConfig.enabled && <NavLink href="/advertise" className="text-base font-medium text-black700 block ">{t("navigation.advertise")}</NavLink>}
+              </div>
+            </div>
+          </div>
+          <div className="text-base max-mobile:pt-[40px] font-medium text-black700 pt-[60px]">
+            <p>
+              Zerodha Broking Ltd.: Member of NSE, BSE, MCX & MSEI – SEBI Registration no.: INZ000031633 CDSL/NSDL: Depository services through Zerodha Broking Ltd. – SEBI Registration no.: IN-DP-431-2019 Registered Address: Zerodha Broking Ltd., #153/154, 4th Cross, Dollars Colony, Opp. Clarence Public School, J.P Nagar 4th Phase, Bengaluru - 560078, Karnataka, India. For any complaints pertaining to securities broking please write to complaints@zerodha.com, for DP related to dp@zerodha.com. Please ensure you carefully read the Risk Disclosure Document as prescribed
+              by SEBI | ICF
+            </p>
+            <p>
+              Procedure to file a complaint on SEBI SCORES: Register on SCORES portal. Mandatory details for filing complaints on SCORES: Name, PAN, Address, Mobile Number, E-mail ID. Benefits: Effective Communication, Speedy redressal of the grievances
+            </p>
+            <p>
+              Smart Online Dispute Resolution | Grievances Redressal Mechanism
+            </p>
+          </div>
+        </div>
+      </footer>
 
-            <Tooltip tooltip={t("navigation.rss_feed")}>
-              <ExternalLink href={linksConfig.feed} className={navLinkVariants()}>
-                <RssIcon />
-              </ExternalLink>
-            </Tooltip>
-
-            <Tooltip tooltip={t("navigation.contact_us")}>
-              <NavLink href="/contact" className={navLinkVariants()}>
-                <AtSignIcon />
-              </NavLink>
-            </Tooltip>
-
-            {/* <Tooltip tooltip={t("navigation.source_code")}>
-              <ExternalLink href={linksConfig.github} className={navLinkVariants()}>
-                <BrandGitHubIcon />
-              </ExternalLink>
-            </Tooltip> */}
-          </Stack>
-        </Stack>
-
-        <Stack direction="column" className="text-sm md:col-span-3 md:col-start-8">
-          <H6 as="strong">{t("navigation.browse")}:</H6>
-
-          <NavLink href="/">{t("navigation.tools")}</NavLink>
-          <NavLink href="/categories">{t("navigation.categories")}</NavLink>
-          <NavLink href="/tags">{t("navigation.tags")}</NavLink>
-          <NavLink href="/blog">{t("navigation.blog")}</NavLink>
-        </Stack>
-
-        <Stack direction="column" className="text-sm md:col-span-3">
-          <H6 as="strong">{t("navigation.quick_links")}:</H6>
-
-          <NavLink href="/submit">{t("navigation.submit")}</NavLink>
-          <NavLink href="/about">{t("navigation.about")}</NavLink>
-          <NavLink href="/contact">{t("navigation.contact_us")}</NavLink>
-          <NavLink href="/privacy">{t("navigation.privacy")}</NavLink>
-          <NavLink href="/terms">{t("navigation.terms")}</NavLink>
-          <NavLink href="/disclaimer">{t("navigation.disclaimer")}</NavLink>
-          <NavLink href="/cookies">{t("navigation.cookies")}</NavLink>
-          {adsConfig.enabled && <NavLink href="/advertise">{t("navigation.advertise")}</NavLink>}
-        </Stack>
-      </div>
-
-      <FullLogo className="h-6 w-auto self-start" />
-
-      {children}
-    </footer>
+    </>
   )
 }

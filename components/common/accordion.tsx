@@ -1,9 +1,8 @@
 "use client"
 
 import * as AccordionPrimitive from "@radix-ui/react-accordion"
-import { ChevronDownIcon } from "lucide-react"
+import { Plus, Minus } from "lucide-react"
 import type { ComponentProps } from "react"
-import { Card } from "~/components/common/card"
 import { cx } from "~/lib/utils"
 
 const Accordion = ({ ...props }: ComponentProps<typeof AccordionPrimitive.Root>) => {
@@ -12,13 +11,11 @@ const Accordion = ({ ...props }: ComponentProps<typeof AccordionPrimitive.Root>)
 
 const AccordionItem = ({ className, ...props }: ComponentProps<typeof AccordionPrimitive.Item>) => {
   return (
-    <Card hover={false} asChild>
-      <AccordionPrimitive.Item
-        data-slot="accordion-item"
-        className={cx("p-0! gap-0!", className)}
-        {...props}
-      />
-    </Card>
+    <AccordionPrimitive.Item
+      data-slot="accordion-item"
+      className={cx("border border-[#E7E7E7] rounded-[12px] bg-white overflow-hidden transition-all", className)}
+      {...props}
+    />
   )
 }
 
@@ -32,15 +29,18 @@ const AccordionTrigger = ({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cx(
-          "flex flex-1 items-start justify-between gap-4 rounded-md p-5 text-left text-sm font-medium transition-all hover:bg-muted [&[data-state=open]>svg]:rotate-180 sm:text-base",
-          "outline-none focus-visible:ring-[3px] focus-visible:border-ring focus-visible:ring-ring/50",
+          "group flex flex-1 items-center justify-between gap-4 p-4 text-left text-lg tracking-[-0.15px] font-semibold text-black100 transition-all outline-none",
+          "focus-visible:ring-[3px] focus-visible:border-ring focus-visible:ring-ring/50",
           "disabled:pointer-events-none disabled:opacity-50",
           className,
         )}
         {...props}
       >
         {children}
-        <ChevronDownIcon className="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200 sm:size-5" />
+        <div className="relative shrink-0 flex items-center justify-center w-[22px] h-[22px] rounded-full border border-[#6B857D] text-[#6B857D]">
+          <Plus className="size-3.5 absolute transition-all duration-300 scale-100 opacity-100 group-data-[state=open]:scale-50 group-data-[state=open]:opacity-0" strokeWidth={1.5} />
+          <Minus className="size-3.5 absolute transition-all duration-300 scale-50 opacity-0 group-data-[state=open]:scale-100 group-data-[state=open]:opacity-100" strokeWidth={1.5} />
+        </div>
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   )
@@ -54,10 +54,10 @@ const AccordionContent = ({
   return (
     <AccordionPrimitive.Content
       data-slot="accordion-content"
-      className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden w-full border-t text-sm text-pretty"
+      className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden w-full text-sm text-pretty"
       {...props}
     >
-      <div className={cx("p-5", className)}>{children}</div>
+      <div className={cx("px-5 pb-5 pt-0 text-base font-medium text-[#7D7D7D] max-w-[100%]", className)}>{children}</div>
     </AccordionPrimitive.Content>
   )
 }
