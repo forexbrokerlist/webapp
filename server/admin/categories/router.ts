@@ -14,8 +14,9 @@ const lookup = adminProcedure.handler(async () => {
 const upsert = adminProcedure
   .input(categorySchema)
   .handler(async ({ input, context: { db, revalidate } }) => {
-    const { id, tools, ...data } = input
+    const { id, tools, brokers, ...data } = input
     const toolIds = tools?.map(id => ({ id }))
+    const brokerIds = brokers?.map(id => ({ id: Number(id) }))
 
     const category = id
       ? await db.category.update({
@@ -24,6 +25,7 @@ const upsert = adminProcedure
             ...data,
             slug: data.slug || "",
             tools: { set: toolIds },
+            brokers: { set: brokerIds },
           },
         })
       : await db.category.create({
@@ -31,6 +33,7 @@ const upsert = adminProcedure
             ...data,
             slug: data.slug || "",
             tools: { connect: toolIds },
+            brokers: { connect: brokerIds },
           },
         })
 
@@ -46,7 +49,10 @@ const duplicate = adminProcedure
   .handler(async ({ input: { id }, context: { db, revalidate } }) => {
     const category = await db.category.findUnique({
       where: { id },
-      include: { tools: { select: { id: true } } },
+      include: {
+        tools: { select: { id: true } },
+        brokers: { select: { id: true } },
+      },
     })
 
     if (!category) {
@@ -60,6 +66,7 @@ const duplicate = adminProcedure
         label: category.label,
         description: category.description,
         tools: { connect: category.tools },
+        brokers: { connect: category.brokers.map(b => ({ id: b.id })) },
       },
     })
 

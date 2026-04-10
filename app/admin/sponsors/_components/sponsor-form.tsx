@@ -7,7 +7,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { type ComponentProps, useMemo } from "react"
-import { Controller, FormProvider as Form, useForm } from "react-hook-form"
+import { Controller, FormProvider as Form, useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { SponsorActions } from "~/app/admin/sponsors/_components/sponsor-actions"
 import { Button } from "~/components/common/button"
@@ -20,6 +20,8 @@ import { Link } from "~/components/common/link"
 import { Stack } from "~/components/common/stack"
 import { Switch } from "~/components/common/switch"
 import { RelationSelector } from "~/components/common/relation-selector"
+import { TextArea } from "~/components/common/textarea"
+import { Trash, Plus } from "lucide-react"
 import { orpc } from "~/lib/orpc-query"
 import { useComputedField } from "~/hooks/use-computed-field"
 import { cx } from "~/lib/utils"
@@ -46,6 +48,11 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
       isActive: sponsor?.isActive ?? true,
       order: sponsor?.order ?? 0,
       categoryId: sponsor?.categoryId ?? "",
+      title: sponsor?.title ?? "",
+      description: sponsor?.description ?? "",
+      bannerImage: sponsor?.bannerImage ?? "",
+      highlightedPoint: sponsor?.highlightedPoint ?? "",
+      features: sponsor?.features ?? [],
     },
   })
 
@@ -139,9 +146,51 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
 
         <Controller
           control={form.control}
+          name="title"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>
+                Title
+              </FieldLabel>
+              <Input id={field.name} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="highlightedPoint"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>
+                Highlighted Point
+              </FieldLabel>
+              <Input id={field.name} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="description"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>
+                Description
+              </FieldLabel>
+              <TextArea id={field.name} {...field} rows={4} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
           name="logoUrl"
           render={({ field, fieldState }) => (
-            <Field className="col-span-full" data-invalid={fieldState.invalid}>
+            <Field data-invalid={fieldState.invalid}>
               <FieldLabel data-required>Logo</FieldLabel>
               <FormMedia
                 form={form}
@@ -164,6 +213,34 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
             </Field>
           )}
         />
+
+        <Controller
+          control={form.control}
+          name="bannerImage"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel>Banner Image</FieldLabel>
+              <FormMedia
+                form={form}
+                field={field}
+                path={`${path}/banner`}
+              >
+                {field.value && (
+                  <Image
+                    src={field.value}
+                    alt="Banner"
+                    width={400}
+                    height={200}
+                    className="h-16 w-auto border rounded-md object-cover bg-foreground/5"
+                  />
+                )}
+              </FormMedia>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <FeaturesField control={form.control} register={form.register} />
 
         <Controller
           control={form.control}
@@ -221,5 +298,48 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
         </div>
       </form>
     </Form>
+  )
+}
+
+function FeaturesField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "features",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Features</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`features.${index}`)}
+              placeholder="Enter feature"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Feature
+        </Button>
+      </Stack>
+    </div>
   )
 }

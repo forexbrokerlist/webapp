@@ -1,5 +1,7 @@
 import { getTranslations } from "next-intl/server"
 import { cache, Suspense } from "react"
+import { db } from "~/services/db"
+import { getPresignedUrlFromFull } from "~/lib/media"
 import { Hero } from "~/app/(web)/(home)/hero"
 import { Pricing } from "~/app/(web)/(home)/pricing"
 import { Sponsors } from "~/app/(web)/(home)/sponsors"
@@ -80,13 +82,90 @@ export const generateMetadata = async () => {
 
 export default async function (props: any) {
   const { structuredData } = await getData()
+  const dbSponsors = await db.sponsor.findMany({
+    where: { isActive: true },
+    orderBy: { order: "asc" },
+  })
+
+  const logos = await Promise.all(
+    dbSponsors.map(async (sponsor) => ({
+      src: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      alt: sponsor.name,
+    }))
+  )
+
+  const getLogo = async (broker: any) => {
+    let domain = "forex.com"
+    const targetUrl = broker.broker_website || broker.url
+    try {
+      if (targetUrl) {
+        const urlObj = new URL(targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`)
+        domain = urlObj.hostname
+      }
+    } catch (e) {}
+
+    // Use Google Favicon API as primary source for small logo icons
+    if (domain && domain !== "forex.com") {
+      return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
+    }
+
+    if (broker.screenshotUrl) {
+      return (await getPresignedUrlFromFull(broker.screenshotUrl)) as string
+    }
+
+    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
+  }
+
+
+  const trustedCategory = await db.category.findUnique({
+    where: { slug: "trusted-trading-platforms" },
+    include: {
+      brokers: {
+        where: {
+          status: { in: ["Published", "Scheduled"] },
+        },
+        take: 7,
+      },
+    },
+  })
+
+  const trustedPlatforms = await Promise.all(
+    (trustedCategory?.brokers || []).map(async (broker) => ({
+      id: broker.id,
+      name: broker.broker_name || "",
+      description: broker.description || "",
+      minDeposit: broker.minimum_deposit || "Varies",
+      logo: await getLogo(broker),
+      isSponsor: broker.isSponsor,
+      rating: broker.overall_rating || "0",
+    }))
+  )
+
+  const crmCategory = await db.category.findUnique({
+    where: { slug: "crm-and-back-office-software" },
+    include: {
+      brokers: {
+        where: { status: { in: ["Published", "Scheduled"] } },
+        take: 8,
+      },
+    },
+  })
+
+  const crmSolutions = await Promise.all(
+    (crmCategory?.brokers || []).map(async (broker) => ({
+      id: broker.id,
+      name: broker.broker_name || "",
+      subtitle: broker.subtitle || broker.execution_types || "Global Exchange & Liquidity Provider",
+      logo: await getLogo(broker),
+    }))
+  )
 
   return (
     <>
       <Hero />
-      <ClientLogo />
-      <TrustedTrading />
-      <CrmBackOffice />
+      <ClientLogo logos={logos} />
+      <TrustedTrading platforms={trustedPlatforms} />
+      <CrmBackOffice solutions={crmSolutions} />
       <ForexEducation />
       <BidgeAndPlug />
       <InvestInEverything />

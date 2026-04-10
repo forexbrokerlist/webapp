@@ -211,7 +211,7 @@ model Category {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
+   
   // Relations
   subcategories Subcategory[]
   tools         Tool[]
@@ -306,6 +306,7 @@ model Brokers {
   daily_loss_limit                   String?    @db.VarChar(44)
   deposit_options                    String?    @db.VarChar(111)
   description                        String?
+  subtitle                           String?
   execution_types                    String?    @db.VarChar(65)
   funded_account_options             String?    @db.VarChar(66)
   funding_methods                    String?    @db.VarChar(213)
@@ -377,7 +378,11 @@ model Sponsor {
   Category   Category?       @relation(fields: [categoryId], references: [id])
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
-
+  title   String? 
+  description String? 
+  bannerImage String? 
+  features    String[]
+  highlightedPoint String? 
   @@index([isActive, order])
 }
 

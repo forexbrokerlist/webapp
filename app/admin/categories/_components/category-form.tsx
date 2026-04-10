@@ -164,10 +164,10 @@ export function CategoryForm({ className, title, category, ...props }: CategoryF
 
         <Controller
           control={form.control}
-          name="tools"
+          name="brokers"
           render={({ field }) => (
             <Field className="col-span-full">
-              <FieldLabel>Tools</FieldLabel>
+              <FieldLabel>Brokers</FieldLabel>
               <RelationSelector relations={tools.map(t => ({...t, id: String(t.id), name: t.broker_name || ''}))} ids={field.value ?? []} setIds={field.onChange} />
             </Field>
           )}

@@ -64,6 +64,7 @@ export const findCategoryById = async (id: string) => {
     where: { id },
     include: {
       tools: { select: { id: true } },
+      brokers: { select: { id: true } },
     },
   })
 }

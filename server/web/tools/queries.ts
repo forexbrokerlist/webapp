@@ -171,6 +171,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
   if (q) {
     whereQuery.OR = [
       { broker_name: { contains: q, mode: "insensitive" } },
+      { subtitle: { contains: q, mode: "insensitive" } },
       { description: { contains: q, mode: "insensitive" } },
       { pros: { contains: q, mode: "insensitive" } },
       { cons: { contains: q, mode: "insensitive" } },

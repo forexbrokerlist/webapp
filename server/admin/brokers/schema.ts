@@ -69,6 +69,7 @@ export const brokerSchema = z.object({
   average_trading_cost_gold: z.string().optional(),
   average_trading_cost_bitcoin: z.string().optional(),
   average_trading_cost_wti_crude_oil: z.string().optional(),
+  subtitle: z.string().optional(),
 })
 
 export type BrokerSchema = z.infer<typeof brokerSchema>
