@@ -131,7 +131,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                         className="absolute left-[50%] top-[30px] w-[380px] max-mobile:w-[280px] rounded-[16px] max-mobile:rounded-lg bg-[#515151] shadow-[0_0_78px_0_rgba(26,26,26,0.5),inset_0_0_8.3px_0_rgba(0,0,0,0.25)] max-mobile:p-2 p-3 flex flex-col"
                                     >
                                         <div className='mb-2'>
-                                            <img className='block rounded-t-2xl' src={slide.img} alt={slide.title} />
+                                            <img className='block rounded-t-2xl w-full h-[200px] object-cover' src={slide.img} alt={slide.title} />
                                         </div>
 
                                         <div className=' relative z-20 rounded-[14.774px] bg-[#1A1A1A] shadow-[0_0_27.887px_0_rgba(0,0,0,0.1)] p-4'>
@@ -157,7 +157,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                             <Button variant='primary' size='md' className={` border-none w-full justify-center text-sm py-2 bg-white text-black100  flex  items-center group`} onClick={() => window.location.href = slide.link}>
                                                 Start Learning
                                                 <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
-                                                    <MoveRight className="text-white" />
+                                                    <MoveRight className="text-white w-4 h-4" />
                                                 </div>
                                             </Button>
                                         </div>

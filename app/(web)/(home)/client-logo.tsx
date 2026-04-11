@@ -36,7 +36,7 @@ export default function ClientLogo({ logos }: ClientLogoProps) {
                 <motion.div
                     className="flex w-max"
                     animate={{ x: ["0%", "-50%"] }}
-                    transition={{ ease: "linear", duration: 40, repeat: Infinity }}
+                    transition={{ ease: "linear", duration: 120, repeat: Infinity }}
                 >
                     <LogoSet logos={duplicatedLogos} />
                     <LogoSet logos={duplicatedLogos} />
