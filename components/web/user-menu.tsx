@@ -37,7 +37,7 @@ export const UserMenu = () => {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.2, ease: "easeOut" }}
       >
-        <Button size="sm" variant="secondary" asChild>
+        <Button size="md" variant="primary" className="px-7" asChild>
           <Link href="/auth/login">{t("navigation.sign_in")}</Link>
         </Button>
       </motion.div>

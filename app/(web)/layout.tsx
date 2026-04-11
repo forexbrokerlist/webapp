@@ -9,26 +9,26 @@ import { Container } from "~/components/web/ui/container"
 // import { env } from "~/env"
 
 import { QueryProvider } from "~/components/admin/providers/query-provider"
+import Navbar from "~/components/web/navbar"
 
 export default function ({ children }: PropsWithChildren) {
   return (
     <QueryProvider>
-      <div className="flex flex-col min-h-dvh overflow-clip pt-(--header-inner-offset)">
+      <div className="bg-[#F0F2EC] ">
         <Header />
+        {/* <Navbar /> */}
 
-        <Backdrop isFixed />
+        {/* <Backdrop isFixed /> */}
 
-        <Suspense>
+        {/* <Suspense>
           <AdBanner />
-        </Suspense>
+        </Suspense> */}
 
-        <Container asChild>
-          <Wrapper className="grow py-fluid-md">
-            {children}
+        {/* <Wrapper> */}
+        {children}
 
-            <Footer />
-          </Wrapper>
-        </Container>
+        <Footer />
+        {/* </Wrapper> */}
       </div>
     </QueryProvider>
   )

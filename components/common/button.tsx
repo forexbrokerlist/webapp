@@ -7,14 +7,14 @@ import { cva, cx, type VariantProps } from "~/lib/utils"
 
 const buttonVariants = cva({
   base: [
-    "group/button inline-flex items-center justify-center border-transparent! font-medium text-[0.8125rem]/tight text-start rounded-md overflow-clip hover:z-10 hover:border-transparent",
+    "group/button inline-flex transition-all duration-300 items-center justify-center border-transparent! font-medium text-[0.8125rem]/tight text-start rounded-md overflow-clip hover:z-10 hover:border-transparent",
     "disabled:opacity-60 disabled:cursor-not-allowed",
   ],
 
   variants: {
     variant: {
       fancy: "scheme-dark bg-primary text-primary-foreground hover:opacity-90",
-      primary: "scheme-dark text-background bg-foreground hover:opacity-90",
+      primary: "bg-black100 max-mobile:text-sm max-mobile:leading-6  border border-solid border-black100 hover:bg-primary hover:border-primary hover:text-black100 text-white rounded-full text-base font-medium",
       secondary:
         "scheme-light border-border! bg-background text-secondary-foreground hover:bg-card hover:border-ring!",
       soft: "scheme-light bg-muted text-secondary-foreground hover:bg-border/50 hover:text-foreground hover:outline-none",
@@ -25,7 +25,7 @@ const buttonVariants = cva({
     },
     size: {
       sm: "px-2 py-1 gap-[0.66ch]",
-      md: "px-3 py-2 gap-[0.75ch]",
+      md: "px-5 gap-2.5 max-mobile:px-6 max-mobile:py-2.5 py-2.5 ",
       lg: "px-4 py-2.5 gap-[1ch] rounded-lg sm:text-sm/tight",
       icon: "p-0 aspect-square overflow-visible",
     },

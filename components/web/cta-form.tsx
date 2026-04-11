@@ -75,7 +75,7 @@ export const CTAForm = ({
         />
 
         <Box focusWithin>
-          <div className="flex w-full bg-background rounded-lg">
+          <div className="flex w-full bg-background rounded-full text-base">
             <Controller
               control={form.control}
               name="email"
@@ -84,7 +84,7 @@ export const CTAForm = ({
                   type="email"
                   placeholder={defaultPlaceholder}
                   size={size}
-                  className="flex-1 min-w-0 border-0 focus-visible:outline-none"
+                  className="flex-1 min-w-0 border-0 h-[50px] rounded-full text-base placeholder:text-base focus-visible:outline-none"
                   data-1p-ignore
                   {...field}
                 />
@@ -95,7 +95,7 @@ export const CTAForm = ({
               isPending={action.isPending}
               className={cx(
                 "shrink-0",
-                size === "lg" ? "text-sm/tight px-4 py-2 m-1" : "px-3 py-1.5 m-0.5",
+                size === "lg" ? "text-sm/tight px-5 py-2 m-1" : "px-5 py-1.5 m-0.5",
               )}
               {...defaultButtonProps}
             >

@@ -29,6 +29,7 @@ export const categorySchema = z.object({
   label: z.string().optional(),
   description: z.string().optional(),
   tools: z.array(z.string()).optional(),
+  brokers: z.array(z.string()).optional(),
 })
 
 export type CategorySchema = z.infer<typeof categorySchema>

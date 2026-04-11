@@ -1,5 +1,11 @@
 import { getTranslations } from "next-intl/server"
 import { cache, Suspense } from "react"
+import { unstable_noStore as noStore } from "next/cache"
+import { db } from "~/services/db"
+
+
+export const revalidate = 0
+import { getPresignedUrlFromFull } from "~/lib/media"
 import { Hero } from "~/app/(web)/(home)/hero"
 import { Pricing } from "~/app/(web)/(home)/pricing"
 import { Sponsors } from "~/app/(web)/(home)/sponsors"
@@ -10,8 +16,20 @@ import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateWebPage, generateFAQ } from "~/lib/structured-data"
 import FAQ from "./faq"
+import ClientLogo from "./client-logo"
+import TrustedTrading from "./trusted-trading"
+import CrmBackOffice from "./crm-back-office"
+import ForexEducation from "./forex-education"
+import BlogSection from "./blog-section"
+import ForexBrokers from "./forex-brokers"
+import OurPartners from "./our-partners"
+import BidgeAndPlug from "./bridge-and-plug"
+import InvestInEverything from "./invest-in-everything"
+import AlgoTrading from "./algo-trading"
+import { generateBlog } from "~/lib/structured-data"
+import { getPosts } from "~/server/web/posts/queries"
 
-export const dynamic = "force-dynamic"
+const namespace = "pages.blog"
 
 // Get page data
 const getData = cache(async () => {
@@ -52,14 +70,19 @@ const getData = cache(async () => {
     }
   ]
 
+  const posts = await getPosts()
+
   const structuredData = [
     generateWebPage(siteConfig.url, title, description),
-    generateFAQ(faqData)
+    generateFAQ(faqData),
+    generateBlog(siteConfig.url, title, description, posts)
   ]
 
-  return getPageData(siteConfig.url, title, description, {
-    structuredData
+  const pageData = getPageData(siteConfig.url, title, description, {
+    structuredData,
   })
+
+  return { ...pageData, posts }
 })
 
 export const generateMetadata = async () => {
@@ -70,17 +93,272 @@ export const generateMetadata = async () => {
 }
 
 export default async function (props: any) {
+  noStore();
   const { structuredData } = await getData()
+  const dbSponsors = await db.sponsor.findMany({
+    where: { isActive: true },
+    orderBy: { order: "asc" },
+  })
+
+  const logos = await Promise.all(
+    dbSponsors.map(async (sponsor) => ({
+      src: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      alt: sponsor.name,
+    }))
+  )
+
+  const getLogo = async (broker: any) => {
+    let domain = "forex.com"
+    const targetUrl = broker.broker_website || broker.url
+    try {
+      if (targetUrl) {
+        const urlObj = new URL(targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`)
+        domain = urlObj.hostname
+      }
+    } catch (e) { }
+
+    // Use Google Favicon API as primary source for small logo icons
+    if (domain && domain !== "forex.com") {
+      return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
+    }
+
+    if (broker.screenshotUrl) {
+      return (await getPresignedUrlFromFull(broker.screenshotUrl)) as string
+    }
+
+    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
+  }
+
+
+  const trustedCategory = await db.category.findUnique({
+    where: { slug: "trusted-trading-platforms" },
+    include: {
+      brokers: {
+        where: {
+          status: { in: ["Published", "Scheduled"] },
+        },
+        take: 7,
+      },
+    },
+  })
+
+  const trustedPlatforms = await Promise.all(
+    (trustedCategory?.brokers || []).map(async (broker) => ({
+      id: broker.id,
+      name: broker.broker_name || "",
+      description: broker.description || "",
+      minDeposit: broker.minimum_deposit || "Varies",
+      logo: await getLogo(broker),
+      isSponsor: broker.isSponsor,
+      rating: broker.overall_rating || "0",
+    }))
+  )
+
+  const crmCategory = await db.category.findUnique({
+    where: { slug: "crm-and-back-office-software" },
+  })
+
+  const crmSponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: crmCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 4,
+  })
+
+  const crmSolutions = await Promise.all(
+    crmSponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      title: sponsor.title || "Forex CRM Solution",
+      description: sponsor.description,
+      logo: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint,
+      socialProof: sponsor.socialProof,
+    }))
+  )
+
+  const bridgeCategory = await db.category.findUnique({
+    where: { slug: "bridge-and-plug-in-partners" },
+  })
+
+  const bridgeSponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: bridgeCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 6,
+  })
+
+  const bridgePartners = await Promise.all(
+    bridgeSponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      title: sponsor.title || "Technology Partner",
+      description: sponsor.description,
+      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint,
+      socialProof: sponsor.socialProof,
+    }))
+  )
+  const liquidityCategory = await db.category.findUnique({
+    where: { slug: "liquidity-partners" },
+  })
+
+  const liquiditySponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: liquidityCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 2,
+  })
+
+  const liquidityPartners = await Promise.all(
+    liquiditySponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      title: sponsor.title || "Technology Partner",
+      subtitle: sponsor.subtitle,
+      description: sponsor.description,
+      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint,
+      socialProof: sponsor.socialProof,
+    }))
+  )
+  const PSPCategory = await db.category.findUnique({
+    where: { slug: "psp-partners" },
+  })
+
+  const PSPCategorySponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: PSPCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 10,
+  })
+
+  const PSPPartners = await Promise.all(
+    PSPCategorySponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      title: sponsor.title || "Technology Partner",
+      subtitle: sponsor.subtitle,
+      description: sponsor.description,
+      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint,
+      socialProof: sponsor.socialProof,
+    }))
+  )
+  const TradingPlatformCategory = await db.category.findUnique({
+    where: { slug: "trading-platform-partners" },
+  })
+
+  const TradingPlatformSponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: TradingPlatformCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 10,
+  })
+
+  const TradingPalformPartners = await Promise.all(
+    TradingPlatformSponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      title: sponsor.title || "Technology Partner",
+      subtitle: sponsor.subtitle,
+      description: sponsor.description,
+      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint,
+      socialProof: sponsor.socialProof,
+    }))
+  )
+    const AlgoCategory = await db.category.findUnique({
+    where: { slug: "algorithmic-trading-and-bot-providers" },
+  })
+
+  const AlgoCategorySponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: AlgoCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 10,
+  })
+
+  const AlgoPartners = await Promise.all(
+    AlgoCategorySponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      title: sponsor.title || "Technology Partner",
+      subtitle: sponsor.subtitle,
+      description: sponsor.description,
+      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      bannerUrl: sponsor.bannerImage ? (await getPresignedUrlFromFull(sponsor.bannerImage)) as string : null,
+      websiteUrl: sponsor.websiteUrl,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint,
+      socialProof: sponsor.socialProof,
+    }))
+  )
+  const ForexCategory = await db.category.findUnique({
+    where: { slug: "forex-education-and-training" },
+  })
+
+  const ForexCategorySponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: ForexCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 10,
+  })
+
+  const ForexPartners = await Promise.all(
+    ForexCategorySponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      title: sponsor.title || "Technology Partner",
+      subtitle: sponsor.subtitle,
+      description: sponsor.description,
+      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      bannerUrl: sponsor.bannerImage ? (await getPresignedUrlFromFull(sponsor.bannerImage)) as string : null,
+      websiteUrl: sponsor.websiteUrl,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint,
+      socialProof: sponsor.socialProof,
+    }))
+  )
+
+  
+  const { posts } = await getData()
 
   return (
     <>
       <Hero />
-      <Sponsors />
-      <Suspense fallback={<ToolListingSkeleton />}>
-        <ToolQuery searchParams={props.searchParams} options={{ enableFilters: true }} ad="Tools" />
-      </Suspense>
+      <ClientLogo logos={logos} />
+      <TrustedTrading platforms={trustedPlatforms} />
+      <CrmBackOffice solutions={crmSolutions} />
+      <ForexEducation partners={ForexPartners} />
+      
+      <BidgeAndPlug partners={bridgePartners} />
+      <InvestInEverything />
+      <OurPartners liquidityPartners={liquidityPartners} PSPPartners={PSPPartners} TradingPalformPartners={TradingPalformPartners} />
+      <AlgoTrading partners={AlgoPartners}/>
+      <ForexBrokers />
+
+      <BlogSection posts={posts} />
       <FAQ />
-      {/* <Pricing /> */}
       <StructuredData data={structuredData} />
     </>
   )

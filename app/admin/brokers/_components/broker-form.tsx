@@ -120,6 +120,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       average_trading_cost_gold: broker?.average_trading_cost_gold ?? "",
       average_trading_cost_bitcoin: broker?.average_trading_cost_bitcoin ?? "",
       average_trading_cost_wti_crude_oil: broker?.average_trading_cost_wti_crude_oil ?? "",
+      subtitle:broker?.subtitle??"" 
     },
   })
 
@@ -159,11 +160,12 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
   })
 
   // Keep track of the form values
-  const [broker_name, slug, broker_website, description] = form.watch([
+  const [broker_name, slug, broker_website, description, subtitle] = form.watch([
     "broker_name",
     "slug",
     "broker_website",
     "description",
+    "subtitle",
   ])
 
   // Store the upload path in a memoized value
@@ -203,7 +205,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             onGenerate={() => setIsGenerationComplete(false)}
             onFinish={() => setIsGenerationComplete(true)}
             onStream={object => {
-              form.setValue("overall_rating", object.tagline)
+              form.setValue("subtitle", object.tagline)
               form.setValue("description", object.description)
             }}
           />
@@ -451,7 +453,17 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
-
+          <Controller
+          control={form.control}
+          name="subtitle"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>Subtitle</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
         <Controller
           control={form.control}
           name="pros"

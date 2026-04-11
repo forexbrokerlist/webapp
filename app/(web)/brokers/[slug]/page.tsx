@@ -56,7 +56,7 @@ const getData = cache(async ({ params }: Props) => {
   const t = await getTranslations()
   const url = `/brokers/${broker.slug}`
   const title = `${broker.broker_name || "Unknown Broker"} Review`
-  const description = broker.description || broker.pros || ""
+  const description = broker.subtitle || broker.description || broker.pros || ""
   const data = getPageData(url, title, description, {
     breadcrumbs: [
       { url: "/", title: t("navigation.tools") },
@@ -118,9 +118,16 @@ export default async function (props: Props) {
                       />
                     );
                   })()}
-                  <H2 as="h1" className="leading-tight! md:whitespace-normal line-clamp-2">
-                    {broker.broker_name}
-                  </H2>
+                  <div className="flex flex-col">
+                    <H2 as="h1" className="leading-tight! md:whitespace-normal line-clamp-2">
+                      {broker.broker_name}
+                    </H2>
+                    {broker.subtitle && (
+                      <p className="text-muted-foreground text-sm font-medium line-clamp-1 italic">
+                        {broker.subtitle}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 {broker.overall_rating && (

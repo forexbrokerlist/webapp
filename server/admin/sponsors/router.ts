@@ -10,6 +10,7 @@ const list = adminProcedure.input(sponsorListSchema).handler(async ({ input }) =
 const upsert = adminProcedure
   .input(sponsorSchema)
   .handler(async ({ input, context: { db, revalidate } }) => {
+    console.log('--- UPSERT INPUT ---', input)
     const { id, websiteUrl, ...data } = input
 
     // Handle empty websiteUrl literally
