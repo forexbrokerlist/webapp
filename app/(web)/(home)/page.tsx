@@ -340,13 +340,32 @@ export default async function (props: any) {
     }))
   )
 
-  
+  const LogoCategory = await db.category.findUnique({
+    where: { slug: "logo-category" },
+  })
+
+  const LogoCategorySponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: LogoCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 10,
+  })
+
+  const LogoPartners = await Promise.all(
+    LogoCategorySponsors.map(async (sponsor) => ({
+      src: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      alt: sponsor.name,
+    }))
+  )
+
   const { posts } = await getData()
 
   return (
     <>
       <Hero />
-      <ClientLogo logos={logos} />
+      <ClientLogo logos={LogoPartners} />
       <TrustedTrading platforms={trustedPlatforms} />
       <CrmBackOffice solutions={crmSolutions} />
       <ForexEducation partners={ForexPartners} />
