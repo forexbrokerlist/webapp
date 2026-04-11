@@ -10,9 +10,9 @@ import { Favicon } from '~/components/web/ui/favicon';
 interface Solution {
     id: string;
     name: string;
-    subtitle: string;
+    title: string;
     logo: string;
-    socialProof: string | null;
+    // socialProof: string | null;
 }
 
 interface CrmBackOfficeProps {
@@ -119,18 +119,11 @@ export default function CrmBackOffice({ solutions }: CrmBackOfficeProps) {
                                             {solution.name}
                                         </h3>
                                         <p className={`text-sm font-medium text-white800 line-clamp-2`}>
-                                            {solution.subtitle}
+                                            {solution.title}
                                         </p>
                                     </div>
                                 </div>
-                                <div className='py-1.5 px-3 text-[13px] border border-solid border-white/20 bg-white/10 text-white rounded-full w-fit flex items-center gap-2 mb-4'>
-                                    <div className="size-4 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                                            <polyline points="20 6 9 17 4 12"></polyline>
-                                        </svg>
-                                    </div>
-                                    <span className="font-medium">{solution.socialProof || 'Trusted by 512+ Brokers'}</span>
-                                </div>
+                            
                                 <Button variant='primary' size='md' className={` border-none py-2.5 bg-white text-black100  flex justify-between items-center group w-full`}>
                                     Explore Broker
                                     <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>

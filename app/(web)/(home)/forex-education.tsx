@@ -14,7 +14,7 @@ interface Partner {
     subtitle: string | null;
     description: string | null;
     logoUrl: string;
-    highlightedPoint:string
+    highlightedPoint: string | null;
     bannerUrl: string | null;
     websiteUrl: string | null;
     socialProof: string | null;

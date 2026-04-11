@@ -171,7 +171,7 @@ export default async function (props: any) {
     crmSponsors.map(async (sponsor) => ({
       id: sponsor.id,
       name: sponsor.name,
-      subtitle: sponsor.title || "Forex CRM Solution",
+      title: sponsor.title || "Forex CRM Solution",
       description: sponsor.description,
       logo: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
       features: sponsor.features,
@@ -339,6 +339,8 @@ export default async function (props: any) {
       socialProof: sponsor.socialProof,
     }))
   )
+
+  
   const { posts } = await getData()
 
   return (
