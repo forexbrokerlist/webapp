@@ -25,8 +25,11 @@ import ForexBrokers from "./forex-brokers"
 import OurPartners from "./our-partners"
 import BidgeAndPlug from "./bridge-and-plug"
 import InvestInEverything from "./invest-in-everything"
+import AlgoTrading from "./algo-trading"
+import { generateBlog } from "~/lib/structured-data"
+import { getPosts } from "~/server/web/posts/queries"
 
-
+const namespace = "pages.blog"
 
 // Get page data
 const getData = cache(async () => {
@@ -67,14 +70,19 @@ const getData = cache(async () => {
     }
   ]
 
+  const posts = await getPosts()
+
   const structuredData = [
     generateWebPage(siteConfig.url, title, description),
-    generateFAQ(faqData)
+    generateFAQ(faqData),
+    generateBlog(siteConfig.url, title, description, posts)
   ]
 
-  return getPageData(siteConfig.url, title, description, {
-    structuredData
+  const pageData = getPageData(siteConfig.url, title, description, {
+    structuredData,
   })
+
+  return { ...pageData, posts }
 })
 
 export const generateMetadata = async () => {
@@ -107,7 +115,7 @@ export default async function (props: any) {
         const urlObj = new URL(targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`)
         domain = urlObj.hostname
       }
-    } catch (e) {}
+    } catch (e) { }
 
     // Use Google Favicon API as primary source for small logo icons
     if (domain && domain !== "forex.com") {
@@ -151,7 +159,7 @@ export default async function (props: any) {
   })
 
   const crmSponsors = await db.sponsor.findMany({
-    where: { 
+    where: {
       categoryId: crmCategory?.id,
       isActive: true,
     },
@@ -193,7 +201,7 @@ export default async function (props: any) {
       description: sponsor.description,
       logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
       features: sponsor.features,
-      highlightedPoint: sponsor.highlightedPoint, 
+      highlightedPoint: sponsor.highlightedPoint,
       socialProof: sponsor.socialProof,
     }))
   )
@@ -219,11 +227,11 @@ export default async function (props: any) {
       description: sponsor.description,
       logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
       features: sponsor.features,
-      highlightedPoint: sponsor.highlightedPoint, 
+      highlightedPoint: sponsor.highlightedPoint,
       socialProof: sponsor.socialProof,
     }))
   )
-    const PSPCategory = await db.category.findUnique({
+  const PSPCategory = await db.category.findUnique({
     where: { slug: "psp-partners" },
   })
 
@@ -245,11 +253,11 @@ export default async function (props: any) {
       description: sponsor.description,
       logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
       features: sponsor.features,
-      highlightedPoint: sponsor.highlightedPoint, 
+      highlightedPoint: sponsor.highlightedPoint,
       socialProof: sponsor.socialProof,
     }))
   )
-   const TradingPlatformCategory = await db.category.findUnique({
+  const TradingPlatformCategory = await db.category.findUnique({
     where: { slug: "trading-platform-partners" },
   })
 
@@ -271,13 +279,67 @@ export default async function (props: any) {
       description: sponsor.description,
       logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
       features: sponsor.features,
-      highlightedPoint: sponsor.highlightedPoint, 
+      highlightedPoint: sponsor.highlightedPoint,
       socialProof: sponsor.socialProof,
     }))
   )
-  console.log('--- DEBUG: Sponsors ---')
-  console.log('Bridge[0] socialProof:', bridgePartners[0]?.socialProof)
-  console.log('CRM[0] socialProof:', crmSolutions[0]?.socialProof)
+    const AlgoCategory = await db.category.findUnique({
+    where: { slug: "algorithmic-trading-and-bot-providers" },
+  })
+
+  const AlgoCategorySponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: AlgoCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 10,
+  })
+
+  const AlgoPartners = await Promise.all(
+    AlgoCategorySponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      title: sponsor.title || "Technology Partner",
+      subtitle: sponsor.subtitle,
+      description: sponsor.description,
+      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      bannerUrl: sponsor.bannerImage ? (await getPresignedUrlFromFull(sponsor.bannerImage)) as string : null,
+      websiteUrl: sponsor.websiteUrl,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint,
+      socialProof: sponsor.socialProof,
+    }))
+  )
+  const ForexCategory = await db.category.findUnique({
+    where: { slug: "forex-education-and-training" },
+  })
+
+  const ForexCategorySponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: ForexCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 10,
+  })
+
+  const ForexPartners = await Promise.all(
+    ForexCategorySponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      title: sponsor.title || "Technology Partner",
+      subtitle: sponsor.subtitle,
+      description: sponsor.description,
+      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      bannerUrl: sponsor.bannerImage ? (await getPresignedUrlFromFull(sponsor.bannerImage)) as string : null,
+      websiteUrl: sponsor.websiteUrl,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint,
+      socialProof: sponsor.socialProof,
+    }))
+  )
+  const { posts } = await getData()
 
   return (
     <>
@@ -285,12 +347,15 @@ export default async function (props: any) {
       <ClientLogo logos={logos} />
       <TrustedTrading platforms={trustedPlatforms} />
       <CrmBackOffice solutions={crmSolutions} />
-      <ForexEducation />
+      <ForexEducation partners={ForexPartners} />
+      
       <BidgeAndPlug partners={bridgePartners} />
       <InvestInEverything />
       <OurPartners liquidityPartners={liquidityPartners} PSPPartners={PSPPartners} TradingPalformPartners={TradingPalformPartners} />
+      <AlgoTrading partners={AlgoPartners}/>
       <ForexBrokers />
-      <BlogSection />
+
+      <BlogSection posts={posts} />
       <FAQ />
       <StructuredData data={structuredData} />
     </>

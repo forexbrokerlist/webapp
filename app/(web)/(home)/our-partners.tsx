@@ -18,11 +18,11 @@ export default function OurPartners({ liquidityPartners, PSPPartners, TradingPal
                     transition={{ duration: 0.6, ease: "easeOut" }}
                 >
                     <h2 className='text-[42px] max-mobile:text-3xl max-mobile:leading-10 text-center leading-normal text-black100 font-bold font-monda'>
-                        Our Partners
+                       Our Trusted Forex Industry Partners
                     </h2>
                     <p className='text-lg max-mobile:text-base
                      text-black700 text-center mx-auto font-medium max-w-[650px]'>
-                        We are supported by innovative partners and sponsors who make it possible for our team to maintain this directory.
+                      Supported by top forex industry partners, liquidity, platforms, payments &  broker tech.
                     </p>
                 </motion.div>
                 <div className='grid grid-cols-2 gap-5 max-tab:grid-cols-1'>

@@ -3,11 +3,32 @@ import { Calendar, MoveRight } from 'lucide-react'
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '~/components/common/button';
+import { useFormatter } from 'next-intl'
+import { Link } from '~/components/common/link'
+
 const BlogCardImage = '/assets/images/blog-card.png';
 
-export default function BlogSection() {
+interface Post {
+    id: string;
+    title: string;
+    description: string | null;
+    publishedAt: Date | string | null;
+    image: string | null | undefined;
+    slug: string;
+}
+
+interface BlogSectionProps {
+    posts?: Post[];
+}
+
+export default function BlogSection({ posts = [] }: BlogSectionProps) {
+    const format = useFormatter();
+    
+    // Show real posts, fallback to empty array if none
+    const displayPosts = posts.length > 0 ? posts.slice(0, 3) : [];
+
     return (
-        <div>
+        <div id="blogs" className="py-20">
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
                 <div className='flex items-center max-mobile:block justify-between pb-12 max-mobile:pb-8'>
                     <motion.div
@@ -35,7 +56,8 @@ export default function BlogSection() {
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            A collection of useful articles for developers and software enthusiasts. Learn about the latest trends and technologies in the community.
+                            Stay informed with the latest forex broker reviews, trading tips, and market insights written 
+for traders at every level.
                         </motion.p>
                     </motion.div>
                     <motion.div
@@ -45,11 +67,13 @@ export default function BlogSection() {
                         className='max-mobile:pt-4'
                         transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
                     >
-                        <Button variant='primary' size='md' className='flex items-center gap-2'>
-                            View More
-                            <div>
-                                <MoveRight />
-                            </div>
+                        <Button variant='primary' size='md' className='flex items-center gap-2' asChild>
+                            <Link href="/blog">
+                                View More
+                                <div>
+                                    <MoveRight />
+                                </div>
+                            </Link>
                         </Button>
                     </motion.div>
                 </div>
@@ -69,45 +93,47 @@ export default function BlogSection() {
                     }}
                 >
                     {
-                        [...Array(3)].map((_, index) => (
+                        displayPosts.map((post) => (
                             <motion.div
-                                key={index}
+                                key={post.id}
                                 variants={{
                                     hidden: { opacity: 0, y: 40 },
                                     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 20 } }
                                 }}
                                 whileHover={{ y: -10, scale: 1.02 }}
-                                className='p-3.5 border border-[rgba(0,0,0,0.1)] bg-white shadow-[0_0_22.7px_0_rgba(0,0,0,0.09)] rounded-2xl cursor-pointer'
+                                className='p-3.5 border border-[rgba(0,0,0,0.1)] bg-white shadow-[0_0_22.7px_0_rgba(0,0,0,0.09)] rounded-2xl cursor-pointer h-full flex flex-col'
                             >
-                                <div className='overflow-hidden rounded-xl'>
-                                    <motion.img
-                                        src={BlogCardImage}
-                                        alt="BlogCardImage"
-                                        className='block w-full'
-                                        whileHover={{ scale: 1.05 }}
-                                        transition={{ duration: 0.3 }}
-                                    />
-                                </div>
-                                <div className='pt-5 max-mobile:pt-3'>
-                                    <div className='flex items-center justify-between pb-3'>
-                                        <button className='text-base max-mobile:text-sm font-semibold text-black800 py-1.5 px-3 bg-[#F0F1EC] rounded-md transition-colors hover:bg-primary'>
-                                            Business Growth
-                                        </button>
-                                        <div className='flex items-center gap-2'>
-                                            <Calendar className='text-black700' size={18} />
-                                            <p className='text-base max-mobile:text-sm font-medium text-black700'>
-                                                Oct 30,2025
-                                            </p>
-                                        </div>
+                                <Link href={`/blog/${post.slug}`} className="contents">
+                                    <div className='overflow-hidden rounded-xl'>
+                                        <motion.img
+                                            src={post.image || BlogCardImage}
+                                            alt={post.title}
+                                            className='block w-full aspect-video object-cover'
+                                            whileHover={{ scale: 1.05 }}
+                                            transition={{ duration: 0.3 }}
+                                        />
                                     </div>
-                                    <h2 className='text-xl max-mobile:text-lg text-black200 font-semibold mb-1 transition-colors hover:text-primary'>
-                                        How to choose the best forex broker in 2026
-                                    </h2>
-                                    <p className='text-base font-medium text-black700 line-clamp-2'>
-                                        Choosing the right forex broker is one of the most important decisions a trader can make. With hundreds of brokers available online, each offering
-                                        different spreads, platforms, and leverage options, finding the right one can be challenging.
-                                    </p>
-                                </div>
+                                    <div className='pt-5 max-mobile:pt-3 flex-1 flex flex-col'>
+                                        <div className='flex items-center justify-between pb-3'>
+                                            <div className='text-sm max-mobile:text-xs font-semibold text-black800 py-1.5 px-3 bg-[#F0F1EC] rounded-md'>
+                                                Market Analysis
+                                            </div>
+                                            <div className='flex items-center gap-2'>
+                                                <Calendar className='text-black700' size={18} />
+                                                <p className='text-sm max-mobile:text-xs font-medium text-black700'>
+                                                    {post.publishedAt ? format.dateTime(new Date(post.publishedAt), { dateStyle: "medium" }) : 'N/A'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <h2 className='text-xl max-mobile:text-lg text-black200 font-semibold mb-2 transition-colors hover:text-primary leading-tight line-clamp-2'>
+                                            {post.title}
+                                        </h2>
+                                        <p className='text-base max-mobile:text-sm font-medium text-black700 line-clamp-2 mb-4'>
+                                            {post.description}
+                                        </p>
+                                       
+                                    </div>
+                                </Link>
                             </motion.div>
                         ))
                     }

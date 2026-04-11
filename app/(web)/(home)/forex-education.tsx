@@ -4,18 +4,39 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '~/components/common/button'
 import { ButtonGroup } from '~/components/common/button-group'
+import { Link } from '~/components/common/link'
 const GolldenBullsImage = '/assets/images/gollden.png';
 
-const SLIDES = [
-    { id: 1, title: 'Goldan Bulls', sub: 'Advanced Trading Academy', tag: 'Pro Level Training', rev: '2.5k Reviews', stud: '12k+ Students' },
-    { id: 2, title: 'Edufins', sub: 'Forex Education Platform', tag: 'Beginner Friendly', rev: '1.6k Reviews', stud: '8k+ Students' },
-    { id: 3, title: 'TradePro', sub: 'Elite Markets', tag: 'Pro Level Training', rev: '4.1k Reviews', stud: '21k+ Students' },
-    { id: 4, title: 'Fx Masterclass', sub: 'Currency Trading 101', tag: 'Intermediate', rev: '900 Reviews', stud: '4k+ Students' },
-    { id: 5, title: 'Pip Snipers', sub: 'Scalping Strategies', tag: 'Expert', rev: '3.8k Reviews', stud: '18k+ Students' },
-]
+interface Partner {
+    id: string;
+    name: string;
+    title: string;
+    subtitle: string | null;
+    description: string | null;
+    logoUrl: string;
+    highlightedPoint:string
+    bannerUrl: string | null;
+    websiteUrl: string | null;
+    socialProof: string | null;
+}
 
-export default function ForexEducation() {
+export default function ForexEducation({ partners = [] }: { partners?: Partner[] }) {
+    const SLIDES = partners.map(p => ({
+        id: p.id,
+        title: p.name,
+        sub: p.title || 'Advanced Trading Academy',
+        tag: p.subtitle || 'Prop Level Training',
+        rev: p.socialProof || '12k+ Students',
+        stud: p.highlightedPoint,
+        img: p.bannerUrl || p.logoUrl || GolldenBullsImage,
+        link: p.websiteUrl || `/forex-education-and-training/${p.id}`
+    }));
+
     const [activeIndex, setActiveIndex] = useState(0);
+
+    if (SLIDES.length === 0) {
+        return null;
+    }
 
     const next = () => setActiveIndex((prev) => (prev + 1) % SLIDES.length);
     const prev = () => setActiveIndex((prev) => (prev === 0 ? SLIDES.length - 1 : prev - 1));
@@ -68,7 +89,7 @@ export default function ForexEducation() {
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            <Button variant='primary' size='md' className='border-none py-2.5 px-6 rounded-full bg-white text-black100'>
+                            <Button variant='primary' size='md' className='border-none py-2.5 px-6 rounded-full bg-white text-black100' onClick={() => window.location.href = '/forex-education-and-training'}>
                                 View More
                                 <div>
                                     <MoveRight className='text-black100' />
@@ -109,7 +130,7 @@ export default function ForexEducation() {
                                         className="absolute left-[50%] top-[30px] w-[380px] max-mobile:w-[280px] rounded-[16px] max-mobile:rounded-lg bg-[#515151] shadow-[0_0_78px_0_rgba(26,26,26,0.5),inset_0_0_8.3px_0_rgba(0,0,0,0.25)] max-mobile:p-2 p-3 flex flex-col"
                                     >
                                         <div className='mb-2'>
-                                            <img className='block rounded-t-2xl' src={GolldenBullsImage} alt="GolldenBullsImage" />
+                                            <img className='block rounded-t-2xl' src={slide.img} alt={slide.title} />
                                         </div>
 
                                         <div className=' relative z-20 rounded-[14.774px] bg-[#1A1A1A] shadow-[0_0_27.887px_0_rgba(0,0,0,0.1)] p-4'>
@@ -132,7 +153,7 @@ export default function ForexEducation() {
                                                 </div>
                                             </div>
 
-                                            <Button variant='primary' size='md' className={` border-none w-full justify-center text-sm py-2 bg-white text-black100  flex  items-center group`}>
+                                            <Button variant='primary' size='md' className={` border-none w-full justify-center text-sm py-2 bg-white text-black100  flex  items-center group`} onClick={() => window.location.href = slide.link}>
                                                 Start Learning
                                                 <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
                                                     <MoveRight className="text-white" />
