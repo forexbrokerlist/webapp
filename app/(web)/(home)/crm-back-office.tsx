@@ -27,17 +27,17 @@ const CARD_STYLES = [
     },
     {
         bg: "bg-[#08A975]",
-        border: "border-[rgba(18, 18, 18, 0.08)]",
+        border: "border-[#08A975]",
         shadow: "shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
     },
     {
         bg: "bg-[#FEBB36]",
-        border: "border-[rgba(18, 18, 18, 0.08)]",
+        border: "border-[#FEBB36]",
         shadow: "shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
     },
     {
         bg: "bg-[#EC6868]",
-        border: "border-[rgba(18, 18, 18, 0.08)]",
+        border: "border-[#EC6868]",
         shadow: "shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
     }
 ];
@@ -123,8 +123,8 @@ export default function CrmBackOffice({ solutions }: CrmBackOfficeProps) {
                                         </p>
                                     </div>
                                 </div>
-                            
-                                <Button variant='primary' size='md' className={` border-none py-2.5 bg-white text-black100  flex justify-between items-center group w-full`}>
+
+                                <Button variant='primary' size='md' className={` border-none py-2.5 bg-white text-black100  flex justify-between items-center group `}>
                                     Explore Broker
                                     <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
                                         <MoveRight className="text-white" />

@@ -84,6 +84,7 @@
   --color-primary: #a8dd15;
   --color-border-light: #e3e3e3;
   --color-border-light200: #ddd;
+  --color-border-light800: rgba(26, 26, 26, 0.08);;
   --color-border-gray800: rgba(0, 0, 0, 0.08);
   --color-border-light300: #d3d3d3;
   --breakpoint-laptop: 1600px;
