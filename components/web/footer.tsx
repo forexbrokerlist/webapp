@@ -11,7 +11,6 @@ import { Stack } from "~/components/common/stack"
 import { Tooltip } from "~/components/common/tooltip"
 import { CTAForm } from "~/components/web/cta-form"
 import { ExternalLink } from "~/components/web/external-link"
-import { ThemeSwitcher } from "~/components/web/theme-switcher"
 import { FullLogo } from "~/components/web/ui/full-logo"
 import { NavLink, navLinkVariants } from "~/components/web/ui/nav-link"
 import { adsConfig } from "~/config/ads"
@@ -49,11 +48,7 @@ export const Footer = ({ children, className, ...props }: ComponentProps<"div">)
                 smarter decisions with real-time insight.
               </p>
               <div className="pt-6 flex items-center gap-2.5">
-                <Tooltip tooltip={t("navigation.toggle_theme")}>
-                  <div className="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center">
-                    <ThemeSwitcher className="text-primary text-2xl" />
-                  </div>
-                </Tooltip>
+
 
                 <Tooltip tooltip={t("navigation.rss_feed")}>
                   <ExternalLink href={linksConfig.feed} className={navLinkVariants()}>

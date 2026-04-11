@@ -23,7 +23,7 @@ interface BlogSectionProps {
 
 export default function BlogSection({ posts = [] }: BlogSectionProps) {
     const format = useFormatter();
-    
+
     // Show real posts, fallback to empty array if none
     const displayPosts = posts.length > 0 ? posts.slice(0, 3) : [];
 
@@ -56,8 +56,8 @@ export default function BlogSection({ posts = [] }: BlogSectionProps) {
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            Stay informed with the latest forex broker reviews, trading tips, and market insights written 
-for traders at every level.
+                            Stay informed with the latest forex broker reviews, trading tips, and market insights written
+                            for traders at every level.
                         </motion.p>
                     </motion.div>
                     <motion.div
@@ -109,8 +109,6 @@ for traders at every level.
                                             src={post.image || BlogCardImage}
                                             alt={post.title}
                                             className='block w-full aspect-video object-cover'
-                                            whileHover={{ scale: 1.05 }}
-                                            transition={{ duration: 0.3 }}
                                         />
                                     </div>
                                     <div className='pt-5 max-mobile:pt-3 flex-1 flex flex-col'>
@@ -131,7 +129,7 @@ for traders at every level.
                                         <p className='text-base max-mobile:text-sm font-medium text-black700 line-clamp-2 mb-4'>
                                             {post.description}
                                         </p>
-                                       
+
                                     </div>
                                 </Link>
                             </motion.div>

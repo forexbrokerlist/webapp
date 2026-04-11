@@ -130,7 +130,7 @@
   }
 }
 
-@layer base {
+/* @layer base {
   *,
   ::after,
   ::before,
@@ -230,7 +230,7 @@
     @apply -translate-x-[0.1em];
     @apply -translate-y-[0.1em];
   }
-}
+} */
 
 @utility prose {
   & [id] {

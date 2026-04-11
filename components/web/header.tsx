@@ -24,7 +24,6 @@ import {
 } from "~/components/common/dropdown-menu"
 import { Link } from "~/components/common/link"
 import { Stack } from "~/components/common/stack"
-import { ThemeSwitcher } from "~/components/web/theme-switcher"
 import { Container } from "~/components/web/ui/container"
 import { Hamburger } from "~/components/web/ui/hamburger"
 import { FullLogo } from "~/components/web/ui/full-logo"
@@ -162,9 +161,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
               <SearchIcon />
             </Button> */}
 
-            {/* <Button size="sm" variant="ghost" className="p-1 -ml-1 text-base max-sm:hidden" asChild>
-              <ThemeSwitcher />
-            </Button> */}
+
 
             {/* <Button size="md" variant="primary" className="px-7" asChild>
               <Link href="/submit">{t("navigation.submit")}</Link>

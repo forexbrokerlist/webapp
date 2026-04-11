@@ -59,7 +59,7 @@ export default async function ({ children }: LayoutProps<"/">) {
           <NuqsAdapter>
             <TooltipProvider delayDuration={250} skipDelayDuration={250}>
               <SearchProvider>
-                <ThemeProvider attribute="class" disableTransitionOnChange>
+                <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
                   <ConsentManager>
                     <MotionConfig reducedMotion="user">{children}</MotionConfig>
                     <Toaster />
