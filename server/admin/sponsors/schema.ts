@@ -35,6 +35,8 @@ export const sponsorSchema = z.object({
   order: z.number().int().default(0),
   categoryId: z.string().optional().or(z.literal("")),
   title: z.string().optional().or(z.literal("")),
+  subtitle: z.string().optional().or(z.literal("")),
+  
   description: z.string().optional().or(z.literal("")),
   bannerImage: z.string().optional().or(z.literal("")),
   features: z.array(z.string()).default([]),

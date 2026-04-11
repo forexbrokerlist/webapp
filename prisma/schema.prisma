@@ -379,6 +379,7 @@ model Sponsor {
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
   title   String? 
+  subtitle String? 
   description String? 
   bannerImage String? 
   features    String[]  

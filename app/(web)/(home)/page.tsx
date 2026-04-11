@@ -197,7 +197,84 @@ export default async function (props: any) {
       socialProof: sponsor.socialProof,
     }))
   )
+  const liquidityCategory = await db.category.findUnique({
+    where: { slug: "liquidity-partners" },
+  })
 
+  const liquiditySponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: liquidityCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 2,
+  })
+
+  const liquidityPartners = await Promise.all(
+    liquiditySponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      title: sponsor.title || "Technology Partner",
+      subtitle: sponsor.subtitle,
+      description: sponsor.description,
+      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint, 
+      socialProof: sponsor.socialProof,
+    }))
+  )
+    const PSPCategory = await db.category.findUnique({
+    where: { slug: "psp-partners" },
+  })
+
+  const PSPCategorySponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: PSPCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 10,
+  })
+
+  const PSPPartners = await Promise.all(
+    PSPCategorySponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      title: sponsor.title || "Technology Partner",
+      subtitle: sponsor.subtitle,
+      description: sponsor.description,
+      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint, 
+      socialProof: sponsor.socialProof,
+    }))
+  )
+   const TradingPlatformCategory = await db.category.findUnique({
+    where: { slug: "trading-platform-partners" },
+  })
+
+  const TradingPlatformSponsors = await db.sponsor.findMany({
+    where: {
+      categoryId: TradingPlatformCategory?.id,
+      isActive: true,
+    },
+    orderBy: { order: "asc" },
+    take: 10,
+  })
+
+  const TradingPalformPartners = await Promise.all(
+    TradingPlatformSponsors.map(async (sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      title: sponsor.title || "Technology Partner",
+      subtitle: sponsor.subtitle,
+      description: sponsor.description,
+      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+      features: sponsor.features,
+      highlightedPoint: sponsor.highlightedPoint, 
+      socialProof: sponsor.socialProof,
+    }))
+  )
   console.log('--- DEBUG: Sponsors ---')
   console.log('Bridge[0] socialProof:', bridgePartners[0]?.socialProof)
   console.log('CRM[0] socialProof:', crmSolutions[0]?.socialProof)
@@ -211,7 +288,7 @@ export default async function (props: any) {
       <ForexEducation />
       <BidgeAndPlug partners={bridgePartners} />
       <InvestInEverything />
-      <OurPartners />
+      <OurPartners liquidityPartners={liquidityPartners} PSPPartners={PSPPartners} TradingPalformPartners={TradingPalformPartners} />
       <ForexBrokers />
       <BlogSection />
       <FAQ />

@@ -26,7 +26,7 @@ export default function BlogSection() {
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            Blog
+                            Blogs
                         </motion.h2>
                         <motion.p
                             className='text-lg max-mobile:text-base text-black700 font-medium max-w-[650px]'
