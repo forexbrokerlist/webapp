@@ -253,6 +253,8 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
                 form={form}
                 field={field}
                 path={`${path}/banner`}
+                fetchType="screenshot"
+                websiteUrl={websiteUrl}
               >
                 {field.value && (
                   <Image
