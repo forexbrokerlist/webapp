@@ -4,7 +4,7 @@ import { type ComponentProps } from "react"
 import { Button } from "~/components/common/button"
 import { motion } from "framer-motion"
 
-const Herobanner = '/assets/images/HeroBanner.png';
+const Herobanner = '/assets/images/Hero.png';
 
 export const Hero = ({ className, ...props }: ComponentProps<"section">) => {
   return (
