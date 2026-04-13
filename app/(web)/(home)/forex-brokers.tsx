@@ -8,19 +8,19 @@ const ForexBropkerImage = '/assets/images/forex-broker.png';
 const BROKERS_LIST = [
     {
         name: "Newera365",
-        description: "That's why 1.6+ crore customers trust Zerodha with ~ ₹6 lakh crores of equity investments, making us India's largest broker; contributing to 15% of daily retail exchange volumes in India."
+        description: "Modern forex and crypto broker built for the 24/7 digital trading era. Offers competitive spreads, fast execution, and a user-friendly platform for retail and professional traders."
     },
     {
         name: "ExoraPrime",
-        description: "Automates small price movements using smart and reliable grid trading strategies\nThat's why 1.6+ crore customers trust Zerodha with ~ ₹6 lakh crores of equity investments, making us India's largest broker; contributing to 15% of daily retail exchange volumes in India."
+        description: "Advanced forex broker offering institutional-grade execution with tight spreads and multi-asset trading across forex, commodities, and indices."
     },
     {
         name: "SecureFX",
-        description: "Automates small price movements using smart and reliable grid trading strategies\nThat's why 1.6+ crore customers trust Zerodha with ~ ₹6 lakh crores of equity investments, making us India's largest broker; contributing to 15% of daily retail exchange volumes in India."
+        description: "Regulated forex broker focused on security, transparency, and reliable trade execution for traders seeking a safe and trusted environment."
     },
     {
         name: "SeaGlobalFX",
-        description: "That's why 1.6+ crore customers trust Zerodha with ~ ₹6 lakh crores of equity investments, making us India's largest broker; contributing to 15% of daily retail exchange volumes in India."
+        description: "Global forex broker offering diverse trading instruments, competitive conditions, and dedicated support for traders across all experience levels."
     }
 ];
 
@@ -48,13 +48,15 @@ export default function ForexBrokers() {
                             Premium Forex Brokers
                         </motion.h2>
                         <motion.p
-                            className='text-lg max-mobile:text-base text-black700 font-medium max-w-[650px]'
+                            className='text-lg max-mobile:text-base text-black700 font-medium max-w-[705px]'
                             variants={{
                                 hidden: { opacity: 0, y: 20 },
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            Our platform is supported by incredible partners and sponsors who make it possible for our team to maintain this directory.
+                            Explore our featured premium forex brokers independently verified for regulation, 
+competitive spreads, and platform quality. Trusted by traders worldwide.
+
                         </motion.p>
                     </motion.div>
                     <motion.div

@@ -202,9 +202,10 @@ export default function OurPartners({ liquidityPartners, PSPPartners, TradingPal
                             <h3 className='text-3xl max-mobile:text-2xl max-mobile:leading-8 text-black100 font-bold text-center mb-1'>
                                 PSP Partners
                             </h3>
-                            <p className='text-base font-medium text-black700 text-center max-w-[511px] mx-auto'>
-                                Our platform is supported by incredible partners and sponsors who make it possible for our team to
-                                maintain this directory.
+                            <p className='text-base font-medium text-black700 text-center max-w-[650px] mx-auto'>
+                              Explore trusted payment solution providers for forex brokers supporting fast, secure 
+deposits and withdrawals for traders worldwide.
+
                             </p>
                         </div>
                         <motion.div

@@ -27,7 +27,7 @@ export default function InvestInEverything() {
                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
               }}
             >
-              Invest in everything
+             Choose the Right Forex Broker for Your Investment
             </motion.h2>
             <motion.p
               className='text-lg max-mobile:text-base max-mobile:leading-6 text-white mb-7'
@@ -36,7 +36,7 @@ export default function InvestInEverything() {
                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
               }}
             >
-              Online platform to invest in stocks, derivatives, mutual funds, ETFs, bonds, and more.
+             Compare forex brokers by spread, regulation, platform, and minimum deposit. Browse 512+ verified listings completely free. A signup is required.
             </motion.p>
             <motion.div
               variants={{
@@ -45,7 +45,7 @@ export default function InvestInEverything() {
               }}
             >
               <Button variant='primary' size='md' className={` border-none py-2.5 bg-white text-black100  flex justify-between items-center group`}>
-                Explore Broker
+                Browse All Brokers
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
                   <MoveRight className="text-white" />
                 </div>

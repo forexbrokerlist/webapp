@@ -29,7 +29,8 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
         tag: p.subtitle || 'Prop Level Training',
         rev: p.socialProof || '12k+ Students',
         stud: p.highlightedPoint,
-        img: p.bannerUrl || p.logoUrl || GolldenBullsImage,
+        img: p.bannerUrl || GolldenBullsImage,
+        logo: p.logoUrl,
         link: p.websiteUrl || `/forex-education-and-training/${p.id}`
     }));
 
@@ -47,7 +48,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
                 <div className='flex items-center max-tab:block justify-between max-laptop:gap-10 gap-[160px]'>
                     <motion.div
-                        className='max-w-[650px] max-tab:max-w-full max-laptop:max-w-[550px] shrink-0'
+                        className='max-w-[733px] max-tab:max-w-full max-laptop:max-w-[550px] shrink-0'
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true, amount: 0.3 }}
@@ -63,7 +64,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            Forex Education and Training
+                            Learn Forex Trading - Top Education Platforms & Courses
                         </motion.h2>
                         <motion.p
                             className='text-lg max-mobile:text-base text-white700 font-medium'
@@ -72,7 +73,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            Our platform is supported by incredible partners and sponsors who make it possible for our team to maintain this directory.
+                            The forex market rewards those who invest in their knowledge first. Our directory features hand-picked forex education platforms and trading academies trusted by thousands of active traders worldwide.
                         </motion.p>
                         <motion.p
                             className='text-lg text-white700 font-medium mt-2'
@@ -81,7 +82,8 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            incredible partners and sponsors who make it possible for our team to maintain this directory. Our platform is supported by incredible partners and sponsors who make it possible for our team to maintain this directory.
+                            Compare course formats, student reviews, pricing, and specializations, whether you prefer self-paced online learning, live mentorship, or structured trading programs. Start with confidence, backed by verified reviews and transparent listings.
+
                         </motion.p>
                         <motion.div
                             className='pt-12'
@@ -91,7 +93,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                             }}
                         >
                             <Button variant='primary' size='md' className='border-none py-2.5 px-6 rounded-full bg-white text-black100' onClick={() => window.location.href = '/forex-education-and-training'}>
-                                View More
+                                Start Learning
                                 <div>
                                     <MoveRight className='text-black100' />
                                 </div>
@@ -135,6 +137,11 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                         </div>
 
                                         <div className=' relative z-20 rounded-[14.774px] bg-[#1A1A1A] shadow-[0_0_27.887px_0_rgba(0,0,0,0.1)] p-4'>
+                                            {slide.logo && (
+                                                <div className="absolute -top-[42px] right-4 w-[84px] h-[84px] rounded-full bg-white shadow-[0_0_30px_rgba(255,215,0,0.25)] z-30 flex items-center justify-center p-1.5 border-[3px] border-[rgba(255,255,255,0.1)]">
+                                                    <img src={slide.logo} className="w-full h-full object-contain rounded-full" alt={`${slide.title} Logo`} />
+                                                </div>
+                                            )}
                                             <div className='inline-flex max-mobile:text-xs items-center px-2 py-1  text-xs font-semibold text-white700 bg-[rgba(255,255,255,0.1)] rounded-full w-fit mb-1 border border-[rgba(255,255,255,0.05)]'>
                                                 {slide.tag}
                                             </div>

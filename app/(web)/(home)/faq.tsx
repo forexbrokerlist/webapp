@@ -45,8 +45,7 @@ function FAQ() {
                 Frequently Asked Questions
               </h2>
               <p className='text-lg max-mobile:text-base text-black700 font-medium leading-normal'>
-                Connect with trusted trading platforms and automate your strategies
-                with powerful tools
+              Got questions about forex brokers or our directory? Find quick answers below.
               </p>
             </div>
             <div className='max-w-[560px] max-mobile:rounded-xl max-mobile:p-5 w-full blur-card overflow-hidden relative rounded-[20px] border border-[rgba(18,18,18,0.1)] bg-white shadow-[0_0_26px_0_rgba(0,0,0,0.05)] backdrop-blur-[15.6px] p-[30px]'>

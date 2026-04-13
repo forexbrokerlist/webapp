@@ -1,4 +1,4 @@
-import { MousePointerClickIcon } from "lucide-react"
+import { MousePointerClickIcon, XIcon } from "lucide-react"
 import type { PropsWithChildren, ReactNode } from "react"
 import { AnimatedContainer } from "~/components/common/animated-container"
 import { Badge } from "~/components/common/badge"
@@ -75,7 +75,21 @@ export const RelationSelector = <T extends Relation>({
                 )}
 
                 {getDisplayRelations(selectedRelations).map(relation => (
-                  <Badge key={relation.id}>{relation.name}</Badge>
+                  <Badge 
+                    key={relation.id}
+                    suffix={
+                      <XIcon
+                        className="cursor-pointer opacity-50 hover:opacity-100 transition-opacity"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          setIds(ids.filter(id => id !== relation.id))
+                        }}
+                      />
+                    }
+                  >
+                    {relation.name}
+                  </Badge>
                 ))}
               </Stack>
             </AnimatedContainer>
