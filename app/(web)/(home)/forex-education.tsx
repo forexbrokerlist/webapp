@@ -47,7 +47,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
                 <div className='flex items-center max-tab:block justify-between max-laptop:gap-10 gap-[160px]'>
                     <motion.div
-                        className='max-w-[650px] max-tab:max-w-full max-laptop:max-w-[550px] shrink-0'
+                        className='max-w-[733px] max-tab:max-w-full max-laptop:max-w-[550px] shrink-0'
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true, amount: 0.3 }}
@@ -63,7 +63,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            Forex Education and Training
+                           Learn Forex Trading - Top Education Platforms & Courses
                         </motion.h2>
                         <motion.p
                             className='text-lg max-mobile:text-base text-white700 font-medium'
@@ -72,7 +72,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            Our platform is supported by incredible partners and sponsors who make it possible for our team to maintain this directory.
+                            The forex market rewards those who invest in their knowledge first. Our directory features hand-picked forex education platforms and trading academies trusted by thousands of active traders worldwide.
                         </motion.p>
                         <motion.p
                             className='text-lg text-white700 font-medium mt-2'
@@ -81,7 +81,8 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            incredible partners and sponsors who make it possible for our team to maintain this directory. Our platform is supported by incredible partners and sponsors who make it possible for our team to maintain this directory.
+                          Compare course formats, student reviews, pricing, and specializations, whether you prefer self-paced online learning, live mentorship, or structured trading programs. Start with confidence, backed by verified reviews and transparent listings.
+
                         </motion.p>
                         <motion.div
                             className='pt-12'
@@ -91,7 +92,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                             }}
                         >
                             <Button variant='primary' size='md' className='border-none py-2.5 px-6 rounded-full bg-white text-black100' onClick={() => window.location.href = '/forex-education-and-training'}>
-                                View More
+                                Start Learning 
                                 <div>
                                     <MoveRight className='text-black100' />
                                 </div>

@@ -125,7 +125,7 @@ export default function CrmBackOffice({ solutions }: CrmBackOfficeProps) {
                                 </div>
 
                                 <Button variant='primary' size='md' className={` border-none py-2.5 bg-white text-black100  flex justify-between items-center group `}>
-                                    Explore Broker
+                                    Explore Software
                                     <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
                                         <MoveRight className="text-white" />
                                     </div>
