@@ -124,26 +124,28 @@ export default function CrmBackOffice({ solutions }: CrmBackOfficeProps) {
                                 whileHover={{ y: -8, scale: 1.02 }}
                                 className={`p-5 relative overflow-hidden rounded-[24px] max-laptop:rounded-xl max-laptop:p-4 border ${style.border} ${style.bg} ${style.shadow}`}
                             >
-                                <div className='flex items-center gap-5 pb-12 max-laptop:pb-6'>
-                                    <div className='w-[70px] max-laptop:w-14 max-laptop:h-14 h-[70px] shrink-0 drop-shadow-[0_0_11.575px_rgba(0,0,0,0.05)] rounded-full flex items-center justify-center bg-white overflow-hidden'>
-                                        <Favicon src={solution.logo} title={solution.name} size={30} contained className="max-w-12" />
+                                <div className="relative z-10">
+                                    <div className='flex items-center gap-5 pb-12 max-laptop:pb-6'>
+                                        <div className='w-[70px] max-laptop:w-14 max-laptop:h-14 h-[70px] shrink-0 drop-shadow-[0_0_11.575px_rgba(0,0,0,0.05)] rounded-full flex items-center justify-center bg-white overflow-hidden'>
+                                            <Favicon src={solution.logo} title={solution.name} size={30} contained className="max-w-12" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className={`text-2xl max-laptop:text-xl font-bold font-monda text-white truncate`}>
+                                                {solution.name}
+                                            </h3>
+                                            <p className={`text-sm font-medium text-white800 line-clamp-2`}>
+                                                {solution.title}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className={`text-2xl max-laptop:text-xl font-bold font-monda text-white truncate`}>
-                                            {solution.name}
-                                        </h3>
-                                        <p className={`text-sm font-medium text-white800 line-clamp-2`}>
-                                            {solution.title}
-                                        </p>
-                                    </div>
-                                </div>
 
-                                <Button variant='primary' size='md' className={` border-none py-2.5 bg-white text-black100  flex justify-between items-center group `}>
-                                    Explore Software
-                                    <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
-                                        <MoveRight className="text-white w-4 h-4" />
-                                    </div>
-                                </Button>
+                                    <Button variant='primary' size='md' className={` border-none py-2.5 bg-white text-black100  flex justify-between items-center group `}>
+                                        Explore Software
+                                        <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
+                                            <MoveRight className="text-white w-4 h-4" />
+                                        </div>
+                                    </Button>
+                                </div>
                                 <div className="absolute bottom-[-20px] right-0">
                                     <img src={BlueVec} alt="BlueVec" className="block max-w-[100px]" />
                                 </div>
