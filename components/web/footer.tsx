@@ -43,9 +43,8 @@ export const Footer = ({ children, className, ...props }: ComponentProps<"div">)
             <div>
               <FullLogo className="h-6 max-w-[175px] w-full" />
               <p className="text-base font-medium text-black700 max-w-[364px] mt-5">
-                A powerful trading platform to explore, compare,
-                and trade with top brokers worldwide. Make
-                smarter decisions with real-time insight.
+              ForexBrokerList.io is a free forex broker directory helping traders discover, compare, and review 512+ verified forex brokers worldwide.
+
               </p>
               <div className="pt-6 flex items-center gap-2.5">
 
@@ -105,6 +104,8 @@ execute trades, or manage client funds.
               For queries or listing requests, contact us at: <span className="text-primary underline"> forexbrokerlist24@gmail.com </span>
             </p>
           </div>
+      <div className='w-full mt-4  h-[1px]   bg-[#1A1A1A1A]'></div>
+          <p className='text-center text-base font-medium text-black700 mt-4'> © 2026 ForexBrokerList.io - All rights reserved.</p>
         </div>
       </footer>
 
