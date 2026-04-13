@@ -5,6 +5,7 @@ import { Button } from "~/components/common/button";
 import { motion } from "framer-motion";
 import { Favicon } from '~/components/web/ui/favicon';
 import Link from "next/link";
+const BlueVec = '/assets/images/blue-vec.svg';
 
 
 
@@ -121,7 +122,7 @@ export default function CrmBackOffice({ solutions }: CrmBackOfficeProps) {
                                     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 20 } }
                                 }}
                                 whileHover={{ y: -8, scale: 1.02 }}
-                                className={`p-5 rounded-[24px] max-laptop:rounded-xl max-laptop:p-4 border ${style.border} ${style.bg} ${style.shadow}`}
+                                className={`p-5 relative overflow-hidden rounded-[24px] max-laptop:rounded-xl max-laptop:p-4 border ${style.border} ${style.bg} ${style.shadow}`}
                             >
                                 <div className='flex items-center gap-5 pb-12 max-laptop:pb-6'>
                                     <div className='w-[70px] max-laptop:w-14 max-laptop:h-14 h-[70px] shrink-0 drop-shadow-[0_0_11.575px_rgba(0,0,0,0.05)] rounded-full flex items-center justify-center bg-white overflow-hidden'>
@@ -143,6 +144,9 @@ export default function CrmBackOffice({ solutions }: CrmBackOfficeProps) {
                                         <MoveRight className="text-white w-4 h-4" />
                                     </div>
                                 </Button>
+                                <div className="absolute bottom-[-20px] right-0">
+                                    <img src={BlueVec} alt="BlueVec" className="block max-w-[100px]" />
+                                </div>
                             </motion.div>
                         )
                     })}
