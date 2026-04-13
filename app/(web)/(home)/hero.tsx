@@ -4,7 +4,7 @@ import { type ComponentProps } from "react"
 import { Button } from "~/components/common/button"
 import { motion } from "framer-motion"
 
-const Herobanner = '/assets/images/herobanner.png';
+const Herobanner = '/assets/images/HeroBanner.png';
 
 export const Hero = ({ className, ...props }: ComponentProps<"section">) => {
   return (
@@ -140,7 +140,7 @@ export const Hero = ({ className, ...props }: ComponentProps<"section">) => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
             >
-              <img src={Herobanner} className="max-w-[700px] max-mobile:max-w-full max-mobile:w-full max-laptop:max-w-[600px] max-tab:max-w-[500px] block" alt="Herobanner" />
+              <img src={Herobanner} className="max-w-[600px] max-mobile:max-w-full max-mobile:w-full max-laptop:max-w-[600px] max-tab:max-w-[500px] block" alt="Herobanner" />
             </motion.div>
           </div>
         </div>

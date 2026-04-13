@@ -10,7 +10,7 @@ import { Favicon } from '~/components/web/ui/favicon';
 
 const MapImage = '/assets/images/map.png';
 
-const ForexImage = '/assets/images/forex.svg';
+const ForexImage = '/assets/images/FBL Logo.png';
 
 interface Platform {
     id: number;
@@ -169,33 +169,32 @@ the right fit for your trading goals.
                             viewport={{ once: true, amount: 0.1 }}
                             whileHover={{ y: -8, scale: 1.02 }}
                             transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.25 }}
-                            className='rounded-[16px] border-[0.5px] border-[rgba(26,26,26,0.2)] bg-black100 p-5'
+                            className='rounded-[16px] border-[0.5px] border-[rgba(26,26,26,0.2)] bg-white p-5'
                         >
                             <div className='flex items-center justify-between pb-4 max-mobile:grid max-mobile:grid-cols-1 max-mobile:gap-3'>
                                 <div className='flex items-center gap-3'>
                                     <div className='w-16 h-16 rounded-xl flex items-center justify-center bg-[rgba(255,255,255,0.14)] '>
-                                        <img className='max-w-[38px] block' src={'/assets/images/lunar.svg'} alt="LunarIcon" />
+                                        <img className='max-w-[64px] block' src={'/assets/images/ForexLogo.png'} alt="LunarIcon" />
                                     </div>
                                     <div className='flex items-center gap-2'>
-                                        <h3 className='text-[22px] font-semibold font-monda text-white'>
+                                        <h3 className='text-[22px] font-semibold font-monda text-black100'>
                                             Your brand here
                                         </h3>
-                                        <VerifyIcon />
+                                        {/* <VerifyIcon /> */}
                                     </div>
                                 </div>
                                 <div>
-                                    <button className='text-sm border-none bg-white rounded-full text-black100 font-medium px-4 py-1.5'>
+                                    <button className='text-sm border-none bg-primary rounded-full text-black100 font-medium px-4 py-1.5'>
                                         Add New
                                     </button>
                                 </div>
                             </div>
-                            <p className='text-sm text-white700 font-medium mb-5'>
-                                AI-driven predictive market models and high-frequency automated
-                                trading scripts.
+                            <p className='text-sm text-black100 font-medium mb-5'>
+                               Reach our audience of professional directory owners and boost your sales.
                             </p>
                             <img src={ForexImage} alt="ForexImage" className='block w-full' />
                             <div>
-                                <Button size='md' variant='primary' className='bg-white text-sm py-2 w-full font-medium text-black100'>
+                                <Button size='md' variant='primary' className='bg-black100 text-sm py-2 w-full font-medium text-primary'>
                                     Advertise on Forex Brokers Listing
                                     <div className='flex items-center'>
                                         <MoveRight />
