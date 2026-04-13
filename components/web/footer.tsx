@@ -91,14 +91,18 @@ export const Footer = ({ children, className, ...props }: ComponentProps<"div">)
           </div>
           <div className="text-base max-mobile:pt-[40px] font-medium text-black700 pt-[60px]">
             <p>
-              Zerodha Broking Ltd.: Member of NSE, BSE, MCX & MSEI – SEBI Registration no.: INZ000031633 CDSL/NSDL: Depository services through Zerodha Broking Ltd. – SEBI Registration no.: IN-DP-431-2019 Registered Address: Zerodha Broking Ltd., #153/154, 4th Cross, Dollars Colony, Opp. Clarence Public School, J.P Nagar 4th Phase, Bengaluru - 560078, Karnataka, India. For any complaints pertaining to securities broking please write to complaints@zerodha.com, for DP related to dp@zerodha.com. Please ensure you carefully read the Risk Disclosure Document as prescribed
-              by SEBI | ICF
+              ForexBrokerList.io is an independent forex broker directory for informational purposes only. We do not provide financial advice, 
+execute trades, or manage client funds.
+
             </p>
-            <p>
-              Procedure to file a complaint on SEBI SCORES: Register on SCORES portal. Mandatory details for filing complaints on SCORES: Name, PAN, Address, Mobile Number, E-mail ID. Benefits: Effective Communication, Speedy redressal of the grievances
+            <p className="mt-2">
+              All broker listings, reviews, and comparisons are for general information only. Trading forex and CFDs involves significant risk of loss and may not be suitable for all investors. Past performance is not indicative of future results.
             </p>
-            <p>
-              Smart Online Dispute Resolution | Grievances Redressal Mechanism
+            <p className="mt-2">
+              Sponsored listings are clearly marked and do not imply endorsement or recommendation. Always verify a broker's regulatory status through official authorities such as FCA, ASIC, or CySEC before depositing funds.
+            </p>
+            <p className="mt-2">
+              For queries or listing requests, contact us at: <span className="text-primary underline"> forexbrokerlist24@gmail.com </span>
             </p>
           </div>
         </div>
