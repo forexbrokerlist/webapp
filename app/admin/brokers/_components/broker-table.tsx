@@ -127,6 +127,7 @@ const columns: ColumnDef<BrokerRow>[] = [
   {
     id: "categories",
     accessorKey: "categories",
+    enableSorting: false,
     header: ({ column }) => <DataTableColumnHeader column={column} title="Category" />,
     cell: ({ row }) => {
       const categories = row.original.categories
