@@ -87,11 +87,12 @@ export default function TrustedTrading({ platforms }: TrustedTradingProps) {
                         transition={{ duration: 0.6 }}
                     >
                         <h2 className='text-[42px] max-mobile:text-3xl leading-normal text-black100 font-bold font-monda'>
-                            Trusted Trading Platforms
+                           Top-Rated Forex Brokers & Trading Platforms
+
                         </h2>
-                        <p className='text-lg max-mobile:text-base text-black700 font-medium max-w-[650px]'>
-                            Explore top-rated brokers and algorithmic tools designed for smarter
-                            and faster trading.
+                        <p className='text-lg max-mobile:text-base text-black700 font-medium max-w-[885px]'>
+                          Browse verified forex brokers and trading platforms, compare spreads, regulation, and features to find 
+the right fit for your trading goals.
                         </p>
                     </motion.div>
                     <motion.div

@@ -36,7 +36,7 @@ export const Hero = ({ className, ...props }: ComponentProps<"section">) => {
                   New
                 </div>
                 <span className="text-base max-mobile:text-sm font-medium text-black700">
-                  512 Broker listed
+                512+ Verified Brokers Listed
                 </span>
               </motion.div>
 
@@ -65,7 +65,7 @@ export const Hero = ({ className, ...props }: ComponentProps<"section">) => {
                 transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
               >
                 <Button size="md" variant="primary" className="px-5 gap-2.5 group">
-                  Explore Broker
+                Find Your Broker
                   <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                       <path d="M12.0254 4.94141L17.0837 9.99974L12.0254 15.0581" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />

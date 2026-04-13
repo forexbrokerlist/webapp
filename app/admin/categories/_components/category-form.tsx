@@ -44,6 +44,7 @@ export function CategoryForm({ className, title, category, ...props }: CategoryF
       label: category?.label ?? "",
       description: category?.description ?? "",
       tools: category?.tools.map(t => t.id) ?? [],
+      brokers: category?.brokers.map(b => String(b.id)) ?? [],
     },
   })
 

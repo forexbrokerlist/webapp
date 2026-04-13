@@ -14,7 +14,10 @@ import { useQueryStates } from "nuqs"
 import type { ComponentProps } from "react"
 import { type Brokers, ToolStatus, PaymentStatus } from "~/.generated/prisma/browser"
 
-export type BrokerRow = Brokers & { payments?: { status: PaymentStatus }[] }
+export type BrokerRow = Brokers & { 
+  payments?: { status: PaymentStatus }[]
+  categories?: { id: string; name: string }[]
+}
 
 import { ToolActions } from "~/app/admin/brokers/_components/broker-actions"
 import { ToolTableToolbarActions } from "~/app/admin/brokers/_components/broker-table-toolbar-actions"
@@ -122,6 +125,22 @@ const columns: ColumnDef<BrokerRow>[] = [
     cell: ({ row }) => <Note>{row.getValue("submitterEmail")}</Note>,
   },
   {
+    id: "categories",
+    accessorKey: "categories",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Category" />,
+    cell: ({ row }) => {
+      const categories = row.original.categories
+      if (!categories || categories.length === 0) return <Note>—</Note>
+      return (
+        <div className="flex flex-wrap gap-1">
+          {categories.map((c) => (
+            <Badge key={c.id} variant="soft">{c.name}</Badge>
+          ))}
+        </div>
+      )
+    },
+  },
+  {
     id: "paymentStatus",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Payment" />,
     cell: ({ row }) => {
@@ -166,7 +185,7 @@ export function ToolTable() {
       placeholderData: keepPreviousData,
     }),
   )
-
+ 
   // Search filters
   const filterFields: DataTableFilterField<BrokerRow>[] = [
     {

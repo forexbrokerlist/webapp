@@ -13,6 +13,7 @@ export const findBrokers = async (params: any = {}) => {
         orderBy: { createdAt: "desc" },
         take: 1,
       },
+      categories: { select: { id: true, name: true } },
     },
   });
 };

@@ -15,7 +15,7 @@ interface ClientLogoProps {
 const LogoSet = ({ logos }: { logos: Logo[] }) => (
     <div className="flex items-center gap-[60px] pr-[60px] shrink-0">
         {logos.map((logo, idx) => (
-            <img key={idx} className="block max-w-[140px] max-mobile:max-w-[100px] shrink-0 object-contain h-[40px]" src={logo.src} alt={logo.alt} />
+            <img key={idx} className="block max-w-[140px] max-mobile:max-w-[100px] shrink-0 object-contain h-[58px]" src={logo.src} alt={logo.alt} />
         ))}
     </div>
 );
