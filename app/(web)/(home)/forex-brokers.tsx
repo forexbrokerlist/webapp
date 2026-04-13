@@ -3,7 +3,7 @@ import { MoveRight } from 'lucide-react'
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '~/components/common/button';
-const ForexBropkerImage = '/assets/images/forex-broker.png';
+const ForexBropkerImage = '/assets/images/forex-broker.svg';
 
 const BROKERS_LIST = [
     {
@@ -26,7 +26,7 @@ const BROKERS_LIST = [
 
 export default function ForexBrokers() {
     return (
-        <div className='py-100 overflow-hidden max-mobile:py-16'>
+        <div className='pt-100 overflow-hidden max-mobile:pt-16'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
                 <div className='flex items-center max-mobile:block justify-between pb-12 max-mobile:pb-8'>
                     <motion.div
@@ -54,8 +54,8 @@ export default function ForexBrokers() {
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            Explore our featured premium forex brokers independently verified for regulation, 
-competitive spreads, and platform quality. Trusted by traders worldwide.
+                            Explore our featured premium forex brokers independently verified for regulation,
+                            competitive spreads, and platform quality. Trusted by traders worldwide.
 
                         </motion.p>
                     </motion.div>

@@ -90,7 +90,7 @@ export default function AlgoTrading({ partners = [] }: { partners?: Partner[] })
 
                             <div className='grid grid-cols-[87px_1fr] gap-5 pt-5 pb-4 border-b border-solid border-border-light800'>
                                 <div className='w-full h-[64px] rounded-lg bg-[#F2F4F7] flex items-center justify-center'>
-                                    <img src={partner.logoUrl} alt={partner.name} className='max-w-[30px]' onError={(e) => {
+                                    <img src={partner.logoUrl} alt={partner.name} className='max-w-[35px]' onError={(e) => {
                                         (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${partner.name}&background=A8DD15&color=fff`;
                                     }} />
                                 </div>
