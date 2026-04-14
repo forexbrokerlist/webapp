@@ -177,6 +177,7 @@ export default async function (props: any) {
       features: sponsor.features,
       highlightedPoint: sponsor.highlightedPoint,
       socialProof: sponsor.socialProof,
+      slug:sponsor.slug || ""
     }))
   )
 
@@ -203,6 +204,7 @@ export default async function (props: any) {
       features: sponsor.features,
       highlightedPoint: sponsor.highlightedPoint,
       socialProof: sponsor.socialProof,
+      slug:sponsor.slug || ""
     }))
   )
   const liquidityCategory = await db.category.findUnique({
@@ -337,6 +339,7 @@ export default async function (props: any) {
       features: sponsor.features,
       highlightedPoint: sponsor.highlightedPoint,
       socialProof: sponsor.socialProof,
+      slug:sponsor.slug
     }))
   )
 

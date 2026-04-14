@@ -4,7 +4,9 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '~/components/common/button'
 import { ButtonGroup } from '~/components/common/button-group'
-import { Link } from '~/components/common/link'
+import Link from 'next/link'
+import Image from 'next/image'
+
 const GolldenBullsImage = '/assets/images/gollden.png';
 
 interface Partner {
@@ -18,6 +20,7 @@ interface Partner {
     bannerUrl: string | null;
     websiteUrl: string | null;
     socialProof: string | null;
+    slug:string|null
 }
 
 export default function ForexEducation({ partners = [] }: { partners?: Partner[] }) {
@@ -31,7 +34,8 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
         stud: p.highlightedPoint,
         img: p.bannerUrl || GolldenBullsImage,
         logo: p.logoUrl,
-        link: p.websiteUrl || `/forex-education-and-training/${p.id}`
+        link: p.websiteUrl || `/forex-education-and-training/${p.id}`,
+        slug:p.slug
     }));
 
     const [activeIndex, setActiveIndex] = useState(0);
@@ -92,11 +96,13 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            <Button variant='primary' size='md' className='border-none py-2.5 px-6 rounded-full bg-white text-black100' onClick={() => window.location.href = '/forex-education-and-training'}>
-                                Start Learning
-                                <div>
-                                    <MoveRight className='text-black100' />
-                                </div>
+                            <Button variant='primary' size='md' className='border-none py-2.5 px-6 rounded-full bg-white text-black100' asChild>
+                                <Link href="/categories/forex-education-and-training">
+                                    Start Learning
+                                    <div>
+                                        <MoveRight className='text-black100' />
+                                    </div>
+                                </Link>
                             </Button>
                         </motion.div>
                     </motion.div>
@@ -133,13 +139,20 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                         className="absolute left-[50%] top-[30px] w-[380px] max-mobile:w-[280px] rounded-[16px] max-mobile:rounded-lg bg-[#515151] shadow-[0_0_78px_0_rgba(26,26,26,0.5),inset_0_0_8.3px_0_rgba(0,0,0,0.25)] max-mobile:p-2 p-3 flex flex-col"
                                     >
                                         <div className='mb-2'>
-                                            <img className='block rounded-2xl w-full h-[200px] object-cover' src={slide.img} alt={slide.title} />
+                                            <Image
+                                                src={slide.img}
+                                                alt={slide.title}
+                                                width={380}
+                                                height={200}
+                                                loading="lazy"
+                                                className='block rounded-2xl w-full h-[200px] object-cover'
+                                            />
                                         </div>
 
                                         <div className=' relative z-20 rounded-[14.774px] bg-[#1A1A1A] shadow-[0_0_27.887px_0_rgba(0,0,0,0.1)] p-4'>
                                             {slide.logo && (
                                                 <div className="absolute -top-[42px] right-4 w-[84px] h-[84px] rounded-full bg-white shadow-[0_0_30px_rgba(255,215,0,0.25)] z-30 flex items-center justify-center p-1.5 border-[3px] border-[rgba(255,255,255,0.1)]">
-                                                    <img src={slide.logo} className="w-full h-full object-contain rounded-full" alt={`${slide.title} Logo`} />
+                                                    <Image src={slide.logo} alt={`${slide.title} Logo`} width={80} height={80} loading="lazy" className="w-full h-full object-contain rounded-full" />
                                                 </div>
                                             )}
                                             <div className='inline-flex max-mobile:text-xs items-center px-2 py-1  text-xs font-semibold text-white700 bg-[rgba(255,255,255,0.1)] rounded-full w-fit mb-1 border border-[rgba(255,255,255,0.05)]'>
@@ -161,11 +174,13 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                                 </div>
                                             </div>
 
-                                            <Button variant='primary' size='md' className={` border-none w-full justify-center text-sm py-2 bg-white text-black100  flex  items-center group`} onClick={() => window.location.href = slide.link}>
-                                                Start Learning
-                                                <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
-                                                    <MoveRight className="text-white w-4 h-4" />
-                                                </div>
+                                            <Button variant='primary' size='md' className={`border-none w-full justify-center text-sm py-2 bg-white text-black100 flex items-center group`} asChild>
+                                                <Link href={slide.slug ? `/brokers/${slide.slug}` : slide.link}>
+                                                    Start Learning
+                                                    <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100`}>
+                                                        <MoveRight className="text-white w-4 h-4" />
+                                                    </div>
+                                                </Link>
                                             </Button>
                                         </div>
                                     </motion.div>

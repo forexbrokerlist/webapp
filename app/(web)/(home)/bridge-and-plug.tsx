@@ -6,6 +6,7 @@ import { Button } from '~/components/common/button'
 import CheckIcon from '~/components/common/icons/check-icon'
 import { motion } from 'framer-motion'
 import { Favicon } from '~/components/web/ui/favicon'
+import Link from 'next/link'
 
 interface Partner {
     id: string;
@@ -16,6 +17,7 @@ interface Partner {
     features: string[];
     highlightedPoint: string | null;
     socialProof: string | null;
+    slug:string|null 
 }
 
 interface BridgeAndPlugProps {
@@ -56,10 +58,13 @@ export default function BidgeAndPlug({ partners = [] }: BridgeAndPlugProps) {
                         transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
                     >
                         <Button variant='primary' size='md' className='flex items-center gap-2'>
-                            Explore All
+                            <Link href="/categories/bridge-and-plug-in-partners">
+                                Explore All
+                           
                             <div>
                                 <MoveRight />
                             </div>
+                            </Link>
                         </Button>
                     </motion.div>
                 </div>
@@ -120,6 +125,7 @@ export default function BidgeAndPlug({ partners = [] }: BridgeAndPlugProps) {
                                     </div>
                                     <div className='pt-5'>
                                         <Button size="md" variant="primary" className="px-5 w-full justify-center gap-2.5 py-2 group">
+                                            <Link href={`/brokers/${partner.slug}`}>
                                             View Integration
                                             <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -127,6 +133,7 @@ export default function BidgeAndPlug({ partners = [] }: BridgeAndPlugProps) {
                                                     <path d="M2.91699 10H16.942" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
                                                 </svg>
                                             </div>
+                                            </Link>
                                         </Button>
                                     </div>
                                 </motion.div>
