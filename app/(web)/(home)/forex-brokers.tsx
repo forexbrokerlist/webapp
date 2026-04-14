@@ -7,20 +7,20 @@ const ForexBropkerImage = '/assets/images/forex-broker.svg';
 
 const BROKERS_LIST = [
     {
-        name: "Newera365",
-        description: "Modern forex and crypto broker built for the 24/7 digital trading era. Offers competitive spreads, fast execution, and a user-friendly platform for retail and professional traders."
+        name: "OLYMP TRADE",
+        description: "Trade 190+ assets including forex, stocks & crypto. User-friendly platform with zero spreads, leverage up to 1:500, and 24/7 multilingual support."
     },
     {
-        name: "ExoraPrime",
-        description: "Advanced forex broker offering institutional-grade execution with tight spreads and multi-asset trading across forex, commodities, and indices."
+        name: "OCTAFX ",
+        description: "Commission-free forex broker serving 1.5M+ traders in 100+ countries. Offers MT4, MT5 & OctaTrader with spreads from 0.6 pips and fast order execution."
     },
     {
-        name: "SecureFX",
-        description: "Regulated forex broker focused on security, transparency, and reliable trade execution for traders seeking a safe and trusted environment."
+        name: " iFOREX",
+        description: " Established since 1996 with 750+ instruments. Offers 1-on-1 personal coaching, proprietary FXNet platform, and trading signals for all experience levels."
     },
     {
-        name: "SeaGlobalFX",
-        description: "Global forex broker offering diverse trading instruments, competitive conditions, and dedicated support for traders across all experience levels."
+        name: "XM GROUP",
+        description: "Multi-regulated global broker with 1,400+ instruments, spreads from 0.8 pips, zero deposit fees, free webinars, and Trading Central market research tools."
     }
 ];
 
