@@ -1,7 +1,9 @@
 'use client'
+import Link from 'next/link';
 import React from 'react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/common/accordion"
 import { Button } from '~/components/common/button';
+
 const ProfileGroup = '/assets/images/profile-group.svg';
 function FAQ() {
   const faqs = [
@@ -59,6 +61,7 @@ function FAQ() {
                   and set up the perfect workflow for your store — step by step.
                 </p>
                 <Button size="md" variant="primary" className="px-5 gap-2.5 group">
+                 <Link href="/contact">
                   Contact Us
                   <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -66,6 +69,7 @@ function FAQ() {
                       <path d="M2.91699 10H16.942" stroke="#1A1A1A" stroke-width="1.25" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                   </div>
+                  </Link>
                 </Button>
               </div>
             </div>

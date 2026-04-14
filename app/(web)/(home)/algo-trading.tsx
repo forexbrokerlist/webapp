@@ -16,6 +16,7 @@ interface Partner {
     bannerUrl: string | null;
     websiteUrl: string | null;
     features: string[];
+    slug:string
 }
 
 const GreenArrow = () => (
@@ -61,10 +62,12 @@ export default function AlgoTrading({ partners = [] }: { partners?: Partner[] })
                         transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
                     >
                         <Button variant='primary' size='md' className='flex items-center gap-2'>
+                            <Link href="categories/algorithmic-trading-and-bot-providers">
                             Explore All
                             <div>
                                 <MoveRight />
                             </div>
+                            </Link>
                         </Button>
                     </motion.div>
                 </div>
@@ -125,13 +128,15 @@ export default function AlgoTrading({ partners = [] }: { partners?: Partner[] })
                                     transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
                                 >
                                     <Button variant='primary' size='md' className='flex items-center bg-[#F0F1EC] text-black100 font-medium w-full gap-2'>
-                                        Explore All
+                                      <Link href={`/brokers/${partner.slug}`}>
+                                       Run Bot
                                         <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-black100">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                                                 <path d="M9.44727 3.88257L13.4217 7.85697L9.44727 11.8314" stroke="white" stroke-width="0.982143" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
                                                 <path d="M2.29102 7.85718H13.3107" stroke="white" stroke-width="0.982143" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
                                             </svg>
                                         </div>
+                                        </Link>
                                     </Button>
                                 </motion.div>
                             </div>
