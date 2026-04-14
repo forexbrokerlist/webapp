@@ -231,6 +231,7 @@ export default async function (props: any) {
       features: sponsor.features,
       highlightedPoint: sponsor.highlightedPoint,
       socialProof: sponsor.socialProof,
+      slug:sponsor.slug || ""
     }))
   )
   const PSPCategory = await db.category.findUnique({
@@ -243,7 +244,7 @@ export default async function (props: any) {
       isActive: true,
     },
     orderBy: { order: "asc" },
-    take: 10,
+    take: 12,
   })
 
   const PSPPartners = await Promise.all(
@@ -283,6 +284,7 @@ export default async function (props: any) {
       features: sponsor.features,
       highlightedPoint: sponsor.highlightedPoint,
       socialProof: sponsor.socialProof,
+      slug:sponsor.slug || ""
     }))
   )
     const AlgoCategory = await db.category.findUnique({
@@ -311,6 +313,7 @@ export default async function (props: any) {
       features: sponsor.features,
       highlightedPoint: sponsor.highlightedPoint,
       socialProof: sponsor.socialProof,
+      slug:sponsor.slug || ""
     }))
   )
   const ForexCategory = await db.category.findUnique({

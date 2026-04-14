@@ -3,9 +3,8 @@ import React from 'react'
 import { motion } from 'framer-motion';
 import { MoveRight } from 'lucide-react';
 import { Button } from '~/components/common/button';
-const UniPayment = '/assets/images/uni-payment.svg';
-const Lmax = '/assets/images/lmax.svg';
-const Trader = '/assets/images/cTrader.svg';
+import Link from 'next/link';
+
 export default function OurPartners({ liquidityPartners, PSPPartners, TradingPalformPartners }: { liquidityPartners: any[], PSPPartners: any[], TradingPalformPartners: any[] }) {
     return (
         <div className='pt-100 overflow-hidden max-mobile:pt-16'>
@@ -45,10 +44,12 @@ export default function OurPartners({ liquidityPartners, PSPPartners, TradingPal
                                 </div>
                                 <div className='max-mobile:pt-4'>
                                     <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                        <Link href="/categories/liquidity-partners">
                                         View More
                                         <div>
                                             <MoveRight />
                                         </div>
+                                        </Link>
                                     </Button>
                                 </div>
                             </div>
@@ -98,6 +99,7 @@ export default function OurPartners({ liquidityPartners, PSPPartners, TradingPal
                                                     </div>
                                                     <div className='pt-3 mt-auto'>
                                                         <Button size="md" variant="primary" className="px-5 gap-2.5 py-1.5 w-full justify-center text-xs group">
+                                                           <Link href={`/brokers/${partner.slug}`}>
                                                             Learn More
                                                             <div className="w-4 h-4 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -105,6 +107,7 @@ export default function OurPartners({ liquidityPartners, PSPPartners, TradingPal
                                                                     <path d="M1.48633 5.0957H8.63368" stroke="#1A1A1A" strokeWidth="0.637019" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
                                                                 </svg>
                                                             </div>
+                                                            </Link>
                                                         </Button>
                                                     </div>
                                                 </div>
@@ -138,10 +141,12 @@ export default function OurPartners({ liquidityPartners, PSPPartners, TradingPal
                                 </div>
                                 <div>
                                     <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                        <Link href="/categories/trading-platform-partners"> 
                                         View More
                                         <div>
                                             <MoveRight />
                                         </div>
+                                        </Link> 
                                     </Button>
                                 </div>
                             </div>
@@ -174,7 +179,7 @@ export default function OurPartners({ liquidityPartners, PSPPartners, TradingPal
                                                     <div className='flex justify-center h-12 w-full'>
                                                         <img className='block max-h-full w-auto object-contain' src={partner.logoUrl} alt={partner.name} />
                                                     </div>
-                                                    <p className='mt-3 text-sm max-laptop:mt-2 text-black700 text-center font-medium truncate w-full'>
+                                                    <p className='mt-3 text-sm max-laptop:mt-2 text-black700 text-center font-medium w-full'>
                                                         {partner.name}
                                                     </p>
                                                 </motion.div>
@@ -215,7 +220,8 @@ deposits and withdrawals for traders worldwide.
                             viewport={{ once: true }}
                             transition={{ duration: 1, delay: 0.6 }}
                         >
-                            {/* Row 1 */}
+                            {/* Row 1 — first 4 partners */}
+                            {(() => { const row1 = PSPPartners.slice(0, 4); const row1Loop = [...row1, ...row1]; return (
                             <div className='flex w-full overflow-hidden pb-4'>
                                 <motion.div
                                     className='flex w-max items-center'
@@ -223,21 +229,23 @@ deposits and withdrawals for traders worldwide.
                                     transition={{ repeat: Infinity, ease: 'linear', duration: 25 }}
                                 >
                                     <div className='flex gap-3 pr-3'>
-                                        {[...PSPPartners, ...PSPPartners].map((partner, index) => (
+                                        {row1Loop.map((partner, index) => (
                                             <div key={`row1-${partner.id}-${index}`} className='rounded-[13px] bg-[rgba(26,26,26,0.03)] p-2 max-w-[300px] max-mobile:max-w-[200px] max-mobile:w-[200px] max-mobile:min-w-[200px] w-[300px] min-w-[300px] backdrop-blur-[239.8px]'>
                                                 <div className='rounded-[11.413px] border-[0.951px] border-[rgba(26,26,26,0.08)] h-[90px] max-mobile:h-[60px] flex items-center justify-center bg-white p-4'>
                                                     <img src={partner.logoUrl} alt={partner.name} className='block max-h-full w-auto object-contain' />
                                                 </div>
                                             </div>
                                         ))}
-                                        {PSPPartners.length === 0 && [...Array(5)].map((_, i) => (
+                                        {row1.length === 0 && [...Array(5)].map((_, i) => (
                                             <div key={`placeholder1-${i}`} className='rounded-[13px] bg-[rgba(26,26,26,0.03)] p-2 w-[300px] min-w-[300px] h-[106px] animate-pulse' />
                                         ))}
                                     </div>
                                 </motion.div>
                             </div>
+                            ); })()}
  
-                            {/* Row 2 */}
+                            {/* Row 2 — next 4 partners */}
+                            {(() => { const row2 = PSPPartners.slice(4, 8); const row2Loop = [...row2, ...row2]; return (
                             <div className='flex w-full overflow-hidden pb-4'>
                                 <motion.div
                                     className='flex w-max items-center'
@@ -245,21 +253,23 @@ deposits and withdrawals for traders worldwide.
                                     transition={{ repeat: Infinity, ease: 'linear', duration: 30 }}
                                 >
                                     <div className='flex gap-3 pr-3'>
-                                        {[...PSPPartners, ...PSPPartners].reverse().map((partner, index) => (
+                                        {row2Loop.map((partner, index) => (
                                             <div key={`row2-${partner.id}-${index}`} className='rounded-[13px] bg-[rgba(26,26,26,0.03)] p-2 max-w-[300px] max-mobile:max-w-[200px] max-mobile:w-[200px] max-mobile:min-w-[200px] w-[300px] min-w-[300px] backdrop-blur-[239.8px]'>
                                                 <div className='rounded-[11.413px] border-[0.951px] border-[rgba(26,26,26,0.08)] h-[90px] max-mobile:h-[60px] flex items-center justify-center bg-white p-4'>
                                                     <img src={partner.logoUrl} alt={partner.name} className='block max-h-full w-auto object-contain' />
                                                 </div>
                                             </div>
                                         ))}
-                                        {PSPPartners.length === 0 && [...Array(5)].map((_, i) => (
+                                        {row2.length === 0 && [...Array(5)].map((_, i) => (
                                             <div key={`placeholder2-${i}`} className='rounded-[13px] bg-[rgba(26,26,26,0.03)] p-2 w-[300px] min-w-[300px] h-[106px] animate-pulse' />
                                         ))}
                                     </div>
                                 </motion.div>
                             </div>
+                            ); })()}
  
-                            {/* Row 3 (Hidden on mobile) */}
+                            {/* Row 3 — last 4 partners (Hidden on mobile) */}
+                            {(() => { const row3 = PSPPartners.slice(8, 12); const row3Loop = [...row3, ...row3]; return (
                             <div className='flex w-full max-mobile:hidden overflow-hidden pb-4'>
                                 <motion.div
                                     className='flex w-max items-center'
@@ -267,26 +277,29 @@ deposits and withdrawals for traders worldwide.
                                     transition={{ repeat: Infinity, ease: 'linear', duration: 20 }}
                                 >
                                     <div className='flex gap-3 pr-3'>
-                                        {[...PSPPartners, ...PSPPartners].map((partner, index) => (
+                                        {row3Loop.map((partner, index) => (
                                             <div key={`row3-${partner.id}-${index}`} className='rounded-[13px] bg-[rgba(26,26,26,0.03)] p-2 w-[300px] min-w-[300px] backdrop-blur-[239.8px]'>
                                                 <div className='rounded-[11.413px] border-[0.951px] border-[rgba(26,26,26,0.08)] h-[90px] flex items-center justify-center bg-white p-4'>
                                                     <img src={partner.logoUrl} alt={partner.name} className='block max-h-full w-auto object-contain' />
                                                 </div>
                                             </div>
                                         ))}
-                                        {PSPPartners.length === 0 && [...Array(5)].map((_, i) => (
+                                        {row3.length === 0 && [...Array(5)].map((_, i) => (
                                             <div key={`placeholder3-${i}`} className='rounded-[13px] bg-[rgba(26,26,26,0.03)] p-2 w-[300px] min-w-[300px] h-[106px] animate-pulse' />
                                         ))}
                                     </div>
                                 </motion.div>
                             </div>
+                            ); })()}
                         </motion.div>
                         <div className='flex justify-center pt-5 max-mobile:pb-4 pb-10 mt-auto'>
                             <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                <Link href="categories/psp-partners">
                                 View More
                                 <div>
                                     <MoveRight />
                                 </div>
+                                </Link>
                             </Button>
                         </div>
                     </motion.div>
