@@ -11,9 +11,7 @@ export const brokerIdSchema = z.object({ id: z.coerce.number() })
 export const brokerIdsSchema = z.object({ ids: z.array(z.coerce.number()) })
 
 const list = adminProcedure.input(brokerListSchema).handler(async ({ input }) => {
-  // Since findBrokers doesn't implement pagination out of the box like findTools, we would map it here.
-  // For now just pass it as is, or we'd write a proper query builder.
-  return { tools: await findBrokers(input), total: 0, pageCount: 0 }
+  return findBrokers(input)
 })
 
 const lookup = adminProcedure.handler(async () => {
