@@ -146,7 +146,7 @@ export default async function (props: any) {
     (trustedCategory?.brokers || []).map(async (broker) => ({
       id: broker.id,
       name: broker.broker_name || "",
-      description: broker.description || "",
+      description: broker.subtitle||broker.description || "",
       minDeposit: broker.minimum_deposit || "Varies",
       logo: await getLogo(broker),
       isSponsor: broker.isSponsor,

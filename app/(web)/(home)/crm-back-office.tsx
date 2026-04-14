@@ -43,7 +43,25 @@ const CARD_STYLES = [
         shadow: "shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
     }
 ];
+const backgroundImages = [
+    {
+        id: 1,
+        url: "/assets/images/blue-vec.svg"
 
+    },
+    {
+        id: 2,
+        url: "/assets/images/GreenVec.png"
+    },
+    {
+        id:3,
+        url: "/assets/images/YellowVec.png"
+    },
+    {
+        id:4,
+        url: "/assets/images/PinkVec.png"
+    }
+]
 export default function CrmBackOffice({ solutions }: CrmBackOfficeProps) {
     return (
         <div className='pb-100 max-mobile:pb-16'>
@@ -147,7 +165,7 @@ export default function CrmBackOffice({ solutions }: CrmBackOfficeProps) {
                                     </Button>
                                 </div>
                                 <div className="absolute bottom-[-20px] right-0">
-                                    <img src={BlueVec} alt="BlueVec" className="block max-w-[100px]" />
+                                    <img src={backgroundImages[index % backgroundImages.length].url} alt={`bg-vec-${index}`} className="block max-w-[100px]" />
                                 </div>
                             </motion.div>
                         )
