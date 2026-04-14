@@ -15,6 +15,7 @@ interface Solution {
     title: string;
     logo: string;
     // socialProof: string | null;
+    slug:string; 
 }
 
 interface CrmBackOfficeProps {
@@ -105,7 +106,7 @@ export default function CrmBackOffice({ solutions }: CrmBackOfficeProps) {
                     </motion.div>
                     <div>
                         <Button variant='primary' size='md' className='flex items-center gap-2' asChild>
-                            <Link href="/">
+                            <Link href="/categories/crm-and-back-office-software">
                                 Explore Software
                                 <div>
                                     <MoveRight />
@@ -157,13 +158,16 @@ export default function CrmBackOffice({ solutions }: CrmBackOfficeProps) {
                                         </div>
                                     </div>
 
-                                    <Button variant='primary' size='md' className={` border-none py-2.5 bg-white text-black100  flex justify-between items-center group `}>
-                                        Explore Software
-                                        <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
-                                            <MoveRight className="text-white w-4 h-4" />
-                                        </div>
+                                    <Button variant='primary' size='md' className={` border-none py-2.5 bg-white text-black100  flex justify-between items-center group `} asChild>
+                                        <Link href={`/brokers/${solution.slug ?? 'crm-and-back-office-software'}`}>
+                                            Explore Software
+                                            <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
+                                                <MoveRight className="text-white w-4 h-4" />
+                                            </div>
+                                        </Link>
                                     </Button>
                                 </div>
+
                                 <div className="absolute bottom-[-20px] right-0">
                                     <img src={backgroundImages[index % backgroundImages.length].url} alt={`bg-vec-${index}`} className="block max-w-[100px]" />
                                 </div>

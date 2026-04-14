@@ -97,11 +97,11 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
               </NavLink>
 
               <DropdownMenuContent align="start">
-                <DropdownMenuItem asChild>
+                {/* <DropdownMenuItem asChild>
                   <NavLink href="/?sort=publishedAt.desc" prefix={<CalendarDaysIcon />}>
                     {t("navigation.latest_tools")}
                   </NavLink>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem asChild>
                   <NavLink href="/categories" prefix={<GalleryHorizontalEndIcon />}>
                     {t("navigation.categories")}

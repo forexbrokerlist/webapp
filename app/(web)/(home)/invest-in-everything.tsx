@@ -3,6 +3,7 @@ import { MoveRight } from 'lucide-react'
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '~/components/common/button'
+import Link from 'next/link'
 const RightImage = '/assets/images/right-img.png';
 
 export default function InvestInEverything() {
@@ -45,10 +46,12 @@ export default function InvestInEverything() {
               }}
             >
               <Button variant='primary' size='md' className={` border-none py-2.5 bg-white text-black100  flex justify-between items-center group`}>
+                <Link href={`/brokers`}>
                 Browse All Brokers
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
                   <MoveRight className="text-white" />
                 </div>
+                </Link>
               </Button>
             </motion.div>
           </motion.div>
