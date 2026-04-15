@@ -335,6 +335,7 @@ model Brokers {
   broker_website                     String?
   slug                               String?    @unique
   screenshotUrl                      String?
+  order                              Int        @default(0)
   isSponsor                          Boolean    @default(false)
   isMainSponsor                      Boolean    @default(false)
   bookmarks                          Bookmark[]

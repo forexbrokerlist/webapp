@@ -1,20 +1,39 @@
 "use client"
-
+React
 import { formatDate } from "@primoui/utils"
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import type { ColumnDef } from "@tanstack/react-table"
 import {
   CircleCheckIcon,
   CircleDashedIcon,
   CircleDotDashedIcon,
   CircleDotIcon,
+  GripVerticalIcon,
   PlusIcon,
 } from "lucide-react"
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  KeyboardSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+import { DraggableTableRow } from "./draggable-table-row"
 import { useQueryStates } from "nuqs"
 import type { ComponentProps } from "react"
 import { type Brokers, ToolStatus, PaymentStatus, BrokerType } from "~/.generated/prisma/browser"
+import { useMemo, useState, useEffect } from "react"
 
-export type BrokerRow = Brokers & { 
+export type BrokerRow = Brokers & {
   payments?: { status: PaymentStatus }[]
   categories?: { id: string; name: string }[]
 }
@@ -24,6 +43,7 @@ import { ToolTableToolbarActions } from "~/app/admin/brokers/_components/broker-
 import { DateRangePicker } from "~/components/admin/date-range-picker"
 import { RowCheckbox } from "~/components/admin/row-checkbox"
 import { Badge } from "~/components/common/badge"
+import { TableBody, TableCell, TableRow } from "~/components/common/table"
 import {
   Select,
   SelectContent,
@@ -46,6 +66,7 @@ import { orpc } from "~/lib/orpc-query"
 import { isDefaultState } from "~/lib/parsers"
 import { brokerListParams } from "~/server/admin/brokers/schema"
 import type { DataTableFilterField } from "~/types"
+import React from "react"
 
 const statusBadges: Record<ToolStatus, ComponentProps<typeof Badge>> = {
   [ToolStatus.Draft]: {
@@ -101,6 +122,13 @@ const columns: ColumnDef<BrokerRow>[] = [
     ),
   },
   {
+    id: "drag-handle",
+    size: 40,
+    enableHiding: false,
+    header: "",
+    cell: () => <GripVerticalIcon className="size-4 text-muted-foreground" />,
+  },
+  {
     accessorKey: "broker_name",
     enableHiding: false,
     size: 160,
@@ -109,7 +137,7 @@ const columns: ColumnDef<BrokerRow>[] = [
       const { id, broker_name, ownerId } = row.original
 
       return (
-        <DataTableLink href={`/admin/brokers/${id}`} title={broker_name || ''}>
+        <DataTableLink href={`/admin/brokers/${id}`} title={broker_name || ''} isOverlay={false}>
           {ownerId && <VerifiedBadge className="pointer-events-none" size="sm" />}
         </DataTableLink>
       )
@@ -174,7 +202,7 @@ const columns: ColumnDef<BrokerRow>[] = [
     cell: ({ row }) => {
       const payment = row.original.payments?.[0];
       if (!payment) return <Badge variant="soft">Free</Badge>;
-      
+
       return <Badge {...paymentStatusBadges[payment.status]}>{payment.status}</Badge>;
     },
   },
@@ -228,6 +256,16 @@ const columns: ColumnDef<BrokerRow>[] = [
 
 export function ToolTable() {
   const [params, setParams] = useQueryStates(brokerListParams)
+  const [activeId, setActiveId] = useState<string | null>(null)
+  const [items, setItems] = useState<BrokerRow[]>([])
+  const [isReordering, setIsReordering] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+  const queryClient = useQueryClient()
+
+  // Set mounted on client load
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const { data, isLoading, isFetching } = useQuery(
     orpc.brokers.list.queryOptions({
@@ -235,7 +273,105 @@ export function ToolTable() {
       placeholderData: keepPreviousData,
     }),
   )
- 
+
+  const storageKey = `pending-broker-order-page-${params.page}`
+
+  // Sync local items with server data, prioritizing sessionStorage for "reload-proof" experience
+  useEffect(() => {
+    if (data?.tools) {
+      const stored = sessionStorage.getItem(storageKey)
+      if (stored) {
+        try {
+          const pendingIds = JSON.parse(stored) as number[]
+          console.log("Restoring pending order from session storage", pendingIds)
+          const reordered = pendingIds
+            .map(id => data.tools.find(t => t.id === id))
+            .filter(Boolean) as BrokerRow[]
+          
+          if (reordered.length === data.tools.length) {
+            setItems(reordered)
+            return
+          }
+        } catch (e) {
+          sessionStorage.removeItem(storageKey)
+        }
+      }
+      setItems(data.tools)
+    }
+  }, [data?.tools, storageKey])
+
+  const reorderMutation = useMutation(
+    orpc.brokers.reorder.mutationOptions({
+      onMutate: async () => {
+        setIsReordering(true)
+      },
+      onError: (err) => {
+        setIsReordering(false)
+        sessionStorage.removeItem(storageKey)
+        console.error("Reorder Mutation Failed", err)
+        if (data?.tools) {
+          setItems(data.tools)
+        }
+      },
+      onSuccess: () => {
+        console.log("Reorder success, syncing in background...")
+        sessionStorage.removeItem(storageKey)
+        queryClient.invalidateQueries({ queryKey: orpc.brokers.list.key() })
+      },
+    }),
+  )
+
+  // Turn off isReordering once the background sync is complete
+  useEffect(() => {
+    if (!isFetching && isReordering) {
+      setIsReordering(false)
+    }
+  }, [isFetching, isReordering])
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+    useSensor(KeyboardSensor),
+  )
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    setActiveId(null)
+    console.log("Drag Ended", { activeId: active.id, overId: over?.id })
+
+    if (over && active.id !== over.id) {
+      const oldIndex = items.findIndex(item => String(item.id) === active.id)
+      const newIndex = items.findIndex(item => String(item.id) === over.id)
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newItems = arrayMove(items, oldIndex, newIndex)
+        
+        const startIndex = ((params.page || 1) - 1) * params.perPage
+        console.log("REORDER START", { idsCount: newItems.length, startIndex })
+
+        // Update local state IMMEDIATELY (Frontend First)
+        setItems(newItems)
+
+        // Persistence: Save to session storage so we stay reordered if we refresh mid-save
+        sessionStorage.setItem(storageKey, JSON.stringify(newItems.map(i => i.id)))
+
+        // Sync with backend later
+        reorderMutation.mutate({
+          ids: newItems.map(item => item.id),
+          startIndex,
+        })
+      }
+    }
+  }
+
+  const handleDragStart = (event: any) => {
+    setActiveId(event.active.id)
+    console.log("Drag Started", { activeId: event.active.id })
+  }
+
   // Search filters
   const filterFields: DataTableFilterField<BrokerRow>[] = [
     {
@@ -272,7 +408,7 @@ export function ToolTable() {
   ]
 
   const { table } = useDataTable({
-    data: data?.tools ?? [],
+    data: items,
     columns,
     pageCount: data?.pageCount ?? 0,
     filterFields,
@@ -286,54 +422,93 @@ export function ToolTable() {
     getRowId: originalRow => String(originalRow.id),
   })
 
-  return (
-    <DataTable table={table} isLoading={isLoading} isFetching={isFetching && !isLoading}>
-      <DataTableHeader
-        title="Brokers"
-        total={data?.total}
-        callToAction={
-          <Button variant="primary" size="md" prefix={<PlusIcon />} asChild>
-            <Link href="/admin/brokers/new">
-              <div className="max-sm:sr-only">New broker</div>
-            </Link>
-          </Button>
-        }
-      >
-        <DataTableToolbar
-          table={table}
-          filterFields={filterFields}
-          isFiltered={!isDefaultState(brokerListParams, params, ["perPage", "page"])}
-          onReset={() => {
-            table.resetColumnFilters()
-            void setParams(null)
-          }}
-        >
-          <ToolTableToolbarActions table={table} />
-          
-          <Select
-            value={params.type || "all"}
-            onValueChange={val => setParams({ type: val === "all" ? null : val as BrokerType })}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value={BrokerType.Broker}>Broker</SelectItem>
-              <SelectItem value={BrokerType.CRM}>CRM</SelectItem>
-              <SelectItem value={BrokerType.EducationPlatforms}>Education Platforms</SelectItem>
-              <SelectItem value={BrokerType.ForexBridge}>Forex Bridge</SelectItem>
-              <SelectItem value={BrokerType.Liquidity}>Liquidity</SelectItem>
-              <SelectItem value={BrokerType.PSP}>PSP</SelectItem>
-              <SelectItem value={BrokerType.Trading}>Trading</SelectItem>
-              <SelectItem value={BrokerType.BotProvider}>Bot Provider</SelectItem>
-            </SelectContent>
-          </Select>
+  if (!isMounted || isLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="h-10 w-full bg-muted animate-pulse rounded-md" />
+        <div className="h-[400px] w-full bg-muted/50 animate-pulse rounded-md" />
+      </div>
+    )
+  }
 
-          <DateRangePicker align="end" />
-          <DataTableViewOptions table={table} />
-        </DataTableToolbar>
-      </DataTableHeader>
-    </DataTable>
+  return (
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      modifiers={[restrictToVerticalAxis]}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext
+        items={items.map(item => String(item.id))}
+        strategy={verticalListSortingStrategy}
+      >
+        <DataTable
+          table={table}
+          isLoading={isLoading}
+          isFetching={isFetching && !isLoading && !isReordering}
+          renderRow={props => <DraggableTableRow {...props} />}
+        >
+          <DataTableHeader
+            title="Brokers"
+            total={data?.total}
+            callToAction={
+              <Button variant="primary" size="md" prefix={<PlusIcon />} asChild>
+                <Link href="/admin/brokers/new">
+                  <div className="max-sm:sr-only">New broker</div>
+                </Link>
+              </Button>
+            }
+          >
+            <DataTableToolbar
+              table={table}
+              filterFields={filterFields}
+              isFiltered={!isDefaultState(brokerListParams, params, ["perPage", "page"])}
+              onReset={() => {
+                table.resetColumnFilters()
+                void setParams(null)
+              }}
+            >
+              <ToolTableToolbarActions table={table} />
+
+              <Select
+                value={params.type || "all"}
+                onValueChange={val => setParams({ type: val === "all" ? null : val as BrokerType })}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value={BrokerType.Broker}>Broker</SelectItem>
+                  <SelectItem value={BrokerType.CRM}>CRM</SelectItem>
+                  <SelectItem value={BrokerType.EducationPlatforms}>Education Platforms</SelectItem>
+                  <SelectItem value={BrokerType.ForexBridge}>Forex Bridge</SelectItem>
+                  <SelectItem value={BrokerType.Liquidity}>Liquidity</SelectItem>
+                  <SelectItem value={BrokerType.PSP}>PSP</SelectItem>
+                  <SelectItem value={BrokerType.Trading}>Trading</SelectItem>
+                  <SelectItem value={BrokerType.BotProvider}>Bot Provider</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <DateRangePicker align="end" />
+              <DataTableViewOptions table={table} />
+            </DataTableToolbar>
+          </DataTableHeader>
+        </DataTable>
+      </SortableContext>
+      {typeof window !== "undefined" && (
+        <DragOverlay adjustScale={false}>
+          {activeId ? (
+            <div className="bg-background border rounded shadow-lg flex items-center h-10 px-4 opacity-80 cursor-grabbing">
+              <GripVerticalIcon className="size-4 text-muted-foreground mr-4" />
+              <span className="font-medium">
+                {items.find(t => String(t.id) === activeId)?.broker_name ?? "Moving..."}
+              </span>
+            </div>
+          ) : null}
+        </DragOverlay>
+      )}
+    </DndContext>
   )
 }
