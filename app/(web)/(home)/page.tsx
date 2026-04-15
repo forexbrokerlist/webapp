@@ -151,7 +151,7 @@ export default async function (props: any) {
       logo: await getLogo(broker),
       isSponsor: broker.isSponsor,
       rating: broker.overall_rating || "0",
-      slug:broker.slug
+      slug:broker.slug || ""
     }))
   )
 
