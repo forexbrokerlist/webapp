@@ -337,7 +337,7 @@ model Brokers {
   screenshotUrl                      String?
   isSponsor                          Boolean    @default(false)
   bookmarks                          Bookmark[]
-
+  type                              BrokerType?
   // Admin & Submission fields
   submitterName  String?
   submitterEmail String?
@@ -572,4 +572,14 @@ model UserConversation {
   sessionId      String
   tool           String
   title          String
+}
+enum BrokerType {
+  Broker
+  CRM
+  EducationPlatforms
+  ForexBridge
+  Liquidity
+  PSP
+  Trading
+  BotProvider
 }

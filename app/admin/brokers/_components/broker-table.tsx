@@ -120,6 +120,26 @@ const columns: ColumnDef<BrokerRow>[] = [
     },
   },
   {
+    accessorKey: "type",
+    enableSorting: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
+    cell: ({ row }) => {
+      const typeLabels: Record<string, string> = {
+        Broker: "Broker",
+        CRM: "CRM",
+        EducationPlatforms: "Education Platforms",
+        ForexBridge: "Forex Bridge",
+        Liquidity: "Liquidity",
+        PSP: "PSP",
+        Trading: "Trading",
+        BotProvider: "Bot Provider",
+      }
+      const type = row.original.type
+      if (!type) return <Note>—</Note>
+      return <Badge variant="outline">{typeLabels[type] ?? type}</Badge>
+    },
+  },
+  {
     accessorKey: "submitterEmail",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Submitter" />,
     cell: ({ row }) => <Note>{row.getValue("submitterEmail")}</Note>,
@@ -156,6 +176,7 @@ const columns: ColumnDef<BrokerRow>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     cell: ({ row }) => <Badge {...statusBadges[row.original.status]}>{row.original.status}</Badge>,
   },
+  
   {
     accessorKey: "publishedAt",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Published At" />,

@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation"
 import { type ComponentProps, useMemo, useRef, useState } from "react"
 import { Controller, FormProvider as Form, useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { type Brokers, ToolStatus, ToolTier } from "~/.generated/prisma/browser"
+import { type Brokers, ToolStatus, ToolTier, BrokerType } from "~/.generated/prisma/browser"
 import { ToolActions } from "~/app/admin/brokers/_components/broker-actions"
 import { ToolPublishActions } from "~/app/admin/brokers/_components/broker-publish-actions"
 import { AIGenerateContent } from "~/components/admin/ai/generate-content"
@@ -120,7 +120,8 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       average_trading_cost_gold: broker?.average_trading_cost_gold ?? "",
       average_trading_cost_bitcoin: broker?.average_trading_cost_bitcoin ?? "",
       average_trading_cost_wti_crude_oil: broker?.average_trading_cost_wti_crude_oil ?? "",
-      subtitle:broker?.subtitle??"" 
+      subtitle:broker?.subtitle??"",
+      type: broker?.type ?? undefined,
     },
   })
 
@@ -265,6 +266,32 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
+         <Controller
+          control={form.control}
+          name="type"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Type</FieldLabel>
+              <Select value={field.value ?? ""} onValueChange={(val) => field.onChange(val || undefined)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={BrokerType.Broker}>Broker</SelectItem>
+                  <SelectItem value={BrokerType.CRM}>CRM</SelectItem>
+                  <SelectItem value={BrokerType.EducationPlatforms}>Education Platforms</SelectItem>
+                  <SelectItem value={BrokerType.ForexBridge}>Forex Bridge</SelectItem>
+                  <SelectItem value={BrokerType.Liquidity}>Liquidity</SelectItem>
+                  <SelectItem value={BrokerType.PSP}>PSP</SelectItem>
+                  <SelectItem value={BrokerType.Trading}>Trading</SelectItem>
+                  <SelectItem value={BrokerType.BotProvider}>Bot Provider</SelectItem>
+                </SelectContent>
+              </Select>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
 
         <Controller
           control={form.control}
@@ -345,6 +372,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           )}
         />
 
+       
         <Controller
           control={form.control}
           name="publishedAt"
