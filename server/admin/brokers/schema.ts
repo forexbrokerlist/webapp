@@ -21,6 +21,7 @@ export const brokerListParams = {
   to: parseAsString.withDefault(""),
   operator: parseAsStringEnum(["and", "or"]).withDefault("and"),
   status: parseAsArrayOf(parseAsStringEnum(Object.values(ToolStatus))).withDefault([]),
+  type: parseAsStringEnum(Object.values(BrokerType)),
 }
 
 export const brokerListSchema = createStandardSchemaV1(brokerListParams)
@@ -71,6 +72,8 @@ export const brokerSchema = z.object({
   average_trading_cost_wti_crude_oil: z.string().optional(),
   subtitle: z.string().optional(),
   type: z.enum(BrokerType).nullish(),
+  isSponsor: z.boolean().default(false),
+  isMainSponsor: z.boolean().default(false),
 })
 
 export type BrokerSchema = z.infer<typeof brokerSchema>

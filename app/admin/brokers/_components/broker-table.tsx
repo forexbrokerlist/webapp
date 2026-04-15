@@ -12,7 +12,7 @@ import {
 } from "lucide-react"
 import { useQueryStates } from "nuqs"
 import type { ComponentProps } from "react"
-import { type Brokers, ToolStatus, PaymentStatus } from "~/.generated/prisma/browser"
+import { type Brokers, ToolStatus, PaymentStatus, BrokerType } from "~/.generated/prisma/browser"
 
 export type BrokerRow = Brokers & { 
   payments?: { status: PaymentStatus }[]
@@ -24,6 +24,13 @@ import { ToolTableToolbarActions } from "~/app/admin/brokers/_components/broker-
 import { DateRangePicker } from "~/components/admin/date-range-picker"
 import { RowCheckbox } from "~/components/admin/row-checkbox"
 import { Badge } from "~/components/common/badge"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/common/select"
 import { Button } from "~/components/common/button"
 import { Link } from "~/components/common/link"
 import { Note } from "~/components/common/note"
@@ -176,7 +183,28 @@ const columns: ColumnDef<BrokerRow>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     cell: ({ row }) => <Badge {...statusBadges[row.original.status]}>{row.original.status}</Badge>,
   },
-  
+  {
+    accessorKey: "isSponsor",
+    enableSorting: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Sponsor" />,
+    cell: ({ row }) =>
+      row.original.isSponsor ? (
+        <Badge variant="success">Yes</Badge>
+      ) : (
+        <Note>—</Note>
+      ),
+  },
+  {
+    accessorKey: "isMainSponsor",
+    enableSorting: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Main Sponsor" />,
+    cell: ({ row }) =>
+      row.original.isMainSponsor ? (
+        <Badge variant="info">Yes</Badge>
+      ) : (
+        <Note>—</Note>
+      ),
+  },
   {
     accessorKey: "publishedAt",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Published At" />,
@@ -281,6 +309,27 @@ export function ToolTable() {
           }}
         >
           <ToolTableToolbarActions table={table} />
+          
+          <Select
+            value={params.type || "all"}
+            onValueChange={val => setParams({ type: val === "all" ? null : val as BrokerType })}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value={BrokerType.Broker}>Broker</SelectItem>
+              <SelectItem value={BrokerType.CRM}>CRM</SelectItem>
+              <SelectItem value={BrokerType.EducationPlatforms}>Education Platforms</SelectItem>
+              <SelectItem value={BrokerType.ForexBridge}>Forex Bridge</SelectItem>
+              <SelectItem value={BrokerType.Liquidity}>Liquidity</SelectItem>
+              <SelectItem value={BrokerType.PSP}>PSP</SelectItem>
+              <SelectItem value={BrokerType.Trading}>Trading</SelectItem>
+              <SelectItem value={BrokerType.BotProvider}>Bot Provider</SelectItem>
+            </SelectContent>
+          </Select>
+
           <DateRangePicker align="end" />
           <DataTableViewOptions table={table} />
         </DataTableToolbar>

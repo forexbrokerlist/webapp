@@ -8,7 +8,7 @@ export const findBrokers = async (
   search: BrokerListParams,
   where?: Prisma.BrokersWhereInput,
 ) => {
-  const { broker_name, status, page, perPage, sort, from, to, operator } = search;
+  const { broker_name, status, type, page, perPage, sort, from, to, operator } = search;
 
   // Offset to paginate the results
   const offset = (page - 1) * perPage;
@@ -28,6 +28,9 @@ export const findBrokers = async (
 
     // Filter by status
     status && status.length > 0 ? { status: { in: status } } : undefined,
+
+    // Filter by type
+    type ? { type: { equals: type as any } } : undefined,
 
     // Filter by date
     fromDate || toDate

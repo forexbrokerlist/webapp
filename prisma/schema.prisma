@@ -336,6 +336,7 @@ model Brokers {
   slug                               String?    @unique
   screenshotUrl                      String?
   isSponsor                          Boolean    @default(false)
+  isMainSponsor                      Boolean    @default(false)
   bookmarks                          Bookmark[]
   type                              BrokerType?
   // Admin & Submission fields

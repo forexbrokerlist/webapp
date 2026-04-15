@@ -30,6 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/common/select"
+import { Switch } from "~/components/common/switch"
 import { RelationSelector } from "~/components/common/relation-selector"
 import { Stack } from "~/components/common/stack"
 import { TextArea } from "~/components/common/textarea"
@@ -122,6 +123,8 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       average_trading_cost_wti_crude_oil: broker?.average_trading_cost_wti_crude_oil ?? "",
       subtitle:broker?.subtitle??"",
       type: broker?.type ?? undefined,
+      isSponsor: broker?.isSponsor ?? false,
+      isMainSponsor: broker?.isMainSponsor ?? false,
     },
   })
 
@@ -292,6 +295,45 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           )}
         />
 
+        <Controller
+          control={form.control}
+          name="isSponsor"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Sponsor</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="isMainSponsor"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Main Sponsor</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
 
         <Controller
           control={form.control}
