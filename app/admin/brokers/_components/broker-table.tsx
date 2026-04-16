@@ -31,7 +31,7 @@ import { DraggableTableRow } from "./draggable-table-row"
 import { useQueryStates } from "nuqs"
 import type { ComponentProps } from "react"
 import { type Brokers, ToolStatus, PaymentStatus, BrokerType } from "~/.generated/prisma/browser"
-import { useMemo, useState, useEffect } from "react"
+import { useMemo, useState, useEffect, useRef } from "react"
 
 export type BrokerRow = Brokers & {
   payments?: { status: PaymentStatus }[]
@@ -266,34 +266,50 @@ export function ToolTable() {
   useEffect(() => {
     setIsMounted(true)
   }, [])
-
+ 
   const { data, isLoading, isFetching } = useQuery(
     orpc.brokers.list.queryOptions({
       input: params,
       placeholderData: keepPreviousData,
     }),
   )
-
+ const isInitialLoad = isLoading && !data;
   const storageKey = `pending-broker-order-page-${params.page}`
 
-  // Sync local items with server data, prioritizing sessionStorage for "reload-proof" experience
+  const hasResumedSync = useRef(false)
+
+  // Sync local items with server data, prioritizing localStorage for "reload-proof" experience
   useEffect(() => {
     if (data?.tools) {
-      const stored = sessionStorage.getItem(storageKey)
+      const stored = localStorage.getItem(storageKey)
       if (stored) {
         try {
           const pendingIds = JSON.parse(stored) as number[]
-          console.log("Restoring pending order from session storage", pendingIds)
+          console.log("Restoring pending order from local storage", pendingIds)
           const reordered = pendingIds
             .map(id => data.tools.find(t => t.id === id))
             .filter(Boolean) as BrokerRow[]
           
           if (reordered.length === data.tools.length) {
             setItems(reordered)
+            
+            const isSyncedWithBackend = data.tools.every((t, i) => t.id === pendingIds[i])
+            if (isSyncedWithBackend) {
+              localStorage.removeItem(storageKey)
+            } else if (!hasResumedSync.current && !isReordering) {
+              hasResumedSync.current = true
+              const startIndex = ((params.page || 1) - 1) * params.perPage
+              setTimeout(() => {
+                reorderMutation.mutate({
+                  ids: pendingIds,
+                  startIndex,
+                })
+              }, 50)
+            }
             return
           }
         } catch (e) {
-          sessionStorage.removeItem(storageKey)
+          localStorage.removeItem(storageKey)
         }
       }
       setItems(data.tools)
@@ -302,31 +318,24 @@ export function ToolTable() {
 
   const reorderMutation = useMutation(
     orpc.brokers.reorder.mutationOptions({
-      onMutate: async () => {
+      onMutate: () => {
         setIsReordering(true)
       },
       onError: (err) => {
         setIsReordering(false)
-        sessionStorage.removeItem(storageKey)
+        localStorage.removeItem(storageKey)
         console.error("Reorder Mutation Failed", err)
         if (data?.tools) {
           setItems(data.tools)
         }
       },
-      onSuccess: () => {
-        console.log("Reorder success, syncing in background...")
-        sessionStorage.removeItem(storageKey)
-        queryClient.invalidateQueries({ queryKey: orpc.brokers.list.key() })
+      onSettled: async () => {
+        localStorage.removeItem(storageKey)
+        await queryClient.invalidateQueries({ queryKey: orpc.brokers.list.key() })
+        setIsReordering(false)
       },
     }),
   )
-
-  // Turn off isReordering once the background sync is complete
-  useEffect(() => {
-    if (!isFetching && isReordering) {
-      setIsReordering(false)
-    }
-  }, [isFetching, isReordering])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -355,8 +364,8 @@ export function ToolTable() {
         // Update local state IMMEDIATELY (Frontend First)
         setItems(newItems)
 
-        // Persistence: Save to session storage so we stay reordered if we refresh mid-save
-        sessionStorage.setItem(storageKey, JSON.stringify(newItems.map(i => i.id)))
+        // Persistence: Save to local storage so we stay reordered if we refresh mid-save
+        localStorage.setItem(storageKey, JSON.stringify(newItems.map(i => i.id)))
 
         // Sync with backend later
         reorderMutation.mutate({
@@ -422,11 +431,19 @@ export function ToolTable() {
     getRowId: originalRow => String(originalRow.id),
   })
 
-  if (!isMounted || isLoading) {
+  const hasPendingStorage = isMounted && typeof window !== 'undefined' && !!localStorage.getItem(storageKey)
+  const showReorderOverlay = isReordering || hasPendingStorage
+
+  if (!isMounted || isInitialLoad) {
     return (
-      <div className="space-y-4">
+      <div className="relative space-y-4">
         <div className="h-10 w-full bg-muted animate-pulse rounded-md" />
         <div className="h-[400px] w-full bg-muted/50 animate-pulse rounded-md" />
+        {showReorderOverlay && (
+          <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-50">
+            <div className="animate-pulse text-sm">Updating order...</div>
+          </div>
+        )}
       </div>
     )
   }
@@ -443,10 +460,11 @@ export function ToolTable() {
         items={items.map(item => String(item.id))}
         strategy={verticalListSortingStrategy}
       >
+        <div className="relative">
         <DataTable
           table={table}
           isLoading={isLoading}
-          isFetching={isFetching && !isLoading && !isReordering}
+          isFetching={isFetching && !isLoading && !showReorderOverlay}
           renderRow={props => <DraggableTableRow {...props} />}
         >
           <DataTableHeader
@@ -496,6 +514,12 @@ export function ToolTable() {
             </DataTableToolbar>
           </DataTableHeader>
         </DataTable>
+       {showReorderOverlay && (
+      <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-50">
+        <div className="animate-pulse text-sm">Updating order...</div>
+      </div>
+    )}
+  </div>
       </SortableContext>
       {typeof window !== "undefined" && (
         <DragOverlay adjustScale={false}>
