@@ -90,7 +90,7 @@ export function DataTable<TData>({
 
       <Table
         className={cx(
-          "rounded-md border transition-opacity",
+          "rounded-md border transition-opacity mt-4",
           isFetching && "opacity-80",
           className,
         )}
@@ -132,7 +132,7 @@ export function DataTable<TData>({
             {!!table.getRowModel().rows?.length && (
               <TableHeader>
                 {table.getHeaderGroups().map(headerGroup => (
-                  <TableRow key={headerGroup.id}>
+                  <TableRow key={headerGroup.id} className="py-2">
                     {headerGroup.headers.map(header => {
                       return (
                         <TableHead key={header.id} style={getColumnPinningStyle(header)}>
