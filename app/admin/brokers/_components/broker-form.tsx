@@ -167,12 +167,13 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
   })
 
   // Keep track of the form values
-  const [broker_name, slug, broker_website, description, subtitle] = form.watch([
+  const [broker_name, slug, broker_website, description, subtitle, screenshotUrl] = form.watch([
     "broker_name",
     "slug",
     "broker_website",
     "description",
     "subtitle",
+    "screenshotUrl",
   ])
 
   // Store the upload path in a memoized value
@@ -475,34 +476,36 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           )}
         />
 
-        <Controller
-          control={form.control}
-          name="bannerUrl"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Banner URL (Fallback)</FieldLabel>
-              <FormMedia
-                form={form}
-                field={field}
-                path={`${path}/banner`}
-                fetchType="screenshot"
-                websiteUrl={broker_website}
-              >
-                {field.value && (
-                  <Image
-                    src={field.value}
-                    alt="Banner"
-                    width={400}
-                    height={200}
-                    className="h-16 w-auto border rounded-md object-cover bg-foreground/5"
-                  />
-                )}
-              </FormMedia>
-              <Hint>Used when no screenshot is available</Hint>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+        {(!screenshotUrl || screenshotUrl.trim() === '') && (
+          <Controller
+            control={form.control}
+            name="bannerUrl"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Banner URL (Fallback)</FieldLabel>
+                <FormMedia
+                  form={form}
+                  field={field}
+                  path={`${path}/banner`}
+                  fetchType="screenshot"
+                  websiteUrl={broker_website}
+                >
+                  {field.value && (
+                    <Image
+                      src={field.value}
+                      alt="Banner"
+                      width={400}
+                      height={200}
+                      className="h-16 w-auto border rounded-md object-cover bg-foreground/5"
+                    />
+                  )}
+                </FormMedia>
+                <Hint>Used when no screenshot is available</Hint>
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+        )}
 
         <Controller
           control={form.control}

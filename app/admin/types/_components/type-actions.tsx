@@ -18,9 +18,9 @@ import {
 } from "~/components/common/dropdown-menu"
 import { Link } from "~/components/common/link"
 import { orpc } from "~/lib/orpc-query"
-import type   from "@prisma/client"
-
-type TypeWithBrokers = type & {
+import type  { Type } from "~/.generated/prisma/browser"
+import {cx} from "~/lib/utils"
+type TypeWithBrokers = Type & {
   brokers: { id: number }[]
 }
 
