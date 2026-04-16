@@ -45,7 +45,7 @@ export const findBrokers = async (
   const [tools, total] = await db.$transaction([
     db.brokers.findMany({
       where: { ...whereQuery, ...where },
-      orderBy: [...orderBy, { createdAt: "desc" }],
+      orderBy: [{ order: "asc" }, ...orderBy, { createdAt: "desc" }],
       take: perPage,
       skip: offset,
       include: {
