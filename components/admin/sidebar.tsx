@@ -86,6 +86,12 @@ export const Sidebar = () => {
         },
 
         {
+          title: "Types",
+          href: "/admin/types",
+          prefix: <GalleryHorizontalEndIcon />,
+        },
+
+        {
           title: "Subcategories",
           href: "/admin/subcategories",
           prefix: <GalleryHorizontalEndIcon />,

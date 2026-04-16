@@ -346,6 +346,7 @@ model Brokers {
   broker_website                     String?
   slug                               String?    @unique
   screenshotUrl                      String?
+  bannerUrl                          String?
   order                              Int        @default(0)
   isSponsor                          Boolean    @default(false)
   isMainSponsor                      Boolean    @default(false)
@@ -586,4 +587,4 @@ model UserConversation {
   sessionId      String
   tool           String
   title          String
-}
+}

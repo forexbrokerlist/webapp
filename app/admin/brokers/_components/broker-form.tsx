@@ -122,7 +122,9 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       average_trading_cost_gold: broker?.average_trading_cost_gold ?? "",
       average_trading_cost_bitcoin: broker?.average_trading_cost_bitcoin ?? "",
       average_trading_cost_wti_crude_oil: broker?.average_trading_cost_wti_crude_oil ?? "",
-      subtitle:broker?.subtitle??"",
+      subtitle: broker?.subtitle ?? "",
+      screenshotUrl: broker?.screenshotUrl ?? "",
+      bannerUrl: broker?.bannerUrl ?? "",
       typeId: broker?.typeId ?? undefined,
       isSponsor: broker?.isSponsor ?? false,
       isMainSponsor: broker?.isMainSponsor ?? false,
@@ -354,7 +356,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           name="subcategoryIds"
           render={({ field, fieldState }) => {
             const selectedCategoryIds = form.watch("categoryIds") ?? []
-            const filteredSubcategories = subcategories.filter(s => 
+            const filteredSubcategories = subcategories.filter(s =>
               selectedCategoryIds.length === 0 || selectedCategoryIds.includes(s.categoryId)
             )
 
@@ -412,18 +414,18 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           )}
         />
 
-       
+
         <Controller
           control={form.control}
           name="publishedAt"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Published At</FieldLabel>
-              <Input 
-                id={field.name} 
-                type="datetime-local" 
-                value={field.value ? (field.value instanceof Date ? field.value.toISOString().slice(0, 16) : new Date(field.value as string).toISOString().slice(0, 16)) : ''} 
-                onChange={(e) => field.onChange(e.target.value || null)} 
+              <Input
+                id={field.name}
+                type="datetime-local"
+                value={field.value ? (field.value instanceof Date ? field.value.toISOString().slice(0, 16) : new Date(field.value as string).toISOString().slice(0, 16)) : ''}
+                onChange={(e) => field.onChange(e.target.value || null)}
                 className={fieldState.invalid ? "border-red-500" : ""}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -440,6 +442,63 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
                 Website URL
               </FieldLabel>
               <Input id={field.name} type="url" {...field} value={field.value || ''} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="screenshotUrl"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Screenshot URL</FieldLabel>
+              <FormMedia
+                form={form}
+                field={field}
+                path={`${path}/screenshot`}
+                fetchType="screenshot"
+                websiteUrl={broker_website}
+              >
+                {field.value && (
+                  <Image
+                    src={field.value}
+                    alt="Screenshot"
+                    width={400}
+                    height={200}
+                    className="h-16 w-auto border rounded-md object-cover bg-foreground/5"
+                  />
+                )}
+              </FormMedia>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="bannerUrl"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Banner URL (Fallback)</FieldLabel>
+              <FormMedia
+                form={form}
+                field={field}
+                path={`${path}/banner`}
+                fetchType="screenshot"
+                websiteUrl={broker_website}
+              >
+                {field.value && (
+                  <Image
+                    src={field.value}
+                    alt="Banner"
+                    width={400}
+                    height={200}
+                    className="h-16 w-auto border rounded-md object-cover bg-foreground/5"
+                  />
+                )}
+              </FormMedia>
+              <Hint>Used when no screenshot is available</Hint>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -521,7 +580,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
-          <Controller
+        <Controller
           control={form.control}
           name="subtitle"
           render={({ field, fieldState }) => (
