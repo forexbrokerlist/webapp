@@ -222,6 +222,17 @@ model Category {
   // Indexes
   @@index([slug])
 }
+model Type{
+  id String @id @default(cuid())
+  name        String   @db.Citext
+  
+  slug String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+   label       String?
+  description String?
+  brokers       Brokers[]
+}
 
 model Subcategory {
   id          String   @id @default(cuid())
@@ -339,7 +350,8 @@ model Brokers {
   isSponsor                          Boolean    @default(false)
   isMainSponsor                      Boolean    @default(false)
   bookmarks                          Bookmark[]
-  type                              BrokerType?
+  typeId                            String?
+  type                              Type?      @relation(fields: [typeId], references: [id])
   // Admin & Submission fields
   submitterName  String?
   submitterEmail String?
@@ -574,14 +586,4 @@ model UserConversation {
   sessionId      String
   tool           String
   title          String
-}
-enum BrokerType {
-  Broker
-  CRM
-  EducationPlatforms
-  ForexBridge
-  Liquidity
-  PSP
-  Trading
-  BotProvider
-}
+}

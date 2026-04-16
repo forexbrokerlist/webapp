@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation"
 import { type ComponentProps, useMemo, useRef, useState } from "react"
 import { Controller, FormProvider as Form, useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { type Brokers, ToolStatus, ToolTier, BrokerType } from "~/.generated/prisma/browser"
+import { type Brokers, ToolStatus, ToolTier } from "~/.generated/prisma/browser"
 import { ToolActions } from "~/app/admin/brokers/_components/broker-actions"
 import { ToolPublishActions } from "~/app/admin/brokers/_components/broker-publish-actions"
 import { AIGenerateContent } from "~/components/admin/ai/generate-content"
@@ -72,6 +72,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
   const { data: categories = [] } = useQuery(orpc.categories.lookup.queryOptions())
   const { data: subcategories = [] } = useQuery(orpc.subcategories.lookup.queryOptions())
   const { data: tags = [] } = useQuery(orpc.tags.lookup.queryOptions())
+  const { data: types = [] } = useQuery(orpc.types.lookup.queryOptions())
   const [isPreviewing, setIsPreviewing] = useState(false)
   const [isStatusPending, setIsStatusPending] = useState(false)
   const [isGenerationComplete, setIsGenerationComplete] = useState(true)
@@ -122,7 +123,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       average_trading_cost_bitcoin: broker?.average_trading_cost_bitcoin ?? "",
       average_trading_cost_wti_crude_oil: broker?.average_trading_cost_wti_crude_oil ?? "",
       subtitle:broker?.subtitle??"",
-      type: broker?.type ?? undefined,
+      typeId: broker?.typeId ?? undefined,
       isSponsor: broker?.isSponsor ?? false,
       isMainSponsor: broker?.isMainSponsor ?? false,
     },
@@ -269,9 +270,9 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
-         <Controller
+        <Controller
           control={form.control}
-          name="type"
+          name="typeId"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Type</FieldLabel>
@@ -280,14 +281,11 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={BrokerType.Broker}>Broker</SelectItem>
-                  <SelectItem value={BrokerType.CRM}>CRM</SelectItem>
-                  <SelectItem value={BrokerType.EducationPlatforms}>Education Platforms</SelectItem>
-                  <SelectItem value={BrokerType.ForexBridge}>Forex Bridge</SelectItem>
-                  <SelectItem value={BrokerType.Liquidity}>Liquidity</SelectItem>
-                  <SelectItem value={BrokerType.PSP}>PSP</SelectItem>
-                  <SelectItem value={BrokerType.Trading}>Trading</SelectItem>
-                  <SelectItem value={BrokerType.BotProvider}>Bot Provider</SelectItem>
+                  {types.map((type) => (
+                    <SelectItem key={type.id} value={type.id}>
+                      {type.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

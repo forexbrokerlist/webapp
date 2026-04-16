@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { ToolStatus, ToolTier, BrokerType } from "~/.generated/prisma/browser"
+import { ToolStatus, ToolTier } from "~/.generated/prisma/browser"
 
 import {
   createSearchParamsCache,
@@ -21,7 +21,7 @@ export const brokerListParams = {
   to: parseAsString.withDefault(""),
   operator: parseAsStringEnum(["and", "or"]).withDefault("and"),
   status: parseAsArrayOf(parseAsStringEnum(Object.values(ToolStatus))).withDefault([]),
-  type: parseAsStringEnum(Object.values(BrokerType)),
+  type: parseAsString,
 }
 
 export const brokerListSchema = createStandardSchemaV1(brokerListParams)
@@ -71,7 +71,7 @@ export const brokerSchema = z.object({
   average_trading_cost_bitcoin: z.string().optional(),
   average_trading_cost_wti_crude_oil: z.string().optional(),
   subtitle: z.string().optional(),
-  type: z.enum(BrokerType).nullish(),
+  typeId: z.string().nullish(),
   isSponsor: z.boolean().default(false),
   isMainSponsor: z.boolean().default(false),
 })
