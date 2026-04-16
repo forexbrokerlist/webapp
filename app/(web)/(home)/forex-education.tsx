@@ -20,7 +20,7 @@ interface Partner {
     bannerUrl: string | null;
     websiteUrl: string | null;
     socialProof: string | null;
-    slug:string|null
+    slug: string | null
 }
 
 export default function ForexEducation({ partners = [] }: { partners?: Partner[] }) {
@@ -35,7 +35,8 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
         img: p.bannerUrl || GolldenBullsImage,
         logo: p.logoUrl,
         link: p.websiteUrl || `/forex-education-and-training/${p.id}`,
-        slug:p.slug
+
+        slug: p.slug
     }));
 
     const [activeIndex, setActiveIndex] = useState(0);

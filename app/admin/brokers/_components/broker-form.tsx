@@ -125,6 +125,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       subtitle: broker?.subtitle ?? "",
       screenshotUrl: broker?.screenshotUrl ?? "",
       bannerUrl: broker?.bannerUrl ?? "",
+    
       typeId: broker?.typeId ?? undefined,
       isSponsor: broker?.isSponsor ?? false,
       isMainSponsor: broker?.isMainSponsor ?? false,
