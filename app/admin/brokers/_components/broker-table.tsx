@@ -30,12 +30,13 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import { DraggableTableRow } from "./draggable-table-row"
 import { useQueryStates } from "nuqs"
 import type { ComponentProps } from "react"
-import { type Brokers, ToolStatus, PaymentStatus, BrokerType } from "~/.generated/prisma/browser"
+import { type Brokers, ToolStatus, PaymentStatus } from "~/.generated/prisma/browser"
 import { useMemo, useState, useEffect, useRef } from "react"
 
 export type BrokerRow = Brokers & {
   payments?: { status: PaymentStatus }[]
   categories?: { id: string; name: string }[]
+  type?: { id: string; name: string } | null
 }
 
 import { ToolActions } from "~/app/admin/brokers/_components/broker-actions"
@@ -159,19 +160,9 @@ const columns: ColumnDef<BrokerRow>[] = [
     enableSorting: false,
     header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
     cell: ({ row }) => {
-      const typeLabels: Record<string, string> = {
-        Broker: "Broker",
-        CRM: "CRM",
-        EducationPlatforms: "Education Platforms",
-        ForexBridge: "Forex Bridge",
-        Liquidity: "Liquidity",
-        PSP: "PSP",
-        Trading: "Trading",
-        BotProvider: "Bot Provider",
-      }
-      const type = row.original.type
+      const type = row.original.type?.name
       if (!type) return <Note>—</Note>
-      return <Badge variant="outline">{typeLabels[type] ?? type}</Badge>
+      return <Badge variant="outline">{type}</Badge>
     },
   },
   {
@@ -260,6 +251,7 @@ export function ToolTable() {
   const [items, setItems] = useState<BrokerRow[]>([])
   const [isReordering, setIsReordering] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
+  const { data: types = [] } = useQuery(orpc.types.lookup.queryOptions())
   const queryClient = useQueryClient()
 
   // Set mounted on client load
@@ -491,21 +483,18 @@ export function ToolTable() {
 
               <Select
                 value={params.type || "all"}
-                onValueChange={val => setParams({ type: val === "all" ? null : val as BrokerType })}
+                onValueChange={val => setParams({ type: val === "all" ? null : val })}
               >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value={BrokerType.Broker}>Broker</SelectItem>
-                  <SelectItem value={BrokerType.CRM}>CRM</SelectItem>
-                  <SelectItem value={BrokerType.EducationPlatforms}>Education Platforms</SelectItem>
-                  <SelectItem value={BrokerType.ForexBridge}>Forex Bridge</SelectItem>
-                  <SelectItem value={BrokerType.Liquidity}>Liquidity</SelectItem>
-                  <SelectItem value={BrokerType.PSP}>PSP</SelectItem>
-                  <SelectItem value={BrokerType.Trading}>Trading</SelectItem>
-                  <SelectItem value={BrokerType.BotProvider}>Bot Provider</SelectItem>
+                  {types.map(t => (
+                    <SelectItem key={t.id} value={t.name.toLowerCase().replace(/\s+/g, "-")}>
+                      {t.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
 

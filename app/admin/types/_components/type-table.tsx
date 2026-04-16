@@ -1,0 +1,155 @@
+"use client"
+
+import { formatDate } from "@primoui/utils"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import type { ColumnDef } from "@tanstack/react-table"
+import { HashIcon, PlusIcon } from "lucide-react"
+import { useQueryStates } from "nuqs"
+import type { Type } from "~/.generated/prisma/browser"
+import { TypeActions } from "~/app/admin/types/_components/type-actions"
+import { TypeTableToolbarActions } from "~/app/admin/types/_components/type-table-toolbar-actions"
+import { DateRangePicker } from "~/components/admin/date-range-picker"
+import { RowCheckbox } from "~/components/admin/row-checkbox"
+import { Badge } from "~/components/common/badge"
+import { Button } from "~/components/common/button"
+import { Link } from "~/components/common/link"
+import { Note } from "~/components/common/note"
+import { DataTable } from "~/components/data-table/data-table"
+import { DataTableColumnHeader } from "~/components/data-table/data-table-column-header"
+import { DataTableHeader } from "~/components/data-table/data-table-header"
+import { DataTableLink } from "~/components/data-table/data-table-link"
+import { DataTableToolbar } from "~/components/data-table/data-table-toolbar"
+import { DataTableViewOptions } from "~/components/data-table/data-table-view-options"
+import { useDataTable } from "~/hooks/use-data-table"
+import { orpc } from "~/lib/orpc-query"
+import { isDefaultState } from "~/lib/parsers"
+import { typeListParams } from "~/server/admin/types/schema"
+import type { DataTableFilterField } from "~/types"
+
+const columns: ColumnDef<Type & { _count?: { brokers: number } }>[] = [
+  {
+    id: "select",
+    enableSorting: false,
+    enableHiding: false,
+    header: ({ table }) => (
+      <RowCheckbox
+        checked={table.getIsAllPageRowsSelected()}
+        ref={input => {
+          if (input) {
+            input.indeterminate =
+              table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
+          }
+        }}
+        onChange={e => table.toggleAllPageRowsSelected(e.target.checked)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row, table }) => (
+      <RowCheckbox
+        checked={row.getIsSelected()}
+        onChange={e => row.toggleSelected(e.target.checked)}
+        aria-label="Select row"
+        table={table}
+        row={row}
+      />
+    ),
+  },
+  {
+    accessorKey: "name",
+    enableHiding: false,
+    size: 160,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+    cell: ({ row }) => (
+      <DataTableLink href={`/admin/types/${row.original.id}`} title={row.original.name} />
+    ),
+  },
+  {
+    accessorKey: "label",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Label" />,
+    cell: ({ row }) => <Note className="max-w-96 truncate">{row.original.label}</Note>,
+  },
+  {
+    accessorKey: "_count.brokers",
+    enableSorting: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Brokers" />,
+    cell: ({ row }) => (
+      <Badge prefix={<HashIcon className="opacity-50 size-3!" />} className="tabular-nums">
+        {row.original._count?.brokers || 0}
+      </Badge>
+    ),
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Created At" />,
+    cell: ({ row }) => <Note>{formatDate(row.getValue<Date>("createdAt"))}</Note>,
+  },
+  {
+    id: "actions",
+    // @ts-ignore
+    cell: ({ row }) => <TypeActions type={row.original} className="float-right" />,
+  },
+]
+
+export function TypeTable() {
+  const [params, setParams] = useQueryStates(typeListParams)
+
+  const { data, isLoading, isFetching } = useQuery(
+    orpc.types.list.queryOptions({
+      input: params,
+      placeholderData: keepPreviousData,
+    }),
+  )
+
+  // Search filters
+  const filterFields: DataTableFilterField<Type>[] = [
+    {
+      id: "name",
+      label: "Name",
+      placeholder: "Filter by name...",
+    },
+  ]
+
+  const { table } = useDataTable({
+    data: data?.types ?? [],
+    columns,
+    pageCount: data?.pageCount ?? 0,
+    filterFields,
+    clearOnDefault: true,
+    initialState: {
+      pagination: { pageIndex: 0, pageSize: params.perPage },
+      sorting: params.sort,
+      columnPinning: { right: ["actions"] },
+    },
+    getRowId: (originalRow, index) => `${originalRow.id}-${index}`,
+  })
+
+  return (
+    <DataTable table={table} isLoading={isLoading} isFetching={isFetching && !isLoading}>
+      <DataTableHeader
+        title="Types"
+        total={data?.typesTotal}
+        callToAction={
+          <Button variant="primary" size="md" prefix={<PlusIcon />} asChild>
+            <Link href="/admin/types/new">
+              <div className="max-sm:sr-only">New type</div>
+            </Link>
+          </Button>
+        }
+      >
+        <DataTableToolbar
+          table={table}
+          filterFields={filterFields}
+          isFiltered={!isDefaultState(typeListParams, params, ["perPage", "page"])}
+          onReset={() => {
+            table.resetColumnFilters()
+            void setParams(null)
+          }}
+        >
+          <TypeTableToolbarActions table={table} />
+          <DateRangePicker align="end" />
+          <DataTableViewOptions table={table} />
+        </DataTableToolbar>
+      </DataTableHeader>
+    </DataTable>
+  )
+}

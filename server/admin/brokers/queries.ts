@@ -30,7 +30,7 @@ export const findBrokers = async (
     status && status.length > 0 ? { status: { in: status } } : undefined,
 
     // Filter by type
-    type ? { type: { equals: type as any } } : undefined,
+    type ? { type: { slug: type } } : undefined,
 
     // Filter by date
     fromDate || toDate
@@ -54,6 +54,7 @@ export const findBrokers = async (
           take: 1,
         },
         categories: { select: { id: true, name: true } },
+        type: { select: { id: true, name: true } },
       },
     }),
 
@@ -115,6 +116,7 @@ export const findBrokerById = async (id: number) => {
       categories: { select: { id: true, name: true } },
       subcategories: { select: { id: true, name: true } },
       tags: { select: { id: true, name: true } },
+      type: { select: { id: true, name: true } },
     },
   });
 };

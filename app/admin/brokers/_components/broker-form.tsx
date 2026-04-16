@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation"
 import { type ComponentProps, useMemo, useRef, useState } from "react"
 import { Controller, FormProvider as Form, useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { type Brokers, ToolStatus, ToolTier, BrokerType } from "~/.generated/prisma/browser"
+import { type Brokers, ToolStatus, ToolTier } from "~/.generated/prisma/browser"
 import { ToolActions } from "~/app/admin/brokers/_components/broker-actions"
 import { ToolPublishActions } from "~/app/admin/brokers/_components/broker-publish-actions"
 import { AIGenerateContent } from "~/components/admin/ai/generate-content"
@@ -72,6 +72,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
   const { data: categories = [] } = useQuery(orpc.categories.lookup.queryOptions())
   const { data: subcategories = [] } = useQuery(orpc.subcategories.lookup.queryOptions())
   const { data: tags = [] } = useQuery(orpc.tags.lookup.queryOptions())
+  const { data: types = [] } = useQuery(orpc.types.lookup.queryOptions())
   const [isPreviewing, setIsPreviewing] = useState(false)
   const [isStatusPending, setIsStatusPending] = useState(false)
   const [isGenerationComplete, setIsGenerationComplete] = useState(true)
@@ -121,8 +122,10 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       average_trading_cost_gold: broker?.average_trading_cost_gold ?? "",
       average_trading_cost_bitcoin: broker?.average_trading_cost_bitcoin ?? "",
       average_trading_cost_wti_crude_oil: broker?.average_trading_cost_wti_crude_oil ?? "",
-      subtitle:broker?.subtitle??"",
-      type: broker?.type ?? undefined,
+      subtitle: broker?.subtitle ?? "",
+      screenshotUrl: broker?.screenshotUrl ?? "",
+      bannerUrl: broker?.bannerUrl ?? "",
+      typeId: broker?.typeId ?? undefined,
       isSponsor: broker?.isSponsor ?? false,
       isMainSponsor: broker?.isMainSponsor ?? false,
     },
@@ -164,12 +167,13 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
   })
 
   // Keep track of the form values
-  const [broker_name, slug, broker_website, description, subtitle] = form.watch([
+  const [broker_name, slug, broker_website, description, subtitle, screenshotUrl] = form.watch([
     "broker_name",
     "slug",
     "broker_website",
     "description",
     "subtitle",
+    "screenshotUrl",
   ])
 
   // Store the upload path in a memoized value
@@ -269,9 +273,9 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
-         <Controller
+        <Controller
           control={form.control}
-          name="type"
+          name="typeId"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Type</FieldLabel>
@@ -280,14 +284,11 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={BrokerType.Broker}>Broker</SelectItem>
-                  <SelectItem value={BrokerType.CRM}>CRM</SelectItem>
-                  <SelectItem value={BrokerType.EducationPlatforms}>Education Platforms</SelectItem>
-                  <SelectItem value={BrokerType.ForexBridge}>Forex Bridge</SelectItem>
-                  <SelectItem value={BrokerType.Liquidity}>Liquidity</SelectItem>
-                  <SelectItem value={BrokerType.PSP}>PSP</SelectItem>
-                  <SelectItem value={BrokerType.Trading}>Trading</SelectItem>
-                  <SelectItem value={BrokerType.BotProvider}>Bot Provider</SelectItem>
+                  {types.map((type) => (
+                    <SelectItem key={type.id} value={type.id}>
+                      {type.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -356,7 +357,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           name="subcategoryIds"
           render={({ field, fieldState }) => {
             const selectedCategoryIds = form.watch("categoryIds") ?? []
-            const filteredSubcategories = subcategories.filter(s => 
+            const filteredSubcategories = subcategories.filter(s =>
               selectedCategoryIds.length === 0 || selectedCategoryIds.includes(s.categoryId)
             )
 
@@ -414,18 +415,18 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           )}
         />
 
-       
+
         <Controller
           control={form.control}
           name="publishedAt"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Published At</FieldLabel>
-              <Input 
-                id={field.name} 
-                type="datetime-local" 
-                value={field.value ? (field.value instanceof Date ? field.value.toISOString().slice(0, 16) : new Date(field.value as string).toISOString().slice(0, 16)) : ''} 
-                onChange={(e) => field.onChange(e.target.value || null)} 
+              <Input
+                id={field.name}
+                type="datetime-local"
+                value={field.value ? (field.value instanceof Date ? field.value.toISOString().slice(0, 16) : new Date(field.value as string).toISOString().slice(0, 16)) : ''}
+                onChange={(e) => field.onChange(e.target.value || null)}
                 className={fieldState.invalid ? "border-red-500" : ""}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -446,6 +447,65 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
+
+        <Controller
+          control={form.control}
+          name="screenshotUrl"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Screenshot URL</FieldLabel>
+              <FormMedia
+                form={form}
+                field={field}
+                path={`${path}/screenshot`}
+                fetchType="screenshot"
+                websiteUrl={broker_website}
+              >
+                {field.value && (
+                  <Image
+                    src={field.value}
+                    alt="Screenshot"
+                    width={400}
+                    height={200}
+                    className="h-16 w-auto border rounded-md object-cover bg-foreground/5"
+                  />
+                )}
+              </FormMedia>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        {(!screenshotUrl || screenshotUrl.trim() === '') && (
+          <Controller
+            control={form.control}
+            name="bannerUrl"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Banner URL (Fallback)</FieldLabel>
+                <FormMedia
+                  form={form}
+                  field={field}
+                  path={`${path}/banner`}
+                  fetchType="screenshot"
+                  websiteUrl={broker_website}
+                >
+                  {field.value && (
+                    <Image
+                      src={field.value}
+                      alt="Banner"
+                      width={400}
+                      height={200}
+                      className="h-16 w-auto border rounded-md object-cover bg-foreground/5"
+                    />
+                  )}
+                </FormMedia>
+                <Hint>Used when no screenshot is available</Hint>
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+        )}
 
         <Controller
           control={form.control}
@@ -523,7 +583,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
-          <Controller
+        <Controller
           control={form.control}
           name="subtitle"
           render={({ field, fieldState }) => (
