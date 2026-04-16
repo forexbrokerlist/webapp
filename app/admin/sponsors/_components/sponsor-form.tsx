@@ -124,7 +124,7 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel data-required htmlFor={field.name}>
-                Slug
+                Slugs
               </FieldLabel>
               <Input id={field.name} {...field} />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
