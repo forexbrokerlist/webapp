@@ -347,6 +347,7 @@ model Brokers {
   slug                               String?    @unique
   screenshotUrl                      String?
   bannerUrl                          String?
+  logoUrl                            String? 
   order                              Int        @default(0)
   isSponsor                          Boolean    @default(false)
   isMainSponsor                      Boolean    @default(false)

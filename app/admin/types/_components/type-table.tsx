@@ -85,6 +85,7 @@ const columns: ColumnDef<Type & { _count?: { brokers: number } }>[] = [
   },
   {
     id: "actions",
+    // @ts-ignore
     cell: ({ row }) => <TypeActions type={row.original} className="float-right" />,
   },
 ]
