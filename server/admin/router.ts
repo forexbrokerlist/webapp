@@ -11,6 +11,7 @@ import { userRouter } from "~/server/admin/users/router";
 import { postRouter } from "~/server/admin/posts/router";
 import { newsletterRouter } from "~/server/admin/newsletter/router";
 import { contactsRouter } from "~/server/admin/contacts/router";
+import { typesRouter } from "~/server/admin/types/router";
 import { paymentRouter } from "~/server/admin/payments/router";
 
 // -----------------------------------------------------------------------------
@@ -30,6 +31,7 @@ export const adminRouter = {
   categories: categoryRouter,
   subcategories: subcategoryRouter,
   tags: tagRouter,
+  types: typesRouter,
   ads: adRouter,
   users: userRouter,
   reports: reportRouter,

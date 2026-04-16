@@ -211,7 +211,7 @@ model Category {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
+   
   // Relations
   subcategories Subcategory[]
   tools         Tool[]
@@ -221,6 +221,17 @@ model Category {
 
   // Indexes
   @@index([slug])
+}
+model Type{
+  id String @id @default(cuid())
+  name        String   @db.Citext
+  
+  slug String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+   label       String?
+  description String?
+  brokers       Brokers[]
 }
 
 model Subcategory {
@@ -306,6 +317,7 @@ model Brokers {
   daily_loss_limit                   String?    @db.VarChar(44)
   deposit_options                    String?    @db.VarChar(111)
   description                        String?
+  subtitle                           String?
   execution_types                    String?    @db.VarChar(65)
   funded_account_options             String?    @db.VarChar(66)
   funding_methods                    String?    @db.VarChar(213)
@@ -334,9 +346,14 @@ model Brokers {
   broker_website                     String?
   slug                               String?    @unique
   screenshotUrl                      String?
+  bannerUrl                          String?
+  logoUrl                            String? 
+  order                              Int        @default(0)
   isSponsor                          Boolean    @default(false)
+  isMainSponsor                      Boolean    @default(false)
   bookmarks                          Bookmark[]
-
+  typeId                            String?
+  type                              Type?      @relation(fields: [typeId], references: [id])
   // Admin & Submission fields
   submitterName  String?
   submitterEmail String?
@@ -377,7 +394,13 @@ model Sponsor {
   Category   Category?       @relation(fields: [categoryId], references: [id])
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
-
+  title   String? 
+  subtitle String? 
+  description String? 
+  bannerImage String? 
+  features    String[]  
+  socialProof String? 
+  highlightedPoint String? 
   @@index([isActive, order])
 }
 

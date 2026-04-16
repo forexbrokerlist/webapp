@@ -15,6 +15,8 @@ import { NavLink } from "~/components/web/ui/nav-link"
 type ThemeSwitcherProps = ComponentProps<typeof DropdownMenuTrigger>
 
 export const ThemeSwitcher = ({ className, ...props }: ThemeSwitcherProps) => {
+  return null
+
   const t = useTranslations("common")
   const { themes, theme, setTheme, resolvedTheme, forcedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)

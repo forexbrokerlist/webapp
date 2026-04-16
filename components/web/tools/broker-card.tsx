@@ -66,7 +66,7 @@ export const BrokerCard = ({
         {/* Default State */}
         <Stack size="lg" direction="column" className="flex-1 duration-200 group-hover:opacity-0 relative z-10">
           <CardDescription className="line-clamp-2 min-h-[40px]">
-            {broker.description || `Top rated forex broker based in ${broker.headquarters || 'global markets'} offering competitive spreads.`}
+            {broker.subtitle || broker.description || `Top rated forex broker based in ${broker.headquarters || 'global markets'} offering competitive spreads.`}
           </CardDescription>
 
           <Stack size="sm" className="mt-auto pt-4 text-xs font-medium text-muted-foreground items-center">
@@ -80,7 +80,7 @@ export const BrokerCard = ({
         {/* Hover State */}
         <div className="absolute inset-0 opacity-0 duration-200 group-hover:opacity-100 flex flex-col z-20 pointer-events-none">
           <CardDescription className="line-clamp-2 min-h-[40px]">
-            {broker.description || `Top rated forex broker based in ${broker.headquarters || 'global markets'} offering competitive spreads.`}
+            {broker.subtitle || broker.description || `Top rated forex broker based in ${broker.headquarters || 'global markets'} offering competitive spreads.`}
           </CardDescription>
           
           <div className="mt-auto pt-4 grid grid-cols-3 gap-2 text-xs">

@@ -1,26 +1,57 @@
 "use client"
-
+React
 import { formatDate } from "@primoui/utils"
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import type { ColumnDef } from "@tanstack/react-table"
 import {
   CircleCheckIcon,
   CircleDashedIcon,
   CircleDotDashedIcon,
   CircleDotIcon,
+  GripVerticalIcon,
   PlusIcon,
 } from "lucide-react"
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  KeyboardSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+import { DraggableTableRow } from "./draggable-table-row"
 import { useQueryStates } from "nuqs"
 import type { ComponentProps } from "react"
 import { type Brokers, ToolStatus, PaymentStatus } from "~/.generated/prisma/browser"
+import { useMemo, useState, useEffect, useRef } from "react"
 
-export type BrokerRow = Brokers & { payments?: { status: PaymentStatus }[] }
+export type BrokerRow = Brokers & {
+  payments?: { status: PaymentStatus }[]
+  categories?: { id: string; name: string }[]
+  type?: { id: string; name: string } | null
+}
 
 import { ToolActions } from "~/app/admin/brokers/_components/broker-actions"
 import { ToolTableToolbarActions } from "~/app/admin/brokers/_components/broker-table-toolbar-actions"
 import { DateRangePicker } from "~/components/admin/date-range-picker"
 import { RowCheckbox } from "~/components/admin/row-checkbox"
 import { Badge } from "~/components/common/badge"
+import { TableBody, TableCell, TableRow } from "~/components/common/table"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/common/select"
 import { Button } from "~/components/common/button"
 import { Link } from "~/components/common/link"
 import { Note } from "~/components/common/note"
@@ -36,6 +67,7 @@ import { orpc } from "~/lib/orpc-query"
 import { isDefaultState } from "~/lib/parsers"
 import { brokerListParams } from "~/server/admin/brokers/schema"
 import type { DataTableFilterField } from "~/types"
+import React from "react"
 
 const statusBadges: Record<ToolStatus, ComponentProps<typeof Badge>> = {
   [ToolStatus.Draft]: {
@@ -91,6 +123,13 @@ const columns: ColumnDef<BrokerRow>[] = [
     ),
   },
   {
+    id: "drag-handle",
+    size: 40,
+    enableHiding: false,
+    header: "",
+    cell: () => <GripVerticalIcon className="size-4 text-muted-foreground" />,
+  },
+  {
     accessorKey: "broker_name",
     enableHiding: false,
     size: 160,
@@ -99,7 +138,7 @@ const columns: ColumnDef<BrokerRow>[] = [
       const { id, broker_name, ownerId } = row.original
 
       return (
-        <DataTableLink href={`/admin/brokers/${id}`} title={broker_name || ''}>
+        <DataTableLink href={`/admin/brokers/${id}`} title={broker_name || ''} isOverlay={false}>
           {ownerId && <VerifiedBadge className="pointer-events-none" size="sm" />}
         </DataTableLink>
       )
@@ -117,9 +156,36 @@ const columns: ColumnDef<BrokerRow>[] = [
     },
   },
   {
+    accessorKey: "type",
+    enableSorting: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
+    cell: ({ row }) => {
+      const type = row.original.type?.name
+      if (!type) return <Note>—</Note>
+      return <Badge variant="outline">{type}</Badge>
+    },
+  },
+  {
     accessorKey: "submitterEmail",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Submitter" />,
     cell: ({ row }) => <Note>{row.getValue("submitterEmail")}</Note>,
+  },
+  {
+    id: "categories",
+    accessorKey: "categories",
+    enableSorting: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Category" />,
+    cell: ({ row }) => {
+      const categories = row.original.categories
+      if (!categories || categories.length === 0) return <Note>—</Note>
+      return (
+        <div className="flex flex-wrap gap-1">
+          {categories.map((c) => (
+            <Badge key={c.id} variant="soft">{c.name}</Badge>
+          ))}
+        </div>
+      )
+    },
   },
   {
     id: "paymentStatus",
@@ -127,7 +193,7 @@ const columns: ColumnDef<BrokerRow>[] = [
     cell: ({ row }) => {
       const payment = row.original.payments?.[0];
       if (!payment) return <Badge variant="soft">Free</Badge>;
-      
+
       return <Badge {...paymentStatusBadges[payment.status]}>{payment.status}</Badge>;
     },
   },
@@ -135,6 +201,28 @@ const columns: ColumnDef<BrokerRow>[] = [
     accessorKey: "status",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     cell: ({ row }) => <Badge {...statusBadges[row.original.status]}>{row.original.status}</Badge>,
+  },
+  {
+    accessorKey: "isSponsor",
+    enableSorting: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Sponsor" />,
+    cell: ({ row }) =>
+      row.original.isSponsor ? (
+        <Badge variant="success">Yes</Badge>
+      ) : (
+        <Note>—</Note>
+      ),
+  },
+  {
+    accessorKey: "isMainSponsor",
+    enableSorting: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Main Sponsor" />,
+    cell: ({ row }) =>
+      row.original.isMainSponsor ? (
+        <Badge variant="info">Yes</Badge>
+      ) : (
+        <Note>—</Note>
+      ),
   },
   {
     accessorKey: "publishedAt",
@@ -159,13 +247,131 @@ const columns: ColumnDef<BrokerRow>[] = [
 
 export function ToolTable() {
   const [params, setParams] = useQueryStates(brokerListParams)
+  const [activeId, setActiveId] = useState<string | null>(null)
+  const [items, setItems] = useState<BrokerRow[]>([])
+  const [isReordering, setIsReordering] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+  const { data: types = [] } = useQuery(orpc.types.lookup.queryOptions())
+  const queryClient = useQueryClient()
 
+  // Set mounted on client load
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+ 
   const { data, isLoading, isFetching } = useQuery(
     orpc.brokers.list.queryOptions({
       input: params,
       placeholderData: keepPreviousData,
     }),
   )
+ const isInitialLoad = isLoading && !data;
+  const storageKey = `pending-broker-order-page-${params.page}`
+
+  const hasResumedSync = useRef(false)
+
+  // Sync local items with server data, prioritizing localStorage for "reload-proof" experience
+  useEffect(() => {
+    if (data?.tools) {
+      const stored = localStorage.getItem(storageKey)
+      if (stored) {
+        try {
+          const pendingIds = JSON.parse(stored) as number[]
+          console.log("Restoring pending order from local storage", pendingIds)
+          const reordered = pendingIds
+            .map(id => data.tools.find(t => t.id === id))
+            .filter(Boolean) as BrokerRow[]
+          
+          if (reordered.length === data.tools.length) {
+            setItems(reordered)
+            
+            const isSyncedWithBackend = data.tools.every((t, i) => t.id === pendingIds[i])
+            if (isSyncedWithBackend) {
+              localStorage.removeItem(storageKey)
+            } else if (!hasResumedSync.current && !isReordering) {
+              hasResumedSync.current = true
+              const startIndex = ((params.page || 1) - 1) * params.perPage
+              setTimeout(() => {
+                reorderMutation.mutate({
+                  ids: pendingIds,
+                  startIndex,
+                })
+              }, 50)
+            }
+            return
+          }
+        } catch (e) {
+          localStorage.removeItem(storageKey)
+        }
+      }
+      setItems(data.tools)
+    }
+  }, [data?.tools, storageKey])
+
+  const reorderMutation = useMutation(
+    orpc.brokers.reorder.mutationOptions({
+      onMutate: () => {
+        setIsReordering(true)
+      },
+      onError: (err) => {
+        setIsReordering(false)
+        localStorage.removeItem(storageKey)
+        console.error("Reorder Mutation Failed", err)
+        if (data?.tools) {
+          setItems(data.tools)
+        }
+      },
+      onSettled: async () => {
+        localStorage.removeItem(storageKey)
+        await queryClient.invalidateQueries({ queryKey: orpc.brokers.list.key() })
+        setIsReordering(false)
+      },
+    }),
+  )
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+    useSensor(KeyboardSensor),
+  )
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    setActiveId(null)
+    console.log("Drag Ended", { activeId: active.id, overId: over?.id })
+
+    if (over && active.id !== over.id) {
+      const oldIndex = items.findIndex(item => String(item.id) === active.id)
+      const newIndex = items.findIndex(item => String(item.id) === over.id)
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newItems = arrayMove(items, oldIndex, newIndex)
+        
+        const startIndex = ((params.page || 1) - 1) * params.perPage
+        console.log("REORDER START", { idsCount: newItems.length, startIndex })
+
+        // Update local state IMMEDIATELY (Frontend First)
+        setItems(newItems)
+
+        // Persistence: Save to local storage so we stay reordered if we refresh mid-save
+        localStorage.setItem(storageKey, JSON.stringify(newItems.map(i => i.id)))
+
+        // Sync with backend later
+        reorderMutation.mutate({
+          ids: newItems.map(item => item.id),
+          startIndex,
+        })
+      }
+    }
+  }
+
+  const handleDragStart = (event: any) => {
+    setActiveId(event.active.id)
+    console.log("Drag Started", { activeId: event.active.id })
+  }
 
   // Search filters
   const filterFields: DataTableFilterField<BrokerRow>[] = [
@@ -203,7 +409,7 @@ export function ToolTable() {
   ]
 
   const { table } = useDataTable({
-    data: data?.tools ?? [],
+    data: items,
     columns,
     pageCount: data?.pageCount ?? 0,
     filterFields,
@@ -217,33 +423,105 @@ export function ToolTable() {
     getRowId: originalRow => String(originalRow.id),
   })
 
+  const hasPendingStorage = isMounted && typeof window !== 'undefined' && !!localStorage.getItem(storageKey)
+  const showReorderOverlay = isReordering || hasPendingStorage
+
+  if (!isMounted || isInitialLoad) {
+    return (
+      <div className="relative space-y-4">
+        <div className="h-10 w-full bg-muted animate-pulse rounded-md" />
+        <div className="h-[400px] w-full bg-muted/50 animate-pulse rounded-md" />
+        {showReorderOverlay && (
+          <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-50">
+            <div className="animate-pulse text-sm">Updating order...</div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
-    <DataTable table={table} isLoading={isLoading} isFetching={isFetching && !isLoading}>
-      <DataTableHeader
-        title="Brokers"
-        total={data?.total}
-        callToAction={
-          <Button variant="primary" size="md" prefix={<PlusIcon />} asChild>
-            <Link href="/admin/brokers/new">
-              <div className="max-sm:sr-only">New broker</div>
-            </Link>
-          </Button>
-        }
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      modifiers={[restrictToVerticalAxis]}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext
+        items={items.map(item => String(item.id))}
+        strategy={verticalListSortingStrategy}
       >
-        <DataTableToolbar
+        <div className="relative">
+        <DataTable
           table={table}
-          filterFields={filterFields}
-          isFiltered={!isDefaultState(brokerListParams, params, ["perPage", "page"])}
-          onReset={() => {
-            table.resetColumnFilters()
-            void setParams(null)
-          }}
+          isLoading={isLoading}
+          isFetching={isFetching && !isLoading && !showReorderOverlay}
+          renderRow={props => <DraggableTableRow {...props} />}
         >
-          <ToolTableToolbarActions table={table} />
-          <DateRangePicker align="end" />
-          <DataTableViewOptions table={table} />
-        </DataTableToolbar>
-      </DataTableHeader>
-    </DataTable>
+          <DataTableHeader
+            title="Brokers"
+            total={data?.total}
+            callToAction={
+              <Button variant="primary" size="md" prefix={<PlusIcon />} asChild>
+                <Link href="/admin/brokers/new">
+                  <div className="max-sm:sr-only">New broker</div>
+                </Link>
+              </Button>
+            }
+          >
+            <DataTableToolbar
+              table={table}
+              filterFields={filterFields}
+              isFiltered={!isDefaultState(brokerListParams, params, ["perPage", "page"])}
+              onReset={() => {
+                table.resetColumnFilters()
+                void setParams(null)
+              }}
+            >
+              <ToolTableToolbarActions table={table} />
+
+              <Select
+                value={params.type || "all"}
+                onValueChange={val => setParams({ type: val === "all" ? null : val })}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  {types.map(t => (
+                    <SelectItem key={t.id} value={t.name.toLowerCase().replace(/\s+/g, "-")}>
+                      {t.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <DateRangePicker align="end" />
+              <DataTableViewOptions table={table} />
+            </DataTableToolbar>
+          </DataTableHeader>
+        </DataTable>
+       {showReorderOverlay && (
+      <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-50">
+        <div className="animate-pulse text-sm">Updating order...</div>
+      </div>
+    )}
+  </div>
+      </SortableContext>
+      {typeof window !== "undefined" && (
+        <DragOverlay adjustScale={false}>
+          {activeId ? (
+            <div className="bg-background border rounded shadow-lg flex items-center h-10 px-4 opacity-80 cursor-grabbing">
+              <GripVerticalIcon className="size-4 text-muted-foreground mr-4" />
+              <span className="font-medium">
+                {items.find(t => String(t.id) === activeId)?.broker_name ?? "Moving..."}
+              </span>
+            </div>
+          ) : null}
+        </DragOverlay>
+      )}
+    </DndContext>
   )
 }

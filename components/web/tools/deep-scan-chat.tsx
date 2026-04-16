@@ -269,7 +269,8 @@ useEffect(() => {
               <Button
                 variant="secondary"
                 onClick={() => setIsSidebarOpen(false)}
-                className="w-[42px] h-[42px] rounded-xl bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-sm p-0 flex items-center justify-center shrink-0 transition-colors"
+                className="w-[42px] h-[42px] rounded-xl bg-blue-600 hover:bg-blue-700 text-white border-0 
+                shadow-sm p-0 flex items-center justify-center shrink-0 transition-colors"
                 title="Close Sidebar"
               >
                 <PanelLeftClose className="w-5 h-5" />
@@ -568,19 +569,9 @@ useEffect(() => {
           <div className="flex-1 w-full h-full flex flex-col relative bg-background">
             <div className="p-4 md:p-6 border-b border-border bg-card flex items-start gap-4 h-[100px] md:h-auto">
               <div className="relative w-0 md:w-auto h-full flex items-center">
-                {!isSidebarOpen && (
-                  <Button
-                    variant="secondary"
-                    onClick={() => setIsSidebarOpen(true)}
-                    className="absolute left-0 md:relative w-10 h-10 rounded-xl bg-background border-border shadow-xs p-0 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted shrink-0"
-                    title="Open Sidebar"
-                  >
-                    <PanelLeft className="w-5 h-5" />
-                  </Button>
-                )}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center flex-wrap gap-x-3 gap-y-1.5 mb-2">
+                <div className={`flex items-center flex-wrap gap-x-3 gap-y-1.5 mb-2 ${!isSidebarOpen ? 'ml-10 ' : ''}`}>
                   <span className="px-2 py-1 text-[10px] font-bold bg-muted text-muted-foreground rounded-md uppercase tracking-wider">
                     {Model_List.find(m => m.Value === activeScan?.model_used)?.Name || "MODEL"}
                   </span>
@@ -593,7 +584,7 @@ useEffect(() => {
                     </span>
                   )}
                 </div>
-                <h2 className="text-lg md:text-xl  font-bold text-foreground leading-snug break-words">
+                <h2 className={`text-lg md:text-xl font-bold text-foreground leading-snug break-words ${!isSidebarOpen ? 'ml-10' : ''}`}>
                   {activeScan?.question}
                 </h2>
               </div>

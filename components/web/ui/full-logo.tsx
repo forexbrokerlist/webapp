@@ -22,9 +22,7 @@ export const FullLogo = ({ className }: FullLogoProps) => {
     return <div className={cx("h-8 w-[104px] bg-muted/20 animate-pulse rounded", className)} />
   }
 
-  const logoSrc = resolvedTheme === "dark" 
-    ? "/full-logo-light.svg" 
-    : "/full-logo-dark.svg"
+  const logoSrc = "/full-logo-dark.svg"
 
   return (
     <Link href="/" className={cx("block shrink-0", className)}>

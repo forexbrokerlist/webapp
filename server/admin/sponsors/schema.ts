@@ -7,7 +7,7 @@ import {
   parseAsStringEnum,
 } from "nuqs/server"
 import * as z from "zod"
-import { type Sponsor, SponsorCategory } from "~/.generated/prisma/browser"
+import { type Sponsor } from "~/.generated/prisma/browser"
 import { getSortingStateParser } from "~/lib/parsers"
 
 export const sponsorListParams = {
@@ -34,6 +34,14 @@ export const sponsorSchema = z.object({
   isActive: z.boolean().default(true),
   order: z.number().int().default(0),
   categoryId: z.string().optional().or(z.literal("")),
+  title: z.string().optional().or(z.literal("")),
+  subtitle: z.string().optional().or(z.literal("")),
+  
+  description: z.string().optional().or(z.literal("")),
+  bannerImage: z.string().optional().or(z.literal("")),
+  features: z.array(z.string()).default([]),
+  socialProof: z.string().optional().or(z.literal("")),
+  highlightedPoint: z.string().optional().or(z.literal("")),
 })
 
 export type SponsorSchema = z.infer<typeof sponsorSchema>

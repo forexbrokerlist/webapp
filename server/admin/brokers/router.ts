@@ -11,9 +11,7 @@ export const brokerIdSchema = z.object({ id: z.coerce.number() })
 export const brokerIdsSchema = z.object({ ids: z.array(z.coerce.number()) })
 
 const list = adminProcedure.input(brokerListSchema).handler(async ({ input }) => {
-  // Since findBrokers doesn't implement pagination out of the box like findTools, we would map it here.
-  // For now just pass it as is, or we'd write a proper query builder.
-  return { tools: await findBrokers(input), total: 0, pageCount: 0 }
+  return findBrokers(input)
 })
 
 const lookup = adminProcedure.handler(async () => {
@@ -166,4 +164,36 @@ export const brokerRouter = {
   duplicate,
   remove,
   updateStatus,
+  reorder: adminProcedure
+    .input(z.object({ 
+      ids: z.array(z.coerce.number()),
+      startIndex: z.number().optional().default(0)
+    }))
+    .handler(async ({ input: { ids, startIndex }, context: { db, revalidate } }) => {
+      console.log("Reorder API called", { idsCount: ids.length, startIndex })
+      try {
+        await db.$transaction(
+          async (tx) => {
+            for (let i = 0; i < ids.length; i++) {
+              const newOrder = startIndex + i
+              console.log(`[DB SAVE] ID: ${ids[i]} -> New Order: ${newOrder}`)
+              await tx.brokers.update({
+                where: { id: ids[i] },
+                data: { order: newOrder },
+              })
+            }
+          },
+          { timeout: 30000 },
+        )
+
+        revalidate({
+          tags: ["brokers"],
+        })
+        console.log("Reorder successful")
+        return true
+      } catch (error) {
+        console.error("Reorder failed", error)
+        throw error
+      }
+    }),
 }

@@ -23,7 +23,7 @@ const DropdownMenuContent = ({
       <DropdownMenuPrimitive.Content
         sideOffset={sideOffset}
         className={cx(
-          "z-50 min-w-40 flex flex-col rounded-md border bg-popover p-1 text-popover-foreground shadow-sm backdrop-blur-xs",
+          "z-50 min-w-40 flex flex-col rounded-xl border border-border-light800 bg-white p-2 text-black100 shadow-[0_10px_40px_rgba(0,0,0,0.06)] backdrop-blur-xl outline-none",
           popoverAnimationClasses,
           className,
         )}
@@ -43,8 +43,8 @@ const DropdownMenuItem = ({
   return (
     <DropdownMenuPrimitive.Item
       className={cx(
-        "relative flex m-0 cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0",
-        inset && "pl-8",
+        "relative flex m-0 cursor-pointer select-none items-center gap-3 rounded-lg px-3 py-2.5 text-base font-medium text-black700 outline-none hover:bg-primary/10 hover:text-black100 transition-all duration-200 data-disabled:pointer-events-none data-disabled:opacity-50 [&>svg]:size-5 [&>svg]:shrink-0",
+        inset && "pl-10",
         className,
       )}
       {...props}
@@ -61,7 +61,7 @@ const DropdownMenuCheckboxItem = ({
   return (
     <DropdownMenuPrimitive.CheckboxItem
       className={cx(
-        "relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-hidden transition-colors focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50",
+        "relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50",
         className,
       )}
       checked={checked}
@@ -85,7 +85,7 @@ const DropdownMenuRadioItem = ({
   return (
     <DropdownMenuPrimitive.RadioItem
       className={cx(
-        "relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-hidden transition-colors focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50",
+        "relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50",
         className,
       )}
       {...props}
@@ -111,7 +111,7 @@ const DropdownMenuSubTrigger = ({
   return (
     <DropdownMenuPrimitive.SubTrigger
       className={cx(
-        "flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-1.5 text-sm outline-hidden focus:bg-accent data-[state=open]:bg-accent [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+        "flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent data-[state=open]:bg-accent [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
         inset && "pl-8",
         className,
       )}

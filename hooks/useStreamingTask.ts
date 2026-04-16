@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { apiClient, getSignedToken } from '~/lib/api-client'
 import { useSession } from '~/lib/auth-client'
 
@@ -33,16 +33,9 @@ interface UseStreamingTaskReturn {
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
-const POLL_INTERVAL_MS = 3000
-const FALLBACK_MAX_ATTEMPTS = 10
-const FALLBACK_BASE_DELAY_MS = 3_000
-const FALLBACK_MAX_DELAY_MS = 30_000
+const POLL_INTERVAL_MS = 20000
 const FALLBACK_HISTORY_PAGE_SIZE = 20
 
-function getFallbackDelay(attempt: number): number {
-  // Exponential backoff: 3s, ~4.7s, ~7.5s, ~11s … capped at 30s
-  return Math.min(FALLBACK_MAX_DELAY_MS, FALLBACK_BASE_DELAY_MS * Math.pow(1.5, attempt))
-}
 
 function extractAnswer(data: any) {
   return (
@@ -65,8 +58,13 @@ export function useStreamingTask(): UseStreamingTaskReturn {
   userIdRef.current = session?.user?.id
 
   const [tasks, setTasks] = useState<Record<string, Task>>({})
+  // Use a ref to track the latest tasks state for stable polling without triggers
+  const tasksRef = useRef<Record<string, Task>>(tasks)
+  tasksRef.current = tasks
+
   // controllers map: taskId → AbortController (stream), `poll-<backendId>` → AbortController (poll)
   const controllers = useRef(new Map<string, AbortController>())
+  const isGlobalPollingActive = useRef(false)
 
   // ---------------------------------------------------------------------------
   // Helpers – all operate on taskId and do NOT read from `tasks` state
@@ -167,103 +165,103 @@ export function useStreamingTask(): UseStreamingTaskReturn {
   }, [abortControllers])
 
   // ---------------------------------------------------------------------------
-  // History fallback
-  // Polls the history endpoint until the completed research appears or we give up.
+  // Centralized Global Polling Loop
+  // Ensures only one poll (either status or history) is active at a time
   // ---------------------------------------------------------------------------
-  const handleCompletionFallback = useCallback(async (
-    taskId: string,
-    backendId: string,
-    query?: string,
-    model?: string,
-  ) => {
-    const controllerKey = `poll-${backendId}`
-    const signal = controllers.current.get(controllerKey)?.signal
+  // ---------------------------------------------------------------------------
+  // Centralized Global Polling logic
+  // Read current running tasks and update state in one go
+  // ---------------------------------------------------------------------------
+  const runGlobalPoll = useCallback(async () => {
+    if (isGlobalPollingActive.current) return
+    const userId = userIdRef.current
+    if (!userId) return
 
-    console.log(`[useStreamingTask] Starting history fallback for ${backendId} (local: ${taskId})`)
-    updateTaskStage(taskId, 'Research completed. Finalizing report…', 100)
-    markStageCompleted(taskId)
+    const currentTasks = tasksRef.current
+    const activeTaskIds = Object.keys(currentTasks).filter(id => currentTasks[id].status === 'running')
+    if (activeTaskIds.length === 0) return
 
-    for (let attempt = 0; attempt < FALLBACK_MAX_ATTEMPTS; attempt++) {
-      if (signal?.aborted) return
+    isGlobalPollingActive.current = true
+    try {
+      console.log(`[useStreamingTask] Global poll trigger at 20s interval for ${activeTaskIds.length} tasks...`)
+      const response = await apiClient.get(
+        `/deep-research/v1/history?created_by=${userId}&page=1&limit=${FALLBACK_HISTORY_PAGE_SIZE}`
+      )
 
-      const delay = getFallbackDelay(attempt)
-      await new Promise(resolve => setTimeout(resolve, delay))
+      const historyList: any[] = 
+        response.data?.data?.history ?? 
+        response.data?.history ?? 
+        response.data?.data ?? 
+        []
 
-      if (signal?.aborted) return
+      if (Array.isArray(historyList)) {
+        setTasks(prev => {
+          let updated = { ...prev }
+          let changed = false
 
-      const userId = userIdRef.current
-      if (!userId) {
-        console.warn('[useStreamingTask] Skipping history poll: userId not available yet')
-        continue
+          activeTaskIds.forEach(taskId => {
+            const task = updated[taskId]
+            if (!task) return
+            const backendId = task.task_id 
+            
+            const record = historyList.find(
+              (item: any) => item.task_id === backendId || item.task_id === taskId
+            )
+
+            if (record) {
+              const answer = extractAnswer(record)
+              const status = record.status || record.status_message
+              
+              if (answer && task.status === 'running') {
+                updated[taskId] = {
+                  ...task,
+                  status: 'completed',
+                  result: {
+                    answer,
+                    full_report: record.Deep_Research_answer ?? record.deep_research_answer ?? answer,
+                    response: { short_response: answer },
+                  },
+                  stages: task.stages.map(s => ({ ...s, status: 'completed' as const })),
+                }
+                changed = true
+              } else if (status && status !== 'in_progress' && status !== 'running') {
+                if (status === 'error' || status === 'failed') {
+                  updated[taskId] = { ...task, status: 'error', error: 'Task failed in backend' }
+                  changed = true
+                }
+              }
+            }
+          })
+
+          return changed ? updated : prev
+        })
       }
-
-      try {
-        const response = await apiClient.get(
-          `/deep-research/v1/history?created_by=${userId}&page=1&limit=${FALLBACK_HISTORY_PAGE_SIZE}`,
-          { signal },
-        )
-
-        const historyList: any[] =
-          response.data?.data?.history ??
-          response.data?.history ??
-          response.data?.data ??
-          []
-
-        if (!Array.isArray(historyList)) {
-          console.warn('[useStreamingTask] Unexpected history shape', response.data)
-          continue
-        }
-
-        const record = historyList.find(
-          (item: any) => item.task_id === backendId || item.task_id === taskId,
-        )
-
-        const answer = extractAnswer(record)
-        if (answer) {
-          console.log('[useStreamingTask] Found completed research in history')
-          completeTask(
-            taskId,
-            {
-              answer,
-              full_report: record.Deep_Research_answer ?? record.deep_research_answer ?? answer,
-              response: { short_response: answer },
-            },
-            backendId,
-          )
-          return
-        }
-
-        console.log(`[useStreamingTask] Attempt ${attempt + 1}: record not ready yet`)
-      } catch (err: any) {
-        if (err.name === 'AbortError') return
-        console.error(`[useStreamingTask] History fallback attempt ${attempt + 1} failed:`, err)
-        // Continue to next attempt; backoff handles timing.
-      }
+    } catch (err) {
+      console.error('[useStreamingTask] Global poll error:', err)
+    } finally {
+      isGlobalPollingActive.current = false
     }
+  }, []) // Stable dependency array
 
-    // Exhausted all attempts
-    console.error(`[useStreamingTask] Gave up after ${FALLBACK_MAX_ATTEMPTS} history polls for ${backendId}`)
-    errorTask(taskId, 'Could not retrieve results. Please try again.', backendId)
-  }, [updateTaskStage, markStageCompleted, completeTask, errorTask])
+  // Periodic polling effect
+  useEffect(() => {
+    const hasActiveTasks = Object.keys(tasksRef.current).some(id => tasksRef.current[id].status === 'running')
+    if (!hasActiveTasks) return
 
-  // ---------------------------------------------------------------------------
-  // Polling (status endpoint) – used as a backup alongside the SSE stream
-  // ---------------------------------------------------------------------------
+    console.log('[useStreamingTask] Polling effect stable (20s interval)')
+    const interval = setInterval(() => {
+      runGlobalPoll()
+    }, POLL_INTERVAL_MS)
+
+    return () => clearInterval(interval)
+  }, [runGlobalPoll]) // runGlobalPoll is stable
+
   const pollTask = useCallback((
     taskId: string,
     backendTaskId?: string,
     providedQuery?: string,
     providedModel?: string,
   ) => {
-    const controllerKey = backendTaskId ? `poll-${backendTaskId}` : taskId
-    // Bail out if we're already polling this task
-    if (controllers.current.has(controllerKey)) return
-
-    const controller = new AbortController()
-    controllers.current.set(controllerKey, controller)
-
-    const effectiveBackendId = backendTaskId || taskId
-
     // Ensure the task exists in state (handles the "reconnect" scenario)
     setTasks(prev => {
       if (prev[taskId]) return prev
@@ -279,85 +277,21 @@ export function useStreamingTask(): UseStreamingTaskReturn {
         },
       }
     })
+  }, [])
 
-    const poll = async () => {
-      if (controller.signal.aborted) return
-
-      try {
-        const response = await apiClient.get(
-          `/deep-research/v1/status?task_id=${effectiveBackendId}`,
-          { signal: controller.signal },
-        )
-
-        // The API occasionally returns a raw SSE string instead of JSON
-        let data = response.data?.data ?? response.data
-        if (typeof data === 'string' && data.startsWith('data: ')) {
-          try {
-            const parsed = JSON.parse(data.replace(/^data:\s*/, '').trim())
-            data = parsed.data ?? parsed
-          } catch {
-            console.warn('[useStreamingTask] Failed to parse string status response')
-          }
-        }
-
-        if (!data) {
-          setTimeout(poll, POLL_INTERVAL_MS)
-          return
-        }
-
-        if (data.message || data.status_message) {
-          updateTaskStage(taskId, data.message ?? data.status_message, data.progress)
-        }
-
-        const terminalStatuses = new Set(['completed', 'success', 'error', 'failed'])
-        const inProgressStatuses = new Set(['queued', 'running', 'in_progress'])
-        if (data.status && !inProgressStatuses.has(data.status)) {
-          markStageCompleted(taskId)
-        }
-
-        const isCompleted =
-          data.status === 'completed' ||
-          data.status === 'success' ||
-          data.type === 'research.completed' ||
-          data.progress === 100
-
-        if (isCompleted) {
-          const answer = extractAnswer(data)
-          if (answer) {
-            completeTask(taskId, data.result ?? data, effectiveBackendId)
-          } else {
-            handleCompletionFallback(taskId, effectiveBackendId, providedQuery, providedModel)
-          }
-          controllers.current.delete(controllerKey)
-          return
-        }
-
-        if (data.status === 'error' || data.status === 'failed') {
-          errorTask(taskId, data.error ?? 'Task failed', effectiveBackendId)
-          controllers.current.delete(controllerKey)
-          return
-        }
-
-        if (!terminalStatuses.has(data.status)) {
-          setTimeout(poll, POLL_INTERVAL_MS)
-        }
-      } catch (err: any) {
-        if (err.name === 'AbortError') return
-
-        if (err.response?.status === 404) {
-          console.log(`[useStreamingTask] Status 404 for ${effectiveBackendId} – falling back to history`)
-          handleCompletionFallback(taskId, effectiveBackendId, providedQuery, providedModel)
-          controllers.current.delete(controllerKey)
-          return
-        }
-
-        // Transient error – keep polling
-        setTimeout(poll, POLL_INTERVAL_MS)
-      }
-    }
-
-    poll()
-  }, [updateTaskStage, markStageCompleted, completeTask, errorTask, handleCompletionFallback])
+  const handleCompletionFallback = useCallback((
+    taskId: string,
+    backendId: string,
+    query?: string,
+    model?: string,
+  ) => {
+    console.log(`[useStreamingTask] Registering fallback for ${backendId}`)
+    updateTaskStage(taskId, 'Research completed. Finalizing report…', 100)
+    markStageCompleted(taskId)
+    
+    // The global poll will pick this up on its next tick
+    pollTask(taskId, backendId, query, model)
+  }, [updateTaskStage, markStageCompleted, pollTask])
 
   // ---------------------------------------------------------------------------
   // SSE stream

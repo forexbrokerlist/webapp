@@ -436,6 +436,7 @@ export function FxGuruLanding() {
   const [previewFile, setPreviewFile] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -445,16 +446,41 @@ export function FxGuruLanding() {
 
   if (!session) return null
 
+  const handleFile = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload an image file only (PNG, JPG, etc.).")
+      clearFile()
+      return
+    }
+    setSelectedFile(file)
+    setPreviewFile(URL.createObjectURL(file))
+  }
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
-      const file = e.target.files[0]
-      if (!file.type.startsWith('image/')) {
-        alert("Please upload an image file only (PNG, JPG, etc.).")
-        clearFile()
-        return
-      }
-      setSelectedFile(file)
-      setPreviewFile(URL.createObjectURL(file))
+      handleFile(e.target.files[0])
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+
+    if (e.dataTransfer.files?.[0]) {
+      handleFile(e.dataTransfer.files[0])
     }
   }
 
@@ -607,7 +633,17 @@ export function FxGuruLanding() {
             </Stack>
 
             <div className="w-full max-w-3xl z-20 pb-12 mt-auto mx-auto px-4 align-bottom">
-              <div className="relative flex flex-col p-2 rounded-3xl border-2 border-indigo-500/20 dark:border-indigo-500/30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 focus-within:border-indigo-500 focus-within:shadow-[0_0_20px_rgba(99,102,241,0.2)] focus-within:ring-1 focus-within:ring-indigo-500">
+              <div 
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`relative flex flex-col p-2 rounded-3xl border-2 transition-all duration-300 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] 
+                  ${isDragging 
+                    ? "border-indigo-500 border-dashed bg-indigo-50/20 dark:bg-indigo-500/10 scale-[1.02] shadow-[0_0_20px_rgba(99,102,241,0.3)]" 
+                    : "border-indigo-500/20 dark:border-indigo-500/30 bg-white/80 dark:bg-slate-900/80"
+                  } 
+                  focus-within:border-indigo-500 focus-within:shadow-[0_0_20px_rgba(99,102,241,0.2)] focus-within:ring-1 focus-within:ring-indigo-500`}
+              >
                 {previewFile && (
                   <div className="relative w-fit mb-3 ml-2 group animate-in zoom-in duration-200">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -676,6 +712,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
   const [previewFile, setPreviewFile] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [extSessionId, setExtSessionId] = useState<string | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -765,16 +802,41 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
 
   if (!session) return null
 
+  const handleFile = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload an image file only (PNG, JPG, etc.).")
+      clearFile()
+      return
+    }
+    setSelectedFile(file)
+    setPreviewFile(URL.createObjectURL(file))
+  }
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
-      const file = e.target.files[0]
-      if (!file.type.startsWith('image/')) {
-        alert("Please upload an image file only (PNG, JPG, etc.).")
-        clearFile()
-        return
-      }
-      setSelectedFile(file)
-      setPreviewFile(URL.createObjectURL(file))
+      handleFile(e.target.files[0])
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+
+    if (e.dataTransfer.files?.[0]) {
+      handleFile(e.dataTransfer.files[0])
     }
   }
 
@@ -973,7 +1035,16 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
                 </button>
               </div>
             )}
-            <div className="relative flex flex-row items-center flex-wrap md:flex-nowrap gap-y-2 border border-input rounded-2xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary bg-background shadow-xs transition-all duration-200 pr-2 py-1">
+            <div 
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`relative flex flex-row items-center flex-wrap md:flex-nowrap gap-y-2 border rounded-2xl transition-all duration-200 pr-2 py-1 bg-background shadow-xs 
+                ${isDragging 
+                  ? "border-primary border-dashed ring-2 ring-primary/20 bg-primary/5 scale-[1.01]" 
+                  : "border-input focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary"
+                }`}
+            >
               <Button
                 variant="ghost"
                 onClick={() => fileInputRef.current?.click()}

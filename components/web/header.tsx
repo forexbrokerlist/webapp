@@ -10,6 +10,7 @@ import {
   LineChartIcon,
   TrendingUpIcon,
   TelescopeIcon,
+  User,
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { usePathname } from "next/navigation"
@@ -23,7 +24,6 @@ import {
 } from "~/components/common/dropdown-menu"
 import { Link } from "~/components/common/link"
 import { Stack } from "~/components/common/stack"
-import { ThemeSwitcher } from "~/components/web/theme-switcher"
 import { Container } from "~/components/web/ui/container"
 import { Hamburger } from "~/components/web/ui/hamburger"
 import { FullLogo } from "~/components/web/ui/full-logo"
@@ -38,6 +38,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
   const search = useSearch()
   const t = useTranslations()
   const [isNavOpen, setNavOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
 
   // Close the mobile navigation when the user presses the "Escape" key
   useHotkeys([["Escape", () => setNavOpen(false)]])
@@ -45,14 +46,31 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
   // Close the mobile navigation when the user navigates to a new page
   useEffect(() => setNavOpen(false), [pathname])
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true)
+      } else {
+        setIsScrolled(false)
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
   return (
     <header
-      className={cx("fixed top-(--header-top) inset-x-0 z-50 bg-background", className)}
+      className={cx(
+        "fixed top-0 left-0 w-full z-50 transition-all duration-300",
+        isScrolled ? "py-3 bg-[rgba(255,255,255,0.85)] backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.04)] " : "py-5 bg-transparent",
+        className
+      )}
       data-state={isNavOpen ? "open" : "close"}
       {...props}
     >
-      <Container>
-        <div className="flex items-center py-3.5 gap-4 text-sm h-(--header-height) md:gap-6 lg:gap-8">
+      <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
+        <div className="flex items-center justify-between text-sm w-full">
           <Stack size="sm" wrap={false} className="min-w-0">
             <button
               type="button"
@@ -62,25 +80,28 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
               <Hamburger className="size-7" />
             </button>
 
-            <FullLogo className="h-6 w-auto" />
+            <FullLogo className=" max-w-[175px] w-full" />
           </Stack>
 
-          <nav className="flex flex-wrap gap-x-4 gap-y-0.5 flex-1 max-lg:hidden">
+          <nav className="bg-white flex items-center gap-2 rounded-full p-1.5 max-lg:hidden">
+            <NavLink href="/" exact className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>
+              Home
+            </NavLink>
             <DropdownMenu>
               <NavLink
-                className="gap-1"
-                suffix={<ChevronDownIcon className="group-data-[state=open]:-rotate-180" />}
+                className="flex items-center gap-1 py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-[state=open]:bg-primary data-active:bg-primary transition-all duration-300"
+                isPadded={false}
                 asChild
               >
-                <DropdownMenuTrigger>{t("navigation.browse")}</DropdownMenuTrigger>
+                <DropdownMenuTrigger>{t("navigation.browse")} <ChevronDownIcon className="size-4 opacity-75 group-data-[state=open]:-rotate-180 transition-transform" /></DropdownMenuTrigger>
               </NavLink>
 
               <DropdownMenuContent align="start">
-                <DropdownMenuItem asChild>
+                {/* <DropdownMenuItem asChild>
                   <NavLink href="/?sort=publishedAt.desc" prefix={<CalendarDaysIcon />}>
                     {t("navigation.latest_tools")}
                   </NavLink>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem asChild>
                   <NavLink href="/categories" prefix={<GalleryHorizontalEndIcon />}>
                     {t("navigation.categories")}
@@ -98,16 +119,16 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
 
             <DropdownMenu>
               <NavLink
-                className="gap-1"
-                suffix={<ChevronDownIcon className="group-data-[state=open]:-rotate-180" />}
+                className="flex items-center gap-1 py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-[state=open]:bg-primary data-active:bg-primary transition-all duration-300"
+                isPadded={false}
                 asChild
               >
-                <DropdownMenuTrigger>{t("navigation.ai_tools")}</DropdownMenuTrigger>
+                <DropdownMenuTrigger>{t("navigation.ai_tools")} <ChevronDownIcon className="size-4 opacity-75 group-data-[state=open]:-rotate-180 transition-transform" /></DropdownMenuTrigger>
               </NavLink>
 
               <DropdownMenuContent align="start">
                 {/* <DropdownMenuItem asChild> */}
-                  {/* <NavLink href="/fx-guru" prefix={<LineChartIcon />}>
+                {/* <NavLink href="/fx-guru" prefix={<LineChartIcon />}>
                     {t("navigation.fx_guru")}
                   </NavLink> */}
                 {/* </DropdownMenuItem> */}
@@ -129,25 +150,25 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <NavLink href="/brokers">{t("navigation.tools")}</NavLink>
-            <NavLink href="/about">{t("navigation.about")}</NavLink>
-            <NavLink href="/contact">{t("navigation.contact_us")}</NavLink>
-            {adsConfig.enabled && <NavLink href="/advertise">{t("navigation.advertise")}</NavLink>}
+            <NavLink href="/brokers" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.tools")}</NavLink>
+            <NavLink href="/about" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.about")}</NavLink>
+            <NavLink href="/contact" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.contact_us")}</NavLink>
+            {adsConfig.enabled && <NavLink href="/advertise" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.advertise")}</NavLink>}
           </nav>
 
-          <Stack size="sm" wrap={false} className="justify-end max-lg:grow">
-            <Button size="sm" variant="ghost" className="p-1 text-base" onClick={search.open}>
+          <Stack size="sm" wrap={false} className="justify-end gap-3 max-lg:grow">
+            {/* <Button size="sm" variant="ghost" className="p-1 text-base" onClick={search.open}>
               <SearchIcon />
-            </Button>
+            </Button> */}
 
-            <Button size="sm" variant="ghost" className="p-1 -ml-1 text-base max-sm:hidden" asChild>
-              <ThemeSwitcher />
-            </Button>
 
-            <Button size="sm" variant="secondary" asChild>
+
+            {/* <Button size="md" variant="primary" className="px-7" asChild>
               <Link href="/submit">{t("navigation.submit")}</Link>
-            </Button>
-
+            </Button> */}
+            <div className='w-[50px] h-[50px] border cursor-pointer bg-white border-solid border-border-light800 transition-all duration-300 hover:border-primary flex items-center justify-center rounded-full'>
+              <User className='text-black100 w-6 h-6' />
+            </div>
             <UserMenu />
           </Stack>
         </div>
@@ -161,7 +182,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
           <NavLink href="/?sort=publishedAt.desc">{t("navigation.latest_tools")}</NavLink>
           <NavLink href="/categories">{t("navigation.categories")}</NavLink>
           <NavLink href="/tags">{t("navigation.tags")}</NavLink>
-          <NavLink href="/fx-guru">{t("navigation.fx_guru")}</NavLink> 
+          <NavLink href="/fx-guru">{t("navigation.fx_guru")}</NavLink>
           <NavLink href="/trade-snap">{t("navigation.trade_snap")}</NavLink>
 
           {/* <NavLink href="/stock-guru">{t("navigation.stock_guru")}</NavLink> */}
@@ -172,7 +193,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
           <NavLink href="/contact">{t("navigation.contact_us")}</NavLink>
           {adsConfig.enabled && <NavLink href="/advertise">{t("navigation.advertise")}</NavLink>}
         </nav>
-      </Container>
+      </div>
     </header>
   )
 }

@@ -10,7 +10,7 @@ import { Slottable } from "~/components/common/slottable"
 import { cva, cx, type VariantProps } from "~/lib/utils"
 
 const navLinkVariants = cva({
-  base: "group flex items-center gap-2 disabled:opacity-50 disabled:pointer-events-none",
+  base: "group flex items-center gap-2 outline-none disabled:opacity-50 disabled:pointer-events-none",
 
   variants: {
     isActive: {
@@ -29,7 +29,7 @@ const navLinkVariants = cva({
 })
 
 const navLinkAffixVariants = cva({
-  base: "shrink-0 size-4 opacity-75",
+  base: "shrink-0 size-5 opacity-75",
 })
 
 const isItemActive = (href: LinkProps["href"] | undefined, pathname: string, exact = false) => {

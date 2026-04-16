@@ -1,7 +1,8 @@
 "use client"
 
-import { flexRender, type Table as TanstackTable } from "@tanstack/react-table"
+import { flexRender, type Table as TanstackTable, type Row } from "@tanstack/react-table"
 import { useTranslations } from "next-intl"
+import * as React from "react"
 import type { ComponentProps, CSSProperties, ReactNode } from "react"
 import { Skeleton } from "~/components/common/skeleton"
 import {
@@ -52,6 +53,12 @@ type DataTableProps<TData> = ComponentProps<typeof Table> & {
    * @default false
    */
   isLoading?: boolean
+
+  /**
+   * Custom row component to render instead of the default TableRow.
+   * Useful for drag and drop, custom styling, etc.
+   */
+  renderRow?: (props: { row: Row<TData> }) => ReactNode
 }
 
 export function DataTable<TData>({
@@ -60,6 +67,7 @@ export function DataTable<TData>({
   emptyState,
   isFetching = false,
   isLoading = false,
+  renderRow,
   children,
   className,
   ...props
@@ -82,8 +90,8 @@ export function DataTable<TData>({
 
       <Table
         className={cx(
-          "rounded-md border transition-opacity",
-          isFetching && "opacity-50 pointer-events-none",
+          "rounded-md border transition-opacity mt-4",
+          isFetching && "opacity-80",
           className,
         )}
         style={
@@ -124,7 +132,7 @@ export function DataTable<TData>({
             {!!table.getRowModel().rows?.length && (
               <TableHeader>
                 {table.getHeaderGroups().map(headerGroup => (
-                  <TableRow key={headerGroup.id}>
+                  <TableRow key={headerGroup.id} className="py-2">
                     {headerGroup.headers.map(header => {
                       return (
                         <TableHead key={header.id} style={getColumnPinningStyle(header)}>
@@ -142,16 +150,20 @@ export function DataTable<TData>({
             <TableBody>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell
-                        key={cell.id}
-                        style={getColumnPinningStyle({ column: cell.column, withBorder: true })}
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
+                  renderRow ? (
+                    <React.Fragment key={row.id}>{renderRow({ row })}</React.Fragment>
+                  ) : (
+                    <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                      {row.getVisibleCells().map(cell => (
+                        <TableCell
+                          key={cell.id}
+                          style={getColumnPinningStyle({ column: cell.column, withBorder: true })}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  )
                 ))
               ) : (
                 <TableRow className="h-24" aria-disabled>
