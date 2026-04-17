@@ -52,14 +52,7 @@ const PlatformCard = ({ platform, index, delay = 0, className = "" }: { platform
                     <VerifyIcon />
                 </div>
             </div>
-            {platform.isSponsor && (
-                <div>
-                    <button className='flex text-xs font-medium text-black100 items-center uppercase border-[0.8px] border-primary bg-white shadow-[0_0_10px_0_rgba(168,221,21,0.3)] gap-1.5 py-1.5 px-4 rounded-full'>
-                        <SponserIcon />
-                        Sponsored
-                    </button>
-                </div>
-            )}
+           
         </div>
         <p className='text-sm text-black800 font-medium mb-5 line-clamp-2'>
             {platform.description}
@@ -77,8 +70,8 @@ const PlatformCard = ({ platform, index, delay = 0, className = "" }: { platform
 );
 
 export default function TrustedTrading({ platforms }: TrustedTradingProps) {
-    const leftCol = platforms.slice(0, 3);
-    const featured = platforms[3];
+    const leftCol = platforms.slice(1, 4);
+    const featured = platforms[0];
     const rightCol = platforms.slice(4, 7);
 
     return (
@@ -147,14 +140,14 @@ the right fit for your trading goals.
                                                 <VerifyIcon />
                                             </div>
                                         </div>
-                                        {featured.isSponsor && (
+                                        {/* {featured.isSponsor && (
                                             <div>
                                                 <button className='flex text-xs font-medium text-black100 items-center uppercase border-[0.8px] border-primary bg-white shadow-[0_0_10px_0_rgba(168,221,21,0.3)] gap-1.5 py-1.5 px-4 rounded-full'>
                                                     <SponserIcon />
                                                     Sponsored
                                                 </button>
                                             </div>
-                                        )}
+                                        )} */}
                                     </div>
                                     <p className='text-sm text-black800 font-medium mb-5 line-clamp-2'>
                                         {featured.description}

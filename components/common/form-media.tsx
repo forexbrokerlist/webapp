@@ -96,7 +96,19 @@ export const FormMedia = <T extends FieldValues>({
       <Stack size="sm">
         {typeof children === "function" ? children({ value: previewUrl }) : children}
 
-        <Input type="url" className="flex-1" {...field} />
+        {/* Hidden input carries the real S3 URL as the form value */}
+        <input type="hidden" {...field} />
+
+        {/* Visible read-only input shows the presigned URL so the user can see/copy it */}
+        <Input
+          type="url"
+          className="flex-1 text-xs text-muted-foreground"
+          value={previewUrl ?? field.value ?? ""}
+          onChange={() => {}}
+          readOnly
+          placeholder="No URL set"
+          title={field.value ?? ""}
+        />
       </Stack>
 
       {error && <FieldError errors={[error as { message?: string }]} />}

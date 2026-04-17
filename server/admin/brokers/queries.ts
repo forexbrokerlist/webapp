@@ -156,7 +156,8 @@ export const findBrokerById = async (id: number) => {
       subtitle: true,
       screenshotUrl: true,
       bannerUrl: true,
-      
+      logoUrl: true,
+
       typeId: true,
       isSponsor: true,
       isMainSponsor: true,

@@ -258,14 +258,14 @@ export function ToolTable() {
   useEffect(() => {
     setIsMounted(true)
   }, [])
- 
+
   const { data, isLoading, isFetching } = useQuery(
     orpc.brokers.list.queryOptions({
       input: params,
       placeholderData: keepPreviousData,
     }),
   )
- const isInitialLoad = isLoading && !data;
+  const isInitialLoad = isLoading && !data;
   const storageKey = `pending-broker-order-page-${params.page}`
 
   const hasResumedSync = useRef(false)
@@ -281,10 +281,10 @@ export function ToolTable() {
           const reordered = pendingIds
             .map(id => data.tools.find(t => t.id === id))
             .filter(Boolean) as BrokerRow[]
-          
+
           if (reordered.length === data.tools.length) {
             setItems(reordered)
-            
+
             const isSyncedWithBackend = data.tools.every((t, i) => t.id === pendingIds[i])
             if (isSyncedWithBackend) {
               localStorage.removeItem(storageKey)
@@ -294,7 +294,6 @@ export function ToolTable() {
               setTimeout(() => {
                 reorderMutation.mutate({
                   ids: pendingIds,
-                  startIndex,
                 })
               }, 50)
             }
@@ -349,7 +348,7 @@ export function ToolTable() {
 
       if (oldIndex !== -1 && newIndex !== -1) {
         const newItems = arrayMove(items, oldIndex, newIndex)
-        
+
         const startIndex = ((params.page || 1) - 1) * params.perPage
         console.log("REORDER START", { idsCount: newItems.length, startIndex })
 
@@ -362,7 +361,6 @@ export function ToolTable() {
         // Sync with backend later
         reorderMutation.mutate({
           ids: newItems.map(item => item.id),
-          startIndex,
         })
       }
     }
@@ -453,62 +451,62 @@ export function ToolTable() {
         strategy={verticalListSortingStrategy}
       >
         <div className="relative">
-        <DataTable
-          table={table}
-          isLoading={isLoading}
-          isFetching={isFetching && !isLoading && !showReorderOverlay}
-          renderRow={props => <DraggableTableRow {...props} />}
-        >
-          <DataTableHeader
-            title="Brokers"
-            total={data?.total}
-            callToAction={
-              <Button variant="primary" size="md" prefix={<PlusIcon />} asChild>
-                <Link href="/admin/brokers/new">
-                  <div className="max-sm:sr-only">New broker</div>
-                </Link>
-              </Button>
-            }
+          <DataTable
+            table={table}
+            isLoading={isLoading}
+            isFetching={isFetching && !isLoading && !showReorderOverlay}
+            renderRow={props => <DraggableTableRow {...props} />}
           >
-            <DataTableToolbar
-              table={table}
-              filterFields={filterFields}
-              isFiltered={!isDefaultState(brokerListParams, params, ["perPage", "page"])}
-              onReset={() => {
-                table.resetColumnFilters()
-                void setParams(null)
-              }}
+            <DataTableHeader
+              title="Brokers"
+              total={data?.total}
+              callToAction={
+                <Button variant="primary" size="md" prefix={<PlusIcon />} asChild>
+                  <Link href="/admin/brokers/new">
+                    <div className="max-sm:sr-only">New broker</div>
+                  </Link>
+                </Button>
+              }
             >
-              <ToolTableToolbarActions table={table} />
-
-              <Select
-                value={params.type || "all"}
-                onValueChange={val => setParams({ type: val === "all" ? null : val })}
+              <DataTableToolbar
+                table={table}
+                filterFields={filterFields}
+                isFiltered={!isDefaultState(brokerListParams, params, ["perPage", "page"])}
+                onReset={() => {
+                  table.resetColumnFilters()
+                  void setParams(null)
+                }}
               >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  {types.map(t => (
-                    <SelectItem key={t.id} value={t.name.toLowerCase().replace(/\s+/g, "-")}>
-                      {t.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <ToolTableToolbarActions table={table} />
 
-              <DateRangePicker align="end" />
-              <DataTableViewOptions table={table} />
-            </DataTableToolbar>
-          </DataTableHeader>
-        </DataTable>
-       {showReorderOverlay && (
-      <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-50">
-        <div className="animate-pulse text-sm">Updating order...</div>
-      </div>
-    )}
-  </div>
+                <Select
+                  value={params.type || "all"}
+                  onValueChange={val => setParams({ type: val === "all" ? null : val })}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    {types.map(t => (
+                      <SelectItem key={t.id} value={t.name.toLowerCase().replace(/\s+/g, "-")}>
+                        {t.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <DateRangePicker align="end" />
+                <DataTableViewOptions table={table} />
+              </DataTableToolbar>
+            </DataTableHeader>
+          </DataTable>
+          {showReorderOverlay && (
+            <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-50">
+              <div className="animate-pulse text-sm">Updating order...</div>
+            </div>
+          )}
+        </div>
       </SortableContext>
       {typeof window !== "undefined" && (
         <DragOverlay adjustScale={false}>
