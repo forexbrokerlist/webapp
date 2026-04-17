@@ -40,6 +40,7 @@ export const env = createEnv({
     AI_CHAT_MODEL: z.string().default("openai/gpt-4o"),
     AI_COMPLETION_MODEL: z.string().default("openai/gpt-4o-mini"),
     JINA_API_KEY: z.string().optional(),
+    LOGO_DEV_TOKEN: z.string().optional(),
   },
 
   /**

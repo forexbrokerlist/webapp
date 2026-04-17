@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { MoveRight } from 'lucide-react';
 import { Button } from '~/components/common/button';
 import Link from 'next/link';
+import { Favicon } from '~/components/web/ui/favicon';
 
 export default function OurPartners({ liquidityPartners, PSPPartners, TradingPalformPartners }: { liquidityPartners: any[], PSPPartners: any[], TradingPalformPartners: any[] }) {
     return (
@@ -80,8 +81,8 @@ export default function OurPartners({ liquidityPartners, PSPPartners, TradingPal
                                             >
                                                 <div className='p-2.5 rounded-xl border border-[rgba(26,26,26,0.14)] bg-white h-full flex flex-col'>
                                                     <div className='grid grid-cols-[80px_1fr] items-center gap-3 pb-4 border-b border-solid border-border-gray800'>
-                                                        <div className='h-[54px] w-full bg-[#F4F4F4] rounded-lg flex items-center justify-center overflow-hidden p-2'>
-                                                            <img src={partner.logoUrl} alt={partner.name} className='block max-h-full w-auto object-contain' />
+                                                        <div className='h-[54px] w-full bg-[#F4F4F4] rounded-lg flex items-center justify-center overflow-hidden'>
+                                                            <Favicon src={partner.logoUrl} title={partner.name} size={40} className="size-full" contained />
                                                         </div>
                                                         <div>
                                                             <h3 className='text-base text-black font-semibold truncate'>
@@ -177,7 +178,7 @@ export default function OurPartners({ liquidityPartners, PSPPartners, TradingPal
                                                     className="px-5 py-4 rounded-[12px] border border-[rgba(26,26,26,0.16)] bg-[rgba(255,255,255,0.1)] backdrop-blur-[87.7px] shadow-sm flex flex-col items-center justify-center"
                                                 >
                                                     <div className='flex justify-center h-12 w-full'>
-                                                        <img className='block max-h-full w-auto object-contain' src={partner.logoUrl} alt={partner.name} />
+                                                        <Favicon src={partner.logoUrl} title={partner.name} size={32} contained className="size-full" />
                                                     </div>
                                                     <p className='mt-3 text-sm max-laptop:mt-2 text-black700 text-center font-medium w-full'>
                                                         {partner.name}
@@ -231,8 +232,8 @@ deposits and withdrawals for traders worldwide.
                                     <div className='flex gap-3 pr-3'>
                                         {row1Loop.map((partner, index) => (
                                             <div key={`row1-${partner.id}-${index}`} className='rounded-[13px] bg-[rgba(26,26,26,0.03)] p-2 max-w-[300px] max-mobile:max-w-[200px] max-mobile:w-[200px] max-mobile:min-w-[200px] w-[300px] min-w-[300px] backdrop-blur-[239.8px]'>
-                                                <div className='rounded-[11.413px] border-[0.951px] border-[rgba(26,26,26,0.08)] h-[90px] max-mobile:h-[60px] flex items-center justify-center bg-white p-4'>
-                                                    <img src={partner.logoUrl} alt={partner.name} className='block max-h-full w-auto object-contain' />
+                                                <div className='rounded-[11.413px] border-[0.951px] border-[rgba(26,26,26,0.08)] h-[90px] max-mobile:h-[60px] flex items-center justify-center bg-white'>
+                                                    <Favicon src={partner.logoUrl} title={partner.name} size={60} contained className="size-full" />
                                                 </div>
                                             </div>
                                         ))}
@@ -279,8 +280,8 @@ deposits and withdrawals for traders worldwide.
                                     <div className='flex gap-3 pr-3'>
                                         {row3Loop.map((partner, index) => (
                                             <div key={`row3-${partner.id}-${index}`} className='rounded-[13px] bg-[rgba(26,26,26,0.03)] p-2 w-[300px] min-w-[300px] backdrop-blur-[239.8px]'>
-                                                <div className='rounded-[11.413px] border-[0.951px] border-[rgba(26,26,26,0.08)] h-[90px] flex items-center justify-center bg-white p-4'>
-                                                    <img src={partner.logoUrl} alt={partner.name} className='block max-h-full w-auto object-contain' />
+                                                <div className='rounded-[11.413px] border-[0.951px] border-[rgba(26,26,26,0.08)] h-[90px] flex items-center justify-center bg-white'>
+                                                    <Favicon src={partner.logoUrl} title={partner.name} size={60} contained className="size-full" />
                                                 </div>
                                             </div>
                                         ))}

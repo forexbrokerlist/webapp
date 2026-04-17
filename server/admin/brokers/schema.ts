@@ -79,6 +79,7 @@ export const brokerSchema = z.object({
   subtitle: z.string().optional(),
   screenshotUrl: z.string().url().or(z.literal("")).optional(),
   bannerUrl: z.string().url().or(z.literal("")).optional(),
+  logoUrl: z.string().url().or(z.literal("")).optional(),
   typeId: z.string().nullish(),
   isSponsor: z.boolean().default(false),
   isMainSponsor: z.boolean().default(false),

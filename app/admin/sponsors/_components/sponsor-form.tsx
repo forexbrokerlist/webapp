@@ -228,9 +228,9 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
                 fetchType="favicon"
                 websiteUrl={websiteUrl}
               >
-                {field.value && (
+                {({ value }) => value && (
                   <Image
-                    src={field.value}
+                    src={value}
                     alt="Logo"
                     width={100}
                     height={100}
@@ -256,9 +256,9 @@ export function SponsorForm({ className, title, sponsor, ...props }: SponsorForm
                 fetchType="screenshot"
                 websiteUrl={websiteUrl}
               >
-                {field.value && (
+                {({ value }) => value && (
                   <Image
-                    src={field.value}
+                    src={value}
                     alt="Banner"
                     width={400}
                     height={200}

@@ -108,6 +108,11 @@ export default async function (props: any) {
   )
 
   const getLogo = async (broker: any) => {
+    // 1. Prioritize the high-quality logo stored in our database
+    if (broker.logoUrl) {
+      return (await getPresignedUrlFromFull(broker.logoUrl)) as string
+    }
+
     let domain = "forex.com"
     const targetUrl = broker.broker_website || broker.url
     try {
@@ -117,11 +122,12 @@ export default async function (props: any) {
       }
     } catch (e) { }
 
-    // Use Google Favicon API as primary source for small logo icons
+    // 2. Fallback to Google Favicon API
     if (domain && domain !== "forex.com") {
       return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
     }
 
+    // 3. Last resort: screenshot or default placeholder
     if (broker.screenshotUrl) {
       return (await getPresignedUrlFromFull(broker.screenshotUrl)) as string
     }

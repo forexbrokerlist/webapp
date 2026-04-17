@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Button } from '~/components/common/button'
 import { MoveRight } from 'lucide-react'
 import { Link } from '~/components/common/link'
+import { Favicon } from '~/components/web/ui/favicon';
 
 const FallbackBanner = '/assets/images/pipgrid.png';
 
@@ -93,9 +94,7 @@ export default function AlgoTrading({ partners = [] }: { partners?: Partner[] })
 
                             <div className='grid grid-cols-[87px_1fr] gap-5 pt-5 pb-4 border-b border-solid border-border-light800'>
                                 <div className='w-full h-[64px] rounded-lg bg-[#F2F4F7] flex items-center justify-center'>
-                                    <img src={partner.logoUrl} alt={partner.name} className='max-w-[35px]' onError={(e) => {
-                                        (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${partner.name}&background=A8DD15&color=fff`;
-                                    }} />
+                                    <Favicon src={partner.logoUrl} title={partner.name} size={35} contained className="size-full" />
                                 </div>
                                 <div>
                                     <h3 className='text-xl font-bold text-black100'>{partner.name}</h3>

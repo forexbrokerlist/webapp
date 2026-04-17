@@ -125,6 +125,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       subtitle: broker?.subtitle ?? "",
       screenshotUrl: broker?.screenshotUrl ?? "",
       bannerUrl: broker?.bannerUrl ?? "",
+      logoUrl: broker?.logoUrl ?? "",
       typeId: broker?.typeId ?? undefined,
       isSponsor: broker?.isSponsor ?? false,
       isMainSponsor: broker?.isMainSponsor ?? false,
@@ -453,7 +454,6 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           name="screenshotUrl"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Screenshot URL</FieldLabel>
               <FormMedia
                 form={form}
                 field={field}
@@ -461,9 +461,9 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
                 fetchType="screenshot"
                 websiteUrl={broker_website}
               >
-                {field.value && (
+                {({ value }) => value && (
                   <Image
-                    src={field.value}
+                    src={value}
                     alt="Screenshot"
                     width={400}
                     height={200}
@@ -471,6 +471,34 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
                   />
                 )}
               </FormMedia>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="logoUrl"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FormMedia
+                form={form}
+                field={field}
+                path={`${path}/logo`}
+                fetchType="favicon"
+                websiteUrl={broker_website}
+              >
+                {({ value }) => value && (
+                  <Image
+                    src={value}
+                    alt="Logo"
+                    width={120}
+                    height={60}
+                    className="h-16 w-auto border rounded-md object-contain bg-foreground/5 p-1"
+                  />
+                )}
+              </FormMedia>
+              <Hint>Fetches logo from Google Favicons, enhances &amp; stores in the protected DO Spaces bucket.</Hint>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -490,9 +518,9 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
                   fetchType="screenshot"
                   websiteUrl={broker_website}
                 >
-                  {field.value && (
+                  {({ value }) => value && (
                     <Image
-                      src={field.value}
+                      src={value}
                       alt="Banner"
                       width={400}
                       height={200}

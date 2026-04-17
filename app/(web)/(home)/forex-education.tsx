@@ -6,6 +6,7 @@ import { Button } from '~/components/common/button'
 import { ButtonGroup } from '~/components/common/button-group'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Favicon } from '~/components/web/ui/favicon';
 
 const GolldenBullsImage = '/assets/images/gollden.png';
 
@@ -152,7 +153,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                         <div className=' relative z-20 rounded-[14.774px] bg-[#1A1A1A] shadow-[0_0_27.887px_0_rgba(0,0,0,0.1)] p-4'>
                                             {slide.logo && (
                                                 <div className="absolute -top-[42px] right-4 w-[84px] h-[84px] rounded-full bg-white shadow-[0_0_30px_rgba(255,215,0,0.25)] z-30 flex items-center justify-center p-1.5 border-[3px] border-[rgba(255,255,255,0.1)]">
-                                                    <Image src={slide.logo} alt={`${slide.title} Logo`} width={80} height={80} loading="lazy" className="w-full h-full object-contain rounded-full" />
+                                                    <Favicon src={slide.logo} title={slide.title} size={80} contained className="w-full h-full rounded-full" />
                                                 </div>
                                             )}
                                             <div className='inline-flex max-mobile:text-xs items-center px-2 py-1  text-xs font-semibold text-white700 bg-[rgba(255,255,255,0.1)] rounded-full w-fit mb-1 border border-[rgba(255,255,255,0.05)]'>
