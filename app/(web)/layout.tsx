@@ -17,7 +17,7 @@ import { cn } from "~/lib/utils"
 
 export default function ({ children }: PropsWithChildren) {
   const pathname = usePathname()
-  const isHome = pathname === "/"
+  const isHome = pathname === "/" || pathname === "/categories"
 
   return (
     <QueryProvider>
