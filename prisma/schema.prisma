@@ -372,7 +372,9 @@ model Brokers {
   claims        BrokerClaim[]
   owner         User?                @relation(fields: [ownerId], references: [id])
   ownerId       String?
-
+  features    String[]  
+  socialProof String? 
+  highlightedPoint String? 
   @@index([slug])
   @@index([broker_name])
   @@index([status])

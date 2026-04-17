@@ -213,9 +213,9 @@ export default async function (props: any) {
       title: broker.broker_name || "",
       description: broker.subtitle || broker.description || "",
       logoUrl: await getLogo(broker),
-      features: [],
-      highlightedPoint: null,
-      socialProof: null,
+      features: broker.features || [],
+      highlightedPoint: broker.highlightedPoint,
+      socialProof: broker.socialProof,
       slug: broker.slug || ""
     }))
   )

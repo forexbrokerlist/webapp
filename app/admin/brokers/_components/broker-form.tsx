@@ -4,11 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useHotkeys } from "@mantine/hooks"
 import { formatDateTime, getRandomString, slugify } from "@primoui/utils"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { EyeIcon, InfoIcon, PencilIcon } from "lucide-react"
+import { EyeIcon, InfoIcon, PencilIcon, Trash, Plus } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { type ComponentProps, useMemo, useRef, useState } from "react"
-import { Controller, FormProvider as Form, useForm } from "react-hook-form"
+import { Controller, FormProvider as Form, useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { type Brokers, ToolStatus, ToolTier } from "~/.generated/prisma/browser"
 import { ToolActions } from "~/app/admin/brokers/_components/broker-actions"
@@ -129,6 +129,9 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       typeId: broker?.typeId ?? undefined,
       isSponsor: broker?.isSponsor ?? false,
       isMainSponsor: broker?.isMainSponsor ?? false,
+      features: broker?.features ?? [],
+      socialProof: broker?.socialProof ?? "",
+      highlightedPoint: broker?.highlightedPoint ?? "",
     },
   })
 
@@ -622,6 +625,31 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
+
+        <FeaturesField control={form.control} register={form.register} />
+
+        <Controller
+          control={form.control}
+          name="highlightedPoint"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>Highlighted Point</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="Enter highlighted point" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="socialProof"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>Social Proof</FieldLabel>
+              <TextArea id={field.name} {...field} value={field.value || ''} placeholder="Enter social proof (testimonials, user count, etc.)" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
         <Controller
           control={form.control}
           name="pros"
@@ -703,6 +731,49 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           />
         </div>
       </form>
-    </Form>
+    </Form >
+  )
+}
+
+function FeaturesField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "features",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Features</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`features.${index}`)}
+              placeholder="Enter feature"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Feature
+        </Button>
+      </Stack>
+    </div>
   )
 }

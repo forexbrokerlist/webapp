@@ -83,6 +83,9 @@ export const brokerSchema = z.object({
   typeId: z.string().nullish(),
   isSponsor: z.boolean().default(false),
   isMainSponsor: z.boolean().default(false),
+  features: z.array(z.string()).optional(),
+  socialProof: z.string().optional(),
+  highlightedPoint: z.string().optional(),
 });
 
 export type BrokerSchema = z.infer<typeof brokerSchema>;

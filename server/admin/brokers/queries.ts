@@ -165,6 +165,9 @@ export const findBrokerById = async (id: number) => {
       subcategories: { select: { id: true, name: true } },
       tags: { select: { id: true, name: true } },
       type: { select: { id: true, name: true } },
+      features: true,
+      socialProof: true,
+      highlightedPoint: true,
     },
   });
 };
