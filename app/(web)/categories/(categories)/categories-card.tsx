@@ -1,0 +1,416 @@
+"use client"
+import { motion } from 'framer-motion'
+import { MoveRight } from 'lucide-react'
+import React from 'react'
+import { Button } from '~/components/common/button';
+const SolIcon = '/assets/images/sol.svg';
+const CrmIcon = '/assets/images/crm.svg';
+const PageImage = '/assets/images/page-img.png';
+const SecureIcon = '/assets/images/sequre.svg';
+const LmaxIcon = '/assets/images/LMAX-icon.svg';
+const LineIcon = '/assets/images/line1.svg';
+const Line2Icon = '/assets/images/line2.svg';
+const PlatformImage = '/assets/images/platform.png';
+
+export default function CategoriesCard() {
+    return (
+        <>
+            <section className='py-100'>
+                <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
+                    <div className='grid grid-cols-[1fr_390px_390px] gap-6'>
+                        <div className='bg-white rounded-2xl items-center border border-solid border-border-light500 py-[40px] px-10 grid grid-cols-[1fr_333px]'>
+                            <div>
+                                <h2 className='text-2xl font-bold text-black100 mb-1.5 max-w-[351px]'>
+                                    Algorithmic Trading and Bot Providers
+                                </h2>
+                                <p className='text-base text-black700 mb-5 font-medium max-w-[351px]'>
+                                    A curated collection of the best retail Traders
+                                    and Technically Skilled Traders
+                                </p>
+                                <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                    View Item
+                                    <div>
+                                        <MoveRight className='w-4 h-4' />
+                                    </div>
+                                </Button>
+                            </div>
+                            <div>
+                                <div className='max-w-[270px] w-full mx-auto relative flex items-center justify-center h-[270px]'>
+                                    <svg width="270" height="270" viewBox="0 0 270 270" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0">
+                                        <motion.circle
+                                            cx="135"
+                                            cy="135"
+                                            r="134"
+                                            stroke="#CFCFCF"
+                                            stroke-dasharray="6 6"
+                                            animate={{ rotate: 360 }}
+                                            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+                                            style={{ transformOrigin: "center" }}
+                                        />
+                                        <motion.circle
+                                            cx="135"
+                                            cy="135"
+                                            r="102"
+                                            stroke="#CFCFCF"
+                                            stroke-opacity="0.3"
+                                            stroke-dasharray="6 6"
+                                            animate={{ rotate: -360 }}
+                                            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                                            style={{ transformOrigin: "center" }}
+                                        />
+                                        <motion.circle
+                                            cx="135"
+                                            cy="135"
+                                            r="70"
+                                            stroke="#CFCFCF"
+                                            stroke-opacity="0.2"
+                                            stroke-dasharray="6 6"
+                                            animate={{ rotate: 360 }}
+                                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                                            style={{ transformOrigin: "center" }}
+                                        />
+                                    </svg>
+
+                                    <div className='w-16 h-16 bg-white border border-solid border-border-lightgreen rounded-full absolute flex items-center justify-center z-10 shadow-[0_0_20px_rgba(168,221,21,0.15)] overflow-hidden'>
+                                        <img src="https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.exness.com&size=128" className='w-10 h-10 object-contain' alt="Center" />
+                                    </div>
+                                    <motion.div
+                                        className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-white border border-solid border-border-lightgreen rounded-full flex items-center justify-center shadow-md z-20"
+                                        animate={{ y: [0, -5, 0] }}
+                                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                                    >
+                                        <div className="w-8 h-8 flex items-center justify-center">
+                                            <img src="https://api.dicebear.com/7.x/shapes/svg?seed=rocket&backgroundColor=ffffff" alt="Rocket" className="w-full h-full" />
+                                        </div>
+                                    </motion.div>
+
+
+                                    <motion.div
+                                        className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-14 h-14 bg-white border border-solid border-border-lightgreen rounded-full flex items-center justify-center shadow-md z-20"
+                                        animate={{ y: [0, 5, 0] }}
+                                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                                    >
+                                        <div className="w-8 h-8 flex items-center justify-center text-blue-500">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+                                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                                            </svg>
+                                        </div>
+                                    </motion.div>
+
+                                    <motion.div
+                                        className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-white border border-solid border-border-lightgreen rounded-full flex items-center justify-center shadow-md z-20"
+                                        animate={{ x: [0, -5, 0] }}
+                                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                                    >
+                                        <div className="w-8 h-8 flex items-center justify-center text-black">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+                                                <path d="M3 17.5l4-5 4.5 4 6-9.5M21 7l-4.5.5V12" />
+                                            </svg>
+                                        </div>
+                                    </motion.div>
+                                    <motion.div
+                                        className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-white border border-solid border-border-lightgreen rounded-full flex items-center justify-center shadow-md z-20"
+                                        animate={{ x: [0, 5, 0] }}
+                                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+                                    >
+                                        <div className="w-8 h-8 flex items-center justify-center text-purple-600">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+                                                <rect x="3" y="11" width="18" height="10" rx="2" />
+                                                <circle cx="12" cy="5" r="2" />
+                                                <path d="M12 7v4M8 16h0M16 16h0" />
+                                            </svg>
+                                        </div>
+                                    </motion.div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='bg-white rounded-2xl items-center border border-solid border-border-light500 p-[30px] pb-5'>
+                            <h2 className='text-2xl text-black100 font-bold mb-1.5'>
+                                Bridge and Plug in Partners Tools
+                            </h2>
+                            <p className='text-base text-black700 mb-5 font-medium max-w-[351px]'>
+                                A curated collection of bridge and plug-in
+                                partners to connect systems, automate
+                                workflows, and enhance functionality.
+                            </p>
+                            <div className='grid grid-cols-2 gap-x-4 gap-y-3'>
+                                {
+                                    [...Array(4)].map(() => {
+                                        return (
+                                            <div className='rounded-tr-[8px] rounded-bl-[8px] flex items-center gap-2 border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)] p-2.5'>
+                                                <img src={SolIcon} alt="SolIcon" className='block max-w-[28px] w-[28px]' />
+                                                <span className='block text-base font-medium text-black'>
+                                                    Centroid Sol
+                                                </span>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
+                            <div className='flex items-center justify-center pt-4'>
+                                <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                    View Item
+                                    <div>
+                                        <MoveRight className='w-4 h-4' />
+                                    </div>
+                                </Button>
+                            </div>
+                        </div>
+                        <div className='bg-white relative rounded-2xl items-center border border-solid border-border-light500 p-[30px] pb-5'>
+                            <h2 className='text-2xl text-black100 font-bold mb-1.5'>
+                                CRM and Back Office
+                                Software Tools
+                            </h2>
+                            <p className='text-base text-black700 mb-5 font-medium max-w-[351px]'>
+                                A curated collection of the best broker
+                                Operators and Fintech Teams
+
+                            </p>
+                            <div>
+                                <img src={CrmIcon} alt="CrmIcon" className='block w-full h-full' />
+                            </div>
+                            <div className='flex items-center justify-center absolute bottom-5 left-1/2 -translate-x-1/2'>
+                                <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                    View Item
+                                    <div>
+                                        <MoveRight className='w-4 h-4' />
+                                    </div>
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='pt-[30px] grid grid-cols-[390px_1fr_390px] gap-6'>
+                        <div className='bg-white overflow-hidden rounded-2xl items-center border border-solid border-border-light500'>
+                            <div className='p-[30px] pb-2'>
+                                <div className='flex items-center gap-2'>
+                                    <h2 className='text-2xl text-black100 font-bold mb-1.5'>
+                                        Forex Education and
+                                        Training Tools
+                                    </h2>
+                                    <div className='w-9 min-w-9 min-h-9 h-9 cursor-pointer bg-black flex items-center justify-center rounded-full'>
+                                        <MoveRight className='w-4 h-4 text-white' />
+                                    </div>
+                                </div>
+                                <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px]'>
+                                    A curated collection of top traders,
+                                    companies, and mentors helping you
+                                    learn forex trading.
+                                </p>
+                            </div>
+                            <div className='rounded-2xl h-[210px] border-[1.2px] border-[rgba(26,26,26,0.05)] bg-white backdrop-blur-[5px]'>
+                                <img src={PageImage} alt="PageImage" className='block h-[210px] max-w-[300px] mx-auto object-contain' />
+                            </div>
+                        </div>
+                        <div className='bg-white flex flex-col justify-between py-[30px] rounded-2xl border border-solid border-border-light500 min-w-0 overflow-hidden'>
+                            <div>
+                                <div className='flex items-center gap-5 overflow-hidden w-full'>
+                                    <motion.div
+                                        className='flex items-center gap-5'
+                                        animate={{ x: [0, "-50%"] }}
+                                        transition={{
+                                            duration: 50,
+                                            repeat: Infinity,
+                                            ease: "linear"
+                                        }}
+                                    >
+                                        {
+                                            [...Array(40)].map((_, index) => {
+                                                return (
+                                                    <div key={index} className="w-[70px] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rounded-full overflow-hidden flex items-center justify-center border border-solid border-border-lightgreen200 bg-white">
+                                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </motion.div>
+                                </div>
+                                <div className='flex pt-5 items-center gap-5 overflow-hidden w-full'>
+                                    <motion.div
+                                        className='flex items-center gap-5'
+                                        animate={{ x: ["-50%", 0] }}
+                                        transition={{
+                                            duration: 70,
+                                            repeat: Infinity,
+                                            ease: "linear"
+                                        }}
+                                    >
+                                        {
+                                            [...Array(40)].map((_, index) => {
+                                                return (
+                                                    <div key={index} className="w-[70px] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rounded-full overflow-hidden flex items-center justify-center border border-solid border-border-lightgreen200 bg-white">
+                                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </motion.div>
+                                </div>
+                            </div>
+                            <div className='px-[30px] flex items-center justify-between'>
+                                <div className=''>
+                                    <h2 className='text-2xl text-black100 font-bold mb-1'>
+                                        Forex Brokers
+                                    </h2>
+
+                                    <p className='text-base pt-1.5 text-black700  font-medium '>
+                                        A curated collection of the best retail Traders and Investors
+                                    </p>
+
+                                </div>
+                                <div >
+                                    <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                        View Item
+                                        <div>
+                                            <MoveRight className='w-4 h-4' />
+                                        </div>
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='bg-white rounded-2xl items-center border border-solid border-border-light500'>
+                            <div className='py-[30px] px-0'>
+                                <div className='px-[30px]'>
+                                    <h2 className='text-2xl text-black100 font-bold mb-1.5'>
+                                        Liquidity Partners Tools
+                                    </h2>
+                                    <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px]'>
+                                        A curated collection of the best connect
+                                        with reliable liquidity partners to ensure
+                                        seamless trade execution and optimal
+                                        market depth.
+                                    </p>
+                                </div>
+                                <div className='relative pt-3'>
+                                    <div className='absolute top-0 left-0 w-full h-full'>
+                                        <img src={LineIcon} alt="LineIcon" className='block w-full' />
+                                    </div>
+                                    <div className='absolute bottom-[-100px] right-0 w-full h-full'>
+                                        <img src={Line2Icon} alt="Line2Icon" className='block w-full' />
+                                    </div>
+                                    <div className='grid grid-cols-2 gap-5 relative max-w-[282px] w-full mx-auto'>
+                                        {
+                                            [...Array(2)].map(() => {
+                                                return (
+                                                    <div className='rounded-lg p-3 border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_30px_0_rgba(0,0,0,0.10)]'>
+                                                        <p className='text-base mb-3 font-semibold text-center text-grey-600'>
+                                                            LMAX Group
+                                                        </p>
+                                                        <div className='flex justify-center'>
+                                                            <img src={LmaxIcon} alt="LmaxIcon" className='block max-w-[40px]' />
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='px-[30px] flex justify-center pt-4'>
+                                <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                    View Item
+                                    <div>
+                                        <MoveRight className='w-4 h-4' />
+                                    </div>
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='pt-[30px] grid grid-cols-[390px_390px_1fr] gap-6'>
+                        <div className='bg-white overflow-hidden rounded-2xl items-center border border-solid border-border-light500'>
+                            <div className='p-[30px] pb-2'>
+                                <div className='flex items-center justify-between gap-2'>
+                                    <h2 className='text-2xl text-black100 font-bold mb-1.5'>
+                                        PSP Partners
+                                    </h2>
+                                    <div className='w-9 min-w-9 min-h-9 h-9 cursor-pointer bg-black flex items-center justify-center rounded-full'>
+                                        <MoveRight className='w-4 h-4 text-white' />
+                                    </div>
+                                </div>
+                                <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px]'>
+                                    A curated collection of the best integrate
+                                    with trusted PSP partners to enable secure,
+                                    fast, and seamless payment processing
+                                    for your platform.
+                                </p>
+                                <div className='flex justify-center gap-4 pt-6'>
+                                    <div className="w-[70px] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rounded-lg overflow-hidden flex items-center justify-center border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]">
+                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                    </div>
+                                    <div className="w-[70px] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rotate-45 rounded-lg overflow-hidden flex items-center justify-center border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]">
+                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                    </div>
+                                </div>
+                                <div className='flex justify-center gap-4 pt-3 pb-3'>
+                                    <div className="w-[70px] rotate-[7deg] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rounded-lg overflow-hidden flex items-center justify-center border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]">
+                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                    </div>
+                                    <div className="w-[70px] rotate-[-13deg] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rotate-45 rounded-lg overflow-hidden flex items-center justify-center border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]">
+                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                    </div>
+                                    <div className="w-[70px] rotate-[8deg] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rotate-45 rounded-lg overflow-hidden flex items-center justify-center border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]">
+                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='bg-white overflow-hidden rounded-2xl items-center border border-solid border-border-light500 p-[30px]'>
+                            <h2 className='text-2xl text-black100 font-bold mb-1.5'>
+                                Top-Rated Forex Brokers & Trading Platforms Tools
+                            </h2>
+                            <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px]'>
+                                A curated collection of the best browse
+                                verified forex brokers and trading platforms,
+                                compare spreads, regulation, and features
+                                to find the right fit for your trading goals.
+                            </p>
+                            <div className='grid grid-cols-4 gap-4'>
+                                {
+                                    [...Array(4)].map(() => {
+                                        return (
+                                            <div className='border  rounded-lg flex items-center justify-center w-full h-[64px] border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]'>
+                                                <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
+                            <div className='flex items-center justify-center pt-4'>
+                                <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                    View Item
+                                    <div>
+                                        <MoveRight className='w-4 h-4' />
+                                    </div>
+                                </Button>
+                            </div>
+                        </div>
+                        <div className='bg-white overflow-hidden flex rounded-2xl items-center border border-solid border-border-light500 p-[30px]'>
+                            <div className="grid h-full grid-cols-[1fr_339px] gap-5 items-center">
+                                <div>
+                                    <h2 className='text-2xl text-black100 font-bold mb-1.5'>
+                                        Trading Platform Partners Tools
+                                    </h2>
+                                    <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px]'>
+                                        A curated collection of the best connect with trusted trading platform partners to access advanced tools and seamless trading experiences.
+                                    </p>
+                                    <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                        View Item
+                                        <div>
+                                            <MoveRight className='w-4 h-4' />
+                                        </div>
+                                    </Button>
+                                </div>
+                                <div>
+                                    <img src={PlatformImage} alt="PlatformImage" className='block w-full h-full object-contain' />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
+                <div className='w-full h-[1px] bg-[linear-gradient(90deg,#F0F1EC_0%,#A8DD15_50%,#F0F1EC_100%)]'></div>
+            </div>
+        </>
+    )
+}

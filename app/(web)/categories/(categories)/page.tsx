@@ -10,6 +10,8 @@ import { Intro, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
+import CategoriesHero from "./categories-hero"
+import CategoriesCard from "./categories-card"
 
 // I18n page namespace
 const namespace = "pages.categories"
@@ -45,15 +47,17 @@ export default async function () {
 
   return (
     <>
-      <Breadcrumbs items={breadcrumbs} />
+      <CategoriesHero />
+      <CategoriesCard />
+      {/* <Breadcrumbs items={breadcrumbs} /> */}
 
-      <Intro>
+      {/* <Intro>
         <IntroTitle>{metadata.title}</IntroTitle>
       </Intro>
 
       <Suspense fallback={<CategoryListSkeleton />}>
         <CategoryQuery />
-      </Suspense>
+      </Suspense> */}
 
       <StructuredData data={structuredData} />
     </>
