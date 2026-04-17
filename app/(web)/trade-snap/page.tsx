@@ -15,18 +15,29 @@ import { useRouter } from "next/navigation";
 import { useSession } from "~/lib/auth-client";
 import { apiClient, createApiClient } from "~/lib/api-client";
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Create API client instance for FormData requests (no Content-Type header)
 const formDataApiClient = createApiClient('https://prone-inceptively-jonah.ngrok-free.dev/trade-snap');
 
 function Dashboard() {
   const { data: session, isPending } = useSession();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!isPending && !session) {
-      router.push("/auth/login");
-    }
-  }, [session, isPending, router]);
 
   const [isSharing, setIsSharing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,8 +46,6 @@ function Dashboard() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [showSnapshot, setShowSnapshot] = useState(false);
-
-  if (isPending || !session) return null;
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -71,6 +80,14 @@ function Dashboard() {
   const lastCapture1 = useRef(Date.now());
   const lastCapture2 = useRef(Date.now());
   console.log("capturedImagess", capturedImage)
+
+  // Handle authentication redirect
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.push("/auth/login");
+    }
+  }, [session, isPending, router]);
+
   const startScreenShare = useCallback(async () => {
     try {
       setError(null);
@@ -220,15 +237,15 @@ function Dashboard() {
         formData.append('user_id', userId);
       }
 
-    const response = await formDataApiClient.post(
-  '/api/v1/analyze',
-  formData,
-  {
-    headers: {
-      'Content-Type': 'multipart/form-data', // or just REMOVE completely
-    },
-  }
-);
+      const response = await formDataApiClient.post(
+        '/api/v1/analyze',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data', // or just REMOVE completely
+          },
+        }
+      );
 
       if (!response.data) {
         throw new Error(`API request failed`);
@@ -387,17 +404,17 @@ function Dashboard() {
       formData.append('files', blob2, 'screenshot2.png');
       const userId = localStorage.getItem('user_id');
       if (userId) formData.append('user_id', userId);
-      
-      
+
+
       const response = await formDataApiClient.post(
-  '/api/v1/analyze',
-  formData,
-  {
-    headers: {
-      'Content-Type': 'multipart/form-data', // or just REMOVE completely
-    },
-  }
-);
+        '/api/v1/analyze',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data', // or just REMOVE completely
+          },
+        }
+      );
       if (!response.data) {
         throw new Error(`API request failed`);
       }
@@ -1041,6 +1058,11 @@ function Dashboard() {
       );
     }
   );
+
+  // Return loading state while checking authentication
+  if (isPending || !session) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-160px-var(--header-height))] bg-[#f8fafc] dark:bg-background">

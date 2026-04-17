@@ -142,6 +142,7 @@ export default async function (props: any) {
       brokers: {
         where: {
           status: { in: ["Published", "Scheduled"] },
+          isSponsor: true
         },
         orderBy: { order: "asc" },
         take: 7,
