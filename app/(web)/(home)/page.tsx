@@ -239,8 +239,8 @@ export default async function (props: any) {
     (liquidityCategory?.brokers || []).map(async (broker) => ({
       id: broker.id.toString(),
       name: broker.broker_name || "",
-      title: broker.broker_name || "",
-      description: broker.subtitle || broker.description || "",
+      title: broker.subtitle || "",
+      description: broker.highlightedPoint || "",
       logoUrl: await getLogo(broker),
       features: [],
       highlightedPoint: null,
@@ -355,16 +355,16 @@ export default async function (props: any) {
 
   const AlgoPartners = await Promise.all(
     (AlgoCategory?.brokers || []).map(async (broker) => {
-     
+
       return {
         id: broker.id.toString(),
         order: broker.order,
         name: broker.broker_name || "",
-        title: broker.broker_name || "",
+        title: broker.subtitle || "",
         subtitle: broker.subtitle || null,
         description: broker.subtitle || broker.description || "",
         logoUrl: await getLogo(broker),
-        features: [],
+        features: broker.features,
         bannerUrl: broker.bannerUrl || await getPresignedUrlFromFull(broker.screenshotUrl) || "",
         websiteUrl: broker.url || null,
         highlightedPoint: null,
