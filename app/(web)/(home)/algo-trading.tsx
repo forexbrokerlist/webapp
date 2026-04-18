@@ -127,7 +127,7 @@ export default function AlgoTrading({ partners = [] }: { partners?: Partner[] })
                                     transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
                                 >
                                     <Button variant='primary' size='md' className='flex items-center bg-[#F0F1EC] text-black100 font-medium w-full gap-2'>
-                                      <Link href={`/brokers/${partner.slug}`}>
+                                      <Link href={`/bot-providers/${partner.slug}`}>
                                        Run Bot
                                         <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-black100">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">

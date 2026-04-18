@@ -177,7 +177,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                             </div>
 
                                             <Button variant='primary' size='md' className={`border-none w-full justify-center text-sm py-2 bg-white text-black100 flex items-center group`} asChild>
-                                                <Link href={slide.slug ? `/brokers/${slide.slug}` : slide.link}>
+                                                <Link href={slide.slug ? `/forex-education/${slide.slug}` : slide.link}>
                                                     Start Learning
                                                     <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100`}>
                                                         <MoveRight className="text-white w-4 h-4" />

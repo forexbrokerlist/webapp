@@ -392,15 +392,15 @@ export default async function (props: any) {
     (ForexCategory?.brokers || []).map(async (broker) => ({
       id: broker.id.toString(),
       name: broker.broker_name || "",
-      title: broker.broker_name || "",
+      title: broker.description || "",
       subtitle: broker.subtitle || null,
       description: broker.subtitle || broker.description || "",
       logoUrl: await getLogo(broker),
       features: [],
       bannerUrl: broker.bannerUrl || await getPresignedUrlFromFull(broker.screenshotUrl) || "",
       websiteUrl: broker.broker_website || broker.url || null,
-      highlightedPoint: null,
-      socialProof: null,
+      highlightedPoint: broker.highlightedPoint || null,
+      socialProof: broker.socialProof,
       slug: broker.slug || ""
     }))
   )

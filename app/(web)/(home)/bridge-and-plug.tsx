@@ -125,7 +125,7 @@ export default function BidgeAndPlug({ partners = [] }: BridgeAndPlugProps) {
                                     </div>
                                     <div className='pt-5'>
                                         <Button size="md" variant="primary" className="px-5 w-full justify-center gap-2.5 py-2 group">
-                                            <Link href={`/brokers/${partner.slug}`}>
+                                            <Link href={`/forex-bridge/${partner.slug}`}>
                                             View Integration
                                             <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
