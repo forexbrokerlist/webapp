@@ -16,7 +16,7 @@ const buttonVariants = cva({
       fancy: "scheme-dark bg-primary text-primary-foreground hover:opacity-90",
       primary: "bg-black100 max-mobile:text-sm max-mobile:leading-6  border border-solid border-black100 hover:bg-primary hover:border-primary hover:text-black100 text-white rounded-full text-base font-medium",
       secondary:
-        "scheme-light border-border! bg-background text-secondary-foreground hover:bg-card hover:border-ring!",
+        "bg-primary text-black100 text-lg rounded-full hover:bg-black100 hover:text-white",
       soft: "scheme-light bg-muted text-secondary-foreground hover:bg-border/50 hover:text-foreground hover:outline-none",
       ghost:
         "scheme-light text-secondary-foreground hover:bg-muted hover:text-foreground hover:outline-none",
@@ -26,7 +26,7 @@ const buttonVariants = cva({
     size: {
       sm: "px-2 py-1 gap-[0.66ch]",
       md: "px-5 gap-2.5 max-mobile:px-6 max-mobile:py-2.5 py-2.5 ",
-      lg: "px-4 py-2.5 gap-[1ch] rounded-lg sm:text-sm/tight",
+      lg: "px-4 py-2.5 gap-[1ch]",
       icon: "p-0 aspect-square overflow-visible",
     },
     isPending: {

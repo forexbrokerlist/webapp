@@ -17,7 +17,7 @@ import { cn } from "~/lib/utils"
 
 export default function ({ children }: PropsWithChildren) {
   const pathname = usePathname()
-  const isHome = pathname === "/" || pathname === "/categories"
+  const isHome = pathname === "/" || pathname === "/categories" || pathname === "/trade-snap" || pathname === "/fx-guru"
 
   return (
     <QueryProvider>
@@ -28,13 +28,6 @@ export default function ({ children }: PropsWithChildren) {
         )}
       >
         <Header />
-        {/* <Navbar /> */}
-
-        {/* <Backdrop isFixed /> */}
-
-        {/* <Suspense>
-          <AdBanner />
-        </Suspense> */}
         {isHome ? (
           <>
             {children}
