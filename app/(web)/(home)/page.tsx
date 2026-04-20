@@ -460,14 +460,44 @@ export default async function (props: any) {
     <>
       <Hero />
       <ClientLogo logos={LogoPartners} />
-      <TrustedTrading platforms={trustedPlatforms} />
-      <CrmBackOffice solutions={crmPlatform} />
-      <ForexEducation partners={ForexPartners} />
+      <TrustedTrading 
+        platforms={trustedPlatforms} 
+        title={trustedCategory?.label || trustedCategory?.name || "Top-Rated Forex Brokers & Trading Platforms"}
+        description={trustedCategory?.description || "Browse verified forex brokers and trading platforms, compare spreads, regulation, and features to find the right fit for your trading goals."}
+      />
+      <CrmBackOffice 
+        solutions={crmPlatform} 
+        title={crmCategory?.label || crmCategory?.name || "Forex CRM & Back Office Software for Brokers"}
+        description={crmCategory?.description || "Compare forex CRM platforms and back office software providers designed to help brokers streamline operations, onboarding, and reporting."}
+      />
+      <ForexEducation 
+        partners={ForexPartners} 
+        title={ForexCategory?.label || ForexCategory?.name || "Learn Forex Trading - Top Education Platforms & Courses"}
+        description={ForexCategory?.description || "The forex market rewards those who invest in their knowledge first. Our directory features hand-picked forex education platforms and trading academies trusted by thousands of active traders worldwide."}
+      />
 
-      <BidgeAndPlug partners={bridgePartners} />
+      <BidgeAndPlug 
+        partners={bridgePartners} 
+        title={bridgeCategory?.label || bridgeCategory?.name || "Forex Bridge & Plugin Technology Partners"}
+        description={bridgeCategory?.description || "Discover trusted bridge and plugin technology partners used by 512+ forex brokers worldwide. Compare features, integrations, and infrastructure solutions in one place."}
+      />
       <InvestInEverything />
-      <OurPartners liquidityPartners={liquidityPartners} PSPPartners={PSPPartners} TradingPalformPartners={TradingPalformPartners} />
-      <AlgoTrading partners={AlgoPartners} />
+      <OurPartners 
+        liquidityPartners={liquidityPartners} 
+        PSPPartners={PSPPartners} 
+        TradingPalformPartners={TradingPalformPartners} 
+        liquidityTitle={liquidityCategory?.label || liquidityCategory?.name || "Liquidity Partners"}
+        liquidityDescription={liquidityCategory?.description || "Providing deep liquidity and institutional-grade execution for brokers and financial institutions."}
+        pspTitle={PSPCategory?.label || PSPCategory?.name || "PSP Partners"}
+        pspDescription={PSPCategory?.description || "Explore trusted payment solution providers for forex brokers supporting fast, secure deposits and withdrawals for traders worldwide."}
+        tradingPlatformTitle={TradingpartnerCategory?.label || TradingpartnerCategory?.name || "Trading Platform Partners"}
+        tradingPlatformDescription={TradingpartnerCategory?.description || "Connect with trusted trading platforms and automate your strategies with powerful tools"}
+      />
+      <AlgoTrading 
+        partners={AlgoPartners} 
+        title={AlgoCategory?.label || AlgoCategory?.name || "Algo Trading & Forex Bot Provider"}
+        description={AlgoCategory?.description || "Discover automated forex trading bots and algorithmic strategy providers built for passive income, consistent execution, and hands-free trading."}
+      />
       <ForexBrokers />
 
       <BlogSection posts={posts} />

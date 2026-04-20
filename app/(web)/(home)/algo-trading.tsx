@@ -26,7 +26,7 @@ const GreenArrow = () => (
     </svg>
 )
 
-export default function AlgoTrading({ partners = [] }: { partners?: Partner[] }) {
+export default function AlgoTrading({ partners = [], title, description }: { partners?: Partner[], title: string, description: string }) {
     // Show up to 3 partners, fallback to empty array if none
     const displayPartners = partners.length > 0 ? partners.slice(0, 3) : [];
 
@@ -42,17 +42,16 @@ export default function AlgoTrading({ partners = [] }: { partners?: Partner[] })
                             transition={{ duration: 0.5, ease: "easeOut" }}
                             className='text-[42px] max-mobile:text-3xl max-mobile:leading-10 leading-normal text-black100 font-bold font-monda'
                         >
-                            Algo Trading & Forex Bot Provider
+                            {title}
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.5 }}
                             transition={{ duration: 0.5, ease: "easeOut", delay: 0.15 }}
-                            className='text-lg max-mobile:text-base text-black700 font-medium max-w-[950px]'
+                            className='text-lg max-mobile:text-base text-black700 font-medium max-w-[950px] whitespace-pre-line'
                         >
-                            Discover automated forex trading bots and algorithmic strategy providers built for passive income, consistent
-                            execution, and hands-free trading.
+                            {description}
                         </motion.p>
                     </div>
                     <motion.div

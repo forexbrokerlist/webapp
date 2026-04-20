@@ -1,6 +1,7 @@
 "use client"
 import { motion } from 'framer-motion'
 import { MoveRight } from 'lucide-react'
+import Link from 'next/link';
 import React from 'react'
 import { Button } from '~/components/common/button';
 const SolIcon = '/assets/images/sol.svg';
@@ -28,10 +29,12 @@ export default function CategoriesCard() {
                                     and Technically Skilled Traders
                                 </p>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                  <Link href="/categories/algorithmic-trading-and-bot-providers">
                                     View Item
                                     <div>
                                         <MoveRight className='w-4 h-4' />
                                     </div>
+                                    </Link>
                                 </Button>
                             </div>
                             <div>
@@ -149,10 +152,12 @@ export default function CategoriesCard() {
                             </div>
                             <div className='flex items-center justify-center pt-4'>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                   <Link href="/categories/bridge-and-plug-in-partners">
                                     View Item
                                     <div>
                                         <MoveRight className='w-4 h-4' />
                                     </div>
+                                    </Link>
                                 </Button>
                             </div>
                         </div>
@@ -171,10 +176,13 @@ export default function CategoriesCard() {
                             </div>
                             <div className='flex items-center justify-center absolute bottom-5 left-1/2 -translate-x-1/2'>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                   <Link href="/categories/crm-and-back-office-software">
+                                   
                                     View Item
                                     <div>
                                         <MoveRight className='w-4 h-4' />
                                     </div>
+                                    </Link>
                                 </Button>
                             </div>
                         </div>
@@ -188,7 +196,9 @@ export default function CategoriesCard() {
                                         Training Tools
                                     </h2>
                                     <div className='w-9 min-w-9 min-h-9 h-9 cursor-pointer bg-black flex items-center justify-center rounded-full'>
+                                       <Link href="/categories/forex-education-and-training">
                                         <MoveRight className='w-4 h-4 text-white' />
+                                       </Link>
                                     </div>
                                 </div>
                                 <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px]'>
@@ -259,10 +269,13 @@ export default function CategoriesCard() {
                                 </div>
                                 <div >
                                     <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                   <Link href="/brokers">
+                                       
                                         View Item
                                         <div>
                                             <MoveRight className='w-4 h-4' />
                                         </div>
+                                    </Link>
                                     </Button>
                                 </div>
                             </div>
@@ -308,10 +321,14 @@ export default function CategoriesCard() {
                             </div>
                             <div className='px-[30px] flex justify-center pt-4'>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                   
+                                   <Link href="/categories/liquidity-partners">
+                                   
                                     View Item
                                     <div>
                                         <MoveRight className='w-4 h-4' />
                                     </div>
+                                    </Link>
                                 </Button>
                             </div>
                         </div>
@@ -324,7 +341,9 @@ export default function CategoriesCard() {
                                         PSP Partners
                                     </h2>
                                     <div className='w-9 min-w-9 min-h-9 h-9 cursor-pointer bg-black flex items-center justify-center rounded-full'>
+                                        <Link href="/categories/psp-partners">
                                         <MoveRight className='w-4 h-4 text-white' />
+                                        </Link>
                                     </div>
                                 </div>
                                 <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px]'>
@@ -377,10 +396,13 @@ export default function CategoriesCard() {
                             </div>
                             <div className='flex items-center justify-center pt-4'>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                   <Link href="/categories/trusted-trading-platforms">
+                                   
                                     View Item
                                     <div>
                                         <MoveRight className='w-4 h-4' />
                                     </div>
+                                    </Link>
                                 </Button>
                             </div>
                         </div>
@@ -394,10 +416,12 @@ export default function CategoriesCard() {
                                         A curated collection of the best connect with trusted trading platform partners to access advanced tools and seamless trading experiences.
                                     </p>
                                     <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                        <Link href="/categories/trading-platform-partners">
                                         View Item
                                         <div>
                                             <MoveRight className='w-4 h-4' />
                                         </div>
+                                        </Link>
                                     </Button>
                                 </div>
                                 <div>

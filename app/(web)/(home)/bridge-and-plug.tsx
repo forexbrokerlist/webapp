@@ -22,9 +22,11 @@ interface Partner {
 
 interface BridgeAndPlugProps {
     partners?: Partner[];
+    title: string;
+    description: string;
 }
 
-export default function BidgeAndPlug({ partners = [] }: BridgeAndPlugProps) {
+export default function BidgeAndPlug({ partners = [], title, description }: BridgeAndPlugProps) {
     return (
         <div className='py-100 max-mobile:py-16'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
@@ -37,17 +39,16 @@ export default function BidgeAndPlug({ partners = [] }: BridgeAndPlugProps) {
                             transition={{ duration: 0.5, ease: "easeOut" }}
                             className='text-[42px] max-mobile:text-3xl max-mobile:leading-10 leading-normal text-black100 font-bold font-monda'
                         >
-                            Forex Bridge & Plugin Technology Partners
+                            {title}
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.5 }}
                             transition={{ duration: 0.5, ease: "easeOut", delay: 0.15 }}
-                            className='text-lg max-mobile:text-base text-black700 font-medium max-w-[650px]'
+                            className='text-lg max-mobile:text-base text-black700 font-medium max-w-[650px] whitespace-pre-line'
                         >
-                            Discover trusted bridge and plugin technology partners used by 512+ forex brokers worldwide. Compare features,
-                            integrations, and infrastructure solutions in one place.
+                            {description}
                         </motion.p>
                     </div>
                     <motion.div

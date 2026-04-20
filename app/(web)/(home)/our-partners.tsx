@@ -6,7 +6,29 @@ import { Button } from '~/components/common/button';
 import Link from 'next/link';
 import { Favicon } from '~/components/web/ui/favicon';
 
-export default function OurPartners({ liquidityPartners, PSPPartners, TradingPalformPartners }: { liquidityPartners: any[], PSPPartners: any[], TradingPalformPartners: any[] }) {
+export default function OurPartners({ 
+    liquidityPartners, 
+    PSPCategory, 
+    PSPPartners, 
+    TradingPalformPartners,
+    liquidityTitle,
+    liquidityDescription,
+    pspTitle,
+    pspDescription,
+    tradingPlatformTitle,
+    tradingPlatformDescription
+}: { 
+    liquidityPartners: any[], 
+    PSPCategory?: any,
+    PSPPartners: any[], 
+    TradingPalformPartners: any[],
+    liquidityTitle: string,
+    liquidityDescription: string,
+    pspTitle: string,
+    pspDescription: string,
+    tradingPlatformTitle: string,
+    tradingPlatformDescription: string
+}) {
     return (
         <div className='pt-100 overflow-hidden max-mobile:pt-16'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
@@ -37,10 +59,10 @@ export default function OurPartners({ liquidityPartners, PSPPartners, TradingPal
                             <div className='flex items-center justify-between pb-6 max-mobile:block'>
                                 <div>
                                     <h3 className='text-3xl max-mobile:text-2xl max-mobile:leading-8 text-black100 font-bold  mb-2'>
-                                        Liquidity Partners
+                                        {liquidityTitle}
                                     </h3>
-                                    <p className='text-base font-medium text-black700  max-w-[480px] '>
-                                        Providing deep liquidity and institutional-grade execution for brokers and financial institutions.
+                                    <p className='text-base font-medium text-black700  max-w-[480px] whitespace-pre-line'>
+                                        {liquidityDescription}
                                     </p>
                                 </div>
                                 <div className='max-mobile:pt-4'>
@@ -134,10 +156,10 @@ export default function OurPartners({ liquidityPartners, PSPPartners, TradingPal
                             <div className='flex items-center justify-between p-6'>
                                 <div>
                                     <h3 className='text-3xl text-black100 font-bold  mb-2'>
-                                        Trading Platform Partners
+                                        {tradingPlatformTitle}
                                     </h3>
-                                    <p className='text-base font-medium text-black700  max-w-[480px] '>
-                                        Connect with trusted trading platforms and automate your strategies with powerful tools
+                                    <p className='text-base font-medium text-black700  max-w-[480px] whitespace-pre-line'>
+                                        {tradingPlatformDescription}
                                     </p>
                                 </div>
                                 <div>
@@ -206,12 +228,10 @@ export default function OurPartners({ liquidityPartners, PSPPartners, TradingPal
                     >
                         <div className='p-10 pb-6 max-mobile:p-4'>
                             <h3 className='text-3xl max-mobile:text-2xl max-mobile:leading-8 text-black100 font-bold text-center mb-1'>
-                                PSP Partners
+                                {pspTitle}
                             </h3>
-                            <p className='text-base font-medium text-black700 text-center max-w-[650px] mx-auto'>
-                                Explore trusted payment solution providers for forex brokers supporting fast, secure
-                                deposits and withdrawals for traders worldwide.
-
+                            <p className='text-base font-medium text-black700 text-center max-w-[650px] mx-auto whitespace-pre-line'>
+                                {pspDescription}
                             </p>
                         </div>
                         <motion.div
