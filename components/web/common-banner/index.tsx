@@ -1,7 +1,14 @@
 import React from 'react';
 import { Play } from 'lucide-react';
 
-export default function CommonBanner({ highlightedText, title, description, image }) {
+interface CommonBannerProps {
+    highlightedText: string;
+    title: string;
+    description: string;
+    image: string;
+}
+
+export default function CommonBanner({ highlightedText, title, description, image }: CommonBannerProps) {
     return (
         <div className="pt-[100px]">
             {/* Note: Removed overflow-hidden here so the border-radius sides don't get clipped! */}
