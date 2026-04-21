@@ -42,7 +42,7 @@ interface ScanItem {
 }
 
 
-const DEEP_SCAN_MC_PATH = "/deep-research/v1"
+const DEEP_SCAN_MC_PATH = "deep-research/v1"
 
 const Model_List = [
   { Value: "lite", Name: "CORE", Duration: "2MIN – 10MIN" },

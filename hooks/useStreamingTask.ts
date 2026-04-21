@@ -390,7 +390,7 @@ export function useStreamingTask(): UseStreamingTaskReturn {
       const apiKey = await getSignedToken()
       const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? ''
 
-      const response = await fetch(`${baseUrl}/deep-research/v1/query-stream`, {
+      const response = await fetch(`${baseUrl}deep-research/v1/query-stream`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

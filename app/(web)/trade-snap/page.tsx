@@ -20,7 +20,7 @@ import { Button } from "~/components/common/button";
 const TradeImage = '/assets/images/trade.png';
 
 // Create API client instance for FormData requests (no Content-Type header)
-const formDataApiClient = createApiClient('https://prone-inceptively-jonah.ngrok-free.dev/trade-snap');
+const formDataApiClient = createApiClient('https://api.forexbrokerlist.io/trade-snap');
 
 function Dashboard() {
   const { data: session, isPending } = useSession();
