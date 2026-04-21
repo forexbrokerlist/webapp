@@ -20,6 +20,8 @@ interface Solution {
 
 interface CrmBackOfficeProps {
     solutions: Solution[];
+    title: string;
+    description: string;
 }
 
 const CARD_STYLES = [
@@ -63,7 +65,7 @@ const backgroundImages = [
         url: "/assets/images/PinkVec.png"
     }
 ]
-export default function CrmBackOffice({ solutions }: CrmBackOfficeProps) {
+export default function CrmBackOffice({ solutions, title, description }: CrmBackOfficeProps) {
     return (
         <div className='pb-100 max-mobile:pb-16'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
@@ -90,18 +92,16 @@ export default function CrmBackOffice({ solutions }: CrmBackOfficeProps) {
                             }}
                             className='text-[42px] max-mobile:text-3xl max-mobile:leading-10 leading-normal text-black100 font-bold font-monda'
                         >
-                            Forex CRM & Back Office Software for Brokers
-
+                            {title}
                         </motion.h2>
                         <motion.p
                             variants={{
                                 hidden: { opacity: 0, y: 20 },
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
-                            className='text-lg max-mobile:text-base text-black700 font-medium max-w-[650px]'
+                            className='text-lg max-mobile:text-base text-black700 font-medium max-w-[650px] whitespace-pre-line'
                         >
-                            Compare forex CRM platforms and back office software providers designed to help brokers streamline operations,
-                            onboarding, and reporting.
+                            {description}
                         </motion.p>
                     </motion.div>
                     <div>
@@ -159,7 +159,7 @@ export default function CrmBackOffice({ solutions }: CrmBackOfficeProps) {
                                     </div>
 
                                     <Button variant='primary' size='md' className={` border-none py-2.5 bg-white text-black100  flex justify-between items-center group `} asChild>
-                                        <Link href={`/brokers/${solution.slug ?? 'crm-and-back-office-software'}`}>
+                                        <Link href={`/crm/${solution.slug}`}>
                                             Explore Software
                                             <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
                                                 <MoveRight className="text-white w-4 h-4" />

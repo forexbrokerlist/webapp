@@ -56,7 +56,7 @@ export const RelationSelector = <T extends Relation>({
       <Popover>
         <PopoverTrigger asChild>
           <Button
-            variant="secondary"
+            variant="normal"
             size="md"
             className="justify-start w-full px-3 gap-2.5"
             prefix={<MousePointerClickIcon />}

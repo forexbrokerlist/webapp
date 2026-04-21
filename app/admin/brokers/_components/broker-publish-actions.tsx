@@ -163,7 +163,7 @@ export const ToolPublishActions = ({
       {
         type: "button",
         children: "Scheduled",
-        variant: "secondary",
+        variant: "normal",
         prefix: <CalendarIcon />,
         popover: {
           title: "Update broker status",
@@ -209,7 +209,7 @@ export const ToolPublishActions = ({
       {
         type: "button",
         children: "Published",
-        variant: "secondary",
+        variant: "normal",
         prefix: <BadgeCheckIcon />,
         popover: {
           title: "Update broker status",
@@ -289,7 +289,7 @@ export const ToolPublishActions = ({
                                 <Stack size="sm" wrap={false} className="mt-2 items-stretch w-full">
                                   <Button
                                     size="md"
-                                    variant="secondary"
+                                    variant="normal"
                                     onClick={() => setIsScheduleOpen(true)}
                                     suffix={<CalendarIcon />}
                                     className="w-full tabular-nums"
@@ -359,7 +359,7 @@ export const ToolPublishActions = ({
                     )}
 
                   <Stack className="justify-between">
-                    <Button size="md" variant="secondary" onClick={() => setIsOpen(false)}>
+                    <Button size="md" variant="normal" onClick={() => setIsOpen(false)}>
                       Cancel
                     </Button>
 

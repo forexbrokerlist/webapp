@@ -4,11 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useHotkeys } from "@mantine/hooks"
 import { formatDateTime, getRandomString, slugify } from "@primoui/utils"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { EyeIcon, InfoIcon, PencilIcon } from "lucide-react"
+import { EyeIcon, InfoIcon, PencilIcon, Trash, Plus } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { type ComponentProps, useMemo, useRef, useState } from "react"
-import { Controller, FormProvider as Form, useForm } from "react-hook-form"
+import { Controller, FormProvider as Form, useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { type Brokers, ToolStatus, ToolTier } from "~/.generated/prisma/browser"
 import { ToolActions } from "~/app/admin/brokers/_components/broker-actions"
@@ -129,6 +129,20 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       typeId: broker?.typeId ?? undefined,
       isSponsor: broker?.isSponsor ?? false,
       isMainSponsor: broker?.isMainSponsor ?? false,
+      features: broker?.features ?? [],
+      socialProof: broker?.socialProof ?? "",
+      highlightedPoint: broker?.highlightedPoint ?? "",
+      maxLeverage: broker?.maxLeverage ?? "",
+      totalInstruments: broker?.totalInstruments ?? "",
+      availableInIndia: broker?.availableInIndia ?? false,
+      islamicAccount: broker?.islamicAccount ?? false,
+      demoAccount: broker?.demoAccount ?? false,
+      copyTrading: broker?.copyTrading ?? false,
+      accountTypes: broker?.accountTypes ?? [],
+      beginner_friendly: broker?.beginner_friendly ?? false,
+      review_article: broker?.review_article ?? "",
+      seo_title: broker?.seo_title ?? "",
+      seo_meta_description: broker?.seo_meta_description ?? "",
     },
   })
 
@@ -323,6 +337,86 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           render={({ field }) => (
             <Field>
               <FieldLabel htmlFor={field.name}>Main Sponsor</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="availableInIndia"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Available In India</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="islamicAccount"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Islamic Account</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="demoAccount"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Demo Account</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="copyTrading"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Copy Trading</FieldLabel>
               <div className="flex items-center gap-3">
                 <Switch
                   id={field.name}
@@ -583,6 +677,8 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           { name: "average_trading_cost_gold", label: "Avg Cost (Gold)" },
           { name: "average_trading_cost_bitcoin", label: "Avg Cost (Bitcoin)" },
           { name: "average_trading_cost_wti_crude_oil", label: "Avg Cost (WTI Crude Oil)" },
+          { name: "maxLeverage", label: "Max Leverage" },
+          { name: "totalInstruments", label: "Total Instruments" },
         ] as const).map((f) => (
           <Controller
             key={f.name}
@@ -618,6 +714,84 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             <Field data-invalid={fieldState.invalid} className="col-span-full">
               <FieldLabel htmlFor={field.name}>Subtitle</FieldLabel>
               <Input id={field.name} {...field} value={field.value || ''} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <FeaturesField control={form.control} register={form.register} />
+        <AccountTypesField control={form.control} register={form.register} />
+
+        <Controller
+          control={form.control}
+          name="highlightedPoint"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>Highlighted Point</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="Enter highlighted point" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="socialProof"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>Social Proof</FieldLabel>
+              <TextArea id={field.name} {...field} value={field.value || ''} placeholder="Enter social proof (testimonials, user count, etc.)" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="beginner_friendly"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Beginner Friendly</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="review_article"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>Review Article</FieldLabel>
+              <TextArea id={field.name} {...field} value={field.value || ''} placeholder="Add a detailed review or article content..." />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="seo_title"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>SEO Title</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="Enter SEO optimized title" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="seo_meta_description"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>SEO Meta Description</FieldLabel>
+              <TextArea id={field.name} {...field} value={field.value || ''} placeholder="Enter meta description for search engines" />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -691,7 +865,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
         )}
 
         <div className="flex justify-between gap-4 col-span-full">
-          <Button size="md" variant="secondary" asChild>
+          <Button size="md" variant="normal" asChild>
             <Link href="/admin/brokers">Cancel</Link>
           </Button>
 
@@ -703,6 +877,92 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           />
         </div>
       </form>
-    </Form>
+    </Form >
+  )
+}
+
+function FeaturesField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "features",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Features</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`features.${index}`)}
+              placeholder="Enter feature"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Feature
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function AccountTypesField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "accountTypes",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Account Types</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`accountTypes.${index}`)}
+              placeholder="Enter account type"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Account Type
+        </Button>
+      </Stack>
+    </div>
   )
 }

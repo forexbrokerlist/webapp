@@ -17,7 +17,7 @@ interface Partner {
     bannerUrl: string | null;
     websiteUrl: string | null;
     features: string[];
-    slug:string
+    slug: string
 }
 
 const GreenArrow = () => (
@@ -26,7 +26,7 @@ const GreenArrow = () => (
     </svg>
 )
 
-export default function AlgoTrading({ partners = [] }: { partners?: Partner[] }) {
+export default function AlgoTrading({ partners = [], title, description }: { partners?: Partner[], title: string, description: string }) {
     // Show up to 3 partners, fallback to empty array if none
     const displayPartners = partners.length > 0 ? partners.slice(0, 3) : [];
 
@@ -42,17 +42,16 @@ export default function AlgoTrading({ partners = [] }: { partners?: Partner[] })
                             transition={{ duration: 0.5, ease: "easeOut" }}
                             className='text-[42px] max-mobile:text-3xl max-mobile:leading-10 leading-normal text-black100 font-bold font-monda'
                         >
-                            Algo Trading & Forex Bot Provider
+                            {title}
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.5 }}
                             transition={{ duration: 0.5, ease: "easeOut", delay: 0.15 }}
-                            className='text-lg max-mobile:text-base text-black700 font-medium max-w-[950px]'
+                            className='text-lg max-mobile:text-base text-black700 font-medium max-w-[950px] whitespace-pre-line'
                         >
-                            Discover automated forex trading bots and algorithmic strategy providers built for passive income, consistent
-                            execution, and hands-free trading.
+                            {description}
                         </motion.p>
                     </div>
                     <motion.div
@@ -64,10 +63,10 @@ export default function AlgoTrading({ partners = [] }: { partners?: Partner[] })
                     >
                         <Button variant='primary' size='md' className='flex items-center gap-2'>
                             <Link href="categories/algorithmic-trading-and-bot-providers">
-                            Explore All
-                            <div>
-                                <MoveRight />
-                            </div>
+                                Explore All
+                                <div>
+                                    <MoveRight />
+                                </div>
                             </Link>
                         </Button>
                     </motion.div>
@@ -94,7 +93,9 @@ export default function AlgoTrading({ partners = [] }: { partners?: Partner[] })
 
                             <div className='grid grid-cols-[87px_1fr] gap-5 pt-5 pb-4 border-b border-solid border-border-light800'>
                                 <div className='w-full h-[64px] rounded-lg bg-[#F2F4F7] flex items-center justify-center'>
-                                    <Favicon src={partner.logoUrl} title={partner.name} size={35} contained className="size-full" />
+                                    <div className='h-[40px] flex justify-center'>
+                                        <Favicon src={partner.logoUrl} title={partner.name} size={35} contained className="size-full object-contain" />
+                                    </div>
                                 </div>
                                 <div>
                                     <h3 className='text-xl font-bold text-black100'>{partner.name}</h3>
@@ -127,14 +128,14 @@ export default function AlgoTrading({ partners = [] }: { partners?: Partner[] })
                                     transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
                                 >
                                     <Button variant='primary' size='md' className='flex items-center bg-[#F0F1EC] text-black100 font-medium w-full gap-2'>
-                                      <Link href={`/brokers/${partner.slug}`}>
-                                       Run Bot
-                                        <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-black100">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                <path d="M9.44727 3.88257L13.4217 7.85697L9.44727 11.8314" stroke="white" stroke-width="0.982143" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-                                                <path d="M2.29102 7.85718H13.3107" stroke="white" stroke-width="0.982143" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </div>
+                                        <Link href={`/bot-providers/${partner.slug}`}>
+                                            Run Bot
+                                            <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-black100">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                    <path d="M9.44727 3.88257L13.4217 7.85697L9.44727 11.8314" stroke="white" stroke-width="0.982143" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M2.29102 7.85718H13.3107" stroke="white" stroke-width="0.982143" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </div>
                                         </Link>
                                     </Button>
                                 </motion.div>

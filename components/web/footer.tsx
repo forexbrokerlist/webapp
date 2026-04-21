@@ -16,57 +16,43 @@ import { NavLink, navLinkVariants } from "~/components/web/ui/nav-link"
 import { adsConfig } from "~/config/ads"
 import { linksConfig } from "~/config/links"
 import { cx } from "~/lib/utils";
-const FooterLogo = '/assets/images/footer-logo.svg';
+const MapImage = '/assets/images/map-img.png';
+
 
 export const Footer = ({ children, className, ...props }: ComponentProps<"div">) => {
   const t = useTranslations()
 
   return (
     <>
-      <footer className="pt-[70px] pb-100 max-tab:pb-16 max-mobile:pb-[40px]">
-        <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto">
-          <div className="flex justify-center pb-5">
-            <img src={FooterLogo} alt="Footer Logo" />
-          </div>
-          <h2 className="text-2xl max-mobile:text-xl max-mobile:leading-10 font-bold text-black100 text-center mb-1">
-            {t("components.footer.cta_title")}
-          </h2>
-          <p className="text-base max-mobile:text-sm font-medium text-black700 text-center mb-[30px]">
-            {t("components.footer.cta_description", { count: formatNumber(5000, "standard") })}
-          </p>
-        </div>
-        <div className="max-w-[500px] mx-auto max-mobile:px-4">
-          <CTAForm />
-        </div>
-        <div className="max-w-[872px] mx-auto w-full pt-[60px] max-laptop:px-16 max-tab:px-5 max-mobile:px-4 max-mobile:pt-[40px]">
-          <div className="flex justify-between gap-5 max-mobile:grid max-mobile:grid-cols-1 max-mobile:gap-5">
-            <div>
-              <FullLogo className="h-6 max-w-[175px] w-full" />
-              <p className="text-base font-medium text-black700 max-w-[364px] mt-5">
-              ForexBrokerList.io is a free forex broker directory helping traders discover, compare, and review 512+ verified forex brokers worldwide.
+      <footer className="pt-[70px] pb-[50px] max-tab:pb-16 max-mobile:pb-[40px]">
+        <div className="max-w-[1530px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
+          <div className="relative">
+            <img src={MapImage} alt="MapImage" className="block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1100px]" />
+            <div className="flex max-tab:grid max-tab:grid-cols-2 max-mobile:grid-cols-1 relative z-10 gap-10 max-mobile:gap-5 justify-between">
+              <div className="max-w-[360px]">
+                <FullLogo className=" max-w-[175px] w-full" />
+                <p className="text-base text-black700 font-medium my-5">
+                  ForexBrokerList.io is a free forex broker directory helping traders discover, compare, and review 512+ verified
+                  forex brokers worldwide.
+                </p>
+                <div className="flex items-center gap-4">
+                  <Tooltip tooltip={t("navigation.rss_feed")}>
+                    <ExternalLink href={linksConfig.feed} className={navLinkVariants()}>
+                      <div className="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center">
+                        <RssIcon className="text-black100 text-2xl" />
+                      </div>
+                    </ExternalLink>
+                  </Tooltip>
 
-              </p>
-              <div className="pt-6 flex items-center gap-2.5">
-
-
-                <Tooltip tooltip={t("navigation.rss_feed")}>
-                  <ExternalLink href={linksConfig.feed} className={navLinkVariants()}>
-                    <div className="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center">
-                      <RssIcon className="text-primary text-2xl" />
-                    </div>
-                  </ExternalLink>
-                </Tooltip>
-
-                <Tooltip tooltip={t("navigation.contact_us")}>
-                  <NavLink href="/contact" className={navLinkVariants()}>
-                    <div className="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center">
-                      <AtSignIcon className="text-primary text-2xl" />
-                    </div>
-                  </NavLink>
-                </Tooltip>
+                  <Tooltip tooltip={t("navigation.contact_us")}>
+                    <NavLink href="/contact" className={navLinkVariants()}>
+                      <div className="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center">
+                        <AtSignIcon className=" text-black100 text-2xl" />
+                      </div>
+                    </NavLink>
+                  </Tooltip>
+                </div>
               </div>
-            </div>
-            <div className="flex gap-18 max-tab:gap-10 ">
               <div>
                 <h6 className="text-lg mb-3 text-black font-medium">{t("navigation.browse")}:</h6>
                 <NavLink className="text-base font-medium text-black700 block pb-2" href="/">{t("navigation.tools")}</NavLink>
@@ -86,27 +72,39 @@ export const Footer = ({ children, className, ...props }: ComponentProps<"div">)
                 <NavLink className="text-base font-medium text-black700 block pb-2" href="/cookies">{t("navigation.cookies")}</NavLink>
                 {adsConfig.enabled && <NavLink href="/advertise" className="text-base font-medium text-black700 block ">{t("navigation.advertise")}</NavLink>}
               </div>
+              <div className="max-w-[442px]">
+                <h6 className="text-lg mb-3 text-black font-medium">
+                  Subscribe to our newsletter
+                </h6>
+                <p className="text-base text-black700 font-medium mb-6">
+                  Join 5,000+ other members and get updates straight to your
+                  inbox.
+                </p>
+                <CTAForm />
+              </div>
             </div>
-          </div>
-          <div className="text-base max-mobile:pt-[40px] font-medium text-black700 pt-[60px]">
-            <p>
-              ForexBrokerList.io is an independent forex broker directory for informational purposes only. We do not provide financial advice, 
-execute trades, or manage client funds.
+            <div className="text-base relative z-10 max-mobile:pt-[40px] font-medium text-black700 pt-[60px]">
+              <p>
+                ForexBrokerList.io is an independent forex broker directory for informational purposes only. We do not provide financial advice,
+                execute trades, or manage client funds.
 
-            </p>
-            <p className="mt-2">
-              All broker listings, reviews, and comparisons are for general information only. Trading forex and CFDs involves significant risk of loss and may not be suitable for all investors. Past performance is not indicative of future results.
-            </p>
-            <p className="mt-2">
-              Sponsored listings are clearly marked and do not imply endorsement or recommendation. Always verify a broker's regulatory status through official authorities such as FCA, ASIC, or CySEC before depositing funds.
-            </p>
-            <p className="mt-2">
-              For queries or listing requests, contact us at: <span className="text-primary underline"> forexbrokerlist24@gmail.com </span>
-            </p>
+              </p>
+              <p className="mt-2">
+                All broker listings, reviews, and comparisons are for general information only. Trading forex and CFDs involves significant risk of loss and may not be suitable for all investors. Past performance is not indicative of future results.
+              </p>
+              <p className="mt-2">
+                Sponsored listings are clearly marked and do not imply endorsement or recommendation. Always verify a broker's regulatory status through official authorities such as FCA, ASIC, or CySEC before depositing funds.
+              </p>
+              <p className="mt-2">
+                For queries or listing requests, contact us at: <span className="text-primary underline"> forexbrokerlist24@gmail.com </span>
+              </p>
+            </div>
+            <div className='w-full mt-4  h-[1px]   bg-[#1A1A1A1A]'></div>
+            <p className='text-center relative z-10 text-base font-medium text-black700 mt-4'> © 2026 ForexBrokerList.io - All rights reserved.</p>
           </div>
-      <div className='w-full mt-4  h-[1px]   bg-[#1A1A1A1A]'></div>
-          <p className='text-center text-base font-medium text-black700 mt-4'> © 2026 ForexBrokerList.io - All rights reserved.</p>
         </div>
+
+
       </footer>
 
     </>

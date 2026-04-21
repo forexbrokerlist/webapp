@@ -114,7 +114,7 @@ export const Calendar = ({ className, ...props }: ComponentProps<"div">) => {
           <ButtonGroup>
             {!isCurrentMonth && (
               <Button
-                variant="secondary"
+                variant="normal"
                 size="md"
                 prefix={<CalendarIcon />}
                 onClick={() => setMonth(null)}
@@ -124,7 +124,7 @@ export const Calendar = ({ className, ...props }: ComponentProps<"div">) => {
             )}
 
             <Button
-              variant="secondary"
+              variant="normal"
               size="md"
               prefix={<ChevronLeftIcon />}
               onClick={() => setMonth(format(subMonths(currentMonth, 1), defaultFormat))}
@@ -133,7 +133,7 @@ export const Calendar = ({ className, ...props }: ComponentProps<"div">) => {
             </Button>
 
             <Button
-              variant="secondary"
+              variant="normal"
               size="md"
               suffix={<ChevronRightIcon />}
               onClick={() => setMonth(format(addMonths(currentMonth, 1), defaultFormat))}

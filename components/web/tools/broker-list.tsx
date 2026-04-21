@@ -9,15 +9,16 @@ import type { Brokers } from "~/.generated/prisma/client"
 
 type BrokerListProps = ComponentProps<typeof Grid> & {
   brokers: Brokers[]
+  categorySlug?: string
 }
 
-const BrokerList = ({ children, brokers, ...props }: BrokerListProps) => {
+const BrokerList = ({ children, brokers, categorySlug, ...props }: BrokerListProps) => {
   const t = useTranslations()
 
   return (
     <Grid {...props}>
       {brokers.map((broker, order) => (
-        <BrokerCard key={broker.id} broker={broker} style={{ order }} />
+        <BrokerCard key={broker.id} broker={broker} categorySlug={categorySlug} style={{ order }} />
       ))}
 
       {brokers.length ? children : <EmptyList>{t("tools.no_tools")}</EmptyList>}

@@ -21,10 +21,10 @@ interface Partner {
     bannerUrl: string | null;
     websiteUrl: string | null;
     socialProof: string | null;
-    slug:string|null
+    slug: string | null
 }
 
-export default function ForexEducation({ partners = [] }: { partners?: Partner[] }) {
+export default function ForexEducation({ partners = [], title, description }: { partners?: Partner[], title: string, description: string }) {
     console.log("partners", partners)
     const SLIDES = partners.map(p => ({
         id: p.id,
@@ -36,7 +36,8 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
         img: p.bannerUrl || GolldenBullsImage,
         logo: p.logoUrl,
         link: p.websiteUrl || `/forex-education-and-training/${p.id}`,
-        slug:p.slug
+
+        slug: p.slug
     }));
 
     const [activeIndex, setActiveIndex] = useState(0);
@@ -69,27 +70,20 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            Learn Forex Trading - Top Education Platforms & Courses
+                            {title}
                         </motion.h2>
-                        <motion.p
-                            className='text-lg max-mobile:text-base text-white700 font-medium'
-                            variants={{
-                                hidden: { opacity: 0, y: 20 },
-                                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
-                            }}
-                        >
-                            The forex market rewards those who invest in their knowledge first. Our directory features hand-picked forex education platforms and trading academies trusted by thousands of active traders worldwide.
-                        </motion.p>
-                        <motion.p
-                            className='text-lg text-white700 font-medium mt-2'
-                            variants={{
-                                hidden: { opacity: 0, y: 20 },
-                                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
-                            }}
-                        >
-                            Compare course formats, student reviews, pricing, and specializations, whether you prefer self-paced online learning, live mentorship, or structured trading programs. Start with confidence, backed by verified reviews and transparent listings.
-
-                        </motion.p>
+                        {description.split('\n').filter(p => p.trim() !== '').map((para, idx) => (
+                            <motion.p
+                                key={idx}
+                                className='text-lg max-mobile:text-base text-white700 font-medium mb-3 last:mb-0'
+                                variants={{
+                                    hidden: { opacity: 0, y: 20 },
+                                    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+                                }}
+                            >
+                                {para}
+                            </motion.p>
+                        ))}
                         <motion.div
                             className='pt-12'
                             variants={{
@@ -176,7 +170,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                             </div>
 
                                             <Button variant='primary' size='md' className={`border-none w-full justify-center text-sm py-2 bg-white text-black100 flex items-center group`} asChild>
-                                                <Link href={slide.slug ? `/brokers/${slide.slug}` : slide.link}>
+                                                <Link href={slide.slug ? `/forex-education/${slide.slug}` : slide.link}>
                                                     Start Learning
                                                     <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100`}>
                                                         <MoveRight className="text-white w-4 h-4" />

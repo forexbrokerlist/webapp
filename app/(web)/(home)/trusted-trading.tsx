@@ -8,7 +8,6 @@ import VerifyIcon from '~/components/common/icons/verify-icon';
 import { motion } from 'framer-motion';
 import { Favicon } from '~/components/web/ui/favicon';
 import Link from 'next/link';
-import { platform } from 'os';
 
 const MapImage = '/assets/images/map.png';
 
@@ -27,6 +26,8 @@ interface Platform {
 
 interface TrustedTradingProps {
     platforms: Platform[];
+    title: string;
+    description: string;
 }
 
 const PlatformCard = ({ platform, index, delay = 0, className = "" }: { platform: Platform, index: number, delay?: number, className?: string }) => (
@@ -39,7 +40,7 @@ const PlatformCard = ({ platform, index, delay = 0, className = "" }: { platform
         transition={{ type: "spring", stiffness: 300, damping: 20, delay: index * 0.15 + delay }}
         className={`rounded-[16px] mb-6 last:mb-0 border-[0.5px] border-[#A8DD15] p-5 max-laptop:p-4 bg-white shadow-[0_2px_20px_0_rgba(0,0,0,0.05)] ${className}`}
     >
-        <Link href={`brokers/${platform.slug}`}>
+        <Link href={`broker/${platform.slug}`}>
         <div className='flex items-center justify-between pb-4 max-mobile:grid max-mobile:grid-cols-1 max-mobile:gap-3'>
             <div className='flex items-center gap-3'>
                 <div className='w-16 h-16 rounded-xl flex items-center justify-center bg-white shadow-[inset_0_0_15px_0_rgba(168,221,21,0.2)] overflow-hidden'>
@@ -52,14 +53,7 @@ const PlatformCard = ({ platform, index, delay = 0, className = "" }: { platform
                     <VerifyIcon />
                 </div>
             </div>
-            {platform.isSponsor && (
-                <div>
-                    <button className='flex text-xs font-medium text-black100 items-center uppercase border-[0.8px] border-primary bg-white shadow-[0_0_10px_0_rgba(168,221,21,0.3)] gap-1.5 py-1.5 px-4 rounded-full'>
-                        <SponserIcon />
-                        Sponsored
-                    </button>
-                </div>
-            )}
+           
         </div>
         <p className='text-sm text-black800 font-medium mb-5 line-clamp-2'>
             {platform.description}
@@ -76,9 +70,9 @@ const PlatformCard = ({ platform, index, delay = 0, className = "" }: { platform
     </motion.div>
 );
 
-export default function TrustedTrading({ platforms }: TrustedTradingProps) {
-    const leftCol = platforms.slice(0, 3);
-    const featured = platforms[3];
+export default function TrustedTrading({ platforms, title, description }: TrustedTradingProps) {
+    const leftCol = platforms.slice(1, 4);
+    const featured = platforms[0];
     const rightCol = platforms.slice(4, 7);
 
     return (
@@ -92,12 +86,10 @@ export default function TrustedTrading({ platforms }: TrustedTradingProps) {
                         transition={{ duration: 0.6 }}
                     >
                         <h2 className='text-[42px] max-mobile:text-3xl leading-normal text-black100 font-bold font-monda'>
-                           Top-Rated Forex Brokers & Trading Platforms
-
+                           {title}
                         </h2>
-                        <p className='text-lg max-mobile:text-base text-black700 font-medium max-w-[885px]'>
-                          Browse verified forex brokers and trading platforms, compare spreads, regulation, and features to find 
-the right fit for your trading goals.
+                        <p className='text-lg max-mobile:text-base text-black700 font-medium max-w-[885px] whitespace-pre-line'>
+                          {description}
                         </p>
                     </motion.div>
                     <motion.div
@@ -133,7 +125,7 @@ the right fit for your trading goals.
                                 transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.1 }}
                                 className='rounded-[16px] mb-6 border-[0.5px] border-[#A8DD15] bg-white shadow-[0_2px_20px_0_rgba(0,0,0,0.05)] overflow-hidden'
                             >
-                                <Link href={`/brokers/${featured.slug}`}>
+                                <Link href={`/broker/${featured.slug}`}>
                                 <div className='p-5 pb-0 relative z-10'>
                                     <div className='flex items-center justify-between pb-4 max-mobile:grid max-mobile:grid-cols-1 max-mobile:gap-3'>
                                         <div className='flex items-center gap-3'>
@@ -147,14 +139,14 @@ the right fit for your trading goals.
                                                 <VerifyIcon />
                                             </div>
                                         </div>
-                                        {featured.isSponsor && (
+                                        {/* {featured.isSponsor && (
                                             <div>
                                                 <button className='flex text-xs font-medium text-black100 items-center uppercase border-[0.8px] border-primary bg-white shadow-[0_0_10px_0_rgba(168,221,21,0.3)] gap-1.5 py-1.5 px-4 rounded-full'>
                                                     <SponserIcon />
                                                     Sponsored
                                                 </button>
                                             </div>
-                                        )}
+                                        )} */}
                                     </div>
                                     <p className='text-sm text-black800 font-medium mb-5 line-clamp-2'>
                                         {featured.description}

@@ -68,7 +68,7 @@ export const FormMedia = <T extends FieldValues>({
           <Button
             type="button"
             size="sm"
-            variant="secondary"
+            variant="normal"
             prefix={<UploadIcon />}
             isPending={action.isUploading}
             disabled={action.isUploading || action.isFetching}
@@ -81,7 +81,7 @@ export const FormMedia = <T extends FieldValues>({
             <Button
               type="button"
               size="sm"
-              variant="secondary"
+              variant="normal"
               prefix={<DownloadCloudIcon />}
               isPending={action.isFetching}
               disabled={!isValidUrl(websiteUrl) || action.isUploading || action.isFetching}

@@ -107,6 +107,7 @@ export const SubmitForm = ({
         average_trading_cost_wti_crude_oil: "",
         pros: "",
         cons: "",
+        beginner_friendly: false,
         newsletterOptIn: true,
         categoryIds: [],
         subcategoryIds: [],
@@ -655,6 +656,24 @@ export const SubmitForm = ({
             <Field data-invalid={fieldState.invalid} className="col-span-full">
               <FieldLabel htmlFor={field.name}>Cons:</FieldLabel>
               <TextArea id={field.name} size="lg" placeholder="List of cons separated by semicolon: Con 1; Con 2" {...field} value={field.value || ""} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="beginner_friendly"
+          render={({ field, fieldState }) => (
+            <Field
+              orientation="horizontal"
+              className="col-span-full items-center gap-2 mt-2"
+              data-invalid={fieldState.invalid}
+            >
+              <Checkbox id={field.name} checked={field.value} onCheckedChange={field.onChange} />
+              <FieldLabel htmlFor={field.name} className="font-normal text-sm">
+                This broker is beginner-friendly
+              </FieldLabel>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

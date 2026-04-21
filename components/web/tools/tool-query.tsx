@@ -70,11 +70,11 @@ const ToolQuery = async ({
 
       <BrokerList brokers={brokers} {...list}>
         {ad &&
-           Array.from({ length: adsConfig.adsPerPage }, (_, index) => {
-             const order = Math.ceil((perPage / adsConfig.adsPerPage) * index + 1)
-             if (order > brokers.length) return null
-             return <AdCard key={`ad-${index}`} type={ad} isRevealed style={{ order }} />
-           })}
+          Array.from({ length: adsConfig.adsPerPage }, (_, index) => {
+            const order = Math.ceil((perPage / adsConfig.adsPerPage) * index + 1)
+            if (order > brokers.length) return null
+            return <AdCard key={`ad-${index}`} type={ad} isRevealed style={{ order }} />
+          })}
       </BrokerList>
     </ToolListing>
   )
