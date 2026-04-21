@@ -250,9 +250,8 @@ export default function CategoriesCard({
                                     </div>
                                 </div>
                                 <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px] whitespace-pre-line'>
-                                    A curated collection of top traders,
-                                    companies, and mentors helping you
-                                    learn forex trading.
+                                  {educationCategory?.description?.slice(0, 150)}
+                                  {(educationCategory?.description?.length ?? 0) > 150 && "..."}
                                 </p>
                             </div>
                             <div className='rounded-2xl h-[210px] border-[1.2px] border-[rgba(26,26,26,0.05)] bg-white backdrop-blur-[5px]'>
