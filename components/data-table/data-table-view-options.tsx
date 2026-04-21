@@ -31,7 +31,7 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
         <Button
           ref={triggerRef}
           aria-label={t("toggle_columns")}
-          variant="secondary"
+          variant="normal"
           size="md"
           className="ml-auto flex gap-2 max-md:hidden"
           prefix={<Settings2 />}

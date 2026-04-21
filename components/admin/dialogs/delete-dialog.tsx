@@ -80,7 +80,7 @@ export const DeleteDialog = ({
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button size="md" variant="secondary" suffix={<Kbd keys={["esc"]} />}>
+            <Button size="md" variant="normal" suffix={<Kbd keys={["esc"]} />}>
               Cancel
             </Button>
           </DialogClose>

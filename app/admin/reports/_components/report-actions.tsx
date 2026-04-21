@@ -35,7 +35,7 @@ export const ReportActions = ({ report, className, ...props }: ReportActionsProp
         <DropdownMenuTrigger asChild>
           <Button
             aria-label="Open menu"
-            variant="secondary"
+            variant="normal"
             size="sm"
             prefix={<EllipsisIcon />}
             className={cx("data-[state=open]:bg-accent", className)}
@@ -61,7 +61,7 @@ export const ReportActions = ({ report, className, ...props }: ReportActionsProp
       >
         <Button
           aria-label="Delete"
-          variant="secondary"
+          variant="normal"
           size="sm"
           prefix={<TrashIcon />}
           className="text-red-500"

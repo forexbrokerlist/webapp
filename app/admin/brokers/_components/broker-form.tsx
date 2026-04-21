@@ -809,7 +809,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
         )}
 
         <div className="flex justify-between gap-4 col-span-full">
-          <Button size="md" variant="secondary" asChild>
+          <Button size="md" variant="normal" asChild>
             <Link href="/admin/brokers">Cancel</Link>
           </Button>
 
@@ -855,7 +855,7 @@ function FeaturesField({ control, register }: { control: any, register: any }) {
         ))}
         <Button
           type="button"
-          variant="secondary"
+          variant="normal"
           size="sm"
           onClick={() => append("")}
           className="w-full"
@@ -898,7 +898,7 @@ function AccountTypesField({ control, register }: { control: any, register: any 
         ))}
         <Button
           type="button"
-          variant="secondary"
+          variant="normal"
           size="sm"
           onClick={() => append("")}
           className="w-full"

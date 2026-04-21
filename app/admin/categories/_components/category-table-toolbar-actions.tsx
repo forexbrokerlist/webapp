@@ -25,7 +25,7 @@ export function CategoryTableToolbarActions({ table }: CategoryTableToolbarActio
       mutationOptions={orpc.categories.remove.mutationOptions}
       queryKey={orpc.categories.key()}
     >
-      <Button variant="secondary" size="md" prefix={<TrashIcon />}>
+      <Button variant="normal" size="md" prefix={<TrashIcon />}>
         Delete ({rows.length})
       </Button>
     </DeleteDialog>

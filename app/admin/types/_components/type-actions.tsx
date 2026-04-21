@@ -65,7 +65,7 @@ export const TypeActions = ({ type, className }: TypeActionsProps) => {
         <DropdownMenuTrigger asChild>
           <Button
             aria-label="Open menu"
-            variant="secondary"
+            variant="normal"
             size="sm"
             prefix={<EllipsisIcon />}
             className={cx("data-[state=open]:bg-accent", className)}
@@ -97,7 +97,7 @@ export const TypeActions = ({ type, className }: TypeActionsProps) => {
       >
         <Button
           aria-label="Delete"
-          variant="secondary"
+          variant="normal"
           size="sm"
           prefix={<TrashIcon />}
           className="text-red-500"
