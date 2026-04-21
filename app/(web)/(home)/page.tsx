@@ -28,6 +28,16 @@ import InvestInEverything from "./invest-in-everything"
 import AlgoTrading from "./algo-trading"
 import { generateBlog } from "~/lib/structured-data"
 import { getPosts } from "~/server/web/posts/queries"
+import { 
+  getTrustedPlatforms, 
+  getCrmPlatforms, 
+  getBridgePartners, 
+  getLiquidityPartners, 
+  getPspPartners, 
+  getTradingPlatformPartners, 
+  getAlgoPartners, 
+  getForexEducationPartners 
+} from "~/server/web/brokers/queries"
 
 const namespace = "pages.blog"
 
@@ -107,206 +117,15 @@ export default async function (props: any) {
     }))
   )
 
-  const getLogo = async (broker: any) => {
-    // 1. Prioritize the high-quality logo stored in our database
-    if (broker.logoUrl) {
-      return (await getPresignedUrlFromFull(broker.logoUrl)) as string
-    }
-
-    let domain = "forex.com"
-    const targetUrl = broker.broker_website || broker.url
-    try {
-      if (targetUrl) {
-        const urlObj = new URL(targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`)
-        domain = urlObj.hostname
-      }
-    } catch (e) { }
-
-    // 2. Fallback to Google Favicon API
-    if (domain && domain !== "forex.com") {
-      return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
-    }
-
-    // 3. Last resort: screenshot or default placeholder
-    if (broker.screenshotUrl) {
-      return (await getPresignedUrlFromFull(broker.screenshotUrl)) as string
-    }
-
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
-  }
 
 
-  const trustedCategory = await db.category.findUnique({
-    where: { slug: "trusted-trading-platforms" },
-    include: {
-      brokers: {
-        where: {
-          status: { in: ["Published", "Scheduled"] },
-          isSponsor: true
-        },
-        orderBy: { order: "asc" },
-        take: 7,
-      },
-    },
-  })
+  const { brokers: trustedPlatforms, category: trustedCategory } = await getTrustedPlatforms(7)
+  const { brokers: crmPlatform, category: crmCategory } = await getCrmPlatforms(4)
+  const { brokers: bridgePartners, category: bridgeCategory } = await getBridgePartners(6)
+  const { brokers: liquidityPartners, category: liquidityCategory } = await getLiquidityPartners(2)
+  const { brokers: PSPPartners, category: PSPCategory } = await getPspPartners(12)
 
-  const trustedPlatforms = await Promise.all(
-    (trustedCategory?.brokers || []).map(async (broker) => ({
-      id: broker.id,
-      name: broker.broker_name || "",
-      description: broker.subtitle || broker.description || "",
-      minDeposit: broker.minimum_deposit || "Varies",
-      logo: await getLogo(broker),
-      isSponsor: broker.isSponsor,
-      rating: broker.overall_rating || "0",
-      slug: broker.slug || ""
-    }))
-  )
-
-  const crmCategory = await db.category.findUnique({
-    where: { slug: "crm-and-back-office-software" },
-    include: {
-      brokers: {
-        where: {
-          status: { in: ["Published", "Scheduled"] },
-          isSponsor: true,
-        },
-        orderBy: { order: "asc" },
-        take: 4,
-      },
-    },
-  })
-
-  const crmPlatform = await Promise.all(
-    (crmCategory?.brokers || []).map(async (broker: any) => ({
-      id: broker.id,
-      name: broker.broker_name || "",
-      title: broker.broker_name || "",
-      description: broker.subtitle || broker.description || "",
-      minDeposit: broker.minimum_deposit || "Varies",
-      logo: await getLogo(broker),
-      isSponsor: broker.isSponsor,
-      rating: broker.overall_rating || "0",
-      slug: broker.slug || ""
-    }))
-  )
-  const bridgeCategory = await db.category.findUnique({
-    where: { slug: "bridge-and-plug-in-partners" },
-    include: {
-      brokers: {
-        where: {
-          status: { in: ["Published", "Scheduled"] },
-          isSponsor: true,
-        },
-        orderBy: { order: "asc" },
-        take: 6,
-      },
-    },
-  })
-
-
-
-  const bridgePartners = await Promise.all(
-    (bridgeCategory?.brokers || []).map(async (broker) => ({
-      id: broker.id.toString(),
-      name: broker.broker_name || "",
-      title: broker.broker_name || "",
-      description: broker.subtitle || broker.description || "",
-      logoUrl: await getLogo(broker),
-      features: broker.features || [],
-      highlightedPoint: broker.highlightedPoint,
-      socialProof: broker.socialProof,
-      slug: broker.slug || ""
-    }))
-  )
-  const liquidityCategory = await db.category.findUnique({
-    where: { slug: "liquidity-partners" },
-    include: {
-      brokers: {
-        where: {
-          status: { in: ["Published", "Scheduled"] },
-          isSponsor: true,
-        },
-        orderBy: { order: "asc" },
-        take: 2,
-      },
-    },
-  })
-
-
-
-  const liquidityPartners = await Promise.all(
-    (liquidityCategory?.brokers || []).map(async (broker) => ({
-      id: broker.id.toString(),
-      name: broker.broker_name || "",
-      title: broker.subtitle || "",
-      description: broker.highlightedPoint || "",
-      logoUrl: await getLogo(broker),
-      features: [],
-      highlightedPoint: null,
-      socialProof: null,
-      slug: broker.slug || ""
-    }))
-  )
-  const PSPCategory = await db.category.findUnique({
-    where: { slug: "psp-partners" },
-    include: {
-      brokers: {
-        where: {
-          status: { in: ["Published", "Scheduled"] },
-          isSponsor: true,
-        },
-        orderBy: { order: "asc" },
-        take: 12,
-      },
-    },
-  })
-
-
-
-  const PSPPartners = await Promise.all(
-    (PSPCategory?.brokers || []).map(async (broker) => ({
-      id: broker.id.toString(),
-      name: broker.broker_name || "",
-      title: broker.broker_name || "",
-      description: broker.subtitle || broker.description || "",
-      logoUrl: await getLogo(broker),
-      features: [],
-      highlightedPoint: null,
-      socialProof: null,
-      slug: broker.slug || ""
-    }))
-  )
-
-  const TradingpartnerCategory = await db.category.findUnique({
-    where: { slug: "trading-platform-partners" },
-    include: {
-      brokers: {
-        where: {
-          status: { in: ["Published", "Scheduled"] },
-          isSponsor: true,
-        },
-        orderBy: { order: "asc" },
-        take: 5,
-      },
-    },
-  })
-
-
-
-  const TradingPalformPartners = await Promise.all(
-    (TradingpartnerCategory?.brokers || []).map(async (broker) => ({
-      id: broker.id.toString(),
-      name: broker.broker_name || "",
-      title: broker.broker_name || "",
-      description: broker.subtitle || broker.description || "",
-      logoUrl: await getLogo(broker),
-      features: [],
-      highlightedPoint: null,
-      socialProof: null,
-      slug: broker.slug || ""
-    }))
-  )
+  const { brokers: TradingPalformPartners, category: TradingpartnerCategory } = await getTradingPlatformPartners(5)
 
 
   // const TradingPlatformCategory = await db.category.findUnique({
@@ -337,73 +156,8 @@ export default async function (props: any) {
   //   }))
   // )
 
-  const AlgoCategory = await db.category.findUnique({
-    where: { slug: "algorithmic-trading-and-bot-providers" },
-    include: {
-      brokers: {
-        where: {
-          status: { in: ["Published", "Scheduled"] },
-          isSponsor: true,
-        },
-        orderBy: { order: "asc" },
-        take: 3,
-      },
-    },
-  })
-
-
-
-  const AlgoPartners = await Promise.all(
-    (AlgoCategory?.brokers || []).map(async (broker) => {
-
-      return {
-        id: broker.id.toString(),
-        order: broker.order,
-        name: broker.broker_name || "",
-        title: broker.subtitle || "",
-        subtitle: broker.subtitle || null,
-        description: broker.subtitle || broker.description || "",
-        logoUrl: await getLogo(broker),
-        features: broker.features,
-        bannerUrl: broker.bannerUrl || await getPresignedUrlFromFull(broker.screenshotUrl) || "",
-        websiteUrl: broker.url || null,
-        highlightedPoint: null,
-        socialProof: null,
-        slug: broker.slug || ""
-      };
-    })
-  )
-  const ForexCategory = await db.category.findUnique({
-    where: { slug: "forex-education-and-training" },
-    include: {
-      brokers: {
-        where: {
-          status: { in: ["Published", "Scheduled"] },
-          isSponsor: true,
-        },
-        take: 3,
-      },
-    },
-  })
-
-
-
-  const ForexPartners = await Promise.all(
-    (ForexCategory?.brokers || []).map(async (broker) => ({
-      id: broker.id.toString(),
-      name: broker.broker_name || "",
-      title: broker.description || "",
-      subtitle: broker.subtitle || null,
-      description: broker.subtitle || broker.description || "",
-      logoUrl: await getLogo(broker),
-      features: [],
-      bannerUrl: broker.bannerUrl || await getPresignedUrlFromFull(broker.screenshotUrl) || "",
-      websiteUrl: broker.broker_website || broker.url || null,
-      highlightedPoint: broker.highlightedPoint || null,
-      socialProof: broker.socialProof,
-      slug: broker.slug || ""
-    }))
-  )
+  const { brokers: AlgoPartners, category: AlgoCategory } = await getAlgoPartners(3)
+  const { brokers: ForexPartners, category: ForexCategory } = await getForexEducationPartners(3)
   // const ForexCategory = await db.category.findUnique({
   //   where: { slug: "forex-education-and-training" },
   // })

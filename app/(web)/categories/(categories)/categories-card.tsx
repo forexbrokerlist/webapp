@@ -4,6 +4,7 @@ import { MoveRight } from 'lucide-react'
 import Link from 'next/link';
 import React from 'react'
 import { Button } from '~/components/common/button';
+import { Favicon } from '~/components/web/ui/favicon';
 const SolIcon = '/assets/images/sol.svg';
 const CrmIcon = '/assets/images/crm.svg';
 const PageImage = '/assets/images/page-img.png';
@@ -13,7 +14,28 @@ const LineIcon = '/assets/images/line1.svg';
 const Line2Icon = '/assets/images/line2.svg';
 const PlatformImage = '/assets/images/platform.png';
 
-export default function CategoriesCard() {
+export interface Partner {
+    id: string | number;
+    order?: number;
+    name: string;
+    title?: string;
+    subtitle?: string | null;
+    description?: string;
+    logo?: string;
+    logoUrl?: string;
+    slug: string;
+}
+
+interface CategoriesCardProps {
+    AlgoPartners: Partner[];
+    bridgePartners: Partner[];
+    liquidityPartners: Partner[];
+    PSPPartners: Partner[];
+    trustedPlatforms: Partner[];
+    allBrokers: Partner[];
+}
+
+export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPartners,PSPPartners,trustedPlatforms,allBrokers }: CategoriesCardProps) {
     return (
         <>
             <section className='py-100'>
@@ -75,7 +97,7 @@ export default function CategoriesCard() {
                                     </svg>
 
                                     <div className='w-16 h-16 bg-white border border-solid border-border-lightgreen rounded-full absolute flex items-center justify-center z-10 shadow-[0_0_20px_rgba(168,221,21,0.15)] overflow-hidden'>
-                                        <img src="https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.exness.com&size=128" className='w-10 h-10 object-contain' alt="Center" />
+                                        <Favicon src={AlgoPartners[0]?.logoUrl || AlgoPartners[0]?.logo} className='w-10 h-10 object-contain'  />
                                     </div>
                                     <motion.div
                                         className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-white border border-solid border-border-lightgreen rounded-full flex items-center justify-center shadow-md z-20"
@@ -83,7 +105,8 @@ export default function CategoriesCard() {
                                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                                     >
                                         <div className="w-8 h-8 flex items-center justify-center">
-                                            <img src="https://api.dicebear.com/7.x/shapes/svg?seed=rocket&backgroundColor=ffffff" alt="Rocket" className="w-full h-full" />
+                                        <Favicon src={AlgoPartners[1]?.logoUrl || AlgoPartners[1]?.logo} className='w-10 h-10 object-contain'  />
+                                          
                                         </div>
                                     </motion.div>
 
@@ -93,10 +116,9 @@ export default function CategoriesCard() {
                                         animate={{ y: [0, 5, 0] }}
                                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
                                     >
-                                        <div className="w-8 h-8 flex items-center justify-center text-blue-500">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
-                                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                                            </svg>
+                                       <div className="w-8 h-8 flex items-center justify-center">
+                                        <Favicon src={AlgoPartners[2]?.logoUrl || AlgoPartners[2]?.logo} className='w-10 h-10 object-contain'  />
+                                          
                                         </div>
                                     </motion.div>
 
@@ -105,10 +127,9 @@ export default function CategoriesCard() {
                                         animate={{ x: [0, -5, 0] }}
                                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                                     >
-                                        <div className="w-8 h-8 flex items-center justify-center text-black">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
-                                                <path d="M3 17.5l4-5 4.5 4 6-9.5M21 7l-4.5.5V12" />
-                                            </svg>
+                                         <div className="w-8 h-8 flex items-center justify-center">
+                                        <Favicon src={AlgoPartners[3]?.logoUrl || AlgoPartners[3]?.logo} className='w-10 h-10 object-contain'  />
+                                          
                                         </div>
                                     </motion.div>
                                     <motion.div
@@ -116,12 +137,9 @@ export default function CategoriesCard() {
                                         animate={{ x: [0, 5, 0] }}
                                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
                                     >
-                                        <div className="w-8 h-8 flex items-center justify-center text-purple-600">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
-                                                <rect x="3" y="11" width="18" height="10" rx="2" />
-                                                <circle cx="12" cy="5" r="2" />
-                                                <path d="M12 7v4M8 16h0M16 16h0" />
-                                            </svg>
+                                        <div className="w-8 h-8 flex items-center justify-center">
+                                        <Favicon src={AlgoPartners[4]?.logoUrl || AlgoPartners[4]?.logo} className='w-10 h-10 object-contain'  />
+                                          
                                         </div>
                                     </motion.div>
                                 </div>
@@ -138,12 +156,12 @@ export default function CategoriesCard() {
                             </p>
                             <div className='grid grid-cols-2 gap-x-4 gap-y-3'>
                                 {
-                                    [...Array(4)].map(() => {
+                                    bridgePartners.map((partner) => {
                                         return (
-                                            <div className='rounded-tr-[8px] rounded-bl-[8px] flex items-center gap-2 border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)] p-2.5'>
-                                                <img src={SolIcon} alt="SolIcon" className='block max-w-[28px] w-[28px]' />
-                                                <span className='block text-base font-medium text-black'>
-                                                    Centroid Sol
+                                            <div key={partner.id} className='rounded-tr-[8px] rounded-bl-[8px] flex items-center gap-2 border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)] p-2.5'>
+                                                <Favicon src={partner.logoUrl || partner.logo} className='block max-w-[28px] w-[28px] object-contain' />
+                                                <span className='block text-base font-medium text-black truncate'>
+                                                    {partner.name}
                                                 </span>
                                             </div>
                                         )
@@ -224,10 +242,10 @@ export default function CategoriesCard() {
                                         }}
                                     >
                                         {
-                                            [...Array(40)].map((_, index) => {
+                                            allBrokers.map((partner) => {
                                                 return (
-                                                    <div key={index} className="w-[70px] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rounded-full overflow-hidden flex items-center justify-center border border-solid border-border-lightgreen200 bg-white">
-                                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                                    <div key={partner.id} className="w-[70px] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rounded-full overflow-hidden flex items-center justify-center border border-solid border-border-lightgreen200 bg-white">
+                                                        <img src={partner.logoUrl || partner.logo} alt={partner.name} className='block max-w-[35px] object-contain' />
                                                     </div>
                                                 )
                                             })
@@ -245,10 +263,10 @@ export default function CategoriesCard() {
                                         }}
                                     >
                                         {
-                                            [...Array(40)].map((_, index) => {
+                                            [...allBrokers].reverse().map((partner) => {
                                                 return (
-                                                    <div key={index} className="w-[70px] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rounded-full overflow-hidden flex items-center justify-center border border-solid border-border-lightgreen200 bg-white">
-                                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                                    <div key={partner.id} className="w-[70px] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rounded-full overflow-hidden flex items-center justify-center border border-solid border-border-lightgreen200 bg-white">
+                                                        <img src={partner.logoUrl || partner.logo} alt={partner.name} className='block max-w-[35px] object-contain' />
                                                     </div>
                                                 )
                                             })
@@ -302,14 +320,14 @@ export default function CategoriesCard() {
                                     </div>
                                     <div className='grid grid-cols-2 gap-5 relative max-w-[282px] w-full mx-auto'>
                                         {
-                                            [...Array(2)].map(() => {
+                                            liquidityPartners.map((partner) => {
                                                 return (
                                                     <div className='rounded-lg p-3 border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_30px_0_rgba(0,0,0,0.10)]'>
                                                         <p className='text-base mb-3 font-semibold text-center text-grey-600'>
-                                                            LMAX Group
+                                                            {partner.name}
                                                         </p>
                                                         <div className='flex justify-center'>
-                                                            <img src={LmaxIcon} alt="LmaxIcon" className='block max-w-[40px]' />
+                                                            <img src={partner.logoUrl || partner.logo} alt={partner.name} className='block max-w-[40px]' />
                                                         </div>
                                                     </div>
                                                 )
@@ -354,21 +372,21 @@ export default function CategoriesCard() {
                                 </p>
                                 <div className='flex justify-center gap-4 pt-6'>
                                     <div className="w-[70px] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rounded-lg overflow-hidden flex items-center justify-center border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]">
-                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                        <img src={PSPPartners[0]?.logoUrl || PSPPartners[0]?.logo} alt="SecureIcon" className='block max-w-[35px] object-contain' />
                                     </div>
                                     <div className="w-[70px] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rotate-45 rounded-lg overflow-hidden flex items-center justify-center border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]">
-                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                        <img src={PSPPartners[1]?.logoUrl || PSPPartners[1]?.logo} alt="SecureIcon" className='block max-w-[35px] object-contain' />
                                     </div>
                                 </div>
                                 <div className='flex justify-center gap-4 pt-3 pb-3'>
                                     <div className="w-[70px] rotate-[7deg] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rounded-lg overflow-hidden flex items-center justify-center border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]">
-                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                        <img src={PSPPartners[2]?.logoUrl || PSPPartners[2]?.logo} alt="SecureIcon" className='block max-w-[35px] object-contain' />
                                     </div>
                                     <div className="w-[70px] rotate-[-13deg] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rotate-45 rounded-lg overflow-hidden flex items-center justify-center border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]">
-                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                        <img src={PSPPartners[3]?.logoUrl || PSPPartners[3]?.logo} alt="SecureIcon" className='block max-w-[35px] object-contain' />
                                     </div>
                                     <div className="w-[70px] rotate-[8deg] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rotate-45 rounded-lg overflow-hidden flex items-center justify-center border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]">
-                                        <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                        <img src={PSPPartners[4]?.logoUrl || PSPPartners[4]?.logo} alt="SecureIcon" className='block max-w-[35px] object-contain' />
                                     </div>
                                 </div>
                             </div>
@@ -385,10 +403,10 @@ export default function CategoriesCard() {
                             </p>
                             <div className='grid grid-cols-4 gap-4'>
                                 {
-                                    [...Array(4)].map(() => {
+                                   trustedPlatforms.map((partner) => {
                                         return (
-                                            <div className='border  rounded-lg flex items-center justify-center w-full h-[64px] border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]'>
-                                                <img src={SecureIcon} alt="SecureIcon" className='block max-w-[35px] object-contain' />
+                                            <div key={partner.id} className='border  rounded-lg flex items-center justify-center w-full h-[64px] border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]'>
+                                                <img src={partner.logoUrl || partner.logo} alt={partner.name} className='block max-w-[35px] object-contain' />
                                             </div>
                                         )
                                     })

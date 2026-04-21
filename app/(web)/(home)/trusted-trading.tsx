@@ -8,7 +8,6 @@ import VerifyIcon from '~/components/common/icons/verify-icon';
 import { motion } from 'framer-motion';
 import { Favicon } from '~/components/web/ui/favicon';
 import Link from 'next/link';
-import { platform } from 'os';
 
 const MapImage = '/assets/images/map.png';
 
