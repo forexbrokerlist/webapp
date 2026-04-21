@@ -26,16 +26,53 @@ export interface Partner {
     slug: string;
 }
 
+export interface Category {
+    id: string;
+    name: string;
+    slug: string;
+    label?: string | null;
+    description?: string | null;
+}
+
 interface CategoriesCardProps {
+    AlgoCategory?: Category | null;
+    bridgeCategory?: Category | null;
+    liquidityCategory?: Category | null;
+    PSPCategory?: Category | null;
+    trustedCategory?: Category | null;
+    crmCategory?: Category | null;
+    educationCategory?: Category | null;
+    tradingCategory?: Category | null;
     AlgoPartners: Partner[];
     bridgePartners: Partner[];
     liquidityPartners: Partner[];
     PSPPartners: Partner[];
     trustedPlatforms: Partner[];
+    crmPartners: Partner[];
+    educationPartners: Partner[];
+    tradingPartners: Partner[];
     allBrokers: Partner[];
 }
 
-export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPartners,PSPPartners,trustedPlatforms,allBrokers }: CategoriesCardProps) {
+export default function CategoriesCard({
+    AlgoCategory,
+    bridgeCategory,
+    liquidityCategory,
+    PSPCategory,
+    trustedCategory,
+    crmCategory,
+    educationCategory,
+    tradingCategory,
+    AlgoPartners,
+    bridgePartners,
+    liquidityPartners,
+    PSPPartners,
+    trustedPlatforms,
+    crmPartners,
+    educationPartners,
+    tradingPartners,
+    allBrokers
+}: CategoriesCardProps) {
     return (
         <>
             <section className='py-100'>
@@ -44,18 +81,17 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                         <div className='bg-white rounded-2xl items-center border border-solid border-border-light500 py-[40px] px-10 grid grid-cols-[1fr_333px]'>
                             <div>
                                 <h2 className='text-2xl font-bold text-black100 mb-1.5 max-w-[351px]'>
-                                    Algorithmic Trading and Bot Providers
+                                    {AlgoCategory?.label || AlgoCategory?.name || 'Algorithmic Trading and Bot Providers'}
                                 </h2>
                                 <p className='text-base text-black700 mb-5 font-medium max-w-[351px]'>
-                                    A curated collection of the best retail Traders
-                                    and Technically Skilled Traders
+                                    {AlgoCategory?.description || 'A curated collection of the best retail Traders and Technically Skilled Traders'}
                                 </p>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                  <Link href="/categories/algorithmic-trading-and-bot-providers">
-                                    View Item
-                                    <div>
-                                        <MoveRight className='w-4 h-4' />
-                                    </div>
+                                    <Link href="/categories/algorithmic-trading-and-bot-providers">
+                                        View Item
+                                        <div>
+                                            <MoveRight className='w-4 h-4' />
+                                        </div>
                                     </Link>
                                 </Button>
                             </div>
@@ -97,7 +133,7 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                                     </svg>
 
                                     <div className='w-16 h-16 bg-white border border-solid border-border-lightgreen rounded-full absolute flex items-center justify-center z-10 shadow-[0_0_20px_rgba(168,221,21,0.15)] overflow-hidden'>
-                                        <Favicon src={AlgoPartners[0]?.logoUrl || AlgoPartners[0]?.logo} className='w-10 h-10 object-contain'  />
+                                        <Favicon src={AlgoPartners[0]?.logoUrl || AlgoPartners[0]?.logo} className='w-10 h-10 object-contain' />
                                     </div>
                                     <motion.div
                                         className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-white border border-solid border-border-lightgreen rounded-full flex items-center justify-center shadow-md z-20"
@@ -105,8 +141,8 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                                     >
                                         <div className="w-8 h-8 flex items-center justify-center">
-                                        <Favicon src={AlgoPartners[1]?.logoUrl || AlgoPartners[1]?.logo} className='w-10 h-10 object-contain'  />
-                                          
+                                            <Favicon src={AlgoPartners[1]?.logoUrl || AlgoPartners[1]?.logo} className='w-10 h-10 object-contain' />
+
                                         </div>
                                     </motion.div>
 
@@ -116,9 +152,9 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                                         animate={{ y: [0, 5, 0] }}
                                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
                                     >
-                                       <div className="w-8 h-8 flex items-center justify-center">
-                                        <Favicon src={AlgoPartners[2]?.logoUrl || AlgoPartners[2]?.logo} className='w-10 h-10 object-contain'  />
-                                          
+                                        <div className="w-8 h-8 flex items-center justify-center">
+                                            <Favicon src={AlgoPartners[2]?.logoUrl || AlgoPartners[2]?.logo} className='w-10 h-10 object-contain' />
+
                                         </div>
                                     </motion.div>
 
@@ -127,9 +163,9 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                                         animate={{ x: [0, -5, 0] }}
                                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                                     >
-                                         <div className="w-8 h-8 flex items-center justify-center">
-                                        <Favicon src={AlgoPartners[3]?.logoUrl || AlgoPartners[3]?.logo} className='w-10 h-10 object-contain'  />
-                                          
+                                        <div className="w-8 h-8 flex items-center justify-center">
+                                            <Favicon src={AlgoPartners[3]?.logoUrl || AlgoPartners[3]?.logo} className='w-10 h-10 object-contain' />
+
                                         </div>
                                     </motion.div>
                                     <motion.div
@@ -138,8 +174,8 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
                                     >
                                         <div className="w-8 h-8 flex items-center justify-center">
-                                        <Favicon src={AlgoPartners[4]?.logoUrl || AlgoPartners[4]?.logo} className='w-10 h-10 object-contain'  />
-                                          
+                                            <Favicon src={AlgoPartners[4]?.logoUrl || AlgoPartners[4]?.logo} className='w-10 h-10 object-contain' />
+
                                         </div>
                                     </motion.div>
                                 </div>
@@ -147,12 +183,10 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                         </div>
                         <div className='bg-white rounded-2xl items-center border border-solid border-border-light500 p-[30px] pb-5'>
                             <h2 className='text-2xl text-black100 font-bold mb-1.5'>
-                                Bridge and Plug in Partners Tools
+                                {bridgeCategory?.label || bridgeCategory?.name || 'Bridge and Plug in Partners Tools'}
                             </h2>
                             <p className='text-base text-black700 mb-5 font-medium max-w-[351px]'>
-                                A curated collection of bridge and plug-in
-                                partners to connect systems, automate
-                                workflows, and enhance functionality.
+                                {bridgeCategory?.description || 'A curated collection of bridge and plug-in partners to connect systems, automate workflows, and enhance functionality.'}
                             </p>
                             <div className='grid grid-cols-2 gap-x-4 gap-y-3'>
                                 {
@@ -170,36 +204,33 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                             </div>
                             <div className='flex items-center justify-center pt-4'>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                   <Link href="/categories/bridge-and-plug-in-partners">
-                                    View Item
-                                    <div>
-                                        <MoveRight className='w-4 h-4' />
-                                    </div>
+                                    <Link href={`/categories/${bridgeCategory?.slug || 'bridge-and-plug-in-partners'}`}>
+                                        View Item
+                                        <div>
+                                            <MoveRight className='w-4 h-4' />
+                                        </div>
                                     </Link>
                                 </Button>
                             </div>
                         </div>
                         <div className='bg-white relative rounded-2xl items-center border border-solid border-border-light500 p-[30px] pb-5'>
                             <h2 className='text-2xl text-black100 font-bold mb-1.5'>
-                                CRM and Back Office
-                                Software Tools
+                                {crmCategory?.label || crmCategory?.name || 'CRM and Back Office Software Tools'}
                             </h2>
                             <p className='text-base text-black700 mb-5 font-medium max-w-[351px]'>
-                                A curated collection of the best broker
-                                Operators and Fintech Teams
-
+                                {crmCategory?.description || 'A curated collection of the best broker Operators and Fintech Teams'}
                             </p>
                             <div>
                                 <img src={CrmIcon} alt="CrmIcon" className='block w-full h-full' />
                             </div>
                             <div className='flex items-center justify-center absolute bottom-5 left-1/2 -translate-x-1/2'>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                   <Link href="/categories/crm-and-back-office-software">
-                                   
-                                    View Item
-                                    <div>
-                                        <MoveRight className='w-4 h-4' />
-                                    </div>
+                                    <Link href="/categories/crm-and-back-office-software">
+
+                                        View Item
+                                        <div>
+                                            <MoveRight className='w-4 h-4' />
+                                        </div>
                                     </Link>
                                 </Button>
                             </div>
@@ -210,16 +241,15 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                             <div className='p-[30px] pb-2'>
                                 <div className='flex items-center gap-2'>
                                     <h2 className='text-2xl text-black100 font-bold mb-1.5'>
-                                        Forex Education and
-                                        Training Tools
+                                        {educationCategory?.label || educationCategory?.name || 'Forex Education and Training Tools'}
                                     </h2>
                                     <div className='w-9 min-w-9 min-h-9 h-9 cursor-pointer bg-black flex items-center justify-center rounded-full'>
-                                       <Link href="/categories/forex-education-and-training">
-                                        <MoveRight className='w-4 h-4 text-white' />
-                                       </Link>
+                                        <Link href="/categories/forex-education-and-training">
+                                            <MoveRight className='w-4 h-4 text-white' />
+                                        </Link>
                                     </div>
                                 </div>
-                                <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px]'>
+                                <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px] whitespace-pre-line'>
                                     A curated collection of top traders,
                                     companies, and mentors helping you
                                     learn forex trading.
@@ -287,13 +317,13 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                                 </div>
                                 <div >
                                     <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                   <Link href="/brokers">
-                                       
-                                        View Item
-                                        <div>
-                                            <MoveRight className='w-4 h-4' />
-                                        </div>
-                                    </Link>
+                                        <Link href="/brokers">
+
+                                            View Item
+                                            <div>
+                                                <MoveRight className='w-4 h-4' />
+                                            </div>
+                                        </Link>
                                     </Button>
                                 </div>
                             </div>
@@ -302,13 +332,10 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                             <div className='py-[30px] px-0'>
                                 <div className='px-[30px]'>
                                     <h2 className='text-2xl text-black100 font-bold mb-1.5'>
-                                        Liquidity Partners Tools
+                                        {liquidityCategory?.name || 'Liquidity Partners Tools'}
                                     </h2>
                                     <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px]'>
-                                        A curated collection of the best connect
-                                        with reliable liquidity partners to ensure
-                                        seamless trade execution and optimal
-                                        market depth.
+                                        {liquidityCategory?.description || 'A curated collection of the best connect with reliable liquidity partners to ensure seamless trade execution and optimal market depth.'}
                                     </p>
                                 </div>
                                 <div className='relative pt-3'>
@@ -322,7 +349,7 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                                         {
                                             liquidityPartners.map((partner) => {
                                                 return (
-                                                    <div className='rounded-lg p-3 border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_30px_0_rgba(0,0,0,0.10)]'>
+                                                    <div key={partner.id} className='rounded-lg p-3 border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_30px_0_rgba(0,0,0,0.10)]'>
                                                         <p className='text-base mb-3 font-semibold text-center text-grey-600'>
                                                             {partner.name}
                                                         </p>
@@ -339,13 +366,13 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                             </div>
                             <div className='px-[30px] flex justify-center pt-4'>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                   
-                                   <Link href="/categories/liquidity-partners">
-                                   
-                                    View Item
-                                    <div>
-                                        <MoveRight className='w-4 h-4' />
-                                    </div>
+
+                                    <Link href={`/categories/${liquidityCategory?.slug || 'liquidity-partners'}`}>
+
+                                        View Item
+                                        <div>
+                                            <MoveRight className='w-4 h-4' />
+                                        </div>
                                     </Link>
                                 </Button>
                             </div>
@@ -356,19 +383,16 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                             <div className='p-[30px] pb-2'>
                                 <div className='flex items-center justify-between gap-2'>
                                     <h2 className='text-2xl text-black100 font-bold mb-1.5'>
-                                        PSP Partners
+                                        {PSPCategory?.name || 'PSP Partners'}
                                     </h2>
                                     <div className='w-9 min-w-9 min-h-9 h-9 cursor-pointer bg-black flex items-center justify-center rounded-full'>
                                         <Link href="/categories/psp-partners">
-                                        <MoveRight className='w-4 h-4 text-white' />
+                                            <MoveRight className='w-4 h-4 text-white' />
                                         </Link>
                                     </div>
                                 </div>
                                 <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px]'>
-                                    A curated collection of the best integrate
-                                    with trusted PSP partners to enable secure,
-                                    fast, and seamless payment processing
-                                    for your platform.
+                                    {PSPCategory?.description || 'A curated collection of the best integrate with trusted PSP partners to enable secure, fast, and seamless payment processing for your platform.'}
                                 </p>
                                 <div className='flex justify-center gap-4 pt-6'>
                                     <div className="w-[70px] min-w-[70px] max-w-[70px] min-h-[70px] h-[70px] rounded-lg overflow-hidden flex items-center justify-center border border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]">
@@ -393,17 +417,14 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                         </div>
                         <div className='bg-white overflow-hidden rounded-2xl items-center border border-solid border-border-light500 p-[30px]'>
                             <h2 className='text-2xl text-black100 font-bold mb-1.5'>
-                                Top-Rated Forex Brokers & Trading Platforms Tools
+                                {trustedCategory?.name || 'Top-Rated Forex Brokers & Trading Platforms Tools'}
                             </h2>
                             <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px]'>
-                                A curated collection of the best browse
-                                verified forex brokers and trading platforms,
-                                compare spreads, regulation, and features
-                                to find the right fit for your trading goals.
+                                {trustedCategory?.description || 'A curated collection of the best browse verified forex brokers and trading platforms, compare spreads, regulation, and features to find the right fit for your trading goals.'}
                             </p>
                             <div className='grid grid-cols-4 gap-4'>
                                 {
-                                   trustedPlatforms.map((partner) => {
+                                    trustedPlatforms.map((partner) => {
                                         return (
                                             <div key={partner.id} className='border  rounded-lg flex items-center justify-center w-full h-[64px] border-[rgba(26,26,26,0.10)] bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.05)]'>
                                                 <img src={partner.logoUrl || partner.logo} alt={partner.name} className='block max-w-[35px] object-contain' />
@@ -414,12 +435,12 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                             </div>
                             <div className='flex items-center justify-center pt-4'>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                   <Link href="/categories/trusted-trading-platforms">
-                                   
-                                    View Item
-                                    <div>
-                                        <MoveRight className='w-4 h-4' />
-                                    </div>
+                                    <Link href="/categories/trusted-trading-platforms">
+
+                                        View Item
+                                        <div>
+                                            <MoveRight className='w-4 h-4' />
+                                        </div>
                                     </Link>
                                 </Button>
                             </div>
@@ -428,17 +449,17 @@ export default function CategoriesCard({ AlgoPartners,bridgePartners,liquidityPa
                             <div className="grid h-full grid-cols-[1fr_339px] gap-5 items-center">
                                 <div>
                                     <h2 className='text-2xl text-black100 font-bold mb-1.5'>
-                                        Trading Platform Partners Tools
+                                        {tradingCategory?.name || 'Trading Platform Partners Tools'}
                                     </h2>
                                     <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px]'>
-                                        A curated collection of the best connect with trusted trading platform partners to access advanced tools and seamless trading experiences.
+                                        {tradingCategory?.description || 'A curated collection of the best connect with trusted trading platform partners to access advanced tools and seamless trading experiences.'}
                                     </p>
                                     <Button variant='primary' size='md' className='flex items-center gap-2'>
                                         <Link href="/categories/trading-platform-partners">
-                                        View Item
-                                        <div>
-                                            <MoveRight className='w-4 h-4' />
-                                        </div>
+                                            View Item
+                                            <div>
+                                                <MoveRight className='w-4 h-4' />
+                                            </div>
                                         </Link>
                                     </Button>
                                 </div>

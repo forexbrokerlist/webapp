@@ -12,7 +12,7 @@ import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
 import CategoriesHero from "./categories-hero"
 import CategoriesCard, { Partner } from "./categories-card"
-import { getAlgoPartners, getBridgePartners, getLiquidityPartners,getPspPartners,getTradingPlatformPartners, getTrustedPlatforms, getAllPartners} from "~/server/web/brokers/queries"
+import { getAlgoPartners, getBridgePartners, getLiquidityPartners,getPspPartners,getTradingPlatformPartners, getTrustedPlatforms, getAllPartners, getCrmPlatforms, getForexEducationPartners} from "~/server/web/brokers/queries"
 
 // I18n page namespace
 const namespace = "pages.categories"
@@ -45,22 +45,36 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 export default async function () {
   const { metadata, breadcrumbs, structuredData } = await getData()
-  const { brokers: AlgoPartners } = await getAlgoPartners(5)
-  const { brokers: bridgePartners } = await getBridgePartners(6)
-  const {brokers:liquidityPartners} = await getLiquidityPartners(2)
-  const {brokers:PSPPartners} = await getPspPartners(5)
-  const {brokers:trustedPlatforms} = await getTrustedPlatforms(4)
+  const { category:Algo ,brokers: AlgoPartners } = await getAlgoPartners(5)
+  const { category:Bridge ,brokers: bridgePartners } = await getBridgePartners(6)
+  const {category:Liquidity ,brokers:liquidityPartners} = await getLiquidityPartners(2)
+  const {category:PSP ,brokers:PSPPartners} = await getPspPartners(5)
+  const {category:Trusted ,brokers:trustedPlatforms} = await getTrustedPlatforms(4)
+  const {category: CRM, brokers: crmPartners} = await getCrmPlatforms(4)
+  const {category: Education, brokers: educationPartners} = await getForexEducationPartners(3)
+  const {category: Trading, brokers: tradingPartners} = await getTradingPlatformPartners(5)
   const allBrokers = await getAllPartners(40)
   
   return (
     <>
       <CategoriesHero />
       <CategoriesCard  
+        AlgoCategory={Algo}
+        bridgeCategory={Bridge}
+        liquidityCategory={Liquidity}
+        PSPCategory={PSP}
+        trustedCategory={Trusted}
+        crmCategory={CRM}
+        educationCategory={Education}
+        tradingCategory={Trading}
         AlgoPartners={AlgoPartners} 
         bridgePartners={bridgePartners} 
         liquidityPartners={liquidityPartners} 
         PSPPartners={PSPPartners} 
         trustedPlatforms={trustedPlatforms} 
+        crmPartners={crmPartners}
+        educationPartners={educationPartners}
+        tradingPartners={tradingPartners}
         allBrokers={allBrokers}
       />
       {/* <Breadcrumbs items={breadcrumbs} /> */}
