@@ -55,8 +55,8 @@ const getData = cache(async ({ params }: Props) => {
 
   const t = await getTranslations()
   const url = `/brokers/${broker.slug}`
-  const title = `${broker.broker_name || "Unknown Broker"} Review`
-  const description = broker.subtitle || broker.description || broker.pros || ""
+  const title = broker.seo_title || `${broker.broker_name || "Unknown Broker"} Review`
+  const description = broker.seo_meta_description || broker.subtitle || broker.description || broker.pros || ""
   const data = getPageData(url, title, description, {
     breadcrumbs: [
       { url: "/", title: t("navigation.tools") },
@@ -83,7 +83,11 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
     url,
     title: metadata.title,
     description: metadata.description,
-    metadata
+    metadata: {
+      ...metadata,
+      title: broker.seo_title || metadata.title,
+      description: broker.seo_meta_description || metadata.description,
+    }
   })
 }
 
@@ -131,9 +135,16 @@ export default async function (props: Props) {
                 </div>
 
                 {broker.overall_rating && (
-                  <Badge variant="primary" size="lg" className="w-fit text-white">
-                    Rating: {broker.overall_rating} / 5
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="primary" size="lg" className="w-fit text-white">
+                      Rating: {broker.overall_rating} / 5
+                    </Badge>
+                    {broker.beginner_friendly && (
+                      <Badge variant="success" size="lg" className="w-fit">
+                        Beginner Friendly
+                      </Badge>
+                    )}
+                  </div>
                 )}
               </div>
 
@@ -530,6 +541,17 @@ export default async function (props: Props) {
                 </Card>
               )}
             </div>
+          )}
+
+          {broker.review_article && (
+            <Card className="mt-8 overflow-hidden shadow-sm">
+              <CardHeader className="bg-muted/30 py-4 px-6 border-b">
+                <H2 as="h3" className="mb-0 text-xl font-bold">Comprehensive Review</H2>
+              </CardHeader>
+              <div className="p-6 md:p-8 prose prose-slate dark:prose-invert max-w-none">
+                <Markdown code={broker.review_article} />
+              </div>
+            </Card>
           )}
 
           <Stack className="w-full md:sticky md:bottom-2 md:z-10 mt-8">

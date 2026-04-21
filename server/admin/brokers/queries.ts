@@ -175,6 +175,10 @@ export const findBrokerById = async (id: number) => {
       features: true,
       socialProof: true,
       highlightedPoint: true,
+      beginner_friendly: true,
+      review_article: true,
+      seo_title: true,
+      seo_meta_description: true,
     },
   });
 };

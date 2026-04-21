@@ -404,6 +404,14 @@ export function ToolTable() {
         },
       ],
     },
+    {
+      id: "beginner_friendly",
+      label: "Beginner Friendly",
+      options: [
+        { label: "Yes", value: "true" },
+        { label: "No", value: "false" },
+      ],
+    },
   ]
 
   const { table } = useDataTable({

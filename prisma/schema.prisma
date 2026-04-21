@@ -361,6 +361,10 @@ model Brokers {
   demoAccount                       Boolean? 
   copyTrading                       Boolean? 
   accountTypes                      String[] 
+  beginner_friendly                 Boolean? 
+  review_article                    String? @db.Text
+  seo_title                         String? 
+  seo_meta_description                   String?
   // Admin & Submission fields
   submitterName  String?
   submitterEmail String?

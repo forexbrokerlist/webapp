@@ -139,6 +139,10 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       demoAccount: broker?.demoAccount ?? false,
       copyTrading: broker?.copyTrading ?? false,
       accountTypes: broker?.accountTypes ?? [],
+      beginner_friendly: broker?.beginner_friendly ?? false,
+      review_article: broker?.review_article ?? "",
+      seo_title: broker?.seo_title ?? "",
+      seo_meta_description: broker?.seo_meta_description ?? "",
     },
   })
 
@@ -736,6 +740,58 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             <Field data-invalid={fieldState.invalid} className="col-span-full">
               <FieldLabel htmlFor={field.name}>Social Proof</FieldLabel>
               <TextArea id={field.name} {...field} value={field.value || ''} placeholder="Enter social proof (testimonials, user count, etc.)" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="beginner_friendly"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Beginner Friendly</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="review_article"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>Review Article</FieldLabel>
+              <TextArea id={field.name} {...field} value={field.value || ''} placeholder="Add a detailed review or article content..." />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="seo_title"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>SEO Title</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="Enter SEO optimized title" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="seo_meta_description"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>SEO Meta Description</FieldLabel>
+              <TextArea id={field.name} {...field} value={field.value || ''} placeholder="Enter meta description for search engines" />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
