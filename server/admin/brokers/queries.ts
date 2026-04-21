@@ -157,6 +157,13 @@ export const findBrokerById = async (id: number) => {
       screenshotUrl: true,
       bannerUrl: true,
       logoUrl: true,
+      maxLeverage: true,
+      totalInstruments: true,
+      availableInIndia: true,
+      islamicAccount: true,
+      demoAccount: true,
+      copyTrading: true,
+      accountTypes: true,
 
       typeId: true,
       isSponsor: true,

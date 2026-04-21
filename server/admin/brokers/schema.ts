@@ -86,6 +86,13 @@ export const brokerSchema = z.object({
   features: z.array(z.string()).optional(),
   socialProof: z.string().optional(),
   highlightedPoint: z.string().optional(),
+  maxLeverage: z.string().optional(),
+  totalInstruments: z.string().optional(),
+  availableInIndia: z.boolean().default(false),
+  islamicAccount: z.boolean().default(false),
+  demoAccount: z.boolean().default(false),
+  copyTrading: z.boolean().default(false),
+  accountTypes: z.array(z.string()).optional(),
 });
 
 export type BrokerSchema = z.infer<typeof brokerSchema>;

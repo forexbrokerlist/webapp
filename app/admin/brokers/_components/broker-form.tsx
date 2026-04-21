@@ -132,6 +132,13 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       features: broker?.features ?? [],
       socialProof: broker?.socialProof ?? "",
       highlightedPoint: broker?.highlightedPoint ?? "",
+      maxLeverage: broker?.maxLeverage ?? "",
+      totalInstruments: broker?.totalInstruments ?? "",
+      availableInIndia: broker?.availableInIndia ?? false,
+      islamicAccount: broker?.islamicAccount ?? false,
+      demoAccount: broker?.demoAccount ?? false,
+      copyTrading: broker?.copyTrading ?? false,
+      accountTypes: broker?.accountTypes ?? [],
     },
   })
 
@@ -326,6 +333,86 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           render={({ field }) => (
             <Field>
               <FieldLabel htmlFor={field.name}>Main Sponsor</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="availableInIndia"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Available In India</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="islamicAccount"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Islamic Account</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="demoAccount"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Demo Account</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="copyTrading"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Copy Trading</FieldLabel>
               <div className="flex items-center gap-3">
                 <Switch
                   id={field.name}
@@ -586,6 +673,8 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           { name: "average_trading_cost_gold", label: "Avg Cost (Gold)" },
           { name: "average_trading_cost_bitcoin", label: "Avg Cost (Bitcoin)" },
           { name: "average_trading_cost_wti_crude_oil", label: "Avg Cost (WTI Crude Oil)" },
+          { name: "maxLeverage", label: "Max Leverage" },
+          { name: "totalInstruments", label: "Total Instruments" },
         ] as const).map((f) => (
           <Controller
             key={f.name}
@@ -627,6 +716,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
         />
 
         <FeaturesField control={form.control} register={form.register} />
+        <AccountTypesField control={form.control} register={form.register} />
 
         <Controller
           control={form.control}
@@ -772,6 +862,49 @@ function FeaturesField({ control, register }: { control: any, register: any }) {
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Feature
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function AccountTypesField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "accountTypes",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Account Types</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`accountTypes.${index}`)}
+              placeholder="Enter account type"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Account Type
         </Button>
       </Stack>
     </div>

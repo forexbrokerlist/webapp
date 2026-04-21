@@ -354,6 +354,13 @@ model Brokers {
   bookmarks                          Bookmark[]
   typeId                            String?
   type                              Type?      @relation(fields: [typeId], references: [id])
+  maxLeverage                       String? 
+  totalInstruments                  String? 
+  availableInIndia                  Boolean?   
+  islamicAccount                    Boolean? 
+  demoAccount                       Boolean? 
+  copyTrading                       Boolean? 
+  accountTypes                      String[] 
   // Admin & Submission fields
   submitterName  String?
   submitterEmail String?
