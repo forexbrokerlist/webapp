@@ -87,37 +87,17 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
             <NavLink href="/" exact className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>
               Home
             </NavLink>
-            <DropdownMenu>
-              <NavLink
-                className="flex items-center gap-1 py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-[state=open]:bg-primary data-active:bg-primary transition-all duration-300"
-                isPadded={false}
-                asChild
-              >
-                <DropdownMenuTrigger>{t("navigation.browse")} <ChevronDownIcon className="size-4 opacity-75 group-data-[state=open]:-rotate-180 transition-transform" /></DropdownMenuTrigger>
-              </NavLink>
-
-              <DropdownMenuContent align="start">
-                {/* <DropdownMenuItem asChild>
-                  <NavLink href="/?sort=publishedAt.desc" prefix={<CalendarDaysIcon />}>
-                    {t("navigation.latest_tools")}
-                  </NavLink>
-                </DropdownMenuItem> */}
-                <DropdownMenuItem asChild>
-                  <NavLink href="/categories" prefix={<GalleryHorizontalEndIcon />}>
-                    {t("navigation.categories")}
-                  </NavLink>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <NavLink href="/tags" prefix={<TagIcon />}>
-                    {t("navigation.tags")}
-                  </NavLink>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <NavLink href="/categories" exact className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>
+              Browse
+            </NavLink>
+       
 
 
 
-            <DropdownMenu>
+            
+
+            <NavLink href="/brokers" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.tools")}</NavLink>
+           <DropdownMenu>
               <NavLink
                 className="flex items-center gap-1 py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-[state=open]:bg-primary data-active:bg-primary transition-all duration-300"
                 isPadded={false}
@@ -149,8 +129,6 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-
-            <NavLink href="/brokers" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.tools")}</NavLink>
             <NavLink href="/about" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.about")}</NavLink>
             <NavLink href="/contact" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.contact_us")}</NavLink>
             {adsConfig.enabled && <NavLink href="/advertise" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.advertise")}</NavLink>}

@@ -440,11 +440,9 @@ export function FxGuruLanding() {
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    if (!isPending && !session) router.push("/auth/login")
-  }, [session, isPending, router])
+  // Redirect removed for guest access
 
-  if (!session) return null
+  // if (!session) return null
 
   const handleFile = (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -492,7 +490,7 @@ export function FxGuruLanding() {
 
   const handleSend = async () => {
     if (!session) {
-      router.push("/auth/login")
+      router.push("/auth/login?next=/fx-guru")
       return
     }
     if ((!inputValue.trim() && !selectedFile) || isLoading) return
@@ -724,9 +722,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-  useEffect(() => {
-    if (!isPending && !session) router.push("/auth/login")
-  }, [session, isPending, router])
+  // Redirect removed for guest access
 
   useEffect(() => {
     if (session && chatId) {
@@ -806,7 +802,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages, isLoading])
 
-  if (!session) return null
+  // Session check removed to allow guest viewing
 
   const handleFile = (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -854,7 +850,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
 
   const handleSend = async () => {
     if (!session) {
-      router.push("/auth/login")
+      router.push("/auth/login?next=/fx-guru")
       return
     }
     if ((!inputValue.trim() && !selectedFile) || isLoading) return

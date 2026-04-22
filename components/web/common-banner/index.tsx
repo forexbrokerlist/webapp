@@ -2,7 +2,7 @@ import React from 'react';
 import { Play } from 'lucide-react';
 
 interface CommonBannerProps {
-    highlightedText: string;
+    highlightedText?: string | null;
     title: string;
     description: string;
     image: string;
