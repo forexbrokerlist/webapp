@@ -68,12 +68,7 @@ function Dashboard() {
   const lastCapture2 = useRef(Date.now());
   console.log("capturedImagess", capturedImage)
 
-  // Handle authentication redirect
-  useEffect(() => {
-    if (!isPending && !session) {
-      router.push("/auth/login");
-    }
-  }, [session, isPending, router]);
+  // Handle authentication redirect removed to allow guest access
 
   const startScreenShare = useCallback(async () => {
     try {
@@ -292,16 +287,35 @@ function Dashboard() {
   }, [stream]);
 
   const toggleScreenShare = useCallback(() => {
+    if (!session) {
+      router.push("/auth/login?next=/trade-snap");
+      return;
+    }
     if (isSharing) {
       stopScreenShare();
     } else {
       startScreenShare();
     }
-  }, [isSharing, startScreenShare, stopScreenShare]);
+  }, [isSharing, startScreenShare, stopScreenShare, session, router]);
 
 
+
+  const stopScreenShare2 = useCallback(() => {
+    if (stream2) {
+      stream2.getTracks().forEach(track => track.stop());
+      setStream2(null);
+    }
+    if (videoRef2.current) {
+      videoRef2.current.srcObject = null;
+    }
+    setIsSharing2(false);
+  }, [stream2]);
 
   const startScreenShare2 = useCallback(async () => {
+    if (!session) {
+      router.push("/auth/login?next=/trade-snap");
+      return;
+    }
     try {
       setError(null);
       if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
@@ -331,18 +345,7 @@ function Dashboard() {
       console.error('Error starting screen share 2:', err);
       setError(err instanceof Error ? err.message : 'Failed to start screen sharing 2');
     }
-  }, []);
-
-  const stopScreenShare2 = useCallback(() => {
-    if (stream2) {
-      stream2.getTracks().forEach(track => track.stop());
-      setStream2(null);
-    }
-    if (videoRef2.current) {
-      videoRef2.current.srcObject = null;
-    }
-    setIsSharing2(false);
-  }, [stream2]);
+  }, [session, router, stopScreenShare2]);
 
   // Effect to handle video stream updates for stream2
   useEffect(() => {
@@ -987,6 +990,10 @@ function Dashboard() {
               >
                 <motion.button
                   onClick={() => {
+                    if (!session) {
+                      router.push("/auth/login?next=/trade-snap");
+                      return;
+                    }
                     setSelectedAnalysis(trade);
                     setIsModalOpen(true);
                   }}
@@ -1049,8 +1056,8 @@ function Dashboard() {
     }
   );
 
-  // Return loading state while checking authentication
-  if (isPending || !session) {
+  // Return loading state only while checking initial session status
+  if (isPending) {
     return <div>Loading...</div>;
   }
 

@@ -11,11 +11,6 @@ import { getServerSession } from "~/lib/auth"
 export default async function AppLayout({ children }: PropsWithChildren) {
   const session = await getServerSession()
 
-  if (!session) {
-    // If not logged in, redirect to login page with callback to current path
-    redirect("/auth/login")
-  }
-
   return (
     <QueryProvider>
       <div className="bg-[#F0F2EC]">

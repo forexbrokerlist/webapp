@@ -72,11 +72,7 @@ export function DeepScanChat() {
       setIsSidebarOpen(true)
     }
   }, [])
-useEffect(() => {
-    if (!isPending && !session) {
-      router.push("/auth/login")
-    }
-  }, [session, isPending, router])
+  // Auto-redirect removed to allow guest access
   const [activeScan, setActiveScan] = useState<ScanItem | null>(null)
   const [inputValue, setInputValue] = useState("")
   const [selectedModel, setSelectedModel] = useState(Model_List[0].Value)
@@ -176,6 +172,10 @@ useEffect(() => {
   }, [tasks, activeScan])
 
   const handleSend = (queryOverride?: string) => {
+    if (!session) {
+      router.push(`/auth/login?next=/deep-scan`);
+      return;
+    }
     const query = queryOverride || inputValue
     if (!query.trim()) return
 
