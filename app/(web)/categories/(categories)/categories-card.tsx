@@ -243,16 +243,14 @@ export default function CategoriesCard({
                                     <h2 className='text-2xl text-black100 font-bold mb-1.5'>
                                         {educationCategory?.label || educationCategory?.name || 'Forex Education and Training Tools'}
                                     </h2>
-                                    <Link 
-                                        href="/categories/forex-education-and-training"
-                                        className='w-9 min-w-9 min-h-9 h-9 cursor-pointer bg-black100 hover:bg-primary border border-solid border-black100 hover:border-primary flex items-center justify-center rounded-full transition-all duration-300 group'
-                                    >
-                                        <MoveRight className='w-4 h-4 text-white group-hover:text-black100 transition-colors duration-300' />
-                                    </Link>
+                                    <div className='w-9 min-w-9 min-h-9 h-9 cursor-pointer bg-black flex items-center justify-center rounded-full'>
+                                        <Link href="/categories/forex-education-and-training">
+                                            <MoveRight className='w-4 h-4 text-white' />
+                                        </Link>
+                                    </div>
                                 </div>
                                 <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px] whitespace-pre-line'>
-                                  {educationCategory?.description?.slice(0, 150)}
-                                  {(educationCategory?.description?.length ?? 0) > 150 && "..."}
+                                    {educationCategory?.description?.slice(0, 150)}  ...
                                 </p>
                             </div>
                             <div className='rounded-2xl h-[210px] border-[1.2px] border-[rgba(26,26,26,0.05)] bg-white backdrop-blur-[5px]'>
@@ -364,15 +362,17 @@ export default function CategoriesCard({
                                     </div>
                                 </div>
                             </div>
-                            <div className='px-[30px] flex justify-center pt-4 relative z-20'>
-                                <Link href={`/categories/${liquidityCategory?.slug || 'liquidity-partners'}`} passHref legacyBehavior>
-                                    <Button variant='primary' size='md' className='flex items-center gap-2 relative z-20'>
+                            <div className='px-[30px] flex justify-center pt-4'>
+                                <Button variant='primary' size='md' className='flex items-center gap-2 z-20'>
+
+                                    <Link href="/categories/liquidity-partners">
+
                                         View Item
                                         <div>
                                             <MoveRight className='w-4 h-4' />
                                         </div>
-                                    </Button>
-                                </Link>
+                                    </Link>
+                                </Button>
                             </div>
                         </div>
                     </div>
@@ -383,12 +383,11 @@ export default function CategoriesCard({
                                     <h2 className='text-2xl text-black100 font-bold mb-1.5'>
                                         {PSPCategory?.name || 'PSP Partners'}
                                     </h2>
-                                    <Link 
-                                        href="/categories/psp-partners"
-                                        className='w-9 min-w-9 min-h-9 h-9 cursor-pointer bg-black100 hover:bg-primary border border-solid border-black100 hover:border-primary flex items-center justify-center rounded-full transition-all duration-300 group'
-                                    >
-                                        <MoveRight className='w-4 h-4 text-white group-hover:text-black100 transition-colors duration-300' />
-                                    </Link>
+                                    <div className='w-9 min-w-9 min-h-9 h-9 cursor-pointer bg-black flex items-center justify-center rounded-full'>
+                                        <Link href="/categories/psp-partners">
+                                            <MoveRight className='w-4 h-4 text-white' />
+                                        </Link>
+                                    </div>
                                 </div>
                                 <p className='text-base pt-1.5 text-black700 mb-5 font-medium max-w-[351px]'>
                                     {PSPCategory?.description || 'A curated collection of the best integrate with trusted PSP partners to enable secure, fast, and seamless payment processing for your platform.'}
