@@ -20,6 +20,9 @@ type BrokerCardProps = ComponentProps<typeof Card> & {
 // Category-specific routing mapping
 const getBrokerRoute = (slug: string, categorySlug?: string, categories?: { slug: string }[]): string => {
   const effectiveCategorySlug = categorySlug || categories?.[0]?.slug;
+  if (effectiveCategorySlug === 'trusted-trading-platforms'||effectiveCategorySlug === 'forex-brokers') {
+    return `/broker/${slug}`;
+  }
   return effectiveCategorySlug ? `/${effectiveCategorySlug}/${slug}` : `/brokers/${slug}`;
 };
 
