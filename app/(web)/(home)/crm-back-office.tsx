@@ -15,13 +15,14 @@ interface Solution {
     title: string;
     logo: string;
     // socialProof: string | null;
-    slug:string; 
+    slug: string;
 }
 
 interface CrmBackOfficeProps {
     solutions: Solution[];
     title: string;
     description: string;
+    category?: any;
 }
 
 const CARD_STYLES = [
@@ -57,15 +58,15 @@ const backgroundImages = [
         url: "/assets/images/GreenVec.png"
     },
     {
-        id:3,
+        id: 3,
         url: "/assets/images/YellowVec.png"
     },
     {
-        id:4,
+        id: 4,
         url: "/assets/images/PinkVec.png"
     }
 ]
-export default function CrmBackOffice({ solutions, title, description }: CrmBackOfficeProps) {
+export default function CrmBackOffice({ solutions, title, description, category }: CrmBackOfficeProps) {
     return (
         <div className='pb-100 max-mobile:pb-16'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
@@ -106,7 +107,7 @@ export default function CrmBackOffice({ solutions, title, description }: CrmBack
                     </motion.div>
                     <div>
                         <Button variant='primary' size='md' className='flex items-center gap-2' asChild>
-                            <Link href="/categories/crm-and-back-office-software">
+                            <Link href={`/categories/${category?.slug}`}>
                                 Explore Software
                                 <div>
                                     <MoveRight />
@@ -159,7 +160,7 @@ export default function CrmBackOffice({ solutions, title, description }: CrmBack
                                     </div>
 
                                     <Button variant='primary' size='md' className={` border-none py-2.5 bg-white text-black100  flex justify-between items-center group `} asChild>
-                                        <Link href={`/crm/${solution.slug}`}>
+                                        <Link href={`/${category?.slug || 'forex-crm-providers'}/${solution.slug}`}>
                                             Explore Software
                                             <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
                                                 <MoveRight className="text-white w-4 h-4" />

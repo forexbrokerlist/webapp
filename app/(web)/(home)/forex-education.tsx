@@ -24,7 +24,7 @@ interface Partner {
     slug: string | null
 }
 
-export default function ForexEducation({ partners = [], title, description }: { partners?: Partner[], title: string, description: string }) {
+export default function ForexEducation({ partners = [], category, title, description }: { partners?: Partner[], category?: any, title: string, description: string }) {
     console.log("partners", partners)
     const SLIDES = partners.map(p => ({
         id: p.id,
@@ -92,7 +92,7 @@ export default function ForexEducation({ partners = [], title, description }: { 
                             }}
                         >
                             <Button variant='primary' size='md' className='border-none py-2.5 px-6 rounded-full bg-white text-black100' asChild>
-                                <Link href="/categories/forex-education-and-training">
+                                <Link href={`/categories/${category?.slug || "forex-education-and-training"}`}>
                                     Start Learning
                                     <div>
                                         <MoveRight className='text-black100' />
@@ -170,7 +170,7 @@ export default function ForexEducation({ partners = [], title, description }: { 
                                             </div>
 
                                             <Button variant='primary' size='md' className={`border-none w-full justify-center text-sm py-2 bg-white text-black100 flex items-center group`} asChild>
-                                                <Link href={slide.slug ? `/forex-education/${slide.slug}` : slide.link}>
+                                                <Link href={slide.slug ? `/${category?.slug || "forex-education-and-training"}/${slide.slug}` : slide.link}>
                                                     Start Learning
                                                     <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100`}>
                                                         <MoveRight className="text-white w-4 h-4" />

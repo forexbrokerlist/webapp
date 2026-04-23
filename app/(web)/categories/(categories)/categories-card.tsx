@@ -87,7 +87,7 @@ export default function CategoriesCard({
                                     {AlgoCategory?.description || 'A curated collection of the best retail Traders and Technically Skilled Traders'}
                                 </p>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                    <Link href="/categories/algorithmic-trading-and-bot-providers">
+                                    <Link href={`/categories/${AlgoCategory?.slug || 'algo-trading'}`}>
                                         View Item
                                         <div>
                                             <MoveRight className='w-4 h-4' />
@@ -225,7 +225,7 @@ export default function CategoriesCard({
                             </div>
                             <div className='flex items-center justify-center absolute bottom-5 left-1/2 -translate-x-1/2'>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                    <Link href="/categories/crm-and-back-office-software">
+                                    <Link href={`/categories/${crmCategory?.slug || 'forex-crm-providers'}`}>
 
                                         View Item
                                         <div>
@@ -244,7 +244,7 @@ export default function CategoriesCard({
                                         {educationCategory?.label || educationCategory?.name || 'Forex Education and Training Tools'}
                                     </h2>
                                     <div className='w-9 min-w-9 min-h-9 h-9 cursor-pointer bg-black flex items-center justify-center rounded-full'>
-                                        <Link href="/categories/forex-education-and-training">
+                                        <Link href={`/categories/${educationCategory?.slug || 'forex-trading-courses'}`}>
                                             <MoveRight className='w-4 h-4 text-white' />
                                         </Link>
                                     </div>
@@ -365,7 +365,7 @@ export default function CategoriesCard({
                             <div className='px-[30px] flex justify-center pt-4'>
                                 <Button variant='primary' size='md' className='flex items-center gap-2 z-20'>
 
-                                    <Link href="/categories/liquidity-partners">
+                                    <Link href={`/categories/${liquidityCategory?.slug || 'liquidity-providers'}`}>
 
                                         View Item
                                         <div>
@@ -384,7 +384,7 @@ export default function CategoriesCard({
                                         {PSPCategory?.name || 'PSP Partners'}
                                     </h2>
                                     <div className='w-9 min-w-9 min-h-9 h-9 cursor-pointer bg-black flex items-center justify-center rounded-full'>
-                                        <Link href="/categories/psp-partners">
+                                        <Link href={`/categories/${PSPCategory?.slug || 'forex-psp-partners'}`}>
                                             <MoveRight className='w-4 h-4 text-white' />
                                         </Link>
                                     </div>
@@ -433,7 +433,7 @@ export default function CategoriesCard({
                             </div>
                             <div className='flex items-center justify-center pt-4'>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                    <Link href="/categories/trusted-trading-platforms">
+                                    <Link href={`/categories/${trustedCategory?.slug || 'trusted-trading-platforms'}`}>
 
                                         View Item
                                         <div>
@@ -453,7 +453,7 @@ export default function CategoriesCard({
                                         {tradingCategory?.description || 'A curated collection of the best connect with trusted trading platform partners to access advanced tools and seamless trading experiences.'}
                                     </p>
                                     <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                        <Link href="/categories/trading-platform-partners">
+                                        <Link href={`/categories/${tradingCategory?.slug || 'forex-trading-platform'}`}>
                                             View Item
                                             <div>
                                                 <MoveRight className='w-4 h-4' />

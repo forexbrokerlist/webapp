@@ -17,16 +17,17 @@ interface Partner {
     features: string[];
     highlightedPoint: string | null;
     socialProof: string | null;
-    slug:string|null 
+    slug: string | null
 }
 
 interface BridgeAndPlugProps {
     partners?: Partner[];
     title: string;
     description: string;
+    category?: any;
 }
 
-export default function BidgeAndPlug({ partners = [], title, description }: BridgeAndPlugProps) {
+export default function BidgeAndPlug({ partners = [], title, description, category }: BridgeAndPlugProps) {
     return (
         <div className='py-100 max-mobile:py-16'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
@@ -59,12 +60,12 @@ export default function BidgeAndPlug({ partners = [], title, description }: Brid
                         transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
                     >
                         <Button variant='primary' size='md' className='flex items-center gap-2'>
-                            <Link href="/categories/bridge-and-plug-in-partners">
+                            <Link href={`/categories/${category?.slug || 'forex-bridge-providers'}`}>
                                 Explore All
-                           
-                            <div>
-                                <MoveRight />
-                            </div>
+
+                                <div>
+                                    <MoveRight />
+                                </div>
                             </Link>
                         </Button>
                     </motion.div>
@@ -126,14 +127,14 @@ export default function BidgeAndPlug({ partners = [], title, description }: Brid
                                     </div>
                                     <div className='pt-5'>
                                         <Button size="md" variant="primary" className="px-5 w-full justify-center gap-2.5 py-2 group">
-                                            <Link href={`/forex-bridge/${partner.slug}`}>
-                                            View Integration
-                                            <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                    <path d="M12.0254 4.94141L17.0837 9.99974L12.0254 15.0581" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
-                                                    <path d="M2.91699 10H16.942" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                            </div>
+                                            <Link href={`/${category?.slug}/${partner.slug}`}>
+                                                View Integration
+                                                <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                        <path d="M12.0254 4.94141L17.0837 9.99974L12.0254 15.0581" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+                                                        <path d="M2.91699 10H16.942" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+                                                    </svg>
+                                                </div>
                                             </Link>
                                         </Button>
                                     </div>

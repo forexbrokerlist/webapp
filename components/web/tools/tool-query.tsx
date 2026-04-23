@@ -40,7 +40,7 @@ const ToolQuery = async ({
   const mappedTools = brokers.map((broker) => ({
     id: broker.id.toString(),
     name: broker.broker_name || "Unknown Broker",
-    slug: `brokers/${broker.slug}`,
+    slug: `${(broker as any).categories?.[0]?.slug || "brokers"}/${broker.slug}`,
     websiteUrl: broker.url || "",
     affiliateUrl: null,
     faviconUrl: null, // Use default

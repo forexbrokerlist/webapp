@@ -46,7 +46,7 @@ export const getTrustedPlatforms = async (limit: number = 7) => {
  * Fetches CRM and back office software.
  */
 export const getCrmPlatforms = async (limit: number = 4) => {
-  const category = await getCategoryWithBrokers("crm-and-back-office-software", limit)
+  const category = await getCategoryWithBrokers("forex-crm-providers", limit)
   const brokers = await Promise.all(
     (category?.brokers || []).map(async (broker: any) => ({
       id: broker.id,
@@ -67,7 +67,7 @@ export const getCrmPlatforms = async (limit: number = 4) => {
  * Fetches bridge and plug-in partners.
  */
 export const getBridgePartners = async (limit: number = 6) => {
-  const category = await getCategoryWithBrokers("bridge-and-plug-in-partners", limit)
+  const category = await getCategoryWithBrokers("forex-bridge-providers", limit)
   const brokers = await Promise.all(
     (category?.brokers || []).map(async (broker) => ({
       id: broker.id.toString(),
@@ -90,7 +90,7 @@ export const getBridgePartners = async (limit: number = 6) => {
  * Fetches liquidity partners.
  */
 export const getLiquidityPartners = async (limit: number = 2) => {
-  const category = await getCategoryWithBrokers("liquidity-partners", limit)
+  const category = await getCategoryWithBrokers("liquidity-providers", limit)
   const brokers = await Promise.all(
     (category?.brokers || []).map(async (broker) => ({
       id: broker.id.toString(),
@@ -113,7 +113,7 @@ export const getLiquidityPartners = async (limit: number = 2) => {
  * Fetches PSP partners.
  */
 export const getPspPartners = async (limit: number = 12) => {
-  const category = await getCategoryWithBrokers("psp-partners", limit)
+  const category = await getCategoryWithBrokers("forex-psp-partners", limit)
   const brokers = await Promise.all(
     (category?.brokers || []).map(async (broker) => ({
       id: broker.id.toString(),
@@ -136,7 +136,7 @@ export const getPspPartners = async (limit: number = 12) => {
  * Fetches trading platform partners.
  */
 export const getTradingPlatformPartners = async (limit: number = 5) => {
-  const category = await getCategoryWithBrokers("trading-platform-partners", limit)
+  const category = await getCategoryWithBrokers("forex-trading-platform", limit)
   const brokers = await Promise.all(
     (category?.brokers || []).map(async (broker) => ({
       id: broker.id.toString(),
@@ -159,7 +159,7 @@ export const getTradingPlatformPartners = async (limit: number = 5) => {
  * Fetches algorithmic trading partners.
  */
 export const getAlgoPartners = async (limit: number = 5) => {
-  const category = await getCategoryWithBrokers("algorithmic-trading-and-bot-providers", limit)
+  const category = await getCategoryWithBrokers("algo-trading", limit)
   const brokers = await Promise.all(
     (category?.brokers || []).map(async (broker) => ({
       id: broker.id.toString(),
@@ -184,7 +184,7 @@ export const getAlgoPartners = async (limit: number = 5) => {
  * Fetches forex education partners.
  */
 export const getForexEducationPartners = async (limit: number = 3) => {
-  const category = await getCategoryWithBrokers("forex-education-and-training", limit)
+  const category = await getCategoryWithBrokers("forex-trading-courses", limit)
   const brokers = await Promise.all(
     (category?.brokers || []).map(async (broker) => ({
       id: broker.id.toString(),
