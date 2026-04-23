@@ -18,29 +18,9 @@ type BrokerCardProps = ComponentProps<typeof Card> & {
 };
 
 // Category-specific routing mapping
-const getBrokerRoute = (slug: string, categorySlug?: string): string => {
-  const categoryRoutes: Record<string, string> = {
-    'algorithmic-trading-and-bot-providers': `/bot-providers/${slug}`,
-    'forex-brokers': `/broker/${slug}`,
-    'crypto-exchanges': `/crypto-exchanges/${slug}`,
-    'stock-brokers': `/stock-brokers/${slug}`,
-    'commodity-brokers': `/commodity-brokers/${slug}`,
-    'cfd-brokers': `/cfd-brokers/${slug}`,
-    'binary-options': `/binary-options/${slug}`,
-    'spread-betting': `/spread-betting/${slug}`,
-    'social-trading': `/social-trading/${slug}`,
-    'copy-trading': `/copy-trading/${slug}`,
-    'liquidity-partners': `/liquidity/${slug}`,
-    'trusted-trading-platforms':`/broker/${slug}`,
-    'crm-and-back-office-software':`/crm/${slug}`,
-    'forex-education-and-training':`/forex-education/${slug}`,
-    'forex-trading-courses': `/forex-trading-courses/${slug}`,
-    'bridge-and-plug-in-partners':`/forex-bridge/${slug}`,
-    'psp-partners':`/psp/${slug}`, 
-    'trading-platform-partners':`/trading/${slug}`
-  };
-
-  return categoryRoutes[categorySlug || ''] || (categorySlug ? `/${categorySlug}/${slug}` : `/brokers/${slug}`);
+const getBrokerRoute = (slug: string, categorySlug?: string, categories?: { slug: string }[]): string => {
+  const effectiveCategorySlug = categorySlug || categories?.[0]?.slug;
+  return effectiveCategorySlug ? `/${effectiveCategorySlug}/${slug}` : `/brokers/${slug}`;
 };
 
 // Get external redirect URL based on category
@@ -83,7 +63,7 @@ export const BrokerCard = ({
         <Favicon src={`https://www.google.com/s2/favicons?domain=${domain}&sz=128`} title={broker.broker_name || "Broker"} contained />
 
         <H4 as="h3" className="truncate">
-          <Link href={getBrokerRoute(broker.slug || '', categorySlug)}>
+          <Link href={getBrokerRoute(broker.slug || '', categorySlug, (broker as any).categories)}>
             <span className="absolute inset-0 z-40 rounded-lg" />
             {broker.broker_name || "UNKNOWN BROKER"}
           </Link>

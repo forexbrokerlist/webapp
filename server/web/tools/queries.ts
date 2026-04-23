@@ -182,6 +182,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     db.brokers.findMany({
       where: whereQuery,
       orderBy: sortBy ? ([{ isSponsor: "desc" }, { [sortBy]: sortOrder }] as any) : [{ isSponsor: "desc" }, { year_established: "desc" }, { broker_name: "asc" }],
+      include: { categories: true },
       take,
       skip,
     }),

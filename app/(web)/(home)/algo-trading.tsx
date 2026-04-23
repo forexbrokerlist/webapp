@@ -62,7 +62,7 @@ export default function AlgoTrading({ partners = [], title, description, categor
                         transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
                     >
                         <Button variant='primary' size='md' className='flex items-center gap-2'>
-                            <Link href={`/categories/${category?.slug||'algo-trading'}`}>
+                            <Link href={`/categories/${category?.slug || 'algo-trading'}`}>
                                 Explore All
                                 <div>
                                     <MoveRight />
