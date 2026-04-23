@@ -34,12 +34,13 @@ const getBrokerRoute = (slug: string, categorySlug?: string): string => {
     'trusted-trading-platforms':`/broker/${slug}`,
     'crm-and-back-office-software':`/crm/${slug}`,
     'forex-education-and-training':`/forex-education/${slug}`,
+    'forex-trading-courses': `/forex-trading-courses/${slug}`,
     'bridge-and-plug-in-partners':`/forex-bridge/${slug}`,
     'psp-partners':`/psp/${slug}`, 
     'trading-platform-partners':`/trading/${slug}`
   };
 
-  return categoryRoutes[categorySlug || ''] || `/brokers/${slug}`;
+  return categoryRoutes[categorySlug || ''] || (categorySlug ? `/${categorySlug}/${slug}` : `/brokers/${slug}`);
 };
 
 // Get external redirect URL based on category
