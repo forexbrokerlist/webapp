@@ -184,7 +184,7 @@ export const getAlgoPartners = async (limit: number = 5) => {
  * Fetches forex education partners.
  */
 export const getForexEducationPartners = async (limit: number = 3) => {
-  const category = await getCategoryWithBrokers("forex-education-and-training", limit)
+  const category = await getCategoryWithBrokers("forex-trading-courses", limit)
   const brokers = await Promise.all(
     (category?.brokers || []).map(async (broker) => ({
       id: broker.id.toString(),
