@@ -59,7 +59,7 @@ export const CategoryActions = ({ category, className, ...props }: CategoryActio
         <DropdownMenuTrigger asChild>
           <Button
             aria-label="Open menu"
-            variant="secondary"
+            variant="normal"
             size="sm"
             prefix={<EllipsisIcon />}
             className={cx("data-[state=open]:bg-accent", className)}
@@ -98,7 +98,7 @@ export const CategoryActions = ({ category, className, ...props }: CategoryActio
       >
         <Button
           aria-label="Delete"
-          variant="secondary"
+          variant="normal"
           size="sm"
           prefix={<TrashIcon />}
           className="text-red-500"

@@ -25,7 +25,7 @@ export function PostTableToolbarActions({ table }: PostTableToolbarActionsProps)
       mutationOptions={orpc.posts.remove.mutationOptions}
       queryKey={orpc.posts.key()}
     >
-      <Button variant="secondary" size="md" prefix={<TrashIcon />}>
+      <Button variant="normal" size="md" prefix={<TrashIcon />}>
         Delete ({rows.length})
       </Button>
     </DeleteDialog>

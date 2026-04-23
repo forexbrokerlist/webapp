@@ -354,6 +354,17 @@ model Brokers {
   bookmarks                          Bookmark[]
   typeId                            String?
   type                              Type?      @relation(fields: [typeId], references: [id])
+  maxLeverage                       String? 
+  totalInstruments                  String? 
+  availableInIndia                  Boolean?   
+  islamicAccount                    Boolean? 
+  demoAccount                       Boolean? 
+  copyTrading                       Boolean? 
+  accountTypes                      String[] 
+  beginner_friendly                 Boolean? 
+  review_article                    String? @db.Text
+  seo_title                         String? 
+  seo_meta_description                   String?
   // Admin & Submission fields
   submitterName  String?
   submitterEmail String?
@@ -372,7 +383,9 @@ model Brokers {
   claims        BrokerClaim[]
   owner         User?                @relation(fields: [ownerId], references: [id])
   ownerId       String?
-
+  features    String[]  
+  socialProof String? 
+  highlightedPoint String? 
   @@index([slug])
   @@index([broker_name])
   @@index([status])

@@ -28,6 +28,16 @@ import InvestInEverything from "./invest-in-everything"
 import AlgoTrading from "./algo-trading"
 import { generateBlog } from "~/lib/structured-data"
 import { getPosts } from "~/server/web/posts/queries"
+import {
+  getTrustedPlatforms,
+  getCrmPlatforms,
+  getBridgePartners,
+  getLiquidityPartners,
+  getPspPartners,
+  getTradingPlatformPartners,
+  getAlgoPartners,
+  getForexEducationPartners
+} from "~/server/web/brokers/queries"
 
 const namespace = "pages.blog"
 
@@ -107,245 +117,76 @@ export default async function (props: any) {
     }))
   )
 
-  const getLogo = async (broker: any) => {
-    let domain = "forex.com"
-    const targetUrl = broker.broker_website || broker.url
-    try {
-      if (targetUrl) {
-        const urlObj = new URL(targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`)
-        domain = urlObj.hostname
-      }
-    } catch (e) { }
-
-    // Use Google Favicon API as primary source for small logo icons
-    if (domain && domain !== "forex.com") {
-      return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
-    }
-
-    if (broker.screenshotUrl) {
-      return (await getPresignedUrlFromFull(broker.screenshotUrl)) as string
-    }
-
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
-  }
 
 
-  const trustedCategory = await db.category.findUnique({
-    where: { slug: "trusted-trading-platforms" },
-    include: {
-      brokers: {
-        where: {
-          status: { in: ["Published", "Scheduled"] },
-        },
-        take: 7,
-      },
-    },
-  })
+  const { brokers: trustedPlatforms, category: trustedCategory } = await getTrustedPlatforms(7)
+  const { brokers: crmPlatform, category: crmCategory } = await getCrmPlatforms(4)
+  const { brokers: bridgePartners, category: bridgeCategory } = await getBridgePartners(6)
+  const { brokers: liquidityPartners, category: liquidityCategory } = await getLiquidityPartners(2)
+  const { brokers: PSPPartners, category: PSPCategory } = await getPspPartners(12)
 
-  const trustedPlatforms = await Promise.all(
-    (trustedCategory?.brokers || []).map(async (broker) => ({
-      id: broker.id,
-      name: broker.broker_name || "",
-      description: broker.subtitle||broker.description || "",
-      minDeposit: broker.minimum_deposit || "Varies",
-      logo: await getLogo(broker),
-      isSponsor: broker.isSponsor,
-      rating: broker.overall_rating || "0",
-      slug:broker.slug || ""
-    }))
-  )
+  const { brokers: TradingPalformPartners, category: TradingpartnerCategory } = await getTradingPlatformPartners(5)
 
-  const crmCategory = await db.category.findUnique({
-    where: { slug: "crm-and-back-office-software" },
-  })
 
-  const crmSponsors = await db.sponsor.findMany({
-    where: {
-      categoryId: crmCategory?.id,
-      isActive: true,
-    },
-    orderBy: { order: "asc" },
-    take: 4,
-  })
+  // const TradingPlatformCategory = await db.category.findUnique({
+  //   where: { slug: "trading-platform-partners" },
+  // })
 
-  const crmSolutions = await Promise.all(
-    crmSponsors.map(async (sponsor) => ({
-      id: sponsor.id,
-      name: sponsor.name,
-      title: sponsor.title || "Forex CRM Solution",
-      description: sponsor.description,
-      logo: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
-      features: sponsor.features,
-      highlightedPoint: sponsor.highlightedPoint,
-      socialProof: sponsor.socialProof,
-      slug:sponsor.slug || ""
-    }))
-  )
+  // const TradingPlatformSponsors = await db.sponsor.findMany({
+  //   where: {
+  //     categoryId: TradingPlatformCategory?.id,
+  //     isActive: true,
+  //   },
+  //   orderBy: { order: "asc" },
+  //   take: 10,
+  // })
 
-  const bridgeCategory = await db.category.findUnique({
-    where: { slug: "bridge-and-plug-in-partners" },
-  })
+  // const TradingPalformPartners = await Promise.all(
+  //   TradingPlatformSponsors.map(async (sponsor) => ({
+  //     id: sponsor.id,
+  //     name: sponsor.name,
+  //     title: sponsor.title || "Technology Partner",
+  //     subtitle: sponsor.subtitle,
+  //     description: sponsor.description,
+  //     logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+  //     features: sponsor.features,
+  //     highlightedPoint: sponsor.highlightedPoint,
+  //     socialProof: sponsor.socialProof,
+  //     slug: sponsor.slug || ""
+  //   }))
+  // )
 
-  const bridgeSponsors = await db.sponsor.findMany({
-    where: {
-      categoryId: bridgeCategory?.id,
-      isActive: true,
-    },
-    orderBy: { order: "asc" },
-    take: 6,
-  })
+  const { brokers: AlgoPartners, category: AlgoCategory } = await getAlgoPartners(3)
+  const { brokers: ForexPartners, category: ForexCategory } = await getForexEducationPartners(3)
+  // const ForexCategory = await db.category.findUnique({
+  //   where: { slug: "forex-education-and-training" },
+  // })
 
-  const bridgePartners = await Promise.all(
-    bridgeSponsors.map(async (sponsor) => ({
-      id: sponsor.id,
-      name: sponsor.name,
-      title: sponsor.title || "Technology Partner",
-      description: sponsor.description,
-      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
-      features: sponsor.features,
-      highlightedPoint: sponsor.highlightedPoint,
-      socialProof: sponsor.socialProof,
-      slug:sponsor.slug || ""
-    }))
-  )
-  const liquidityCategory = await db.category.findUnique({
-    where: { slug: "liquidity-partners" },
-  })
+  // const ForexCategorySponsors = await db.sponsor.findMany({
+  //   where: {
+  //     categoryId: ForexCategory?.id,
+  //     isActive: true,
+  //   },
+  //   orderBy: { order: "asc" },
+  //   take: 10,
+  // })
 
-  const liquiditySponsors = await db.sponsor.findMany({
-    where: {
-      categoryId: liquidityCategory?.id,
-      isActive: true,
-    },
-    orderBy: { order: "asc" },
-    take: 2,
-  })
-
-  const liquidityPartners = await Promise.all(
-    liquiditySponsors.map(async (sponsor) => ({
-      id: sponsor.id,
-      name: sponsor.name,
-      title: sponsor.title || "Technology Partner",
-      subtitle: sponsor.subtitle,
-      description: sponsor.description,
-      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
-      features: sponsor.features,
-      highlightedPoint: sponsor.highlightedPoint,
-      socialProof: sponsor.socialProof,
-      slug:sponsor.slug || ""
-    }))
-  )
-  const PSPCategory = await db.category.findUnique({
-    where: { slug: "psp-partners" },
-  })
-
-  const PSPCategorySponsors = await db.sponsor.findMany({
-    where: {
-      categoryId: PSPCategory?.id,
-      isActive: true,
-    },
-    orderBy: { order: "asc" },
-    take: 12,
-  })
-
-  const PSPPartners = await Promise.all(
-    PSPCategorySponsors.map(async (sponsor) => ({
-      id: sponsor.id,
-      name: sponsor.name,
-      title: sponsor.title || "Technology Partner",
-      subtitle: sponsor.subtitle,
-      description: sponsor.description,
-      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
-      features: sponsor.features,
-      highlightedPoint: sponsor.highlightedPoint,
-      socialProof: sponsor.socialProof,
-    }))
-  )
-  const TradingPlatformCategory = await db.category.findUnique({
-    where: { slug: "trading-platform-partners" },
-  })
-
-  const TradingPlatformSponsors = await db.sponsor.findMany({
-    where: {
-      categoryId: TradingPlatformCategory?.id,
-      isActive: true,
-    },
-    orderBy: { order: "asc" },
-    take: 10,
-  })
-
-  const TradingPalformPartners = await Promise.all(
-    TradingPlatformSponsors.map(async (sponsor) => ({
-      id: sponsor.id,
-      name: sponsor.name,
-      title: sponsor.title || "Technology Partner",
-      subtitle: sponsor.subtitle,
-      description: sponsor.description,
-      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
-      features: sponsor.features,
-      highlightedPoint: sponsor.highlightedPoint,
-      socialProof: sponsor.socialProof,
-      slug:sponsor.slug || ""
-    }))
-  )
-    const AlgoCategory = await db.category.findUnique({
-    where: { slug: "algorithmic-trading-and-bot-providers" },
-  })
-
-  const AlgoCategorySponsors = await db.sponsor.findMany({
-    where: {
-      categoryId: AlgoCategory?.id,
-      isActive: true,
-    },
-    orderBy: { order: "asc" },
-    take: 10,
-  })
-
-  const AlgoPartners = await Promise.all(
-    AlgoCategorySponsors.map(async (sponsor) => ({
-      id: sponsor.id,
-      name: sponsor.name,
-      title: sponsor.title || "Technology Partner",
-      subtitle: sponsor.subtitle,
-      description: sponsor.description,
-      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
-      bannerUrl: sponsor.bannerImage ? (await getPresignedUrlFromFull(sponsor.bannerImage)) as string : null,
-      websiteUrl: sponsor.websiteUrl,
-      features: sponsor.features,
-      highlightedPoint: sponsor.highlightedPoint,
-      socialProof: sponsor.socialProof,
-      slug:sponsor.slug || ""
-    }))
-  )
-  const ForexCategory = await db.category.findUnique({
-    where: { slug: "forex-education-and-training" },
-  })
-
-  const ForexCategorySponsors = await db.sponsor.findMany({
-    where: {
-      categoryId: ForexCategory?.id,
-      isActive: true,
-    },
-    orderBy: { order: "asc" },
-    take: 10,
-  })
-
-  const ForexPartners = await Promise.all(
-    ForexCategorySponsors.map(async (sponsor) => ({
-      id: sponsor.id,
-      name: sponsor.name,
-      title: sponsor.title || "Technology Partner",
-      subtitle: sponsor.subtitle,
-      description: sponsor.description,
-      logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
-      bannerUrl: sponsor.bannerImage ? (await getPresignedUrlFromFull(sponsor.bannerImage)) as string : null,
-      websiteUrl: sponsor.websiteUrl,
-      features: sponsor.features,
-      highlightedPoint: sponsor.highlightedPoint,
-      socialProof: sponsor.socialProof,
-      slug:sponsor.slug
-    }))
-  )
+  // const ForexPartners = await Promise.all(
+  //   ForexCategorySponsors.map(async (sponsor) => ({
+  //     id: sponsor.id,
+  //     name: sponsor.name,
+  //     title: sponsor.title || "Technology Partner",
+  //     subtitle: sponsor.subtitle,
+  //     description: sponsor.description,
+  //     logoUrl: (await getPresignedUrlFromFull(sponsor.logoUrl)) as string,
+  //     bannerUrl: sponsor.bannerImage ? (await getPresignedUrlFromFull(sponsor.bannerImage)) as string : null,
+  //     websiteUrl: sponsor.websiteUrl,
+  //     features: sponsor.features,
+  //     highlightedPoint: sponsor.highlightedPoint,
+  //     socialProof: sponsor.socialProof,
+  //     slug: sponsor.slug
+  //   }))
+  // )
 
   const LogoCategory = await db.category.findUnique({
     where: { slug: "logo-category" },
@@ -373,14 +214,49 @@ export default async function (props: any) {
     <>
       <Hero />
       <ClientLogo logos={LogoPartners} />
-      <TrustedTrading platforms={trustedPlatforms} />
-      <CrmBackOffice solutions={crmSolutions} />
-      <ForexEducation partners={ForexPartners} />
-      
-      <BidgeAndPlug partners={bridgePartners} />
+      <TrustedTrading
+        platforms={trustedPlatforms}
+        title={trustedCategory?.label || trustedCategory?.name || "Top-Rated Forex Brokers & Trading Platforms"}
+        description={trustedCategory?.description || "Browse verified forex brokers and trading platforms, compare spreads, regulation, and features to find the right fit for your trading goals."}
+      />
+      <CrmBackOffice
+        solutions={crmPlatform}
+        category={crmCategory}
+        title={crmCategory?.label || crmCategory?.name || "Forex CRM & Back Office Software for Brokers"}
+        description={crmCategory?.description || "Compare forex CRM platforms and back office software providers designed to help brokers streamline operations, onboarding, and reporting."}
+      />
+      <ForexEducation
+        partners={ForexPartners}
+        category={ForexCategory}
+        title={ForexCategory?.label || ForexCategory?.name || "Learn Forex Trading - Top Education Platforms & Courses"}
+        description={ForexCategory?.description || "The forex market rewards those who invest in their knowledge first. Our directory features hand-picked forex education platforms and trading academies trusted by thousands of active traders worldwide."}
+      />
+
+      <BidgeAndPlug
+        partners={bridgePartners}
+        category={bridgeCategory}
+        title={bridgeCategory?.label || bridgeCategory?.name || "Forex Bridge & Plugin Technology Partners"}
+        description={bridgeCategory?.description || "Discover trusted bridge and plugin technology partners used by 512+ forex brokers worldwide. Compare features, integrations, and infrastructure solutions in one place."}
+      />
       <InvestInEverything />
-      <OurPartners liquidityPartners={liquidityPartners} PSPPartners={PSPPartners} TradingPalformPartners={TradingPalformPartners} />
-      <AlgoTrading partners={AlgoPartners}/>
+      <OurPartners
+        liquidityPartners={liquidityPartners}
+        PSPPartners={PSPPartners}
+        PSPCategory={PSPCategory}
+        TradingPalformPartners={TradingPalformPartners}
+        liquidityTitle={liquidityCategory?.label || liquidityCategory?.name || "Liquidity Partners"}
+        liquidityDescription={liquidityCategory?.description || "Providing deep liquidity and institutional-grade execution for brokers and financial institutions."}
+        pspTitle={PSPCategory?.label || PSPCategory?.name || "PSP Partners"}
+        pspDescription={PSPCategory?.description || "Explore trusted payment solution providers for forex brokers supporting fast, secure deposits and withdrawals for traders worldwide."}
+        tradingPlatformTitle={TradingpartnerCategory?.label || TradingpartnerCategory?.name || "Trading Platform Partners"}
+        tradingPlatformDescription={TradingpartnerCategory?.description || "Connect with trusted trading platforms and automate your strategies with powerful tools"}
+      />
+      <AlgoTrading
+        partners={AlgoPartners}
+        category={AlgoCategory}
+        title={AlgoCategory?.label || AlgoCategory?.name || "Algo Trading & Forex Bot Provider"}
+        description={AlgoCategory?.description || "Discover automated forex trading bots and algorithmic strategy providers built for passive income, consistent execution, and hands-free trading."}
+      />
       <ForexBrokers />
 
       <BlogSection posts={posts} />

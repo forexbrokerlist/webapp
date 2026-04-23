@@ -6,6 +6,7 @@ import { Button } from '~/components/common/button'
 import { ButtonGroup } from '~/components/common/button-group'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Favicon } from '~/components/web/ui/favicon';
 
 const GolldenBullsImage = '/assets/images/gollden.png';
 
@@ -20,10 +21,10 @@ interface Partner {
     bannerUrl: string | null;
     websiteUrl: string | null;
     socialProof: string | null;
-    slug:string|null
+    slug: string | null
 }
 
-export default function ForexEducation({ partners = [] }: { partners?: Partner[] }) {
+export default function ForexEducation({ partners = [], category, title, description }: { partners?: Partner[], category?: any, title: string, description: string }) {
     console.log("partners", partners)
     const SLIDES = partners.map(p => ({
         id: p.id,
@@ -35,7 +36,8 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
         img: p.bannerUrl || GolldenBullsImage,
         logo: p.logoUrl,
         link: p.websiteUrl || `/forex-education-and-training/${p.id}`,
-        slug:p.slug
+
+        slug: p.slug
     }));
 
     const [activeIndex, setActiveIndex] = useState(0);
@@ -68,27 +70,20 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                             }}
                         >
-                            Learn Forex Trading - Top Education Platforms & Courses
+                            {title}
                         </motion.h2>
-                        <motion.p
-                            className='text-lg max-mobile:text-base text-white700 font-medium'
-                            variants={{
-                                hidden: { opacity: 0, y: 20 },
-                                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
-                            }}
-                        >
-                            The forex market rewards those who invest in their knowledge first. Our directory features hand-picked forex education platforms and trading academies trusted by thousands of active traders worldwide.
-                        </motion.p>
-                        <motion.p
-                            className='text-lg text-white700 font-medium mt-2'
-                            variants={{
-                                hidden: { opacity: 0, y: 20 },
-                                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
-                            }}
-                        >
-                            Compare course formats, student reviews, pricing, and specializations, whether you prefer self-paced online learning, live mentorship, or structured trading programs. Start with confidence, backed by verified reviews and transparent listings.
-
-                        </motion.p>
+                        {description.split('\n').filter(p => p.trim() !== '').map((para, idx) => (
+                            <motion.p
+                                key={idx}
+                                className='text-lg max-mobile:text-base text-white700 font-medium mb-3 last:mb-0'
+                                variants={{
+                                    hidden: { opacity: 0, y: 20 },
+                                    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+                                }}
+                            >
+                                {para}
+                            </motion.p>
+                        ))}
                         <motion.div
                             className='pt-12'
                             variants={{
@@ -97,7 +92,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                             }}
                         >
                             <Button variant='primary' size='md' className='border-none py-2.5 px-6 rounded-full bg-white text-black100' asChild>
-                                <Link href="/categories/forex-education-and-training">
+                                <Link href={`/categories/${category?.slug || "forex-education-and-training"}`}>
                                     Start Learning
                                     <div>
                                         <MoveRight className='text-black100' />
@@ -152,7 +147,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                         <div className=' relative z-20 rounded-[14.774px] bg-[#1A1A1A] shadow-[0_0_27.887px_0_rgba(0,0,0,0.1)] p-4'>
                                             {slide.logo && (
                                                 <div className="absolute -top-[42px] right-4 w-[84px] h-[84px] rounded-full bg-white shadow-[0_0_30px_rgba(255,215,0,0.25)] z-30 flex items-center justify-center p-1.5 border-[3px] border-[rgba(255,255,255,0.1)]">
-                                                    <Image src={slide.logo} alt={`${slide.title} Logo`} width={80} height={80} loading="lazy" className="w-full h-full object-contain rounded-full" />
+                                                    <Favicon src={slide.logo} title={slide.title} size={80} contained className="w-full h-full rounded-full" />
                                                 </div>
                                             )}
                                             <div className='inline-flex max-mobile:text-xs items-center px-2 py-1  text-xs font-semibold text-white700 bg-[rgba(255,255,255,0.1)] rounded-full w-fit mb-1 border border-[rgba(255,255,255,0.05)]'>
@@ -175,7 +170,7 @@ export default function ForexEducation({ partners = [] }: { partners?: Partner[]
                                             </div>
 
                                             <Button variant='primary' size='md' className={`border-none w-full justify-center text-sm py-2 bg-white text-black100 flex items-center group`} asChild>
-                                                <Link href={slide.slug ? `/brokers/${slide.slug}` : slide.link}>
+                                                <Link href={slide.slug ? `/${category?.slug || "forex-education-and-training"}/${slide.slug}` : slide.link}>
                                                     Start Learning
                                                     <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100`}>
                                                         <MoveRight className="text-white w-4 h-4" />

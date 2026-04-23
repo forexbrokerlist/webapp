@@ -10,29 +10,13 @@ import { getServerSession } from "~/lib/auth"
 
 export default async function AppLayout({ children }: PropsWithChildren) {
   const session = await getServerSession()
-  
-  if (!session) {
-    // If not logged in, redirect to login page with callback to current path
-    redirect("/auth/login")
-  }
 
   return (
     <QueryProvider>
-      <div className="flex flex-col min-h-dvh overflow-clip pt-(--header-inner-offset)">
+      <div className="bg-[#F0F2EC]">
         <Header />
-
-        <Backdrop isFixed />
-
-        <Suspense>
-          <AdBanner />
-        </Suspense>
-
-        <Container asChild>
-          <Wrapper className="grow flex flex-col">
-            {children}
-          </Wrapper>
-        </Container>
+        {children}
       </div>
-    </QueryProvider>
+    </QueryProvider >
   )
 }

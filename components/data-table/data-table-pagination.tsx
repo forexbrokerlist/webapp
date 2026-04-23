@@ -71,7 +71,7 @@ export function DataTablePagination<TData>({
       <ButtonGroup>
         <Button
           aria-label={t("go_to_first")}
-          variant="secondary"
+          variant="normal"
           size="md"
           className="max-lg:hidden"
           onClick={() => table.setPageIndex(0)}
@@ -81,7 +81,7 @@ export function DataTablePagination<TData>({
 
         <Button
           aria-label={t("go_to_previous")}
-          variant="secondary"
+          variant="normal"
           size="md"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
@@ -90,7 +90,7 @@ export function DataTablePagination<TData>({
 
         <Button
           aria-label={t("go_to_next")}
-          variant="secondary"
+          variant="normal"
           size="md"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
@@ -99,7 +99,7 @@ export function DataTablePagination<TData>({
 
         <Button
           aria-label={t("go_to_last")}
-          variant="secondary"
+          variant="normal"
           size="md"
           className="max-lg:hidden"
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}

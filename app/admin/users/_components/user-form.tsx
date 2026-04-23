@@ -103,9 +103,9 @@ export function UserForm({ className, title, user, ...props }: UserFormProps) {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FormMedia form={form} field={field} path={`users/${user.id}/avatar`}>
-                {field.value && (
+                {({ value }) => value && (
                   <Avatar className="size-8 border box-content">
-                    <AvatarImage src={field.value} />
+                    <AvatarImage src={value} />
                   </Avatar>
                 )}
               </FormMedia>
@@ -115,7 +115,7 @@ export function UserForm({ className, title, user, ...props }: UserFormProps) {
         />
 
         <div className="flex justify-between gap-4 col-span-full">
-          <Button size="md" variant="secondary" asChild>
+          <Button size="md" variant="normal" asChild>
             <Link href="/admin/users">Cancel</Link>
           </Button>
 

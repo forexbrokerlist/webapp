@@ -13,6 +13,8 @@ import { Card } from "~/components/common/card"
 import { Stack } from "~/components/common/stack"
 import { useSession } from "~/lib/auth-client"
 import { saveFxGuruConversation, getFxGuruConversations } from "~/server/web/actions/fx-guru"
+import CommonBanner from "../common-banner"
+const TradeImage = '/assets/images/trade.png';
 
 interface Message {
   id: string
@@ -48,7 +50,7 @@ const formatResponseContent = (response: any): any => {
   if (typeof response === "string") {
     try {
       const cleanJson = response.replace(/^```json\n?|\n?```$/g, "").trim()
-      
+
       // Robust JSON repair for truncated strings
       const repairJson = (str: string) => {
         let repaired = str;
@@ -56,9 +58,9 @@ const formatResponseContent = (response: any): any => {
         const lastQuoteIndex = repaired.lastIndexOf('"');
         const lastColonIndex = repaired.lastIndexOf(':');
         if (lastQuoteIndex < lastColonIndex || (lastQuoteIndex > -1 && repaired.split('"').length % 2 === 0)) {
-           repaired += '"';
+          repaired += '"';
         }
-        
+
         // Count brackets and close them
         const stack: string[] = [];
         for (let char of repaired) {
@@ -161,18 +163,17 @@ function MessageBubble({ message, onViewReport }: {
 
               {Array.isArray(message.content) ? (
                 message.content.map((section: any, idx: number) => {
-                   const isRichSection = !!section.type;
-                   
-                   return (
+                  const isRichSection = !!section.type;
+
+                  return (
                     <div key={idx} className={`rounded-xl border shadow-xs overflow-hidden transition-all duration-300 ${isRichSection ? "bg-card dark:border-indigo-500/10 dark:shadow-[0_0_20px_-12px_rgba(99,102,241,0.3)]" : "p-4 bg-muted/40"}`}>
                       {isRichSection ? (
                         <>
-                          <div className={`px-4 py-2.5 border-b flex items-center gap-2 bg-linear-to-r shadow-xs/5 relative overflow-hidden ${
-                            section.type === 'trend' ? "from-indigo-600/20 to-transparent dark:from-indigo-500/15" :
+                          <div className={`px-4 py-2.5 border-b flex items-center gap-2 bg-linear-to-r shadow-xs/5 relative overflow-hidden ${section.type === 'trend' ? "from-indigo-600/20 to-transparent dark:from-indigo-500/15" :
                             section.type === 'structure' ? "from-emerald-600/20 to-transparent dark:from-emerald-500/15" :
-                            section.type === 'zones' ? "from-amber-600/20 to-transparent dark:from-amber-500/15" :
-                            "from-blue-600/20 to-transparent dark:from-blue-500/15"
-                          }`}>
+                              section.type === 'zones' ? "from-amber-600/20 to-transparent dark:from-amber-500/15" :
+                                "from-blue-600/20 to-transparent dark:from-blue-500/15"
+                            }`}>
                             <div className="absolute inset-0 bg-linear-to-b from-white/5 to-transparent pointer-events-none" />
                             {section.type === 'trend' && <TrendingUp className="h-4 w-4 text-indigo-600 dark:text-indigo-400 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]" />}
                             {section.type === 'structure' && <Layers className="h-4 w-4 text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" />}
@@ -180,16 +181,15 @@ function MessageBubble({ message, onViewReport }: {
                             {section.type === 'levels' && <Shield className="h-4 w-4 text-blue-600 dark:text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />}
                             <div className="text-[11px] font-bold uppercase tracking-widest text-foreground/90 dark:text-foreground/80">{section.title}</div>
                           </div>
-                          
+
                           <div className="p-4">
                             {section.type === 'trend' && (
                               <div className="space-y-3">
                                 <div className="flex gap-2 items-center">
-                                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tight shadow-sm ${
-                                    section.content.trend_type?.toLowerCase().includes('up') ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border dark:border-emerald-500/30' :
+                                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tight shadow-sm ${section.content.trend_type?.toLowerCase().includes('up') ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border dark:border-emerald-500/30' :
                                     section.content.trend_type?.toLowerCase().includes('down') ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300 dark:border dark:border-red-500/30' :
-                                    'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
-                                  }`}>
+                                      'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                                    }`}>
                                     {section.content.trend_type}
                                   </span>
                                   <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tight shadow-sm bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 dark:border dark:border-indigo-500/30">
@@ -203,24 +203,24 @@ function MessageBubble({ message, onViewReport }: {
                             )}
 
                             {section.type === 'structure' && (
-                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                 <div className="space-y-1">
-                                   <div className="text-[10px] font-semibold text-muted-foreground uppercase">State</div>
-                                   <div className="text-sm font-medium">{section.content.structure_state}</div>
-                                 </div>
-                                 <div className="space-y-1">
-                                   <div className="text-[10px] font-semibold text-muted-foreground uppercase">Pattern</div>
-                                   <div className="text-sm font-medium">{section.content.swing_sequence?.higher_high_lower_high_pattern}</div>
-                                 </div>
-                                 <div className="space-y-1">
-                                   <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Recent High</div>
-                                   <div className="text-sm font-bold text-red-600 dark:text-red-400 drop-shadow-[0_0_4px_rgba(220,38,38,0.3)]">{section.content.swing_sequence?.recent_swing_high}</div>
-                                 </div>
-                                 <div className="space-y-1">
-                                   <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Recent Low</div>
-                                   <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_4px_rgba(16,185,129,0.3)]">{section.content.swing_sequence?.recent_swing_low}</div>
-                                 </div>
-                               </div>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                  <div className="text-[10px] font-semibold text-muted-foreground uppercase">State</div>
+                                  <div className="text-sm font-medium">{section.content.structure_state}</div>
+                                </div>
+                                <div className="space-y-1">
+                                  <div className="text-[10px] font-semibold text-muted-foreground uppercase">Pattern</div>
+                                  <div className="text-sm font-medium">{section.content.swing_sequence?.higher_high_lower_high_pattern}</div>
+                                </div>
+                                <div className="space-y-1">
+                                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Recent High</div>
+                                  <div className="text-sm font-bold text-red-600 dark:text-red-400 drop-shadow-[0_0_4px_rgba(220,38,38,0.3)]">{section.content.swing_sequence?.recent_swing_high}</div>
+                                </div>
+                                <div className="space-y-1">
+                                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Recent Low</div>
+                                  <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_4px_rgba(16,185,129,0.3)]">{section.content.swing_sequence?.recent_swing_low}</div>
+                                </div>
+                              </div>
                             )}
 
                             {section.type === 'zones' && (
@@ -260,26 +260,26 @@ function MessageBubble({ message, onViewReport }: {
 
                             {section.type === 'levels' && (
                               <div className="space-y-4">
-                                 <div>
-                                    <div className="text-[10px] font-semibold text-muted-foreground uppercase mb-2">Resistance Levels</div>
-                                    <div className="flex flex-wrap gap-2">
-                                      {section.content.resistance_levels?.map((lvl: any, i: number) => (
-                                        <div key={i} className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-mono border border-border shadow-xs">
-                                          {lvl.level_description}
-                                        </div>
-                                      )) || "None"}
-                                    </div>
-                                 </div>
-                                 <div>
-                                    <div className="text-[10px] font-semibold text-muted-foreground uppercase mb-3 tracking-widest">Support Levels</div>
-                                    <div className="flex flex-wrap gap-2.5">
-                                      {section.content.support_levels?.map((lvl: any, i: number) => (
-                                        <div key={i} className="bg-white/50 dark:bg-slate-800/80 px-3 py-1.5 rounded-lg text-xs font-mono font-bold border border-border shadow-xs dark:text-emerald-400 text-emerald-700 hover:scale-105 transition-transform">
-                                          {lvl.level_description}
-                                        </div>
-                                      )) || "None"}
-                                    </div>
-                                 </div>
+                                <div>
+                                  <div className="text-[10px] font-semibold text-muted-foreground uppercase mb-2">Resistance Levels</div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {section.content.resistance_levels?.map((lvl: any, i: number) => (
+                                      <div key={i} className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-mono border border-border shadow-xs">
+                                        {lvl.level_description}
+                                      </div>
+                                    )) || "None"}
+                                  </div>
+                                </div>
+                                <div>
+                                  <div className="text-[10px] font-semibold text-muted-foreground uppercase mb-3 tracking-widest">Support Levels</div>
+                                  <div className="flex flex-wrap gap-2.5">
+                                    {section.content.support_levels?.map((lvl: any, i: number) => (
+                                      <div key={i} className="bg-white/50 dark:bg-slate-800/80 px-3 py-1.5 rounded-lg text-xs font-mono font-bold border border-border shadow-xs dark:text-emerald-400 text-emerald-700 hover:scale-105 transition-transform">
+                                        {lvl.level_description}
+                                      </div>
+                                    )) || "None"}
+                                  </div>
+                                </div>
                               </div>
                             )}
                           </div>
@@ -368,12 +368,12 @@ export function FxGuruSidebar({ currentChatId, isOpen, onClose }: { currentChatI
     <>
       {/* Mobile Overlay */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/40 z-30 md:hidden backdrop-blur-[2px]"
           onClick={onClose}
         />
       )}
-      
+
       <div className={`
         fixed inset-y-0 left-0 z-40 w-72 md:relative md:z-10 md:flex flex-col md:w-64 border-r border-border bg-card/50 h-full overflow-hidden shrink-0 transition-transform duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
@@ -440,11 +440,9 @@ export function FxGuruLanding() {
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    if (!isPending && !session) router.push("/auth/login")
-  }, [session, isPending, router])
+  // Redirect removed for guest access
 
-  if (!session) return null
+  // if (!session) return null
 
   const handleFile = (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -492,7 +490,7 @@ export function FxGuruLanding() {
 
   const handleSend = async () => {
     if (!session) {
-      router.push("/auth/login")
+      router.push("/auth/login?next=/fx-guru")
       return
     }
     if ((!inputValue.trim() && !selectedFile) || isLoading) return
@@ -575,7 +573,13 @@ export function FxGuruLanding() {
   }
 
   return (
-    <div className="h-full flex flex-col md:flex-row w-full bg-muted/20 dark:bg-background overflow-hidden relative">
+    <div className="">
+      <CommonBanner
+        image={TradeImage}
+        description='Discover, search, and analyze stocks with powerful chart insights, real-time data, and in-depth market intelligence—giving you complete visibility into performance trends, price movements, and every key factor needed to make smarter trading decisions, all in one advanced platform.'
+        highlightedText="FX Guru:" title="Your Ultimate Stock 
+Search & Market Intelligence 
+Platform" />
       <FxGuruSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <div className="flex-1 w-full flex flex-col overflow-y-auto overflow-x-hidden relative">
         <motion.div
@@ -602,44 +606,44 @@ export function FxGuruLanding() {
 
             <Stack className="items-center justify-center flex-1 z-10 w-full mb-8 md:mb-0" direction="column" size="lg" wrap={true}>
               <div className="flex flex-col md:flex-row gap-6 items-center justify-center w-full max-w-4xl">
-              <div className="flex flex-col items-center max-w-[320px] w-full group">
-                <div className="relative z-20 -mb-16 transition-transform duration-500 group-hover:-translate-y-4">
-                  <div className="w-40 h-44 bg-linear-to-br from-blue-700 to-indigo-900 rounded-t-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-slate-800">
-                    <span className="text-5xl">📈</span>
+                <div className="flex flex-col items-center max-w-[320px] w-full group">
+                  <div className="relative z-20 -mb-16 transition-transform duration-500 group-hover:-translate-y-4">
+                    <div className="w-40 h-44 bg-linear-to-br from-blue-700 to-indigo-900 rounded-t-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-slate-800">
+                      <span className="text-5xl">📈</span>
+                    </div>
                   </div>
+                  <Card className="pt-20 pb-6 px-6 text-center shadow-xl w-full border-white/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-[32px] min-h-[220px]">
+                    <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400 mb-3  leading-tight">Turn Charts Into Actionable Insights</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed px-2">
+                      Instantly Turn Raw Charts Into Clear, Actionable Trade Insights With AI That Identifies Trends, Key Levels, Market Structure, And High-Probability Setups.
+                    </p>
+                  </Card>
                 </div>
-                <Card className="pt-20 pb-6 px-6 text-center shadow-xl w-full border-white/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-[32px] min-h-[220px]">
-                  <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400 mb-3  leading-tight">Turn Charts Into Actionable Insights</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed px-2">
-                    Instantly Turn Raw Charts Into Clear, Actionable Trade Insights With AI That Identifies Trends, Key Levels, Market Structure, And High-Probability Setups.
-                  </p>
-                </Card>
-              </div>
 
-              <div className="flex flex-col items-center max-w-[320px] w-full group">
-                <div className="relative z-20 -mb-16 transition-transform duration-500 group-hover:-translate-y-4">
-                  <div className="w-40 h-44 bg-linear-to-br from-slate-900 to-black rounded-t-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-slate-800">
-                    <span className="text-5xl">🐻</span>
+                <div className="flex flex-col items-center max-w-[320px] w-full group">
+                  <div className="relative z-20 -mb-16 transition-transform duration-500 group-hover:-translate-y-4">
+                    <div className="w-40 h-44 bg-linear-to-br from-slate-900 to-black rounded-t-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-slate-800">
+                      <span className="text-5xl">🐻</span>
+                    </div>
                   </div>
-                </div>
-                <Card className="pt-20 pb-6 px-6 text-center shadow-xl w-full border-white/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-[32px] min-h-[220px]">
-                  <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-3 leading-tight">Ask Anything to The FX Guru Assistant</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed px-2">
-                    Unlock Market Intelligence With The FXGuru Assistant — Ask Anything About Stocks, Analysis, Or Strategies And Get Expert-Level Insights In Seconds.
-                  </p>
-                </Card>
+                  <Card className="pt-20 pb-6 px-6 text-center shadow-xl w-full border-white/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-[32px] min-h-[220px]">
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-3 leading-tight">Ask Anything to The FX Guru Assistant</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed px-2">
+                      Unlock Market Intelligence With The FXGuru Assistant — Ask Anything About Stocks, Analysis, Or Strategies And Get Expert-Level Insights In Seconds.
+                    </p>
+                  </Card>
                 </div>
               </div>
             </Stack>
 
             <div className="w-full max-w-3xl z-20 pb-12 mt-auto mx-auto px-4 align-bottom">
-              <div 
+              <div
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 className={`relative flex flex-col p-2 rounded-3xl border-2 transition-all duration-300 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] 
-                  ${isDragging 
-                    ? "border-indigo-500 border-dashed bg-indigo-50/20 dark:bg-indigo-500/10 scale-[1.02] shadow-[0_0_20px_rgba(99,102,241,0.3)]" 
+                  ${isDragging
+                    ? "border-indigo-500 border-dashed bg-indigo-50/20 dark:bg-indigo-500/10 scale-[1.02] shadow-[0_0_20px_rgba(99,102,241,0.3)]"
                     : "border-indigo-500/20 dark:border-indigo-500/30 bg-white/80 dark:bg-slate-900/80"
                   } 
                   focus-within:border-indigo-500 focus-within:shadow-[0_0_20px_rgba(99,102,241,0.2)] focus-within:ring-1 focus-within:ring-indigo-500`}
@@ -648,8 +652,8 @@ export function FxGuruLanding() {
                   <div className="relative w-fit mb-3 ml-2 group animate-in zoom-in duration-200">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={previewFile} alt="Preview" className="h-24 md:h-32 w-auto rounded-2xl object-cover border-2 border-indigo-500/20 shadow-md" />
-                    <button 
-                      onClick={clearFile} 
+                    <button
+                      onClick={clearFile}
                       className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full p-1.5 shadow-lg hover:bg-red-600 transition-colors"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -718,9 +722,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-  useEffect(() => {
-    if (!isPending && !session) router.push("/auth/login")
-  }, [session, isPending, router])
+  // Redirect removed for guest access
 
   useEffect(() => {
     if (session && chatId) {
@@ -800,7 +802,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages, isLoading])
 
-  if (!session) return null
+  // Session check removed to allow guest viewing
 
   const handleFile = (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -848,7 +850,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
 
   const handleSend = async () => {
     if (!session) {
-      router.push("/auth/login")
+      router.push("/auth/login?next=/fx-guru")
       return
     }
     if ((!inputValue.trim() && !selectedFile) || isLoading) return
@@ -900,13 +902,13 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
           const updated = [...prev]
           const lastUserIndex = updated.map(m => m.sender).lastIndexOf("user")
           const assistantTime = resultData.chats?.[0]?.time || resultData.time || new Date()
-          
+
           if (lastUserIndex !== -1) {
             updated[lastUserIndex] = { ...updated[lastUserIndex], timestamp: formatToIST(assistantTime) }
           }
-          
+
           const finalMessages = [...updated, assistantMessage]
-          
+
           // Sync to localStorage
           if (session?.user?.id && chatId) {
             const storageKey = `fx-guru-${session.user.id}-${chatId}`
@@ -948,7 +950,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
   }
 
   return (
-    <div className="h-full w-full flex flex-col md:flex-row bg-background overflow-hidden relative">
+    <div className="">
       <FxGuruSidebar currentChatId={chatId} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <AnimatePresence mode="wait">
         <motion.div
@@ -1027,21 +1029,21 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
               <div className="relative w-fit mb-3 group animate-in zoom-in duration-200">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={previewFile} alt="Preview" className="h-20 w-auto rounded-xl object-cover border-2 border-primary/20 shadow-sm" />
-                <button 
-                  onClick={clearFile} 
+                <button
+                  onClick={clearFile}
                   className="absolute -top-2.5 -right-2.5 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </div>
             )}
-            <div 
+            <div
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
               className={`relative flex flex-row items-center flex-wrap md:flex-nowrap gap-y-2 border rounded-2xl transition-all duration-200 pr-2 py-1 bg-background shadow-xs 
-                ${isDragging 
-                  ? "border-primary border-dashed ring-2 ring-primary/20 bg-primary/5 scale-[1.01]" 
+                ${isDragging
+                  ? "border-primary border-dashed ring-2 ring-primary/20 bg-primary/5 scale-[1.01]"
                   : "border-input focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary"
                 }`}
             >

@@ -40,7 +40,7 @@ const ToolQuery = async ({
   const mappedTools = brokers.map((broker) => ({
     id: broker.id.toString(),
     name: broker.broker_name || "Unknown Broker",
-    slug: `brokers/${broker.slug}`,
+    slug: `${(broker as any).categories?.[0]?.slug || "brokers"}/${broker.slug}`,
     websiteUrl: broker.url || "",
     affiliateUrl: null,
     faviconUrl: null, // Use default
@@ -70,11 +70,11 @@ const ToolQuery = async ({
 
       <BrokerList brokers={brokers} {...list}>
         {ad &&
-           Array.from({ length: adsConfig.adsPerPage }, (_, index) => {
-             const order = Math.ceil((perPage / adsConfig.adsPerPage) * index + 1)
-             if (order > brokers.length) return null
-             return <AdCard key={`ad-${index}`} type={ad} isRevealed style={{ order }} />
-           })}
+          Array.from({ length: adsConfig.adsPerPage }, (_, index) => {
+            const order = Math.ceil((perPage / adsConfig.adsPerPage) * index + 1)
+            if (order > brokers.length) return null
+            return <AdCard key={`ad-${index}`} type={ad} isRevealed style={{ order }} />
+          })}
       </BrokerList>
     </ToolListing>
   )

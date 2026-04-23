@@ -8,6 +8,7 @@ import {
   parseAsInteger,
   parseAsString,
   parseAsStringEnum,
+  parseAsBoolean,
 } from "nuqs/server";
 import { type Brokers } from "~/.generated/prisma/browser";
 import { getSortingStateParser } from "~/lib/parsers";
@@ -26,6 +27,7 @@ export const brokerListParams = {
     parseAsStringEnum(Object.values(ToolStatus)),
   ).withDefault([]),
   type: parseAsString,
+  beginner_friendly: parseAsBoolean,
 };
 
 export const brokerListSchema = createStandardSchemaV1(brokerListParams);
@@ -79,9 +81,24 @@ export const brokerSchema = z.object({
   subtitle: z.string().optional(),
   screenshotUrl: z.string().url().or(z.literal("")).optional(),
   bannerUrl: z.string().url().or(z.literal("")).optional(),
+  logoUrl: z.string().url().or(z.literal("")).optional(),
   typeId: z.string().nullish(),
   isSponsor: z.boolean().default(false),
   isMainSponsor: z.boolean().default(false),
+  features: z.array(z.string()).optional(),
+  socialProof: z.string().optional(),
+  highlightedPoint: z.string().optional(),
+  maxLeverage: z.string().optional(),
+  totalInstruments: z.string().optional(),
+  availableInIndia: z.boolean().default(false),
+  islamicAccount: z.boolean().default(false),
+  demoAccount: z.boolean().default(false),
+  copyTrading: z.boolean().default(false),
+  accountTypes: z.array(z.string()).optional(),
+  beginner_friendly: z.boolean().default(false),
+  review_article: z.string().optional(),
+  seo_title: z.string().optional(),
+  seo_meta_description: z.string().optional(),
 });
 
 export type BrokerSchema = z.infer<typeof brokerSchema>;

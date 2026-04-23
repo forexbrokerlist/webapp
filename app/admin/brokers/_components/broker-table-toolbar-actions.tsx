@@ -25,7 +25,7 @@ export function ToolTableToolbarActions({ table }: ToolTableToolbarActionsProps)
       mutationOptions={orpc.brokers.remove.mutationOptions}
       queryKey={orpc.brokers.key()}
     >
-      <Button variant="secondary" size="md" prefix={<TrashIcon />}>
+      <Button variant="normal" size="md" prefix={<TrashIcon />}>
         Delete ({rows.length})
       </Button>
     </DeleteDialog>

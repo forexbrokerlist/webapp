@@ -132,7 +132,7 @@ export function FAQField({ control, register, errors }: FAQFieldProps) {
 
         <Button
           type="button"
-          variant="secondary"
+          variant="normal"
           onClick={addFAQ}
           className="w-full inline-flex items-center justify-center gap-2"
         >

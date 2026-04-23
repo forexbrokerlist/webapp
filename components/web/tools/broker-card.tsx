@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Crown, Star, ShieldCheck, CalendarRange } from "lucide-react";
 import type { ComponentProps } from "react";
 import { Badge } from "~/components/common/badge";
@@ -13,10 +14,30 @@ import type { Brokers } from "~/.generated/prisma/client";
 
 type BrokerCardProps = ComponentProps<typeof Card> & {
   broker: Brokers;
+  categorySlug?: string;
+};
+
+// Category-specific routing mapping
+const getBrokerRoute = (slug: string, categorySlug?: string, categories?: { slug: string }[]): string => {
+  const effectiveCategorySlug = categorySlug || categories?.[0]?.slug;
+  if (effectiveCategorySlug === 'trusted-trading-platforms'||effectiveCategorySlug === 'forex-brokers') {
+    return `/broker/${slug}`;
+  }
+  return effectiveCategorySlug ? `/${effectiveCategorySlug}/${slug}` : `/brokers/${slug}`;
+};
+
+// Get external redirect URL based on category
+const getBrokerRedirectUrl = (broker: Brokers, categorySlug?: string): string => {
+  const targetUrl = broker.broker_website || broker.url;
+  if (!targetUrl) return '#';
+
+  // Ensure URL has proper protocol
+  return targetUrl.startsWith('http') ? targetUrl : `https://${targetUrl}`;
 };
 
 export const BrokerCard = ({
   broker,
+  categorySlug,
   className,
   ...props
 }: BrokerCardProps) => {
@@ -33,27 +54,26 @@ export const BrokerCard = ({
   }
 
   return (
-    <Card 
-      isRevealed 
-      className={`items-stretch select-none transition-all duration-300 ${
-        broker.isSponsor 
-          ? "border-blue-500/40 shadow-[0_0_20px_rgba(59,130,246,0.1)] bg-linear-to-br from-blue-500/10 via-background to-background ring-1 ring-blue-500/20 hover:border-blue-500/60 hover:shadow-[0_0_25px_rgba(59,130,246,0.25)]" 
-          : "hover:border-primary/20"
-      } ${className || ""}`} 
+    <Card
+      isRevealed
+      className={`items-stretch select-none transition-all duration-300 ${broker.isSponsor
+        ? "border-blue-500/40 shadow-[0_0_20px_rgba(59,130,246,0.1)] bg-linear-to-br from-blue-500/10 via-background to-background ring-1 ring-blue-500/20 hover:border-blue-500/60 hover:shadow-[0_0_25px_rgba(59,130,246,0.25)]"
+        : "hover:border-primary/20"
+        } ${className || ""}`}
       {...props}
     >
       <CardHeader wrap={false} className="pr-8 mb-1">
         <Favicon src={`https://www.google.com/s2/favicons?domain=${domain}&sz=128`} title={broker.broker_name || "Broker"} contained />
 
         <H4 as="h3" className="truncate">
-          <Link href={`/brokers/${broker.slug}`}>
+          <Link href={getBrokerRoute(broker.slug || '', categorySlug, (broker as any).categories)}>
             <span className="absolute inset-0 z-40 rounded-lg" />
             {broker.broker_name || "UNKNOWN BROKER"}
           </Link>
         </H4>
 
         <VerifiedBadge size="md" className="-ml-1.5 shrink-0" />
-        
+
         {broker.isSponsor && (
           <div className="absolute right-3 top-3 flex items-center gap-1.5 z-60 bg-blue-500/10 text-blue-500 pl-1.5 pr-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-blue-500/30 backdrop-blur-md shadow-[0_0_10px_rgba(59,130,246,0.2)]">
             <Crown className="size-[12px]" strokeWidth={2.5} />
@@ -82,7 +102,7 @@ export const BrokerCard = ({
           <CardDescription className="line-clamp-2 min-h-[40px]">
             {broker.subtitle || broker.description || `Top rated forex broker based in ${broker.headquarters || 'global markets'} offering competitive spreads.`}
           </CardDescription>
-          
+
           <div className="mt-auto pt-4 grid grid-cols-3 gap-2 text-xs">
             <div className="flex flex-col gap-1 items-start">
               <span className="flex items-center gap-1.5 text-muted-foreground">
@@ -90,7 +110,7 @@ export const BrokerCard = ({
               </span>
               <span className="font-semibold text-foreground text-sm">{broker.overall_rating?.split("/")[0]?.trim() || "N/A"}</span>
             </div>
-            
+
             <div className="flex flex-col gap-1 items-start">
               <span className="flex items-center gap-1.5 text-muted-foreground">
                 <ShieldCheck className="size-3.5" /> Regs
@@ -99,7 +119,7 @@ export const BrokerCard = ({
                 {broker.regulators ? broker.regulators.split(',').length : 0}
               </span>
             </div>
-            
+
             <div className="flex flex-col gap-1 items-start">
               <span className="flex items-center gap-1.5 text-muted-foreground">
                 <CalendarRange className="size-3.5" /> Est.

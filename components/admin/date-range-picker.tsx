@@ -59,7 +59,7 @@ type DateRangePickerProps = ComponentProps<typeof PopoverContent> & {
 export function DateRangePicker({
   defaultDateRange,
   placeholder = "Pick a date",
-  triggerVariant = "secondary",
+  triggerVariant = "normal",
   triggerSize = "md",
   triggerClassName,
   shallow = false,

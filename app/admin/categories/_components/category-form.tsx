@@ -175,7 +175,7 @@ export function CategoryForm({ className, title, category, ...props }: CategoryF
         />
 
         <div className="flex justify-between gap-4 col-span-full">
-          <Button size="md" variant="secondary" asChild>
+          <Button size="md" variant="normal" asChild>
             <Link href="/admin/categories">Cancel</Link>
           </Button>
 

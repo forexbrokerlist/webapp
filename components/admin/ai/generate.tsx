@@ -53,7 +53,7 @@ export const AIGenerate = ({
     <>
       <Button
         type="button"
-        variant="secondary"
+        variant="normal"
         size="md"
         prefix={isLoading ? <LoaderIcon className="animate-spin" /> : <SparklesIcon />}
         onClick={() => (isLoading ? stop() : handleGenerate())}

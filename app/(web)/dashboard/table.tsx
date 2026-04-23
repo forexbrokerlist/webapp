@@ -102,7 +102,7 @@ export const DashboardTable = ({ tools, pageCount }: Awaited<ReturnType<typeof f
           return (
             <Button
               size="sm"
-              variant="secondary"
+              variant="normal"
               prefix={<SparklesIcon className="text-primary!" />}
               className="float-right -my-1"
               asChild
