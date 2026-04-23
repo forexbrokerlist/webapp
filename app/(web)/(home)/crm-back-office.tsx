@@ -15,7 +15,7 @@ interface Solution {
     title: string;
     logo: string;
     // socialProof: string | null;
-    slug:string; 
+    slug: string;
 }
 
 interface CrmBackOfficeProps {
@@ -58,11 +58,11 @@ const backgroundImages = [
         url: "/assets/images/GreenVec.png"
     },
     {
-        id:3,
+        id: 3,
         url: "/assets/images/YellowVec.png"
     },
     {
-        id:4,
+        id: 4,
         url: "/assets/images/PinkVec.png"
     }
 ]

@@ -28,15 +28,15 @@ import InvestInEverything from "./invest-in-everything"
 import AlgoTrading from "./algo-trading"
 import { generateBlog } from "~/lib/structured-data"
 import { getPosts } from "~/server/web/posts/queries"
-import { 
-  getTrustedPlatforms, 
-  getCrmPlatforms, 
-  getBridgePartners, 
-  getLiquidityPartners, 
-  getPspPartners, 
-  getTradingPlatformPartners, 
-  getAlgoPartners, 
-  getForexEducationPartners 
+import {
+  getTrustedPlatforms,
+  getCrmPlatforms,
+  getBridgePartners,
+  getLiquidityPartners,
+  getPspPartners,
+  getTradingPlatformPartners,
+  getAlgoPartners,
+  getForexEducationPartners
 } from "~/server/web/brokers/queries"
 
 const namespace = "pages.blog"
@@ -214,35 +214,35 @@ export default async function (props: any) {
     <>
       <Hero />
       <ClientLogo logos={LogoPartners} />
-      <TrustedTrading 
-        platforms={trustedPlatforms} 
+      <TrustedTrading
+        platforms={trustedPlatforms}
         title={trustedCategory?.label || trustedCategory?.name || "Top-Rated Forex Brokers & Trading Platforms"}
         description={trustedCategory?.description || "Browse verified forex brokers and trading platforms, compare spreads, regulation, and features to find the right fit for your trading goals."}
       />
-      <CrmBackOffice 
-        solutions={crmPlatform} 
+      <CrmBackOffice
+        solutions={crmPlatform}
         category={crmCategory}
         title={crmCategory?.label || crmCategory?.name || "Forex CRM & Back Office Software for Brokers"}
         description={crmCategory?.description || "Compare forex CRM platforms and back office software providers designed to help brokers streamline operations, onboarding, and reporting."}
       />
-      <ForexEducation 
-        partners={ForexPartners} 
+      <ForexEducation
+        partners={ForexPartners}
         title={ForexCategory?.label || ForexCategory?.name || "Learn Forex Trading - Top Education Platforms & Courses"}
         description={ForexCategory?.description || "The forex market rewards those who invest in their knowledge first. Our directory features hand-picked forex education platforms and trading academies trusted by thousands of active traders worldwide."}
       />
 
-      <BidgeAndPlug 
-        partners={bridgePartners} 
+      <BidgeAndPlug
+        partners={bridgePartners}
         category={bridgeCategory}
         title={bridgeCategory?.label || bridgeCategory?.name || "Forex Bridge & Plugin Technology Partners"}
         description={bridgeCategory?.description || "Discover trusted bridge and plugin technology partners used by 512+ forex brokers worldwide. Compare features, integrations, and infrastructure solutions in one place."}
       />
       <InvestInEverything />
-      <OurPartners 
-        liquidityPartners={liquidityPartners} 
-        PSPPartners={PSPPartners} 
+      <OurPartners
+        liquidityPartners={liquidityPartners}
+        PSPPartners={PSPPartners}
         PSPCategory={PSPCategory}
-        TradingPalformPartners={TradingPalformPartners} 
+        TradingPalformPartners={TradingPalformPartners}
         liquidityTitle={liquidityCategory?.label || liquidityCategory?.name || "Liquidity Partners"}
         liquidityDescription={liquidityCategory?.description || "Providing deep liquidity and institutional-grade execution for brokers and financial institutions."}
         pspTitle={PSPCategory?.label || PSPCategory?.name || "PSP Partners"}
@@ -250,8 +250,8 @@ export default async function (props: any) {
         tradingPlatformTitle={TradingpartnerCategory?.label || TradingpartnerCategory?.name || "Trading Platform Partners"}
         tradingPlatformDescription={TradingpartnerCategory?.description || "Connect with trusted trading platforms and automate your strategies with powerful tools"}
       />
-      <AlgoTrading 
-        partners={AlgoPartners} 
+      <AlgoTrading
+        partners={AlgoPartners}
         category={AlgoCategory}
         title={AlgoCategory?.label || AlgoCategory?.name || "Algo Trading & Forex Bot Provider"}
         description={AlgoCategory?.description || "Discover automated forex trading bots and algorithmic strategy providers built for passive income, consistent execution, and hands-free trading."}
