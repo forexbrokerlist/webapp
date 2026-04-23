@@ -227,6 +227,7 @@ export default async function (props: any) {
       />
       <ForexEducation
         partners={ForexPartners}
+        category={ForexCategory}
         title={ForexCategory?.label || ForexCategory?.name || "Learn Forex Trading - Top Education Platforms & Courses"}
         description={ForexCategory?.description || "The forex market rewards those who invest in their knowledge first. Our directory features hand-picked forex education platforms and trading academies trusted by thousands of active traders worldwide."}
       />
