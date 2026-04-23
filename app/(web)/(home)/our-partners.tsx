@@ -67,7 +67,7 @@ export default function OurPartners({
                                 </div>
                                 <div className='max-mobile:pt-4'>
                                     <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                        <Link href="/categories/liquidity-partners">
+                                        <Link href="/categories/liquidity-providers">
                                             View More
                                             <div>
                                                 <MoveRight />
@@ -122,7 +122,7 @@ export default function OurPartners({
                                                     </div>
                                                     <div className='pt-3 mt-auto'>
                                                         <Button size="md" variant="primary" className="px-5 gap-2.5 py-1.5 w-full justify-center text-xs group">
-                                                            <Link href={`/liquidity/${partner.slug}`}>
+                                                            <Link href={`/liquidity-providers/${partner.slug}`}>
                                                                 Learn More
                                                                 <div className="w-4 h-4 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -164,7 +164,7 @@ export default function OurPartners({
                                 </div>
                                 <div>
                                     <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                        <Link href="/categories/trading-platform-partners">
+                                        <Link href="/categories/forex-trading-platform">
                                             View More
                                             <div>
                                                 <MoveRight />
@@ -326,7 +326,7 @@ export default function OurPartners({
                         </motion.div>
                         <div className='flex justify-center pt-5 max-mobile:pb-4 pb-10 mt-auto'>
                             <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                <Link href="categories/psp-partners">
+                                <Link href={`/categories/${PSPCategory?.slug || 'forex-psp-partners'}`}>
                                     View More
                                     <div>
                                         <MoveRight />

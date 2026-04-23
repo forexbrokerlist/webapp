@@ -221,6 +221,7 @@ export default async function (props: any) {
       />
       <CrmBackOffice 
         solutions={crmPlatform} 
+        category={crmCategory}
         title={crmCategory?.label || crmCategory?.name || "Forex CRM & Back Office Software for Brokers"}
         description={crmCategory?.description || "Compare forex CRM platforms and back office software providers designed to help brokers streamline operations, onboarding, and reporting."}
       />
@@ -232,6 +233,7 @@ export default async function (props: any) {
 
       <BidgeAndPlug 
         partners={bridgePartners} 
+        category={bridgeCategory}
         title={bridgeCategory?.label || bridgeCategory?.name || "Forex Bridge & Plugin Technology Partners"}
         description={bridgeCategory?.description || "Discover trusted bridge and plugin technology partners used by 512+ forex brokers worldwide. Compare features, integrations, and infrastructure solutions in one place."}
       />
@@ -239,6 +241,7 @@ export default async function (props: any) {
       <OurPartners 
         liquidityPartners={liquidityPartners} 
         PSPPartners={PSPPartners} 
+        PSPCategory={PSPCategory}
         TradingPalformPartners={TradingPalformPartners} 
         liquidityTitle={liquidityCategory?.label || liquidityCategory?.name || "Liquidity Partners"}
         liquidityDescription={liquidityCategory?.description || "Providing deep liquidity and institutional-grade execution for brokers and financial institutions."}
@@ -249,6 +252,7 @@ export default async function (props: any) {
       />
       <AlgoTrading 
         partners={AlgoPartners} 
+        category={AlgoCategory}
         title={AlgoCategory?.label || AlgoCategory?.name || "Algo Trading & Forex Bot Provider"}
         description={AlgoCategory?.description || "Discover automated forex trading bots and algorithmic strategy providers built for passive income, consistent execution, and hands-free trading."}
       />
