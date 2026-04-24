@@ -100,7 +100,7 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
                                 ))}
                             </div>
                             <div className='flex items-center gap-3 pb-6 border-b border-solid border-border-light300'>
-                                <Link href={absoluteUrl} target='_blank' >
+                                {absoluteUrl&&<Link href={absoluteUrl} target='_blank' >
                                     <button className='py-2.5 px-5 w-[200px] justify-center text-base font-medium text-black100 border-none bg-primary rounded-full cursor-pointer flex items-center gap-2'>
 
                                         Visit Website
@@ -109,7 +109,7 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
                                             <path d="M20.5542 3.49502L11.0469 13.0575M20.5542 3.49502C20.0602 3.00041 16.7325 3.04651 16.029 3.05652M20.5542 3.49502C21.0482 3.98964 21.0021 7.32163 20.9921 8.02604" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>
                                     </button>
-                                </Link>
+                                </Link>}
 
                                 {/* <button className='py-2.5 px-5 w-[200px] justify-center text-base font-medium text-black100 border-none bg-[#F0F1EC] rounded-full cursor-pointer flex items-center gap-2'>
                                     Claim Ownership
@@ -142,7 +142,7 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
                                 </div> */}
                                 <BrokerBookmarkButton brokerId={broker.id} />
                             </div>
-                            <div className='pt-6 flex items-center gap-2'>
+                           {broker.overall_rating&& <div className='pt-6 flex items-center gap-2'>
                                 {/* <img src={Profilegroup} alt='Profilegroup' className='block' />
                                 <p className='text-base font-medium text-black700'>
                                     Trusted by <span className='text-primary'> 70K+ </span> investors & traders with a  <span className='text-primary'> 4.8 out of 5 </span> rating
@@ -162,7 +162,7 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
                                     Trusted with a  <span className='text-primary'> {broker.overall_rating}/5 </span> customer rating
                                 </p>
                                         </div>
-                            </div>
+                            </div>}
                         </div>
                         <div className="relative z-10 w-full ">
                             <img src={FramImage} alt='FramImage' />

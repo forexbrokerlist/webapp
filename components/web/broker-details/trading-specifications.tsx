@@ -6,7 +6,7 @@ const RoundIcon = '/assets/images/round.svg';
 export default function TradingSpecifications({ broker }: { broker: any }) {
     const tradingHoursRaw = broker.trading_hours;
     let tradingHours: { label: string, value: string }[] = [];
-    
+
     try {
         if (tradingHoursRaw) {
             const parsed = typeof tradingHoursRaw === 'string' ? JSON.parse(tradingHoursRaw) : tradingHoursRaw;
@@ -40,19 +40,19 @@ export default function TradingSpecifications({ broker }: { broker: any }) {
     const col2 = tradingHours.slice(half);
 
     const accountFunding = [
-        { label: "Account Types", value: broker.accountTypes?.join(", ") || "Standard, Razor (ECN)", isNew: true },
-        { label: "Deposit Fee", value: broker.deposit_fees || "Free", isPositive: true },
-        { label: "Withdrawal Fee", value: broker.withdrawal_fee || "Free", isPositive: true },
-        { label: "Deposit Methods", value: broker.deposit_options || "Visa, PayPal, Skrill, Bank Transfer" },
-        { label: "Inactivity Fee", value: broker.inactivity_fee || "$0" },
+        { label: "Account Types", value: broker.accountTypes?.join(", ") || "-", isNew: true },
+        { label: "Deposit Fee", value: broker.deposit_fees || "-", isPositive: parseFloat(broker.deposit_fees?.replace(/[^0-9.]/g, '') || '0') > 0 },
+        { label: "Withdrawal Fee", value: broker.withdrawal_fee || "-", isPositive: parseFloat(broker.withdrawal_fee?.replace(/[^0-9.]/g, '') || '0') > 0 },
+        { label: "Deposit Methods", value: broker.deposit_options || "-" },
+        { label: "Inactivity Fee", value: broker.inactivity_fee || "-" },
     ];
 
     const tradingCostSpreads = [
-        { label: "EUR/USD", value: broker.average_trading_cost_eur_usd || "1.1 pips", isNew: true },
-        { label: "GBP/USD", value: broker.average_trading_cost_gbp_usd || "1.4 pips" },
-        { label: "Gold", value: broker.average_trading_cost_gold || "$0.15" },
-        { label: "Bitcoin", value: broker.average_trading_cost_bitcoin || "25" },
-        { label: "WTI Crude", value: broker.average_trading_cost_wti_crude_oil || "$2.50" },
+        { label: "EUR/USD", value: broker.average_trading_cost_eur_usd || "-", isNew: true, },
+        { label: "GBP/USD", value: broker.average_trading_cost_gbp_usd || "-", },
+        { label: "Gold", value: broker.average_trading_cost_gold || "-", },
+        { label: "Bitcoin", value: broker.average_trading_cost_bitcoin || "-", },
+        { label: "WTI Crude", value: broker.average_trading_cost_wti_crude_oil || "-", },
     ];
 
     return (
@@ -118,8 +118,12 @@ export default function TradingSpecifications({ broker }: { broker: any }) {
                                             <span className='text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#FCF2E1] text-[#D88A2E] leading-tight'>New</span>
                                         )} */}
                                     </div>
-                                    {detail.isPositive ? (
-                                        <span className='text-[12px] font-semibold px-3 py-0.5 rounded-full bg-[#E5F0DF] text-[#296D2C] leading-tight'>{detail.value}</span>
+                                    {detail.isPositive !== undefined ? (
+                                        detail.isPositive ? (
+                                            <span className='text-[13px] font-semibold px-3 py-1 rounded-full bg-[#E5F0DF] text-[#296D2C] leading-tight'>{detail.value}</span>
+                                        ) : (
+                                            <span className='text-[13px] font-semibold px-3 py-1 rounded-full bg-[#FEE2E2] text-[#991B1B] leading-tight'>{detail.value}</span>
+                                        )
                                     ) : (
                                         <span className='text-[15px] font-medium text-black100 text-right'>{detail.value}</span>
                                     )}
@@ -146,7 +150,15 @@ export default function TradingSpecifications({ broker }: { broker: any }) {
                                             <span className='text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#FCF2E1] text-[#D88A2E] leading-tight'>New</span>
                                         )} */}
                                     </div>
-                                    <span className='text-[15px] font-medium text-black100 text-right'>{detail.value}</span>
+                                    {detail.isPositive !== undefined ? (
+                                        detail.isPositive ? (
+                                            <span className='text-[13px] font-semibold px-3 py-1 rounded-full bg-[#E5F0DF] text-[#296D2C] leading-tight'>{detail.value}</span>
+                                        ) : (
+                                            <span className='text-[13px] font-semibold px-3 py-1 rounded-full bg-[#FEE2E2] text-[#991B1B] leading-tight'>{detail.value}</span>
+                                        )
+                                    ) : (
+                                        <span className='text-[15px] font-medium text-black100 text-right'>{detail.value}</span>
+                                    )}
                                 </div>
                             ))}
                         </div>

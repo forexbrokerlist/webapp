@@ -18,7 +18,7 @@ export default function SuggestedBroker({ brokers }: { brokers: any[] }) {
                         const rawCategorySlug = broker.categories?.[0]?.slug;
                         const categorySlug = rawCategorySlug === 'trusted-trading-platforms' || rawCategorySlug === 'forex-brokers' ? 'broker' : (rawCategorySlug || 'broker');
                         return (
-                            <Link href={`/${categorySlug}/${broker.slug}`} key={index} className='block border mb-4 p-3 rounded-xl border-border-light180 border-solid hover:border-primary transition-colors'>
+                            <Link target='_blank' href={`/${categorySlug}/${broker.slug}`} key={index} className='block border mb-4 p-3 rounded-xl border-border-light180 border-solid hover:border-primary transition-colors'>
                                 <div className='pb-3'>
                                     <img src={broker.screenshotUrl || '/assets/images/suggested.png'} alt={broker.broker_name} className='block w-full rounded-t-xl h-[120px] object-cover' />
                                 </div>

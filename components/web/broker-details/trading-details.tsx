@@ -10,7 +10,7 @@ export default function TradingDetails({ broker }: { broker: any }) {
         { label: "Regulators", value: broker.regulators || "-" },
          { label: "Max Leverage", value: broker.maxLeverage || "-", isNew: true },
         { label: "Total Instruments", value: broker.totalInstruments || "-", isNew: true },
-        { label: "India Available", value: broker.availableInIndia ? "Yes" : "No", isNew: true, isPositive: true },
+        { label: "India Available", value: broker.availableInIndia ? "Yes" : "No", isNew: true, isPositive: broker.availableInIndia },
        
     ];
 
@@ -21,9 +21,9 @@ export default function TradingDetails({ broker }: { broker: any }) {
         { label: "Min Commission", value: broker.minimum_commission_for_forex|| "-" },
 
        
-               { label: "Islamic Account", value: broker.islamicAccount ? "Yes" : "No", isNew: true, isPositive: true },
-               { label: "Demo Account", value: broker.demoAccount ? "Yes" : "No", isNew: true, isPositive: true },
-               { label: "Copy Trading", value: broker.copyTrading ? "Yes" : "No", isNew: true, isPositive: true },
+               { label: "Islamic Account", value: broker.islamicAccount ? "Yes" : "No", isNew: true, isPositive: broker.islamicAccount },
+               { label: "Demo Account", value: broker.demoAccount ? "Yes" : "No", isNew: true, isPositive: broker.demoAccount },
+               { label: "Copy Trading", value: broker.copyTrading ? "Yes" : "No", isNew: true, isPositive: broker.copyTrading },
     
             ];
 
@@ -49,11 +49,15 @@ export default function TradingDetails({ broker }: { broker: any }) {
                             {brokerDetails.map((detail, index) => (
                                 <div key={index} className='flex justify-between items-center last:pb-0 py-2 border-b border-border-light300 last:border-0 border-solid'>
                                     <span className='text-[15px] font-medium text-black700'>{detail.label}</span>
-                                      {detail.isPositive ? (
-                                        <span className='text-[13px] font-semibold px-3 py-1 rounded-full bg-[#E5F0DF] text-[#296D2C] leading-tight'>{detail.value}</span>
-                                    ) : (
-                                        <span className='text-[15px] font-medium text-black100 text-right'>{detail.value}</span>
-                                    )}
+                                      {detail.isPositive !== undefined ? (
+                                        detail.isPositive ? (
+                                          <span className='text-[13px] font-semibold px-3 py-1 rounded-full bg-[#E5F0DF] text-[#296D2C] leading-tight'>{detail.value}</span>
+                                        ) : (
+                                          <span className='text-[13px] font-semibold px-3 py-1 rounded-full bg-[#FEE2E2] text-[#991B1B] leading-tight'>{detail.value}</span>
+                                        )
+                                      ) : (
+                                          <span className='text-[15px] font-medium text-black100 text-right'>{detail.value}</span>
+                                      )}
                                 </div>
                             ))}
                         </div>
@@ -76,11 +80,15 @@ export default function TradingDetails({ broker }: { broker: any }) {
                                             <span className='text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#FCF2E1] text-[#D88A2E] leading-tight'>New</span>
                                         )} */}
                                     </div>
-                                    {detail.isPositive ? (
-                                        <span className='text-[13px] font-semibold px-3 py-1 rounded-full bg-[#E5F0DF] text-[#296D2C] leading-tight'>{detail.value}</span>
-                                    ) : (
-                                        <span className='text-[15px] font-medium text-black100 text-right'>{detail.value}</span>
-                                    )}
+                                    {detail.isPositive !== undefined ? (
+                                        detail.isPositive ? (
+                                          <span className='text-[13px] font-semibold px-3 py-1 rounded-full bg-[#E5F0DF] text-[#296D2C] leading-tight'>{detail.value}</span>
+                                        ) : (
+                                          <span className='text-[13px] font-semibold px-3 py-1 rounded-full bg-[#FEE2E2] text-[#991B1B] leading-tight'>{detail.value}</span>
+                                        )
+                                      ) : (
+                                          <span className='text-[15px] font-medium text-black100 text-right'>{detail.value}</span>
+                                      )}
                                 </div>
                             ))}
                         </div>
