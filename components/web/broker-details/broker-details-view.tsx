@@ -21,7 +21,7 @@ export default function BrokerDetailsView({broker, randomBrokers}:{broker:any, r
             <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 '>
                 <div className='grid grid-cols-[216px_1fr_380px] gap-5'>
                     <div>
-                        <TableOfContents />
+                        <TableOfContents broker={broker} />
                     </div>
                     <div className='grid grid-cols-1 gap-5'>
                         <TradingDetails broker={broker}/>
