@@ -25,8 +25,8 @@ const StarIcon = ({ fillPercentage }: { fillPercentage: number }) => (
             <path d="M12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26Z" />
         </svg>
         {/* Filled Star (Yellow) clipped by width */}
-        <div 
-            className="absolute top-0 left-0 overflow-hidden h-full" 
+        <div
+            className="absolute top-0 left-0 overflow-hidden h-full"
             style={{ width: `${fillPercentage}%` }}
         >
             <svg
@@ -57,7 +57,7 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
         { value: broker.maxLeverage || 'N/A', label: 'Max Leverage' },
         { value: broker.totalInstruments || 'N/A', label: 'Instruments' },
     ];
-  const headerList = await headers()
+    const headerList = await headers()
 
     const websiteUrl = broker.broker_website || broker.url || '';
     const absoluteUrl = websiteUrl.startsWith('http') ? websiteUrl : `https://${websiteUrl}`;
@@ -73,7 +73,7 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
 
                     </div>
 
-                    <div className='grid grid-cols-[1fr_38%] items-center gap-10 py-5 px-[90px]'>
+                    <div className='grid grid-cols-[1fr_40%] items-center gap-10 py-5 px-[90px]'>
                         <div>
                             <div className='grid grid-cols-[65px_1fr] gap-3 pb-6'>
                                 <div className='w-[65px] h-[65px] rounded-full flex items-center justify-center border border-solid border-primary'>
@@ -100,7 +100,7 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
                                 ))}
                             </div>
                             <div className='flex items-center gap-3 pb-6 border-b border-solid border-border-light300'>
-                                {absoluteUrl&&<Link href={absoluteUrl} target='_blank' >
+                                {absoluteUrl && <Link href={absoluteUrl} target='_blank' >
                                     <button className='py-2.5 px-5 w-[200px] justify-center text-base font-medium text-black100 border-none bg-primary rounded-full cursor-pointer flex items-center gap-2'>
 
                                         Visit Website
@@ -120,20 +120,20 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
                                         <path d="M15.7367 21.6527L14 22L14.3473 20.2633C14.4179 19.9106 14.5913 19.5866 14.8456 19.3323L18.9111 15.2668C19.2668 14.9111 19.8437 14.9111 20.1995 15.2668L20.7332 15.8005C21.0889 16.1563 21.0889 16.7332 20.7332 17.0889L16.6677 21.1544C16.4134 21.4087 16.0894 21.5821 15.7367 21.6527Z" stroke="#121212" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
                                 </button> */}
-                                 <BrokerClaimButton broker={broker}>
-                                                  <Suspense fallback={<ProductListSkeleton />}>
-                                                    <PlanQuery
-                                                      checkoutData={{
-                                                        successUrl: `${headerList.get("origin")}/brokers/${broker.slug}?claimed=true`,
-                                                        cancelUrl: headerList.get("referer") || "",
-                                                        metadata: {
-                                                          brokerId: String(broker.id),
-                                                          type: "claim",
-                                                        },
-                                                      }}
-                                                    />
-                                                  </Suspense>
-                                                </BrokerClaimButton>
+                                <BrokerClaimButton broker={broker}>
+                                    <Suspense fallback={<ProductListSkeleton />}>
+                                        <PlanQuery
+                                            checkoutData={{
+                                                successUrl: `${headerList.get("origin")}/brokers/${broker.slug}?claimed=true`,
+                                                cancelUrl: headerList.get("referer") || "",
+                                                metadata: {
+                                                    brokerId: String(broker.id),
+                                                    type: "claim",
+                                                },
+                                            }}
+                                        />
+                                    </Suspense>
+                                </BrokerClaimButton>
                                 {/* <div className='bg-[#F0F1EC] w-[44px] h-[44px] flex items-center justify-center rounded-full cursor-pointer'>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                         <path d="M4 17.9808V9.70753C4 6.07416 4 4.25748 5.17157 3.12874C6.34315 2 8.22876 2 12 2C15.7712 2 17.6569 2 18.8284 3.12874C20 4.25748 20 6.07416 20 9.70753V17.9808C20 20.2867 20 21.4396 19.2272 21.8523C17.7305 22.6514 14.9232 19.9852 13.59 19.1824C12.8168 18.7168 12.4302 18.484 12 18.484C11.5698 18.484 11.1832 18.7168 10.41 19.1824C9.0768 19.9852 6.26947 22.6514 4.77285 21.8523C4 21.4396 4 20.2867 4 17.9808Z" stroke="#121212" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
@@ -142,30 +142,40 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
                                 </div> */}
                                 <BrokerBookmarkButton brokerId={broker.id} />
                             </div>
-                           {broker.overall_rating&& <div className='pt-6 flex items-center gap-2'>
+                            {broker.overall_rating && <div className='pt-6 flex items-center gap-2'>
                                 {/* <img src={Profilegroup} alt='Profilegroup' className='block' />
                                 <p className='text-base font-medium text-black700'>
                                     Trusted by <span className='text-primary'> 70K+ </span> investors & traders with a  <span className='text-primary'> 4.8 out of 5 </span> rating
                                 </p> */}
-                                 <div className='flex items-center gap-1 border border-[#1212120D]/95 bg-[#F0F2EC66]  rounded-full  px-4 py-1'>
-                                            {[...Array(5)].map((_, i) => {
-                                                const rating = parseFloat(broker.overall_rating || '0');
-                                                const fillPercentage = Math.min(100, Math.max(0, (rating - i) * 100));
-                                                return (
-                                                    <StarIcon 
-                                                        key={i} 
-                                                        fillPercentage={fillPercentage} 
-                                                    />
-                                                );
-                                            })}
-                                          <p className='text-base font-medium text-black700'>
-                                    Trusted with a  <span className='text-primary'> {broker.overall_rating}/5 </span> customer rating
-                                </p>
-                                        </div>
+                                <div className='flex items-center gap-1 border border-[#1212120D]/95 bg-[#F0F2EC66]  rounded-full  px-4 py-1'>
+                                    {[...Array(5)].map((_, i) => {
+                                        const rating = parseFloat(broker.overall_rating || '0');
+                                        const fillPercentage = Math.min(100, Math.max(0, (rating - i) * 100));
+                                        return (
+                                            <StarIcon
+                                                key={i}
+                                                fillPercentage={fillPercentage}
+                                            />
+                                        );
+                                    })}
+                                    <p className='text-base font-medium text-black700'>
+                                        Trusted with a  <span className='text-primary'> {broker.overall_rating}/5 </span> customer rating
+                                    </p>
+                                </div>
                             </div>}
                         </div>
-                        <div className="relative z-10 w-full ">
-                            <img src={FramImage} alt='FramImage' />
+                        <div className="relative z-10 w-full flex items-center justify-center">
+                            {/* The transparent laptop frame image on top */}
+                            <img src={FramImage} alt='Laptop Frame' className="relative z-20 w-full object-contain pointer-events-none" />
+
+                            {/* The dynamic screenshot positioned underneath the screen area */}
+                            {(broker.screenshotUrl || broker.bannerUrl) && (
+                                <img
+                                    src={(await getPresignedUrlFromFull(broker.screenshotUrl || broker.bannerUrl)) ?? ''}
+                                    alt="Broker Screenshot"
+                                    className="absolute z-[999] w-[75.5%] h-[82%] top-[5%] left-[12.2%] object-top"
+                                />
+                            )}
                         </div>
                     </div>
 
