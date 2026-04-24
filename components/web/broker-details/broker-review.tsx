@@ -1,0 +1,83 @@
+import React from 'react'
+
+const TripleArrow = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <path d="M6.32227 3.56641C6.35915 3.56641 6.39473 3.57723 6.4248 3.59668C6.45493 3.61621 6.47758 3.64373 6.49121 3.6748L9.73926 11.085V11.0869L9.78125 11.1826C9.79075 11.2044 9.79592 11.2276 9.7959 11.251C9.79581 11.2745 9.79096 11.2985 9.78125 11.3203L6.49121 18.6973C6.47751 18.7281 6.45377 18.7551 6.42383 18.7744C6.39398 18.7936 6.3588 18.8046 6.32227 18.8047H2.78125C2.7491 18.8042 2.71803 18.7954 2.69043 18.7803C2.66282 18.7652 2.63954 18.7439 2.62305 18.7188C2.60671 18.6938 2.59728 18.6656 2.59473 18.6367C2.5923 18.609 2.59588 18.5808 2.60645 18.5547L5.77344 11.5146L5.86426 11.3135L5.77637 11.1104L2.60645 3.81641C2.59561 3.7897 2.59197 3.76073 2.59473 3.73242C2.59756 3.70367 2.60752 3.67518 2.62402 3.65039C2.64053 3.62574 2.66316 3.60469 2.69043 3.58984C2.70416 3.58238 2.71918 3.57723 2.73438 3.57324L2.78125 3.56641H6.32227ZM8.9707 3.57617C9.01184 3.57446 9.05255 3.58558 9.08594 3.60742L19.3301 11.041C19.3532 11.0584 19.3713 11.0807 19.3838 11.1055C19.3964 11.1306 19.4033 11.158 19.4033 11.1855C19.4033 11.213 19.3964 11.2406 19.3838 11.2656C19.3779 11.2773 19.3705 11.2889 19.3613 11.2998L19.3291 11.3301L9.09082 18.7598C9.05678 18.7829 9.01501 18.7947 8.97266 18.793C8.93021 18.7911 8.89009 18.7758 8.8584 18.75C8.82679 18.7243 8.80505 18.6898 8.7959 18.6523C8.79137 18.6337 8.79034 18.6146 8.79199 18.5957L8.80566 18.54L12.1953 11.3994L12.2979 11.1855L12.1953 10.9707L8.80371 3.82812C8.7885 3.79287 8.78596 3.75372 8.79492 3.7168C8.804 3.67939 8.82584 3.64485 8.85742 3.61914C8.88894 3.59359 8.92856 3.57801 8.9707 3.57617Z" stroke="#A8DD15" />
+        <path d="M19.6288 11.7328L9.45166 19.1847C9.32922 19.2685 9.18282 19.3103 9.03451 19.3039C8.8862 19.2974 8.74401 19.2429 8.62939 19.1488C8.51476 19.0546 8.4339 18.9257 8.39899 18.7817C8.36408 18.6376 8.37702 18.4862 8.43584 18.3501L11.8063 11.1861L8.43584 4.02204C8.37644 3.88594 8.36309 3.73421 8.39781 3.58985C8.43253 3.44548 8.51343 3.31635 8.62825 3.22201C8.74308 3.12766 8.88557 3.07325 9.03415 3.06701C9.18273 3.06077 9.3293 3.10304 9.45166 3.18742L19.6295 10.6394C19.7143 10.7031 19.7832 10.7857 19.8306 10.8806C19.878 10.9755 19.9027 11.08 19.9027 11.1861C19.9027 11.2921 19.878 11.3967 19.8306 11.4916C19.7832 11.5864 19.7137 11.669 19.6288 11.7328Z" fill="#A8DD15" />
+    </svg>
+)
+
+export default function BrokerReview() {
+    return (
+        <div id='broker-review' className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
+            <div className='p-4 relative flex items-center '>
+                <div className='absolute top-3 left-0 w-1 h-[26px] bg-primary rounded-r-[4px]'></div>
+                <h3 className='text-base text-black100 font-semibold uppercase'>
+                    BROKER REVIEW
+                </h3>
+            </div>
+            <div className='px-4 pb-4'>
+                <div className='border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
+
+                    {/* Badges */}
+                    <div className='flex flex-wrap gap-2 pb-5'>
+                        <span className='text-[12px] font-semibold px-3 py-1 rounded-full bg-black100 text-[#A8DD15]'>
+                            Founded 2010
+                        </span>
+                        <span className='text-[12px] font-semibold px-3 py-1 rounded-full bg-[#A8DD15] text-[#111]'>
+                            7 Regulations
+                        </span>
+                        <span className='text-[12px] font-semibold px-3 py-1 rounded-full bg-[#A8DD15] text-[#111]'>
+                            Accepted
+                        </span>
+                        <span className='text-[12px] font-semibold px-3 py-1 rounded-full bg-[#A8DD15] text-[#111]'>
+                            ECN Broker
+                        </span>
+                    </div>
+
+                    {/* Review Text Items */}
+                    <div className='flex flex-col gap-4'>
+                        <div className='flex items-start gap-2'>
+                            <div className='flex-shrink-0 pt-[3px]'>
+                                <TripleArrow />
+                            </div>
+                            <p className='text-[15px] font-medium text-black700 leading-[1.6]'>
+                                Pepperstone was founded in 2010 in Melbourne, Australia. It is regulated by 7 top regulatory authorities including ASIC, FCA, CYSEC, BaFin, DFSA, CMA, and SYC-which is rare among global brokers. Indian traders are accepted and INR deposits are supported
+                            </p>
+                        </div>
+
+                        <div className='flex items-start gap-2'>
+                            <div className='flex-shrink-0 pt-[3px]'>
+                                <TripleArrow />
+                            </div>
+                            <p className='text-[15px] font-medium text-black700 leading-[1.6]'>
+                                Pepperstone's biggest strength is execution speed - average order execution is under 30ms. On the Razor account (ECN), spreads go as low as 0.0 pips with a commission of $6-7 per round lot. The Standard account is commission-free with spreads starting from 1.0 pips.
+                            </p>
+                        </div>
+
+                        <div className='flex items-start gap-2'>
+                            <div className='flex-shrink-0 pt-[3px]'>
+                                <TripleArrow />
+                            </div>
+                            <p className='text-[15px] font-medium text-black700 leading-[1.6]'>
+                                The platform selection is exceptional-MT4, MT5, cTrader, TradingView, and a proprietary Pepperstone Platform. This broker is ideal for scalpers, day traders, and automated traders. Copy trading is available through DupliTrade and MetaTrader Signals.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className='w-full h-[1px] bg-border-light300 my-5'></div>
+
+                    <div className='flex items-start gap-2'>
+                        <div className='flex-shrink-0 pt-[3px]'>
+                            <TripleArrow />
+                        </div>
+                        <p className='text-[15px] font-medium text-black700 leading-[1.6]'>
+                            Disclaimer: Forex trading involves significant risk. Past performance does not guarantee future results. Always verify a broker's regulatory status before depositing funds
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    )
+}
