@@ -143,6 +143,15 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       review_article: broker?.review_article ?? "",
       seo_title: broker?.seo_title ?? "",
       seo_meta_description: broker?.seo_meta_description ?? "",
+      newer_traders_rating: broker?.newer_traders_rating ?? null,
+      scalpers_rating: broker?.scalpers_rating ?? null,
+      swing_traders_rating: broker?.swing_traders_rating ?? null,
+      news_traders_rating: broker?.news_traders_rating ?? null,
+      day_traders_rating: broker?.day_traders_rating ?? null,
+      copy_traders_rating: broker?.copy_traders_rating ?? null,
+      automated_traders_rating: broker?.automated_traders_rating ?? null,
+      investors_rating: broker?.investors_rating ?? null,
+      faqs: broker?.faqs ?? [],
     },
   })
 
@@ -721,6 +730,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
 
         <FeaturesField control={form.control} register={form.register} />
         <AccountTypesField control={form.control} register={form.register} />
+        <FAQsField control={form.control} register={form.register} />
 
         <Controller
           control={form.control}
@@ -796,6 +806,44 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
+
+        <div className="col-span-full pt-4">
+          <H3>Trader Ratings</H3>
+          <Hint>Ratings for different trader profiles (0-5)</Hint>
+        </div>
+
+        {([
+          { name: "newer_traders_rating", label: "Newer Traders Rating" },
+          { name: "scalpers_rating", label: "Scalpers Rating" },
+          { name: "swing_traders_rating", label: "Swing Traders Rating" },
+          { name: "news_traders_rating", label: "News Traders Rating" },
+          { name: "day_traders_rating", label: "Day Traders Rating" },
+          { name: "copy_traders_rating", label: "Copy Traders Rating" },
+          { name: "automated_traders_rating", label: "Automated Traders Rating" },
+          { name: "investors_rating", label: "Investors Rating" },
+        ] as const).map((f) => (
+          <Controller
+            key={f.name}
+            control={form.control}
+            name={f.name}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>{f.label}</FieldLabel>
+                <Input
+                  id={field.name}
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  max="5"
+                  {...field}
+                  value={field.value ?? ""}
+                  onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
+                />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+        ))}
         <Controller
           control={form.control}
           name="pros"
@@ -961,6 +1009,60 @@ function AccountTypesField({ control, register }: { control: any, register: any 
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Account Type
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function FAQsField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "faqs",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>FAQs</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="grid grid-cols-[1fr_1fr_auto] gap-2 items-start bg-muted/20 p-3 rounded-lg border border-border/50">
+            <div className="space-y-1">
+              <FieldLabel className="text-xs">Question</FieldLabel>
+              <Input
+                {...register(`faqs.${index}.question`)}
+                placeholder="Enter question"
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-1">
+              <FieldLabel className="text-xs">Answer</FieldLabel>
+              <TextArea
+                {...register(`faqs.${index}.answer`)}
+                placeholder="Enter answer"
+                className="w-full min-h-[40px]"
+              />
+            </div>
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0 mt-6"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append({ question: "", answer: "" })}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add FAQ
         </Button>
       </Stack>
     </div>

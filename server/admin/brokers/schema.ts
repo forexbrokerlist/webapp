@@ -99,6 +99,19 @@ export const brokerSchema = z.object({
   review_article: z.string().optional(),
   seo_title: z.string().optional(),
   seo_meta_description: z.string().optional(),
+  newer_traders_rating: z.number().optional().nullable(),
+  scalpers_rating: z.number().optional().nullable(),
+  swing_traders_rating: z.number().optional().nullable(),
+  news_traders_rating: z.number().optional().nullable(),
+  day_traders_rating: z.number().optional().nullable(),
+  copy_traders_rating: z.number().optional().nullable(),
+  automated_traders_rating: z.number().optional().nullable(),
+  investors_rating: z.number().optional().nullable(),
+  faqs: z.array(z.object({
+    id: z.string().optional(),
+    question: z.string().min(1, "Question is required"),
+    answer: z.string().min(1, "Answer is required"),
+  })).optional(),
 });
 
 export type BrokerSchema = z.infer<typeof brokerSchema>;
