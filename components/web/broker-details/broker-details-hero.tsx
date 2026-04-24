@@ -147,7 +147,7 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
                                 <p className='text-base font-medium text-black700'>
                                     Trusted by <span className='text-primary'> 70K+ </span> investors & traders with a  <span className='text-primary'> 4.8 out of 5 </span> rating
                                 </p> */}
-                                 <div className='flex items-center gap-1'>
+                                 <div className='flex items-center gap-1 border border-[#1212120D]/95 bg-[#F0F2EC66]  rounded-full  px-4 py-1'>
                                             {[...Array(5)].map((_, i) => {
                                                 const rating = parseFloat(broker.overall_rating || '0');
                                                 const fillPercentage = Math.min(100, Math.max(0, (rating - i) * 100));
