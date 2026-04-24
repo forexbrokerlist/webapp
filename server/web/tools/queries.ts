@@ -219,5 +219,6 @@ export const findBrokerBySlug = async (slug: string) => {
 
   return db.brokers.findFirst({
     where: { status: ToolStatus.Published, slug },
+    include: { faqs: true },
   })
 }

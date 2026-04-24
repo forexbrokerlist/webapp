@@ -4,37 +4,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const RoundIcon = '/assets/images/round.svg';
 
-const faqs = [
-    {
-        question: "Is IC Markets safe to trade with?",
-        answer: "A comprehensive directory to discover and compare 512+ forex brokers and industry service providers. We help traders find the right broker based on spreads, regulation, platforms, and more."
-    },
-    {
-        question: "What is IC Markets minimum deposit?",
-        answer: "The minimum deposit for IC Markets is usually around $200, though this can vary depending on the account type and funding method."
-    },
-    {
-        question: "Does IC Markets offer MT4?",
-        answer: "Yes, IC Markets offers the popular MetaTrader 4 (MT4) platform along with MetaTrader 5 and cTrader."
-    },
-    {
-        question: "How long does IC Markets withdrawal take?",
-        answer: "Withdrawals are typically processed within 24 hours. The actual time to reach your account depends on the payment method."
-    },
-    {
-        question: "Is IC Markets good for beginners?",
-        answer: "IC Markets is suitable for beginners as it offers a free demo account, extensive educational resources, and user-friendly platforms."
-    }
-];
 
-export default function FaqSection() {
+export default function FaqSection({ broker }: { broker: any }) {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+    const faqs = broker?.faqs || [];
+
+    if (faqs.length === 0) return null;
 
     const toggleFaq = (index: number) => {
         setOpenIndex(openIndex === index ? null : index);
     };
 
     return (
+        
         <div id='faq' className='rounded-xl border scroll-mt-20 border-border-light180 border-solid bg-white overflow-hidden'>
             <div className='p-4 relative flex items-center '>
                 <div className='absolute top-3 left-0 w-1 h-[26px] bg-primary rounded-r-[4px]'></div>
@@ -52,7 +35,7 @@ export default function FaqSection() {
                     </div>
                     <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
                     <div className='pt-4 flex flex-col gap-2'>
-                        {faqs.map((faq, index) => {
+                        {faqs.map((faq: any, index: number) => {
                             const isOpen = openIndex === index;
                             return (
                                 <div

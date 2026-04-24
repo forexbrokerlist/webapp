@@ -17,7 +17,7 @@ import { cn } from "~/lib/utils"
 
 export default function ({ children }: PropsWithChildren) {
   const pathname = usePathname()
-  const isHome = pathname === "/" || pathname === "/categories" || pathname === "/trade-snap" || pathname === "/fx-guru" || pathname === "/broker-details"
+  const isHome = pathname === "/" || pathname === "/categories" || pathname === "/trade-snap" || pathname === "/fx-guru" || pathname === "/broker-details" || pathname.startsWith("/broker/")
 
   return (
     <QueryProvider>

@@ -1,23 +1,6 @@
 import React from 'react'
 const RoundIcon = '/assets/images/round.svg';
 
-const platforms = [
-    "MetaTrader 4", "MetaTrader 5", "cTrader", "TradingView", "Proprietary"
-];
-
-const ratingsCol1 = [
-    { label: "Newer Traders", rating: 4 },
-    { label: "Scalpers", rating: 5 },
-    { label: "Swing Traders", rating: 4 },
-    { label: "News Traders", rating: 4 },
-];
-
-const ratingsCol2 = [
-    { label: "Day Traders", rating: 5 },
-    { label: "Copy Traders", rating: 4 },
-    { label: "Automated Traders", rating: 5 },
-    { label: "Investors", rating: 2 },
-];
 
 const StarIcon = ({ filled }: { filled: boolean }) => (
     <svg
@@ -31,7 +14,24 @@ const StarIcon = ({ filled }: { filled: boolean }) => (
     </svg>
 );
 
-export default function PlatformFeatures() {
+export default function PlatformFeatures({ broker }: { broker: any }) {
+    const platformsRaw = broker.trading_platforms || "";
+    const platforms = platformsRaw ? platformsRaw.split(',').map((p: string) => p.trim()) : ["MetaTrader 4", "MetaTrader 5"];
+
+    const ratingsCol1 = [
+        { label: "Newer Traders", rating: broker.newer_traders_rating ?? 0 },
+        { label: "Scalpers", rating: broker.scalpers_rating ?? 0 },
+        { label: "Swing Traders", rating: broker.swing_traders_rating ?? 0 },
+        { label: "News Traders", rating: broker.news_traders_rating ?? 0 },
+    ];
+
+    const ratingsCol2 = [
+        { label: "Day Traders", rating: broker.day_traders_rating ?? 0 },
+        { label: "Copy Traders", rating: broker.copy_traders_rating ?? 0 },
+        { label: "Automated Traders", rating: broker.automated_traders_rating ?? 0 },
+        { label: "Investors", rating: broker.investors_rating ?? 0 },
+    ];
+
     return (
         <div id='platform-features' className='rounded-xl bg-[#f0f1ec4d] border border-border-light300 border-solid  overflow-hidden'>
             <div className='p-4' >
@@ -47,7 +47,7 @@ export default function PlatformFeatures() {
 
                         <div className='pt-4 pb-2'>
                             <div className='flex flex-wrap gap-2'>
-                                {platforms.map((platform, idx) => (
+                                {platforms.map((platform: string, idx: number) => (
                                     <span key={idx} className='text-[12px] font-semibold px-3 py-1 rounded-full bg-[#A8DD15] text-black leading-tight'>
                                         {platform}
                                     </span>

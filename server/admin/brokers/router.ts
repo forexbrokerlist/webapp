@@ -44,6 +44,7 @@ const upsert = adminProcedure
       categoryIds,
       subcategoryIds,
       tagIds,
+      faqs,
       ...data
     } = input;
     const existingBroker = id
@@ -68,6 +69,14 @@ const upsert = adminProcedure
             tags: {
               set: tagIds?.map((id) => ({ id })),
             },
+            faqs: {
+              deleteMany: {},
+              create: faqs?.map((f, i) => ({
+                question: f.question,
+                answer: f.answer,
+                order: i,
+              })),
+            },
           },
         })
       : await db.brokers.create({
@@ -82,6 +91,13 @@ const upsert = adminProcedure
             },
             tags: {
               connect: tagIds?.map((id) => ({ id })),
+            },
+            faqs: {
+              create: faqs?.map((f, i) => ({
+                question: f.question,
+                answer: f.answer,
+                order: i,
+              })),
             },
           },
         });

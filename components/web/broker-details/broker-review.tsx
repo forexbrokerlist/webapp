@@ -1,4 +1,5 @@
 import React from 'react'
+import { Markdown } from '~/components/web/markdown'
 
 const TripleArrow = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
@@ -7,7 +8,21 @@ const TripleArrow = () => (
     </svg>
 )
 
-export default function BrokerReview() {
+export default function BrokerReview({ broker }: { broker: any }) {
+    const sections = (broker?.review_article || "")
+        .split("##")
+        .map((section: string) => section.trim())
+        .filter(Boolean)
+        .map((section: string) => {
+            const [title, ...contentLines] = section.split("\n");
+            return {
+                title: title?.trim(),
+                content: contentLines.join("\n").trim(),
+            };
+        });
+
+    const regulatorCount = broker?.regulators?.split(',').filter(Boolean).length || 0;
+
     return (
         <div id='broker-review' className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
             <div className='p-4 relative flex items-center '>
@@ -20,49 +35,53 @@ export default function BrokerReview() {
                 <div className='border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
 
                     {/* Badges */}
-                    <div className='flex flex-wrap gap-2 pb-5'>
-                        <span className='text-[12px] font-semibold px-3 py-1 rounded-full bg-black100 text-[#A8DD15]'>
-                            Founded 2010
-                        </span>
-                        <span className='text-[12px] font-semibold px-3 py-1 rounded-full bg-[#A8DD15] text-[#111]'>
-                            7 Regulations
-                        </span>
-                        <span className='text-[12px] font-semibold px-3 py-1 rounded-full bg-[#A8DD15] text-[#111]'>
-                            Accepted
-                        </span>
-                        <span className='text-[12px] font-semibold px-3 py-1 rounded-full bg-[#A8DD15] text-[#111]'>
-                            ECN Broker
-                        </span>
-                    </div>
-
+                    {/* <div className='flex flex-wrap gap-2 pb-5'>
+                        {broker?.year_established && (
+                            <span className='text-[12px] font-semibold px-3 py-1 rounded-full bg-black100 text-[#A8DD15]'>
+                                Founded {broker.year_established}
+                            </span>
+                        )}
+                        {regulatorCount > 0 && (
+                            <span className='text-[12px] font-semibold px-3 py-1 rounded-full bg-[#A8DD15] text-[#111]'>
+                                {regulatorCount} Regulations
+                            </span>
+                        )}
+                        {broker?.availableInIndia && (
+                            <span className='text-[12px] font-semibold px-3 py-1 rounded-full bg-[#A8DD15] text-[#111]'>
+                                India Accepted
+                            </span>
+                        )}
+                        {broker?.execution_types && (
+                            <span className='text-[12px] font-semibold px-3 py-1 rounded-full bg-[#A8DD15] text-[#111]'>
+                                {broker.execution_types}
+                            </span>
+                        )}
                     {/* Review Text Items */}
                     <div className='flex flex-col gap-4'>
-                        <div className='flex items-start gap-2'>
-                            <div className='flex-shrink-0 pt-[3px]'>
-                                <TripleArrow />
+                        {sections.length > 0 ? (
+                            sections.map((section: any, index: number) => (
+                                <div key={index} className='flex items-start gap-2'>
+                                    <div className='flex-shrink-0 pt-[3px]'>
+                                        <TripleArrow />
+                                    </div>
+                                    <div className='flex flex-col'>
+                                        {section.title && <h4 className='text-[16px] font-bold text-black100 mb-2'>{section.title}</h4>}
+                                        <div className='text-[15px] font-medium text-black700 leading-[1.6]'>
+                                            <Markdown code={section.content} />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        ) : broker?.description ? (
+                            <div className='flex items-start gap-2'>
+                                <div className='flex-shrink-0 pt-[3px]'>
+                                    <TripleArrow />
+                                </div>
+                                <p className='text-[15px] font-medium text-black700 leading-[1.6]'>
+                                    {broker.description}
+                                </p>
                             </div>
-                            <p className='text-[15px] font-medium text-black700 leading-[1.6]'>
-                                Pepperstone was founded in 2010 in Melbourne, Australia. It is regulated by 7 top regulatory authorities including ASIC, FCA, CYSEC, BaFin, DFSA, CMA, and SYC-which is rare among global brokers. Indian traders are accepted and INR deposits are supported
-                            </p>
-                        </div>
-
-                        <div className='flex items-start gap-2'>
-                            <div className='flex-shrink-0 pt-[3px]'>
-                                <TripleArrow />
-                            </div>
-                            <p className='text-[15px] font-medium text-black700 leading-[1.6]'>
-                                Pepperstone's biggest strength is execution speed - average order execution is under 30ms. On the Razor account (ECN), spreads go as low as 0.0 pips with a commission of $6-7 per round lot. The Standard account is commission-free with spreads starting from 1.0 pips.
-                            </p>
-                        </div>
-
-                        <div className='flex items-start gap-2'>
-                            <div className='flex-shrink-0 pt-[3px]'>
-                                <TripleArrow />
-                            </div>
-                            <p className='text-[15px] font-medium text-black700 leading-[1.6]'>
-                                The platform selection is exceptional-MT4, MT5, cTrader, TradingView, and a proprietary Pepperstone Platform. This broker is ideal for scalpers, day traders, and automated traders. Copy trading is available through DupliTrade and MetaTrader Signals.
-                            </p>
-                        </div>
+                        ) : null}
                     </div>
 
                     <div className='w-full h-[1px] bg-border-light300 my-5'></div>

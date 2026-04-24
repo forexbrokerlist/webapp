@@ -11,9 +11,11 @@ import BrokerReview from './broker-review';
 import UserReview from './user-review';
 import CompareBroker from './compare-broker';
 import FaqSection from './faq-section';
+import Link from 'next/link';
 const ForexImage = '/assets/images/FBL Logo.png';
 
-export default function BrokerDetailsView() {
+
+export default function BrokerDetailsView({broker}:{broker:any}) {
     return (
         <div>
             <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 '>
@@ -22,18 +24,18 @@ export default function BrokerDetailsView() {
                         <TableOfContents />
                     </div>
                     <div className='grid grid-cols-1 gap-5'>
-                        <TradingDetails />
-                        <TradingSpecifications />
-                        <BrokerReview />
+                        <TradingDetails broker={broker}/>
+                        <TradingSpecifications broker={broker}/>
+                        <BrokerReview broker={broker}/>
                         <UserReview />
                         <CompareBroker />
-                        <FaqSection />
+                        <FaqSection broker={broker}/>
                     </div>
                     <div>
                         <div className='p-5 sticky top-[100px] z-[99] mb-5 rounded-xl border-[0.5px] border-[#A8DD15] bg-[#FFFFFE] shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]'>
                             <div className='flex items-center gap-3 pb-2'>
                                 <div className='w-14 flex items-center justify-center h-14 rounded-md  bg-[rgba(255,255,255,0.14)] shadow-[inset_0_0_15px_0_rgba(168,221,21,0.20)]'>
-                                    <img src='https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.fxpro.com&size=128' className='max-w-6 bg-white block object-contain' />
+                                    <img src={"/assets/images/ForexLogo.png"} className='max-w-12 h-auto block object-contain' />
                                 </div>
                                 <p className='text-lg font-semibold text-black100'>
                                     Your brand here
@@ -50,10 +52,12 @@ export default function BrokerDetailsView() {
                                 <img className='block w-full' src={ForexImage} alt="ForexImage" />
                             </div>
                             <Button variant='primary' className='justify-center flex items-center text-sm w-full bg-black100'>
+                               <Link href="/advertise">
                                 Advertise on Forex Brokers Listing
                                 <div className='flex items-center'>
                                     <MoveRight className=' w-4 h-4' />
                                 </div>
+                                </Link>
                             </Button>
                         </div>
                         <SuggestedBroker />
