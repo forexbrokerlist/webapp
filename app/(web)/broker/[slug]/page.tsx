@@ -28,7 +28,7 @@ import { Sticky } from "~/components/web/ui/sticky"
 import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
-import { findBrokerBySlug } from "~/server/web/tools/queries"
+import { findBrokerBySlug, findRandomBrokers } from "~/server/web/tools/queries"
 import { getPresignedUrlFromFull, getScreenshotFetchUrl } from "~/lib/media"
 import BrokerDetails from "~/components/web/broker-details"
 
@@ -67,8 +67,17 @@ const getData = cache(async ({ params }: Props) => {
   })
 
   const screenshotUrl = await getPresignedUrlFromFull(broker.screenshotUrl)
+  const categorySlug = broker.categories?.[0]?.slug
+  const randomBrokersRaw = await findRandomBrokers(3, slug, categorySlug)
+  const randomBrokers = await Promise.all(
+    randomBrokersRaw.map(async (b) => ({
+      ...b,
+      screenshotUrl: await getPresignedUrlFromFull(b.screenshotUrl),
+      logoUrl: await getPresignedUrlFromFull(b.logoUrl),
+    }))
+  )
 
-  return { broker: { ...broker, screenshotUrl }, ...data }
+  return { broker: { ...broker, screenshotUrl }, randomBrokers, ...data }
 })
 
 
@@ -89,13 +98,13 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 }
 
 export default async function (props: Props) {
-  const { broker, metadata, structuredData } = await getData(props)
+  const { broker, randomBrokers, metadata, structuredData } = await getData(props)
   console.log(broker)
   const headerList = await headers()
 
   return (
     <>
-      <BrokerDetails broker={broker} />
+      <BrokerDetails broker={broker} randomBrokers={randomBrokers} />
 
       <StructuredData data={structuredData} />
     </>

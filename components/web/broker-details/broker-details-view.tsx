@@ -15,7 +15,7 @@ import Link from 'next/link';
 const ForexImage = '/assets/images/FBL Logo.png';
 
 
-export default function BrokerDetailsView({broker}:{broker:any}) {
+export default function BrokerDetailsView({broker, randomBrokers}:{broker:any, randomBrokers: any[]}) {
     return (
         <div>
             <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 '>
@@ -60,7 +60,7 @@ export default function BrokerDetailsView({broker}:{broker:any}) {
                                 </Link>
                             </Button>
                         </div>
-                        <SuggestedBroker />
+                        <SuggestedBroker brokers={randomBrokers} />
                     </div>
                 </div>
             </div>

@@ -219,6 +219,45 @@ export const findBrokerBySlug = async (slug: string) => {
 
   return db.brokers.findFirst({
     where: { status: ToolStatus.Published, slug },
-    include: { faqs: true },
+    include: { faqs: true, categories: true },
+  })
+}
+
+export const findRandomBrokers = async (take: number = 3, excludeSlug?: string, categorySlug?: string) => {
+  "use cache"
+
+  cacheTag("brokers")
+  cacheLife("minutes")
+
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    isSponsor: true,
+    ...(excludeSlug && { slug: { not: excludeSlug } }),
+    ...(categorySlug && { categories: { some: { slug: categorySlug } } }),
+  }
+
+  const itemCount = await db.brokers.count({ where: whereClause })
+  
+  if (itemCount === 0) return []
+  
+  // Pick a random starting point
+  const skip = Math.max(0, Math.floor(Math.random() * (itemCount - take + 1)))
+
+  return db.brokers.findMany({
+    where: whereClause,
+    select: {
+      broker_name: true,
+      logoUrl: true,
+      screenshotUrl: true,
+      slug: true,
+      categories: {
+        select: {
+          slug: true,
+        },
+        take: 1,
+      },
+    },
+    take,
+    skip,
   })
 }
