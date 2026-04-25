@@ -28,7 +28,7 @@ import { Sticky } from "~/components/web/ui/sticky"
 import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
-import { findBrokerBySlug, findRandomBrokers } from "~/server/web/tools/queries"
+import { findBrokerBySlug, findRandomBrokers, findBrokersForComparison } from "~/server/web/tools/queries"
 import { getPresignedUrlFromFull, getScreenshotFetchUrl } from "~/lib/media"
 import BrokerDetails from "~/components/web/broker-details"
 
@@ -67,6 +67,7 @@ const getData = cache(async ({ params }: Props) => {
   })
 
   const screenshotUrl = await getPresignedUrlFromFull(broker.screenshotUrl)
+  const logoUrl = await getPresignedUrlFromFull(broker.logoUrl)
   const categorySlug = broker.categories?.[0]?.slug
   const randomBrokersRaw = await findRandomBrokers(3, slug, categorySlug)
   const randomBrokers = await Promise.all(
@@ -77,7 +78,15 @@ const getData = cache(async ({ params }: Props) => {
     }))
   )
 
-  return { broker: { ...broker, screenshotUrl }, randomBrokers, ...data }
+  const trustedBrokersRaw = await findBrokersForComparison(12)
+  const trustedBrokers = await Promise.all(
+    trustedBrokersRaw.map(async (b) => ({
+      ...b,
+      logoUrl: await getPresignedUrlFromFull(b.logoUrl),
+    }))
+  )
+
+  return { broker: { ...broker, screenshotUrl, logoUrl }, randomBrokers, trustedBrokers, ...data }
 })
 
 
@@ -98,13 +107,13 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 }
 
 export default async function (props: Props) {
-  const { broker, randomBrokers, metadata, structuredData } = await getData(props)
+  const { broker, randomBrokers, trustedBrokers, metadata, structuredData } = await getData(props)
   console.log(broker)
   const headerList = await headers()
 
   return (
     <>
-      <BrokerDetails broker={broker} randomBrokers={randomBrokers} />
+      <BrokerDetails broker={broker} randomBrokers={randomBrokers} trustedBrokers={trustedBrokers} />
 
       <StructuredData data={structuredData} />
     </>

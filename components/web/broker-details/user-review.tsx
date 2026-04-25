@@ -140,7 +140,7 @@ export default function UserReview() {
                                 </div>
                             ))}
                         </div>
-                        <div className='pt-4 flex items-center justify-between'>
+                        <div className='pt-4 flex items-center justify-between hidden'>
                             <p className='text-base text-black100 font-medium'>
                                 Showing 3 of 15,000+ verified reviews
                             </p>
