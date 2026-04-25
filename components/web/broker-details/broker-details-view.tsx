@@ -9,13 +9,13 @@ import PlatformFeatures from './platform-features';
 import ProsCons from './pros-cons';
 import BrokerReview from './broker-review';
 import UserReview from './user-review';
-import CompareBroker from './compare-broker';
+import CompareBrokers from './compare-brokers';
 import FaqSection from './faq-section';
 import Link from 'next/link';
 const ForexImage = '/assets/images/FBL Logo.png';
 
 
-export default function BrokerDetailsView({broker, randomBrokers}:{broker:any, randomBrokers: any[]}) {
+export default function BrokerDetailsView({broker, randomBrokers, trustedBrokers}:{broker:any, randomBrokers: any[], trustedBrokers?: any[]}) {
     return (
         <div>
             <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 '>
@@ -28,7 +28,7 @@ export default function BrokerDetailsView({broker, randomBrokers}:{broker:any, r
                         <TradingSpecifications broker={broker}/>
                         <BrokerReview broker={broker}/>
                         <UserReview />
-                        <CompareBroker />
+                        <CompareBrokers broker={broker} trustedBrokers={trustedBrokers} />
                         <FaqSection broker={broker}/>
                     </div>
                     <div>
