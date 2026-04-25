@@ -77,7 +77,7 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
                         <div>
                             <div className='grid grid-cols-[65px_1fr] gap-3 pb-6'>
                                 <div className='w-[65px] h-[65px] rounded-full flex items-center justify-center border border-solid border-primary'>
-                                    <img src={(await getPresignedUrlFromFull(broker.logoUrl)) ?? undefined} alt="logo" className='max-w-7 bg-white block object-contain' />
+                                    <img src={(await getPresignedUrlFromFull(broker.logoUrl)) ?? undefined} alt="logo" className='max-w-[45px] bg-white block object-contain' />
                                 </div>
                                 <div>
                                     <h2 className='text-4xl text-primary font-semibold'>
