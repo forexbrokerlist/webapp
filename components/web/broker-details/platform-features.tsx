@@ -14,10 +14,15 @@ const StarIcon = ({ filled }: { filled: boolean }) => (
     </svg>
 );
 
-export default function PlatformFeatures({ broker }: { broker: any }) {
+export default function PlatformFeatures({ broker, showStarRatings = true, showFeatures = false }: { broker: any, showStarRatings?: Boolean, showFeatures?: Boolean }) {
     const platformsRaw = broker.trading_platforms || "";
     const platforms = platformsRaw ? platformsRaw.split(',').map((p: string) => p.trim()) : ["MetaTrader 4", "MetaTrader 5"];
+    const features = broker.features || [];
 
+    // Split features into two columns for better layout
+    const midPoint = Math.ceil(features.length / 2);
+    const featuresCol1 = features.slice(0, midPoint);
+    const featuresCol2 = features.slice(midPoint);
     const ratingsCol1 = [
         { label: "Newer Traders", rating: broker.newer_traders_rating ?? 0 },
         { label: "Scalpers", rating: broker.scalpers_rating ?? 0 },
@@ -33,19 +38,20 @@ export default function PlatformFeatures({ broker }: { broker: any }) {
     ];
 
     return (
-        <div id='platform-features' className='rounded-xl bg-[#f0f1ec4d] border border-border-light300 border-solid  overflow-hidden'>
-            <div className='p-4' >
-                <div className='grid grid-cols-1 gap-5'>
-                    <div className=''>
+        <>
+            {showFeatures ? (
+                // Grid layout when showFeatures is true
+                <div className='grid grid-cols-2 gap-4'>
+                    {/* Platform Integration Card */}
+                    <div className='p-4 rounded-xl border border-border-light300 bg-[#f0f1ec4d]'>
                         <div className='flex items-center gap-2 pb-3'>
                             <img src={RoundIcon} alt="RoundIcon" className='block' />
                             <span className='block text-base font-medium text-black'>
-                                Platform & Features
+                                Platform Integration
                             </span>
                         </div>
                         <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
-
-                        <div className='pt-4 pb-2'>
+                        <div className='pt-4'>
                             <div className='flex flex-wrap gap-2'>
                                 {platforms.map((platform: string, idx: number) => (
                                     <span key={idx} className='text-[12px] font-semibold px-3 py-1 rounded-full bg-[#A8DD15] text-black leading-tight'>
@@ -54,37 +60,84 @@ export default function PlatformFeatures({ broker }: { broker: any }) {
                                 ))}
                             </div>
                         </div>
+                    </div>
 
-                        <div className='pt-2 grid grid-cols-[1fr_1px_1fr] gap-6'>
-                            <div>
-                                {ratingsCol1.map((item, index) => (
-                                    <div key={index} className='flex justify-between items-center py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>
-                                        <span className='text-[15px] font-medium text-black700'>{item.label}</span>
-                                        <div className='flex items-center gap-1'>
-                                            {[...Array(5)].map((_, i) => (
-                                                <StarIcon key={i} filled={i < item.rating} />
-                                            ))}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className='bg-border-light300 my-2'></div>
-                            <div>
-                                {ratingsCol2.map((item, index) => (
-                                    <div key={index} className='flex justify-between items-center py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>
-                                        <span className='text-[15px] font-medium text-black700'>{item.label}</span>
-                                        <div className='flex items-center gap-1'>
-                                            {[...Array(5)].map((_, i) => (
-                                                <StarIcon key={i} filled={i < item.rating} />
-                                            ))}
-                                        </div>
-                                    </div>
+                    {/* Key Features Card */}
+                    <div className='p-4 rounded-xl border border-border-light300 bg-[#f0f1ec4d]'>
+                        <div className='flex items-center gap-2 pb-3'>
+                            <img src={RoundIcon} alt="RoundIcon" className='block' />
+                            <span className='block text-base font-medium text-black'>
+                                Key Features
+                            </span>
+                        </div>
+                        <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
+                        <div className='pt-4'>
+                            <div className='flex flex-wrap gap-2'>
+                                {features.map((feature: string, idx: number) => (
+                                    <span key={idx} className='text-[12px] font-semibold px-3 py-1 rounded-full bg-[#A8DD15] text-black leading-tight'>
+                                        {feature}
+                                    </span>
                                 ))}
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            ) : (
+                // Original single card layout when showFeatures is false
+                <div id='platform-features' className='rounded-xl bg-[#f0f1ec4d] border border-border-light300 border-solid  overflow-hidden'>
+                    <div className='p-4' >
+                        <div className='grid grid-cols-1 gap-5'>
+                            <div className=''>
+                                <div className='flex items-center gap-2 pb-3'>
+                                    <img src={RoundIcon} alt="RoundIcon" className='block' />
+                                    <span className='block text-base font-medium text-black'>
+                                        Platform & Features
+                                    </span>
+                                </div>
+                                <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
+
+                                <div className='pt-4 pb-2'>
+                                    <div className='flex flex-wrap gap-2'>
+                                        {platforms.map((platform: string, idx: number) => (
+                                            <span key={idx} className='text-[12px] font-semibold px-3 py-1 rounded-full bg-[#A8DD15] text-black leading-tight'>
+                                                {platform}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {showStarRatings && <div className='pt-2 grid grid-cols-[1fr_1px_1fr] gap-6'>
+                                    <div>
+                                        {ratingsCol1.map((item, index) => (
+                                            <div key={index} className='flex justify-between items-center py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>
+                                                <span className='text-[15px] font-medium text-black700'>{item.label}</span>
+                                                <div className='flex items-center gap-1'>
+                                                    {[...Array(5)].map((_, i) => (
+                                                        <StarIcon key={i} filled={i < item.rating} />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className='bg-border-light300 my-2'></div>
+                                    <div>
+                                        {ratingsCol2.map((item, index) => (
+                                            <div key={index} className='flex justify-between items-center py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>
+                                                <span className='text-[15px] font-medium text-black700'>{item.label}</span>
+                                                <div className='flex items-center gap-1'>
+                                                    {[...Array(5)].map((_, i) => (
+                                                        <StarIcon key={i} filled={i < item.rating} />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
     )
 }

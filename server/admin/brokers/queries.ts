@@ -164,6 +164,17 @@ export const findBrokerById = async (id: number) => {
       demoAccount: true,
       copyTrading: true,
       accountTypes: true,
+      company_name: true,
+      deployment_type: true,
+      starting_price: true,
+      bestFor: true,
+      free_trial_available: true,
+      api_access: true,
+      support_channels: true,
+      support_hours: true,
+      languages_supported: true,
+      pricingModel: true,
+    
 
       typeId: true,
       isSponsor: true,

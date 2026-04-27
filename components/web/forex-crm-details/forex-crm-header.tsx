@@ -8,6 +8,7 @@ import { BrokerClaimButton } from '../brokers/broker-claim-button';
 import { ProductListSkeleton } from '../products/product-list';
 import { PlanQuery } from '../plans/plan-query';
 import { headers } from "next/headers"
+import { Badge } from '~/components/common/badge';
 
 
 
@@ -50,12 +51,12 @@ const FramImage = '/assets/images/laptop-fram.png';
 const Profilegroup = '/assets/images/profilegroup.svg';
 
 
-export default async function BrokerDetailsHero({ broker }: { broker: any }) {
+export default async function ForexCrmDetailsHero({ broker }: { broker: any }) {
     const heroFeatures = [
-        { value: broker.minimum_deposit || 'N/A', label: 'Min Deposit' },
-        { value: broker.minimum_raw_spreads || 'N/A', label: 'Raw Spread' },
-        { value: broker.maxLeverage || 'N/A', label: 'Max Leverage' },
-        { value: broker.totalInstruments || 'N/A', label: 'Instruments' },
+        { value: broker.deployment_type || '-', label: 'Deployment' },
+        { value: broker.starting_price || '-', label: 'Starting Price' },
+        { value: broker.bestFor?.join(', ') || '-', label: 'Best For' },
+        { value: broker.demoAccount?'Yes':'No', label: 'Demo Account' },
     ];
     const headerList = await headers()
 
@@ -80,11 +81,20 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
                                     <img src={(await getPresignedUrlFromFull(broker.logoUrl)) ?? undefined} alt="logo" className='max-w-[45px] bg-white block object-contain' />
                                 </div>
                                 <div>
-                                    <h2 className='text-4xl text-primary font-semibold'>
-                                        {broker?.broker_name}
-                                    </h2>
-                                    <p className='text-base font-medium text-black100'>
-                                        {broker.subtitle || "750,000+ traders worldwide. 0.0 pip spreads, 99.5% fill rate"}
+                                    <div className='flex items-center gap-3'>
+                                        <h2 className='text-4xl text-primary font-semibold'>
+                                            {broker?.broker_name}
+                                        </h2>
+                                        {broker?.isSponsor && (
+                                            <Badge variant="info" size="md" className="rounded-full px-3">Verified</Badge>
+                                        )}
+                                        {broker?.demoAccount && (
+                                            <Badge variant="success" size="md" className="rounded-full px-3">Free Demo</Badge>
+                                        )}
+                                    </div>
+                                    
+                                    <p className='text-base font-medium text-black100 flex items-center'>
+                                      by  {broker?.company_name || '-'} <span className='mx-2 opacity-50'>·</span> Founded {broker?.year_established ? Math.floor(broker.year_established) : '-'} <span className='mx-2 opacity-50'>·</span> {broker?.headquarters || '-'}
                                     </p>
                                 </div>
                             </div>

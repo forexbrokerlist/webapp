@@ -262,6 +262,44 @@ export const findRandomBrokers = async (take: number = 3, excludeSlug?: string, 
   })
 }
 
+export const findRandomCrmProviders = async (take: number = 3, excludeSlug?: string) => {
+  "use cache"
+
+  cacheTag("brokers")
+  cacheLife("minutes")
+
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "crm" },
+    ...(excludeSlug && { slug: { not: excludeSlug } }),
+  }
+
+  const itemCount = await db.brokers.count({ where: whereClause })
+
+  if (itemCount === 0) return []
+
+  const skip = Math.max(0, Math.floor(Math.random() * (itemCount - take + 1)))
+
+  return db.brokers.findMany({
+    where: whereClause,
+    select: {
+      broker_name: true,
+      logoUrl: true,
+      screenshotUrl: true,
+      slug: true,
+      categories: {
+        select: {
+          slug: true,
+        },
+        take: 1,
+      },
+    },
+    take,
+    skip,
+  })
+}
+
+
 export const findBrokersForComparison = async (take: number = 20) => {
   // "use cache"
 
@@ -318,6 +356,42 @@ export const findBrokersForComparison = async (take: number = 20) => {
       })() : "N/A", type: "text" },
       { label: "Islamic Acc", value: broker.islamicAccount ? "Yes" : "No", type: broker.islamicAccount ? "badge-dark" : "badge-danger" },
       { label: "Copy Trading", value: broker.copyTrading ? "Yes" : "No", type: broker.copyTrading ? "badge-dark" : "badge-danger" },
+      { label: "Overall rating", value: broker.overall_rating || "0", type: "star" }
+    ]
+  }))
+}
+
+export const findCrmProvidersForComparison = async (take: number = 20) => {
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "crm" },
+  }
+
+  const rawBrokers = await db.brokers.findMany({
+    where: whereClause,
+    select: {
+      id: true,
+      broker_name: true,
+      logoUrl: true,
+      trading_platforms: true,
+      features: true,
+      demoAccount: true,
+      starting_price: true,
+      overall_rating: true,
+    },
+    take,
+   
+  })
+
+  return rawBrokers.map(broker => ({
+    id: broker.id,
+    name: broker.broker_name || "Unknown CRM",
+    logoUrl: broker.logoUrl,
+    stats: [
+      { label: "MT4/MT5", value: broker.trading_platforms ? (broker.trading_platforms.toLowerCase().includes('mt4') && broker.trading_platforms.toLowerCase().includes('mt5') ? "Yes" : (broker.trading_platforms.toLowerCase().includes('mt4') ? "MT4 only" : broker.trading_platforms.toLowerCase().includes('mt5') ? "MT5 only" : "No")) : "No", type: "text" },
+      { label: "IB Module", value: broker.features?.some(f => f.toLowerCase().includes('ib')) ? "Yes" : "No", type: broker.features?.some(f => f.toLowerCase().includes('ib')) ? "badge-dark" : "badge-danger" },
+      { label: "Free Demo", value: broker.demoAccount ? "Yes" : "No", type: broker.demoAccount ? "badge-dark" : "badge-danger" },
+      { label: "Starting price", value: broker.starting_price || "N/A", type: "text" },
       { label: "Overall rating", value: broker.overall_rating || "0", type: "star" }
     ]
   }))
