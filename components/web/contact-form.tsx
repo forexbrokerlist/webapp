@@ -42,48 +42,48 @@ export const ContactForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmitWithAction} className="grid gap-4" noValidate>
+      <form onSubmit={handleSubmitWithAction} className="grid gap-5.5" noValidate>
         <Controller
           control={form.control}
           name="captcha"
           render={({ field }) => <input type="hidden" {...field} />}
         />
+        <div className="grid grid-cols-2 gap-5">
+          <Controller
+            control={form.control}
+            name="name"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel data-required htmlFor={field.name}>
+                  {t("name_label")}
+                </FieldLabel>
+                <Input id={field.name} size="lg" placeholder={t("name_placeholder")} {...field} />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
 
-        <Controller
-          control={form.control}
-          name="name"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel data-required htmlFor={field.name}>
-                {t("name_label")}
-              </FieldLabel>
-              <Input id={field.name} size="lg" placeholder={t("name_placeholder")} {...field} />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="email"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel data-required htmlFor={field.name}>
-                {t("email_label")}
-              </FieldLabel>
-              <Input
-                id={field.name}
-                type="email"
-                size="lg"
-                placeholder={t("email_placeholder")}
-                data-1p-ignore
-                {...field}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
+          <Controller
+            control={form.control}
+            name="email"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel data-required htmlFor={field.name}>
+                  {t("email_label")}
+                </FieldLabel>
+                <Input
+                  id={field.name}
+                  type="email"
+                  size="lg"
+                  placeholder={t("email_placeholder")}
+                  data-1p-ignore
+                  {...field}
+                />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+        </div>
         <Controller
           control={form.control}
           name="subject"
@@ -120,10 +120,11 @@ export const ContactForm = () => {
             </Field>
           )}
         />
-
-        <Button type="submit" size="lg" className="min-w-40" isPending={action.isPending}>
-          {t("submit_button")}
-        </Button>
+        <div className="max-w-[220px] w-full">
+          <Button type="submit" variant="secondary" className="text-base w-full" isPending={action.isPending}>
+            {t("submit_button")}
+          </Button>
+        </div>
       </form>
     </Form>
   )
