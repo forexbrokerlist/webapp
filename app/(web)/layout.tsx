@@ -24,7 +24,7 @@ export default function ({ children }: PropsWithChildren) {
       <div
         className={cn(
           "bg-[#F0F2EC]",
-          !isHome && "flex flex-col min-h-dvh overflow-clip pt-(--header-inner-offset)",
+          !isHome && "",
         )}
       >
         <Header />
@@ -35,13 +35,17 @@ export default function ({ children }: PropsWithChildren) {
           </>
         ) : (
           <>
-            <Container asChild>
-              <Wrapper className="grow py-fluid-md">
-                {children}
+            {/* <Container asChild>
+              <Wrapper className="grow py-fluid-md"> */}
+            {/* {children}
 
-                <Footer />
-              </Wrapper>
-            </Container>
+                <Footer /> */}
+            {/* </Wrapper>
+            </Container> */}
+            <>
+              {children}
+              <Footer />
+            </>
           </>
         )}
       </div>
