@@ -30,6 +30,7 @@ import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
 import { findBrokerBySlug } from "~/server/web/tools/queries"
 import { getPresignedUrlFromFull, getScreenshotFetchUrl } from "~/lib/media"
+import FaqSection from "~/components/web/broker-details/faq-section"
 
 type Props = {
   params: {
@@ -553,6 +554,10 @@ export default async function (props: Props) {
               </div>
             </Card>
           )}
+
+          <div className="mt-8">
+            <FaqSection broker={broker} />
+          </div>
 
           <Stack className="w-full md:sticky md:bottom-2 md:z-10 mt-8">
             <div className="absolute -inset-x-1 -bottom-3 -top-8 -z-1 pointer-events-none bg-background mask-t-from-66% max-md:hidden" />

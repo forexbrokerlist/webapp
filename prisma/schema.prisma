@@ -365,6 +365,16 @@ model Brokers {
   review_article                    String? @db.Text
   seo_title                         String? 
   seo_meta_description                   String?
+  newer_traders_rating              Float?
+  scalpers_rating                     Float?
+  swing_traders_rating              Float?        
+  news_traders_rating               Float?
+  day_traders_rating                Float?      
+  copy_traders_rating               Float?      
+  automated_traders_rating          Float?      
+  investors_rating                  Float?        
+  faqs                              FAQ[]
+
   // Admin & Submission fields
   submitterName  String?
   submitterEmail String?
@@ -509,10 +519,12 @@ model FAQ {
   // Relations
   postId String?
   post   Post?   @relation(fields: [postId], references: [id])
-
+  brokerId Int?
+  broker   Brokers? @relation(fields: [brokerId], references: [id])
   @@index([order])
   @@index([isActive])
   @@index([postId])
+  @@index([brokerId])
 }
 
 model StandaloneFAQ {

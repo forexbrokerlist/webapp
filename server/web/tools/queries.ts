@@ -219,5 +219,106 @@ export const findBrokerBySlug = async (slug: string) => {
 
   return db.brokers.findFirst({
     where: { status: ToolStatus.Published, slug },
+    include: { faqs: true, categories: true },
   })
+}
+
+export const findRandomBrokers = async (take: number = 3, excludeSlug?: string, categorySlug?: string) => {
+  "use cache"
+
+  cacheTag("brokers")
+  cacheLife("minutes")
+
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    isSponsor: true,
+    ...(excludeSlug && { slug: { not: excludeSlug } }),
+    ...(categorySlug && { categories: { some: { slug: categorySlug } } }),
+  }
+
+  const itemCount = await db.brokers.count({ where: whereClause })
+  
+  if (itemCount === 0) return []
+  
+  // Pick a random starting point
+  const skip = Math.max(0, Math.floor(Math.random() * (itemCount - take + 1)))
+
+  return db.brokers.findMany({
+    where: whereClause,
+    select: {
+      broker_name: true,
+      logoUrl: true,
+      screenshotUrl: true,
+      slug: true,
+      categories: {
+        select: {
+          slug: true,
+        },
+        take: 1,
+      },
+    },
+    take,
+    skip,
+  })
+}
+
+export const findBrokersForComparison = async (take: number = 20) => {
+  // "use cache"
+
+  // cacheTag("brokers")
+  // cacheLife("minutes")
+
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "broker" },
+  }
+
+  const rawBrokers = await db.brokers.findMany({
+    where: whereClause,
+    select: {
+      id: true,
+      broker_name: true,
+      logoUrl: true,
+      minimum_deposit: true,
+      minimum_raw_spreads: true,
+      maxLeverage: true,
+      regulators: true,
+      trading_platforms: true,
+      islamicAccount: true,
+      copyTrading: true,
+      overall_rating: true,
+    },
+    take,
+    orderBy: { isSponsor: "desc" }
+  })
+
+  return rawBrokers.map(broker => ({
+    id: broker.id,
+    name: broker.broker_name || "Unknown Broker",
+    logoUrl: broker.logoUrl,
+    stats: [
+      { label: "Min Deposit", value: broker.minimum_deposit || "N/A", type: "text" },
+      { label: "Raw Spread", value: broker.minimum_raw_spreads || "N/A", type: "text" },
+      { label: "Max Leverage", value: broker.maxLeverage || "N/A", type: "text" },
+      { label: "Regulations", value: broker.regulators ? (() => {
+        const regList = broker.regulators.split(',')
+          .map((r: string) => r.replace(/\s*\(.*?\)/g, '').trim())
+          .filter(Boolean)
+          .filter(r => r.toLowerCase() !== 'other');
+        if (regList.length <= 3) return regList.join(', ');
+        return `${regList.slice(0, 3).join(', ')}, +${regList.length - 3} others`;
+      })() : "None", type: "text" },
+      { label: "Platforms", value: broker.trading_platforms ? (() => {
+        const platformList = broker.trading_platforms.split(',')
+          .map((r: string) => r.replace(/\s*\(.*?\)/g, '').trim())
+          .filter(Boolean)
+          .filter(r => r.toLowerCase() !== 'other');
+        if (platformList.length <= 2) return platformList.join(', ');
+        return `${platformList.slice(0, 2).join(', ')}, +${platformList.length - 2} others`;
+      })() : "N/A", type: "text" },
+      { label: "Islamic Acc", value: broker.islamicAccount ? "Yes" : "No", type: broker.islamicAccount ? "badge-dark" : "badge-danger" },
+      { label: "Copy Trading", value: broker.copyTrading ? "Yes" : "No", type: broker.copyTrading ? "badge-dark" : "badge-danger" },
+      { label: "Overall rating", value: broker.overall_rating || "0", type: "star" }
+    ]
+  }))
 }

@@ -179,6 +179,23 @@ export const findBrokerById = async (id: number) => {
       review_article: true,
       seo_title: true,
       seo_meta_description: true,
+      newer_traders_rating: true,
+      scalpers_rating: true,
+      swing_traders_rating: true,
+      news_traders_rating: true,
+      day_traders_rating: true,
+      copy_traders_rating: true,
+      automated_traders_rating: true,
+      investors_rating: true,
+      faqs: {
+        select: {
+          id: true,
+          question: true,
+          answer: true,
+          order: true,
+        },
+        orderBy: { order: "asc" },
+      },
     },
   });
 };

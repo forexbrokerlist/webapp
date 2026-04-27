@@ -15,7 +15,7 @@ const DialogClose = DialogPrimitive.Close
 const DialogOverlay = ({ className, ...props }: ComponentProps<typeof DialogPrimitive.Overlay>) => (
   <DialogPrimitive.Overlay
     className={cx(
-      "fixed inset-0 z-50 background-dashed bg-foreground/10 backdrop-blur-sm",
+      "fixed inset-0 z-[100] bg-black/60 backdrop-blur-md",
       "data-[state=open]:animate-in data-[state=closed]:animate-out",
       "data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0",
       className,
@@ -33,7 +33,7 @@ const DialogContent = ({
     <DialogPortal>
       <DialogOverlay />
 
-      <div className="fixed inset-0 z-50 flex h-screen items-start justify-center px-4 py-6 sm:pt-[12.5vh] sm:[@media(min-height:1000px)]:pt-[25vh]">
+      <div className="fixed inset-0 z-[101] flex h-screen items-start justify-center px-4 py-6 sm:pt-[12.5vh] sm:[@media(min-height:1000px)]:pt-[25vh]">
         <DialogPrimitive.Content
           className={cx(
             "relative max-h-full w-full max-w-lg grid gap-4 border bg-background p-4 rounded-md shadow-md overflow-y-auto overscroll-contain sm:p-6 sm:rounded-lg",
@@ -45,7 +45,7 @@ const DialogContent = ({
           {...props}
         >
           {children}
-          <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-ring disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+          <DialogPrimitive.Close className="absolute right-5 top-5 rounded-full size-8 flex items-center justify-center bg-gray-50 text-black400 hover:bg-gray-100 hover:text-black100 transition-all border border-border-light200 shadow-sm z-50 focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer">
             <XIcon className="size-4" />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>
