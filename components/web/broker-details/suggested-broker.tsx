@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link';
 
-export default function SuggestedBroker({ brokers }: { brokers: any[] }) {
+export default function SuggestedBroker({ brokers,suggestionTitle="Suggested Broker" }: { brokers?: any[],suggestionTitle?:string }) {
     if (!brokers || brokers.length === 0) return null;
 
     return (
@@ -9,7 +9,7 @@ export default function SuggestedBroker({ brokers }: { brokers: any[] }) {
             <div className='p-4 relative flex items-center '>
                 <div className='absolute top-3 left-0 w-1 h-[26px] bg-primary rounded-r-[4px]'></div>
                 <h3 className='text-base text-black100 font-semibold uppercase'>
-                    Suggested Broker
+                    {suggestionTitle}
                 </h3>
             </div>
             <div className='px-4'>

@@ -1,5 +1,12 @@
 import * as z from "zod";
-import { ToolStatus, ToolTier } from "~/.generated/prisma/browser";
+import {
+  ToolStatus,
+  ToolTier,
+  DeploymentType,
+  BusinessSize,
+  SupportChannel,
+  PricingModel,
+} from "~/.generated/prisma/browser";
 
 import {
   createSearchParamsCache,
@@ -39,6 +46,7 @@ export type BrokerListParams = Awaited<
 export const brokerSchema = z.object({
   id: z.number().optional(),
   broker_name: z.string().min(1, "Name is required"),
+  company_name: z.string().optional(),
   slug: z.string().optional(),
   broker_website: z.string().url().or(z.literal("")).optional(),
   overall_rating: z.string().optional(),
@@ -107,11 +115,25 @@ export const brokerSchema = z.object({
   copy_traders_rating: z.number().optional().nullable(),
   automated_traders_rating: z.number().optional().nullable(),
   investors_rating: z.number().optional().nullable(),
-  faqs: z.array(z.object({
-    id: z.string().optional(),
-    question: z.string().min(1, "Question is required"),
-    answer: z.string().min(1, "Answer is required"),
-  })).optional(),
+  faqs: z
+    .array(
+      z.object({
+        id: z.string().optional(),
+        question: z.string().min(1, "Question is required"),
+        answer: z.string().min(1, "Answer is required"),
+      }),
+    )
+    .optional(),
+  deployment_type: z.nativeEnum(DeploymentType).default(DeploymentType.Both),
+  starting_price: z.string().optional(),
+  bestFor: z.array(z.nativeEnum(BusinessSize)).optional(),
+  free_trial_available: z.boolean().optional().nullable(),
+  api_access: z.boolean().optional().nullable(),
+  support_channels: z.array(z.nativeEnum(SupportChannel)).optional(),
+  support_hours: z.string().optional(),
+  languages_supported: z.array(z.string()).optional(),
+  pricingModel: z.nativeEnum(PricingModel).default(PricingModel.MonthlySaas),
+
 });
 
 export type BrokerSchema = z.infer<typeof brokerSchema>;

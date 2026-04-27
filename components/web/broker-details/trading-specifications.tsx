@@ -3,7 +3,7 @@ import PlatformFeatures from './platform-features';
 import ProsCons from './pros-cons';
 const RoundIcon = '/assets/images/round.svg';
 
-export default function TradingSpecifications({ broker }: { broker: any }) {
+export default function TradingSpecifications({ broker, showTradingHours = true, showAccountFunding = true, showTradingSpreads = true, showStarRatings = true, showFeatures = false, platformSectionId = "platform-&-features" }: { broker: any, showTradingHours?: boolean, showAccountFunding?: boolean, showTradingSpreads?: boolean, showStarRatings?: boolean, showFeatures?: boolean, platformSectionId?: string }) {
     const tradingHoursRaw = broker.trading_hours;
     let tradingHours: { label: string, value: string }[] = [];
 
@@ -67,7 +67,7 @@ export default function TradingSpecifications({ broker }: { broker: any }) {
                 <div className='grid grid-cols-2 gap-5'>
 
                     {/* Trading Hours */}
-                    <div className='col-span-2 border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
+                    {showTradingHours && <div className='col-span-2 border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
                         <div className='flex items-center gap-2 pb-3'>
                             <img src={RoundIcon} alt="RoundIcon" className='block' />
                             <span className='block text-base font-medium text-black'>
@@ -99,9 +99,9 @@ export default function TradingSpecifications({ broker }: { broker: any }) {
                             </div>
                         </div>
                     </div>
-
+                    }
                     {/* Account Funding */}
-                    <div className='col-span-1 border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
+                    {showAccountFunding && <div className='col-span-1 border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
                         <div className='flex items-center gap-2 pb-3'>
                             <img src={RoundIcon} alt="RoundIcon" className='block' />
                             <span className='block text-base font-medium text-black'>
@@ -131,9 +131,9 @@ export default function TradingSpecifications({ broker }: { broker: any }) {
                             ))}
                         </div>
                     </div>
-
+                    }
                     {/* Trading Cost & Spreads */}
-                    <div className='col-span-1 border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
+                    {showTradingSpreads && <div className='col-span-1 border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
                         <div className='flex items-center gap-2 pb-3'>
                             <img src={RoundIcon} alt="RoundIcon" className='block' />
                             <span className='block text-base font-medium text-black'>
@@ -162,12 +162,12 @@ export default function TradingSpecifications({ broker }: { broker: any }) {
                                 </div>
                             ))}
                         </div>
-                    </div>
+                    </div>}
 
                 </div>
             </div>
-            <div className='px-4'>
-                <PlatformFeatures broker={broker} />
+            <div id={platformSectionId} className='px-4'>
+                <PlatformFeatures broker={broker} showStarRatings={showStarRatings} showFeatures={showFeatures} />
                 <div className='pt-4'>
                     <ProsCons broker={broker} />
                 </div>

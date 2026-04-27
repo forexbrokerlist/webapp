@@ -121,8 +121,9 @@ export default function OurPartners({
                                                         </p>
                                                     </div>
                                                     <div className='pt-3 mt-auto'>
+                                                       <Link href={`/liquidity-providers/${partner.slug}`}>
                                                         <Button size="md" variant="primary" className="px-5 gap-2.5 py-1.5 w-full justify-center text-xs group">
-                                                            <Link href={`/liquidity-providers/${partner.slug}`}>
+                                                           
                                                                 Learn More
                                                                 <div className="w-4 h-4 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -130,8 +131,9 @@ export default function OurPartners({
                                                                         <path d="M1.48633 5.0957H8.63368" stroke="#1A1A1A" strokeWidth="0.637019" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
                                                                     </svg>
                                                                 </div>
-                                                            </Link>
                                                         </Button>
+                                                            </Link>
+ 
                                                     </div>
                                                 </div>
                                             </motion.div>

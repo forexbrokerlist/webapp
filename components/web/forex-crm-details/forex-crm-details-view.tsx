@@ -2,20 +2,23 @@ import React from 'react'
 import TableOfContents from '~/components/common/table-of-contents'
 import { Button } from '~/components/common/button';
 import { MoveRight } from 'lucide-react';
-import SuggestedBroker from './suggested-broker';
-import TradingDetails from './trading-details';
-import TradingSpecifications from './trading-specifications';
-import PlatformFeatures from './platform-features';
-import ProsCons from './pros-cons';
-import BrokerReview from './broker-review';
-import UserReview from './user-review';
-import CompareBrokers from './compare-brokers';
-import FaqSection from './faq-section';
+import SuggestedBroker from '../broker-details/suggested-broker';
+import TradingDetails from './key-details';
+// import TradingSpecifications from './trading-specifications';
+// import PlatformFeatures from './platform-features';
+
+import BrokerReview from '../broker-details/broker-review';
+import UserReview from '../broker-details/user-review';
+import CompareBrokers from './compare-crm';
+import FaqSection from '../broker-details/faq-section';
 import Link from 'next/link';
+
+import TradingSpecifications from '../broker-details/trading-specifications';
+
 const ForexImage = '/assets/images/FBL Logo.png';
 
 
-export default function BrokerDetailsView({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
+export default function ForexCrmDetailsView({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
     return (
         <div>
             <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 '>
@@ -24,20 +27,25 @@ export default function BrokerDetailsView({ broker, randomBrokers = [], trustedB
                         <TableOfContents
                             broker={broker}
                             items={[
-                                "Broker & Trading Details",
+                                "CRM Details",
                                 "Trading Specifications",
                                 "Platform & Features",
-                                "Broker Review",
+                                "CRM Review",
                                 "User Review",
-                                "Compare Broker",
+                                "Compare CRM",
                                 "FAQ"
                             ]}
                         />
                     </div>
                     <div className='grid grid-cols-1 gap-5'>
                         <TradingDetails broker={broker} />
-                        <TradingSpecifications broker={broker} />
-                        <BrokerReview broker={broker} reviewTitle='Broker Review' />
+                        <TradingSpecifications broker={broker} showTradingHours={false} showAccountFunding={false} showTradingSpreads={false} showStarRatings={false} showFeatures={true} platformSectionId="platform-&-features" />
+
+                        <BrokerReview
+                            broker={broker}
+                            reviewTitle={`${broker?.broker_name || '-'} Review ${new Date().getFullYear()} — Forex CRM & Back Office Software for Brokers`}
+                            sectionId="crm-review"
+                        />
                         <UserReview />
                         <CompareBrokers broker={broker} trustedBrokers={trustedBrokers} />
                         <FaqSection broker={broker} />
@@ -71,7 +79,7 @@ export default function BrokerDetailsView({ broker, randomBrokers = [], trustedB
                                 </Link>
                             </Button>
                         </div>
-                        <SuggestedBroker brokers={randomBrokers} />
+                        <SuggestedBroker brokers={randomBrokers} suggestionTitle='Suggested CRMS' />
                     </div>
                 </div>
             </div>

@@ -17,14 +17,14 @@ import { cn } from "~/lib/utils"
 
 export default function ({ children }: PropsWithChildren) {
   const pathname = usePathname()
-  const isHome = pathname === "/" || pathname === "/categories" || pathname === "/trade-snap" || pathname === "/fx-guru" || pathname === "/broker-details" || pathname.startsWith("/broker/")
+  const isHome = pathname === "/" || pathname === "/categories" || pathname === "/trade-snap" || pathname === "/fx-guru" || pathname === "/broker-details" || pathname.startsWith("/broker/") || pathname.startsWith("/forex-crm-providers")|| pathname=="brokers"
 
   return (
     <QueryProvider>
       <div
         className={cn(
           "bg-[#F0F2EC]",
-          !isHome && "flex flex-col min-h-dvh overflow-clip pt-(--header-inner-offset)",
+          !isHome && "",
         )}
       >
         <Header />
@@ -35,13 +35,17 @@ export default function ({ children }: PropsWithChildren) {
           </>
         ) : (
           <>
-            <Container asChild>
-              <Wrapper className="grow py-fluid-md">
-                {children}
+            {/* <Container asChild>
+              <Wrapper className="grow py-fluid-md"> */}
+            {/* {children}
 
-                <Footer />
-              </Wrapper>
-            </Container>
+                <Footer /> */}
+            {/* </Wrapper>
+            </Container> */}
+            <>
+              {children}
+              <Footer />
+            </>
           </>
         )}
       </div>
