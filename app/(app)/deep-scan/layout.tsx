@@ -10,24 +10,15 @@ import { getServerSession } from "~/lib/auth"
 
 export default async function AppLayout({ children }: PropsWithChildren) {
   const session = await getServerSession()
-  
+
   // Redirect removed to allow guest access
 
   return (
     <QueryProvider>
-      <div className="flex flex-col min-h-dvh overflow-clip pt-(--header-inner-offset)">
+      <>
         <Header />
-
-        <Backdrop isFixed />
-
-        
-
-        <Container asChild>
-          <Wrapper className="grow flex flex-col">
-            {children}
-          </Wrapper>
-        </Container>
-      </div>
+        {children}
+      </>
     </QueryProvider>
   )
 }

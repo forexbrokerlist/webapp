@@ -35,13 +35,17 @@ export default function ({ children }: PropsWithChildren) {
           </>
         ) : (
           <>
-            <Container asChild>
-              <Wrapper className="grow py-fluid-md">
-                {children}
+            {/* <Container asChild>
+              <Wrapper className="grow py-fluid-md"> */}
+            {/* {children}
 
-                <Footer />
-              </Wrapper>
-            </Container>
+                <Footer /> */}
+            {/* </Wrapper>
+            </Container> */}
+            <>
+              {children}
+              <Footer />
+            </>
           </>
         )}
       </div>
