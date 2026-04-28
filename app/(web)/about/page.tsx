@@ -12,6 +12,13 @@ import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateAboutPage } from "~/lib/structured-data"
 import seoData from "~/config/seo.json"
+import CommonBanner from "~/components/web/common-banner"
+import OurStory from "./our-story"
+import OurMission from "./our-mission"
+import WhatWeOffer from "./what-we-offer"
+import TradersSection from "./traders-section"
+import WantToBePart from "./want-to-be-part"
+const TradeImage = '/assets/images/about.png';
 
 // I18n page namespace
 const namespace = "pages.about"
@@ -45,12 +52,25 @@ export default async function () {
 
   return (
     <>
-      <Intro>
+      <CommonBanner
+        image={TradeImage}
+        description='Forex Brokers List is a trusted forex broker directory helping traders find and compare the best brokers worldwide. 
+Learn who we are and what we stand for.'
+        highlightedText="About Us -" title="Top Forex Broker 
+Directory | Forex Brokers List" />
+      <OurStory />
+      <OurMission />
+      <WhatWeOffer />
+      <TradersSection />
+      <WantToBePart />
+      <div className='w-full h-[1px] bg-[linear-gradient(90deg,#F0F1EC_0%,#A8DD15_50%,#F0F1EC_100%)]'></div>
+
+      {/* <Intro>
         <IntroTitle>{metadata.title}</IntroTitle>
         <IntroDescription>{metadata.description}</IntroDescription>
-      </Intro>
+      </Intro> */}
 
-      <Prose>
+      {/* <Prose>
         <h2>{t(`${namespace}.story.title`)}</h2>
         <p>{t(`${namespace}.story.content`, { siteName: siteConfig.name })}</p>
 
@@ -105,7 +125,7 @@ export default async function () {
             </Button>
           </Stack>
         </section>
-      </Prose>
+      </Prose> */}
 
       <StructuredData data={structuredData} />
     </>
