@@ -201,12 +201,14 @@ export default function OurPartners({
                                                     whileHover={{ y: -5, scale: 1.05 }}
                                                     className="px-5 py-4 rounded-[12px] border border-[rgba(26,26,26,0.16)] bg-[rgba(255,255,255,0.1)] backdrop-blur-[87.7px] shadow-sm flex flex-col items-center justify-center"
                                                 >
+                                                    <Link href={`/forex-trading-platform/${partner.slug}`}>
                                                     <div className='flex justify-center h-10 w-full'>
                                                         <Favicon src={partner.logoUrl} title={partner.name} size={32} contained className="size-full object-contain" />
                                                     </div>
                                                     <p className='mt-3 text-sm max-laptop:mt-2 text-black700 text-center font-medium w-full'>
                                                         {partner.name}
                                                     </p>
+                                                    </Link>
                                                 </motion.div>
                                             )
                                         })
