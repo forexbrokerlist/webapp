@@ -20,7 +20,7 @@ type BrokerCardProps = ComponentProps<typeof Card> & {
 // Category-specific routing mapping
 const getBrokerRoute = (slug: string, categorySlug?: string, categories?: { slug: string }[]): string => {
   const effectiveCategorySlug = categorySlug || categories?.[0]?.slug;
-  if (effectiveCategorySlug === 'trusted-trading-platforms'||effectiveCategorySlug === 'forex-brokers') {
+  if (effectiveCategorySlug === 'trusted-trading-platforms' || effectiveCategorySlug === 'forex-brokers') {
     return `/broker/${slug}`;
   }
   return effectiveCategorySlug ? `/${effectiveCategorySlug}/${slug}` : `/brokers/${slug}`;
@@ -56,8 +56,8 @@ export const BrokerCard = ({
   return (
     <Card
       isRevealed
-      className={`items-stretch select-none transition-all duration-300 ${broker.isSponsor
-        ? "border-blue-500/40 shadow-[0_0_20px_rgba(59,130,246,0.1)] bg-linear-to-br from-blue-500/10 via-background to-background ring-1 ring-blue-500/20 hover:border-blue-500/60 hover:shadow-[0_0_25px_rgba(59,130,246,0.25)]"
+      className={`items-stretch select-none transition-all rounded-xl duration-300 ${broker.isSponsor
+        ? "bg-white border border-solid border-border-light300"
         : "hover:border-primary/20"
         } ${className || ""}`}
       {...props}
@@ -75,7 +75,7 @@ export const BrokerCard = ({
         <VerifiedBadge size="md" className="-ml-1.5 shrink-0" />
 
         {broker.isSponsor && (
-          <div className="absolute right-3 top-3 flex items-center gap-1.5 z-60 bg-blue-500/10 text-blue-500 pl-1.5 pr-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-blue-500/30 backdrop-blur-md shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+          <div className="absolute right-3 top-3 flex items-center gap-1.5 z-60 bg-white text-black100 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-primary backdrop-blur-md shadow-[0_0_10px_rgba(59,130,246,0.2)]">
             <Crown className="size-[12px]" strokeWidth={2.5} />
             <span>Sponsor</span>
           </div>
@@ -85,13 +85,13 @@ export const BrokerCard = ({
       <div className="relative size-full flex flex-col">
         {/* Default State */}
         <Stack size="lg" direction="column" className="flex-1 duration-200 group-hover:opacity-0 relative z-10">
-          <CardDescription className="line-clamp-2 min-h-[40px]">
+          <CardDescription className="line-clamp-2  text-base">
             {broker.subtitle || broker.description || `Top rated forex broker based in ${broker.headquarters || 'global markets'} offering competitive spreads.`}
           </CardDescription>
 
-          <Stack size="sm" className="mt-auto pt-4 text-xs font-medium text-muted-foreground items-center">
+          <Stack size="sm" className="mt-auto pt-4 text-base font-medium text-muted-foreground items-center">
             <span>Min Deposit:</span>
-            <Badge variant="outline" className="gap-1 px-2 py-0.5 text-foreground bg-muted/20">
+            <Badge variant="outline" className="gap-1 border-none px-2 py-0.5 text-base text-foreground bg-[#F2F4F7]">
               {broker.minimum_deposit || "Varies"}
             </Badge>
           </Stack>
@@ -99,7 +99,7 @@ export const BrokerCard = ({
 
         {/* Hover State */}
         <div className="absolute inset-0 opacity-0 duration-200 group-hover:opacity-100 flex flex-col z-20 pointer-events-none">
-          <CardDescription className="line-clamp-2 min-h-[40px]">
+          <CardDescription className="line-clamp-2 text-base">
             {broker.subtitle || broker.description || `Top rated forex broker based in ${broker.headquarters || 'global markets'} offering competitive spreads.`}
           </CardDescription>
 

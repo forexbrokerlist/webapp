@@ -55,7 +55,7 @@ const AdCard = async ({ className, type, explicitAd, fallback, ...props }: AdCar
               </H4>
             </CardHeader>
 
-            <CardDescription className="mb-auto pr-2 line-clamp-4">
+            <CardDescription className="mb-auto pr-2 line-clamp-4 text-base">
               {ad.description}
             </CardDescription>
 
