@@ -9,17 +9,17 @@ import { Button } from "~/components/common/button"
 import { ChevronLeft, XCircle } from "lucide-react"
 import type { CategoryMany } from "~/server/web/categories/payloads"
 
-export const AdvertiseFlow = ({ 
-  ads, 
-  type, 
-  categories, 
+export const AdvertiseFlow = ({
+  ads,
+  type,
+  categories,
   subcategories,
-  isCancelled 
-}: { 
+  isCancelled
+}: {
   ads: AdMany[]
   type: AdType | null
   categories: CategoryMany[]
-  subcategories: { id: string; name: string; categoryId: string }[] 
+  subcategories: { id: string; name: string; categoryId: string }[]
   isCancelled?: boolean
 }) => {
   const [step, setStep] = useState<1 | 2>(1)
@@ -33,7 +33,7 @@ export const AdvertiseFlow = ({
 
   if (showCancelled) {
     return (
-      <div className="w-full max-w-2xl mx-auto bg-card border border-destructive/20 rounded-xl p-8 sm:p-12 shadow-sm flex flex-col items-center text-center gap-6 animate-in fade-in zoom-in-95 duration-500">
+      <div className="bg-white rounded-xl border border-solid border-border-light300 animate-in fade-in zoom-in-95 duration-500">
         <div className="size-16 rounded-full bg-destructive/10 flex items-center justify-center text-destructive">
           <XCircle className="size-8" />
         </div>
@@ -44,8 +44,8 @@ export const AdvertiseFlow = ({
             If you experienced an issue, you can try again or contact support.
           </p>
         </div>
-        <Button 
-          size="lg" 
+        <Button
+          size="lg"
           className="mt-4"
           onClick={() => {
             setShowCancelled(false)
@@ -60,16 +60,18 @@ export const AdvertiseFlow = ({
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col gap-8">
+    <div className="">
       {step === 1 && (
-        <div className="w-full bg-card border rounded-xl p-6 sm:p-10 shadow-sm relative animate-in fade-in duration-500">
-           <div className="mb-6 font-semibold text-xl">1. Ad Details</div>
-           <AdDetailsForm 
-             defaultValues={adDetails ?? undefined} 
-             onSave={handleDetailsSubmit} 
-             categories={categories} 
-             subcategories={subcategories} 
-           />
+        <div className="bg-white rounded-xl border border-solid border-border-light300 p-[30px] relative animate-in fade-in duration-500">
+          <h2 className="text-xl text-black100 font-semibold mb-6">
+            Ad Details: Enter your ad information
+          </h2>
+          <AdDetailsForm
+            defaultValues={adDetails ?? undefined}
+            onSave={handleDetailsSubmit}
+            categories={categories}
+            subcategories={subcategories}
+          />
         </div>
       )}
 

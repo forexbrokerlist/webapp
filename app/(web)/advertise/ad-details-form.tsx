@@ -110,7 +110,7 @@ export const AdDetailsForm = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSave)}
-        className={cx("grid w-full gap-5 @md:grid-cols-2", className)}
+        className={cx("grid w-full gap-5 grid-cols-2", className)}
         noValidate
         {...props}
       >
@@ -256,7 +256,7 @@ export const AdDetailsForm = ({
           )}
         />
 
-        <Button type="submit" size="lg" className="col-span-full mt-2">
+        <Button type="submit" size="lg" variant="secondary" className="col-span-full text-base mt-2">
           {t("create.button_label")}
         </Button>
       </form>
