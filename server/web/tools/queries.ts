@@ -314,6 +314,49 @@ export const findRandomBrokers = async (
   });
 };
 
+
+export const findRandomCourses = async (
+  take: number = 3,
+  excludeSlug?: string,
+) => {
+  "use cache";
+
+  cacheTag("courses");
+  cacheLife("minutes");
+
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "educationplatforms" },
+    isSponsor: true,
+    ...(excludeSlug && { slug: { not: excludeSlug } }),
+
+  };
+
+  const itemCount = await db.brokers.count({ where: whereClause });
+
+  if (itemCount === 0) return [];
+
+  // Pick a random starting point
+  const skip = Math.max(0, Math.floor(Math.random() * (itemCount - take + 1)));
+
+  return db.brokers.findMany({
+    where: whereClause,
+    select: {
+      broker_name: true,
+      logoUrl: true,
+      screenshotUrl: true,
+      slug: true,
+      categories: {
+        select: {
+          slug: true,
+        },
+        take: 1,
+      },
+    },
+    take,
+    skip,
+  });
+};
 export const findRandomCrmProviders = async (
   take: number = 3,
   excludeSlug?: string,

@@ -1106,18 +1106,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           )}
         />
 
-        <Controller
-          control={form.control}
-          name="topics_covered"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="col-span-full">
-              <FieldLabel htmlFor={field.name}>Topics Covered</FieldLabel>
-              <TextArea id={field.name} {...field} value={field.value || ''} placeholder="Enter topics covered, separated by commas" />
-              <Hint>Separate topics with commas (e.g., Technical Analysis, Risk Management, Trading Psychology)</Hint>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+        <TopicsCoveredField control={form.control} register={form.register} />
 
 
 
@@ -1630,6 +1619,49 @@ function CourseModulesField({ control, register }: { control: any, register: any
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Course Module
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function TopicsCoveredField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "topics_covered",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Topics Covered</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`topics_covered.${index}`)}
+              placeholder="Enter topic"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Topic
         </Button>
       </Stack>
     </div>

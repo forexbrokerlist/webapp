@@ -3,7 +3,7 @@ import CourseModulesSection from './course-modules-section';
 const RoundIcon = '/assets/images/round.svg';
 
 
-export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", brokerDetails, additionalDetails, learnSection = false }: { broker: any, sectionTitle?: String, brokerDetails?: any[], additionalDetails?: any[], learnSection?: boolean }) {
+export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", brokerDetails, additionalDetails, learnSection = false, sectionId = "crm-details" }: { broker: any, sectionTitle?: String, brokerDetails?: any[], additionalDetails?: any[], learnSection?: boolean, sectionId?: string }) {
     const brokerDetailsList = brokerDetails || [
         { label: "Deployment Type", value: broker.deployment_type || "-" },
         { label: "Pricing Model", value: broker.pricingModel ? String(broker.pricingModel).replace(/MonthlySaas/g, 'Monthly SaaS') : "-" },
@@ -28,7 +28,7 @@ export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", b
         broker.outcomes.slice(Math.ceil(broker.outcomes.length / 2)).map((value: string) => ({ label: value, value })) : [];
 
     return (
-        <div id='crm-details' className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
+        <div id={sectionId} className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
             <div className='p-4 relative flex items-center '>
                 <div className='absolute top-3 left-0 w-1 h-[26px] bg-primary rounded-r-[4px]'></div>
                 <h3 className='text-base text-black100 font-semibold uppercase'>
@@ -87,7 +87,7 @@ export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", b
                     </div>
                 </div>
 
-                {learnSection && <div className='border   border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4 mt-6'>
+                {learnSection && broker.outcomes.length>0 && <div className='border   border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4 mt-6'>
                     <div className='flex items-center gap-2 pb-3'>
                         <img src={RoundIcon} alt="RoundIcon" className='block' />
                         <span className='block text-base font-medium text-black'>
@@ -98,7 +98,7 @@ export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", b
 
                     <div className='pt-2 grid grid-cols-[1fr_1px_1fr] gap-6'>
                         <div>
-                            {learnSectionLeft.map((detail:any, index:any) => (
+                            {learnSectionLeft.map((detail: any, index: any) => (
                                 <div key={index} className='flex items-start gap-3 py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>
                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className='block mt-0.5 flex-shrink-0'>
                                         <circle cx="10" cy="10" r="10" fill="#E5F0DF" />
@@ -110,7 +110,7 @@ export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", b
                         </div>
                         <div className='bg-border-light300 my-2'></div>
                         <div>
-                            {learnSectionRight.map((detail:any, index:any) => (
+                            {learnSectionRight.map((detail: any, index: any) => (
                                 <div key={index} className='flex items-start gap-3 py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>
                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className='block mt-0.5 flex-shrink-0'>
                                         <circle cx="10" cy="10" r="10" fill="#E5F0DF" />
@@ -125,7 +125,7 @@ export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", b
 
 
                 {broker.courseModules && broker.courseModules.length > 0 && (
-                    <CourseModulesSection courseModules={broker.courseModules} />
+                    <CourseModulesSection courseModules={broker.courseModules}/>
                 )}
 
             </div>

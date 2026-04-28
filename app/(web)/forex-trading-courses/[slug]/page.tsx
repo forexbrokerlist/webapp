@@ -28,7 +28,8 @@ import { Sticky } from "~/components/web/ui/sticky"
 import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
-import { findBrokerBySlug } from "~/server/web/tools/queries"
+import { findBrokerBySlug, findRandomBrokers, findRandomCourses } from "~/server/web/tools/queries"
+import { db } from "~/services/db"
 import { getPresignedUrlFromFull, getScreenshotFetchUrl } from "~/lib/media"
 import ForexTradingCourseDetails from "~/components/web/forex-trading-course-details"
 
@@ -52,6 +53,28 @@ const getData = cache(async ({ params }: Props) => {
     notFound()
   }
 
+  const screenshotUrl = await getPresignedUrlFromFull(broker.screenshotUrl)
+  const logoUrl = await getPresignedUrlFromFull(broker.logoUrl)
+
+  // Get random brokers from forex-trading-courses category
+  const randomBrokersRaw = await findRandomCourses(1, slug)
+
+  // Debug: Log the raw random brokers data
+  console.log('Random brokers raw data:', randomBrokersRaw)
+  console.log('Current broker slug being excluded:', slug)
+
+  // Simplify the data structure to avoid serialization issues
+  const randomBrokers = randomBrokersRaw.map((b) => ({
+    broker_name: b.broker_name,
+    slug: b.slug,
+    logoUrl: b.logoUrl,
+    screenshotUrl: b.screenshotUrl,
+    categories: b.categories,
+  }))
+
+  // Debug: Log the final processed random brokers
+  console.log('Final random brokers (simplified):', randomBrokers)
+
   const t = await getTranslations()
   const url = `/crm/${broker.slug}`
   const title = `${broker.broker_name || "Unknown Broker"} Review`
@@ -64,9 +87,7 @@ const getData = cache(async ({ params }: Props) => {
     structuredData: [generateCollectionPage(url, title, description)],
   })
 
-  const screenshotUrl = await getPresignedUrlFromFull(broker.screenshotUrl)
-
-  return { broker: { ...broker, screenshotUrl }, ...data }
+  return { broker: { ...broker, screenshotUrl, logoUrl }, randomBrokers, ...data }
 })
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
@@ -97,8 +118,11 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 }
 
 export default async function (props: Props) {
-  const { broker, metadata, structuredData } = await getData(props)
+  const { broker, randomBrokers, metadata, structuredData } = await getData(props)
   const headerList = await headers()
+
+  console.log('Page component - randomBrokers from getData:', randomBrokers)
+  console.log('Page component - randomBrokers length:', randomBrokers?.length)
 
   return (
     <>
@@ -202,8 +226,8 @@ export default async function (props: Props) {
           </Suspense>
         </Section.Sidebar>
       </Section> */}
-      
-      <ForexTradingCourseDetails broker={broker} />
+
+      <ForexTradingCourseDetails broker={broker} randomBrokers={randomBrokers} />
       <StructuredData data={structuredData} />
     </>
   )

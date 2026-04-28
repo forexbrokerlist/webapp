@@ -14,7 +14,7 @@ export default async function ForexTradingCourseDetails({ broker, randomBrokers 
                 { value: broker.certificate_available ? 'Yes' : 'No', label: 'Certificate Available' },
                
             ]} showDemo={false} showVerified={true} showCrmPara={true} showTrialAvailable={true} showBeginnerFriendly={true} />
-            <ForexTradingCourseDetailsView broker={broker}  />
+            <ForexTradingCourseDetailsView broker={broker} randomBrokers={randomBrokers} trustedBrokers={trustedBrokers} />
             {/* <ForexCrmDetailsView broker={broker} randomBrokers={randomBrokers} trustedBrokers={trustedBrokers} /> */}
         </div>
     )

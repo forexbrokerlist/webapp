@@ -39,8 +39,8 @@ export default function CourseModulesSection({
 
 
   return (
-    <div className="border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-6 mt-6">
-      <div className='flex items-center gap-2 pb-3'>
+    <div   className="border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-6 mt-6">
+      <div className='flex items-center gap-2 pb-3' id="course-modules">
         <img src={RoundIcon} alt="RoundIcon" className='block' />
         <span className='block text-base font-medium text-black'>
           Course Modules
