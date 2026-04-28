@@ -1,8 +1,22 @@
 import React from 'react'
 import Link from 'next/link';
+import { getPresignedUrlFromFull } from '~/lib/media';
 
-export default function SuggestedBroker({ brokers,suggestionTitle="Suggested Broker" }: { brokers?: any[],suggestionTitle?:string }) {
+export default async function SuggestedBroker({ brokers, suggestionTitle = "Suggested Broker" }: { brokers?: any[], suggestionTitle?: string }) {
+    console.log('SuggestedBroker component - brokers received:', brokers);
+    console.log('SuggestedBroker component - brokers length:', brokers?.length);
+    console.log('SuggestedBroker component - suggestionTitle:', suggestionTitle);
+
     if (!brokers || brokers.length === 0) return null;
+
+    // Process broker URLs to get presigned URLs
+    const processedBrokers = await Promise.all(
+        brokers.map(async (broker) => ({
+            ...broker,
+            logoUrl: broker.logoUrl ? await getPresignedUrlFromFull(broker.logoUrl) : null,
+            screenshotUrl: broker.screenshotUrl ? await getPresignedUrlFromFull(broker.screenshotUrl) : null,
+        }))
+    );
 
     return (
         <div className='rounded-xl border border-border-light180 border-solid bg-white overflow-hidden'>
@@ -14,7 +28,7 @@ export default function SuggestedBroker({ brokers,suggestionTitle="Suggested Bro
             </div>
             <div className='px-4'>
                 {
-                    brokers.map((broker, index) => {
+                    processedBrokers.map((broker, index) => {
                         const rawCategorySlug = broker.categories?.[0]?.slug;
                         const categorySlug = rawCategorySlug === 'trusted-trading-platforms' || rawCategorySlug === 'forex-brokers' ? 'broker' : (rawCategorySlug || 'broker');
                         return (
@@ -24,7 +38,7 @@ export default function SuggestedBroker({ brokers,suggestionTitle="Suggested Bro
                                 </div>
                                 <div className='flex items-center gap-3'>
                                     <div className='w-[40px] h-[40px] rounded-full flex items-center justify-center border border-solid border-primary bg-white overflow-hidden'>
-                                        <img src={broker.logoUrl} className='max-w-[24px] max-h-[24px] block object-contain' alt={broker.broker_name} />
+                                        <img src={broker.logoUrl || '/assets/images/placeholder-logo.png'} className='max-w-[30px] max-h-[30px] block object-contain' alt={broker.broker_name} />
                                     </div>
                                     <span className='block text-lg font-medium text-black truncate'>
                                         {broker.broker_name}
