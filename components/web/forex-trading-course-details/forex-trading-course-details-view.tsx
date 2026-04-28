@@ -67,15 +67,15 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
                                 "Trading Specifications",
                                 "Topics & Skills",
 
-                               
 
-                              
+
+
 
                                 "Trading Course Review",
 
                                 "User Review",
 
-                               
+
 
                                 "FAQ"
 
@@ -91,7 +91,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
 
                             { label: "Provider Type", value: broker.provider_type ? String(broker.provider_type).replace(/OnlineAcademy/g, 'Online Academy') : "-" },
 
-                            { label: "Skill Levels", value: broker.skill_level &&broker.skill_level.length>0? String(broker.skill_level).replace(/,/g, ', ') : "-" },
+                            { label: "Skill Levels", value: broker.skill_level && broker.skill_level.length > 0 ? String(broker.skill_level).replace(/,/g, ', ') : "-" },
 
                             { label: "Format", value: broker.learning_format.length > 0 ? String(broker.learning_format).replace(/,/g, ' + ') : "-" },
 
@@ -123,7 +123,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
                             sectionId='trading-course-details'
                         />
 
-
+                      
 
                         <TradingSpecifications broker={broker} showTradingHours={false} showAccountFunding={false} showTradingSpreads={false} showStarRatings={false} showFeatures={true} platformSectionId="platform-&-features" showSkills={true} />
 
