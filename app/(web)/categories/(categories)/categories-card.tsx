@@ -75,7 +75,7 @@ export default function CategoriesCard({
 }: CategoriesCardProps) {
     return (
         <>
-            <section className='py-100'>
+            <section className='pb-100'>
                 <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
                     <div className='grid grid-cols-[1fr_390px_390px] gap-6'>
                         <div className='bg-white rounded-2xl items-center border border-solid border-border-light500 py-[40px] px-10 grid grid-cols-[1fr_333px]'>

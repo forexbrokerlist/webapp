@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server"
 import { cache, Suspense } from "react"
+import CommonBanner from "~/components/web/common-banner"
 import { StructuredData } from "~/components/web/structured-data"
 import { ToolListingSkeleton } from "~/components/web/tools/tool-listing"
 import { ToolQuery } from "~/components/web/tools/tool-query"
@@ -8,6 +9,7 @@ import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
+const BrokersImage = '/assets/images/brokers.png';
 
 type Props = {
   searchParams: Promise<any>
@@ -53,7 +55,13 @@ export default async function (props: Props) {
 
   return (
     <>
-      <div className="pt-[140px]">
+      <CommonBanner
+        image={BrokersImage}
+        description='Explore a comprehensive list of forex brokers with detailed insights, features, ratings, and trading conditions. Easily search, filter, and compare brokers to find the perfect match for your trading needs.'
+        highlightedText="All Forex Brokers –" title="Discover, 
+Compare & Choose the Best 
+Trading Platforms" />
+      <div className="">
         {/* <Breadcrumbs items={breadcrumbs} /> */}
 
         <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
