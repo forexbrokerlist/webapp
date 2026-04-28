@@ -12,10 +12,10 @@ export default function TradingDetails({ broker }: { broker: any }) {
     ];
 
     const additionalDetails = [
-        { label: "Business Size", value: broker.bestFor ? String(broker.bestFor).replace(/MidSize/g, 'Mid-size').replace(/,/g, ', ') : "-" },
-        { label: "Support Channels", value: broker.support_channels ? String(broker.support_channels).replace(/,/g, ', ') : "-" },
-        { label: "Support Hours", value: broker.support_hours || "-" },
-        { label: "Languages", value: broker.languages_supported || "-" },
+        { label: "Business Size", value: broker.bestFor&&broker.bestFor.length>0 ? String(broker.bestFor).replace(/MidSize/g, 'Mid-size').replace(/,/g, ', ') : "-" },
+        { label: "Support Channels", value: broker.support_channels&&broker.support_channels.length>0 ? String(broker.support_channels).replace(/,/g, ', ') : "-" },
+        { label: "Support Hours", value: broker.support_hours|| "-" },
+        { label: "Languages", value: broker.languages_supported&&broker.languages_supported.length>0 ? String(broker.languages_supported).replace(/,/g, ', ') : "-" },
 
 
         { label: "API Access", value: broker.api_access ? "Yes" : "No", isNew: true, isPositive: broker.api_access },
