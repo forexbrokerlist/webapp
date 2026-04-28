@@ -63,7 +63,7 @@ export default function PlatformFeatures({ broker, showStarRatings = true, showF
                     </div>
 
                     {/* Key Features Card */}
-                    <div className='p-4 rounded-xl border border-border-light300 bg-[#f0f1ec4d]'>
+                    {features.length>0&&<div className='p-4 rounded-xl border border-border-light300 bg-[#f0f1ec4d]'>
                         <div className='flex items-center gap-2 pb-3'>
                             <img src={RoundIcon} alt="RoundIcon" className='block' />
                             <span className='block text-base font-medium text-black'>
@@ -80,7 +80,7 @@ export default function PlatformFeatures({ broker, showStarRatings = true, showF
                                 ))}
                             </div>
                         </div>
-                    </div>
+                    </div>}
                 </div>
             ) : (
                 // Original single card layout when showFeatures is false

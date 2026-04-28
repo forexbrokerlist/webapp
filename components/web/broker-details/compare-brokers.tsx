@@ -137,6 +137,14 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
     const handleRemoveBroker = (idx: number) => {
         const newSlots = [...slots];
         newSlots[idx] = null;
+
+        // If removing the second slot (index 1) and third slot (index 2) has a broker,
+        // shift the third broker to the second slot
+        if (idx === 1 && newSlots[2] !== null) {
+            newSlots[1] = newSlots[2];
+            newSlots[2] = null;
+        }
+
         setSlots(newSlots);
     }
 
@@ -196,8 +204,8 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                             const needsAlignment = ['Max Leverage', 'Regulations', 'Platforms'].includes(stat.label);
 
                                             return (
-                                                <div 
-                                                    key={i} 
+                                                <div
+                                                    key={i}
                                                     className={`flex justify-between items-start gap-5 py-2 border-b border-[#e6e6e6] ${needsAlignment ? 'min-h-[60px]' : ''}`}
                                                 >
                                                     <span className="text-[14px] font-medium text-black700">{stat.label}</span>
@@ -222,7 +230,11 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                     </div>
                                 </div>
                             ) : (
-                                <EmptyCompareSlot key={idx} onClick={() => setActiveSlot(idx)} />
+                                <EmptyCompareSlot key={idx} onClick={() => {
+                                    // Find the first empty slot from left to right (excluding slot 0 which is always occupied)
+                                    const firstEmptySlot = slots.findIndex((slot, index) => index > 0 && slot === null);
+                                    setActiveSlot(firstEmptySlot !== -1 ? firstEmptySlot : idx);
+                                }} />
                             )
                         ))}
                     </div>
@@ -251,7 +263,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                             </svg>
                         </div>
                     </DialogHeader>
-                    <div className="grid grid-cols-3 gap-4 overflow-y-auto px-6 pb-6 items-start min-h-[300px]">
+                    <div className="grid grid-cols-3 gap-2 overflow-y-auto px-6 pb-4 items-start min-h-[220px]">
                         {isSearching ? (
                             <div className="py-10 text-center col-span-full">
                                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -262,7 +274,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                 <div
                                     key={i}
                                     onClick={() => handleSelectBroker(tb)}
-                                    className="flex items-center justify-between p-4 border border-border-light300 rounded-xl cursor-pointer hover:border-primary hover:bg-[#F5F8EA] group transition-all"
+                                    className="flex items-center justify-between p-3 border border-border-light300 rounded-xl cursor-pointer hover:border-primary hover:bg-[#F5F8EA] group transition-all"
                                 >
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-white shadow-sm border border-border-light200 overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
