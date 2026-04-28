@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Send, Loader2, FileText, User, Image as ImageIcon, X, ArrowLeft, MessageSquare, Plus, TrendingUp, Layers, Zap, Shield, Target, Activity, Menu } from "lucide-react"
+import { Send, Loader2, FileText, User, Image as ImageIcon, X, ArrowLeft, MessageSquare, Plus, TrendingUp, Layers, Zap, Shield, Target, Activity, Menu, Delete, Trash, Sparkles, Lightbulb, ClipboardList } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Button } from "~/components/common/button"
 import { Avatar, AvatarFallback } from "~/components/common/avatar"
@@ -15,6 +15,8 @@ import { useSession } from "~/lib/auth-client"
 import { saveFxGuruConversation, getFxGuruConversations } from "~/server/web/actions/fx-guru"
 import CommonBanner from "../common-banner"
 const TradeImage = '/assets/images/trade.png';
+const AskIcon = '/assets/images/ask.svg';
+const FxguruIcon = '/assets/images/fxguru.svg';
 
 interface Message {
   id: string
@@ -134,29 +136,29 @@ function MessageBubble({ message, onViewReport }: {
 }) {
   return (
     <div className={`flex gap-3 w-full ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
-      {message.sender === "assistant" && (
+      {/* {message.sender === "assistant" && (
         <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
           <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">AI</AvatarFallback>
         </Avatar>
-      )}
+      )} */}
 
       <div className={`p-4 rounded-2xl shadow-xs text-sm max-w-[85%] ${message.sender === "user"
-        ? "bg-primary text-primary-foreground rounded-tr-sm"
+        ? "bg-gradient-to-b from-[#FFF] to-[rgba(168,221,21,0.30)] text-black100 rounded-tr-sm"
         : "bg-card border border-border rounded-tl-sm"
         }`}>
         {message.image_url && message.sender === "user" && (
-          <div className="mb-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+          <div className="mb-2">
+
             <img src={message.image_url} alt="Uploaded" className="rounded-lg max-h-48 object-cover border border-primary-foreground/20" />
           </div>
         )}
 
         <div className={message.sender === "assistant" ? "prose prose-sm max-w-none dark:prose-invert [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-indigo-600 dark:[&_h2]:text-indigo-400 [&_h2]:mb-4 [&_h2]:pb-2 [&_h2]:border-b [&_h2]:border-border [&_p]:text-base [&_p]:leading-relaxed [&_strong]:font-semibold [&_strong]:text-foreground" : ""}>
           {message.sender === "assistant" ? (
-            <div className="space-y-4">
+            <div className="space-y-2">
               {message.image_url && (
-                <div className="mb-3">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                <div className="mb-2">
+
                   <img src={message.image_url} alt="AI Response" className="rounded-lg max-h-64 object-cover border" />
                 </div>
               )}
@@ -327,7 +329,7 @@ function MessageBubble({ message, onViewReport }: {
               variant="secondary"
               size="sm"
               onClick={() => onViewReport(message.full_report!, message.short_response!)}
-              className="h-7 text-xs px-3 rounded-full bg-background border shadow-xs hover:border-primary/30 hover:bg-muted/50 transition-all"
+              className="h-7 text-xs px-3 rounded-full bg-background border shadow-xs text-black100 transition-all"
             >
               <FileText className="h-3 w-3 mr-1.5" />
               View Full Report
@@ -335,19 +337,19 @@ function MessageBubble({ message, onViewReport }: {
           ) : (
             <span />
           )}
-          <div className={`text-[10px] opacity-70 ${message.sender === "user" ? "text-primary-foreground" : "text-muted-foreground"}`}>
+          <div className={`text-[10px] opacity-70 ${message.sender === "user" ? "text-black100" : "text-black100"}`}>
             {message.timestamp}
           </div>
         </div>
       </div>
 
-      {message.sender === "user" && (
+      {/* {message.sender === "user" && (
         <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
           <AvatarFallback className="bg-muted text-muted-foreground">
             <User className="h-4 w-4" />
           </AvatarFallback>
         </Avatar>
-      )}
+      )} */}
     </div>
   )
 }
@@ -366,37 +368,25 @@ export function FxGuruSidebar({ currentChatId, isOpen, onClose }: { currentChatI
 
   return (
     <>
-      {/* Mobile Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 z-30 md:hidden backdrop-blur-[2px]"
-          onClick={onClose}
-        />
-      )}
-
-      <div className={`
-        fixed inset-y-0 left-0 z-40 w-72 md:relative md:z-10 md:flex flex-col md:w-64 border-r border-border bg-card/50 h-full overflow-hidden shrink-0 transition-transform duration-300 ease-in-out
-        ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
-      `}>
-        <div className="p-3 border-b border-border shrink-0 flex items-center justify-between">
-          <button
-            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors"
-            onClick={() => {
-              router.push('/fx-guru')
-              if (onClose) onClose()
-            }}
-          >
-            <Plus className="h-4 w-4" />
+      <div className="bg-white rounded-xl border border-solid border-border-light300">
+        <div className="p-3 ">
+          <Button variant="secondary" className="py-2 text-base w-full" onClick={() => {
+            router.push('/fx-guru')
+            if (onClose) onClose()
+          }}>
+            <div className="flex items-center  gap-2">
+              <Plus className="h-4 w-4" />
+            </div>
             New Chat
-          </button>
-          {onClose && (
-            <Button variant="ghost" size="icon" className="md:hidden ml-2" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          )}
+          </Button>
+          <div className="flex items-center gap-3 my-3 px-2">
+            <div className="h-[1.5px] flex-1 bg-primary"></div>
+            <span className="text-sm font-medium text-black700 whitespace-nowrap">Search History</span>
+            <div className="h-[1.5px] flex-1 bg-primary"></div>
+          </div>
         </div>
-        <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
-          <div className="text-[11px] font-semibold text-muted-foreground mb-2 px-2 uppercase tracking-wider">Recent</div>
+        <div className="flex-1 h-[calc(100%-110px)] overflow-y-auto p-3 pt-0 space-y-3">
+          {/* <div className="text-[11px] font-semibold text-muted-foreground mb-2 px-2 uppercase tracking-wider">Recent</div> */}
           {chats.length === 0 ? (
             <div className="text-xs text-center text-muted-foreground p-4">No past chats.</div>
           ) : (
@@ -407,13 +397,16 @@ export function FxGuruSidebar({ currentChatId, isOpen, onClose }: { currentChatI
                   router.push(`/fx-guru/${chat.conversationId}`)
                   if (onClose) onClose()
                 }}
-                className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-[13px] text-left transition-colors ${currentChatId === chat.conversationId
-                  ? "bg-indigo-600/10 text-indigo-500 font-medium"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                className={`w-full cursor-pointer flex items-center justify-between gap-2 p-1 pl-3.5  bg-[#F0F1EC] rounded-full transition-colors ${currentChatId === chat.conversationId
+                  ? ""
+                  : ""
                   }`}
               >
-                <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-60" />
-                <span className="truncate">{chat.title || "New Chat"}</span>
+                {/* <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-60" /> */}
+                <span className="truncate line-clamp-1 text-black800 text-base">{chat.title || "New Chat"}</span>
+                <div className="w-9 min-w-9 min-h-9 h-9 flex cursor-pointer items-center justify-center bg-white rounded-full shadow-xs">
+                  <Trash className="text-[#FF5151] w-4 h-4" color="#FF5151" />
+                </div>
               </button>
             ))
           )}
@@ -580,122 +573,158 @@ export function FxGuruLanding() {
         highlightedText="FX Guru:" title="Your Ultimate Stock 
 Search & Market Intelligence 
 Platform" />
-      <FxGuruSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      <div className="flex-1 w-full flex flex-col overflow-y-auto overflow-x-hidden relative">
-        <motion.div
-          className="w-full min-h-full flex flex-col justify-center items-center relative"
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, type: "tween", ease: "easeInOut" }}
-        >
-          <div className="flex-1 w-full flex flex-col items-center md:justify-center relative pt-8 md:pt-12 p-4 max-w-5xl rounded-3xl gap-4 md:gap-6">
-            {/* Mobile Header Toggle */}
-            <div className="md:hidden absolute top-4 left-4 z-30">
-              <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(true)}>
-                <Menu className="h-5 w-5" />
-              </Button>
-            </div>
-            <div className="absolute top-0 right-0 -mr-32 -mt-32 w-96 h-96 rounded-full bg-blue-300/40 mix-blend-multiply filter blur-3xl opacity-50 pointer-events-none dark:bg-blue-900/40" />
-            <div className="absolute top-20 right-40 w-72 h-72 rounded-full bg-purple-300/30 mix-blend-multiply filter blur-3xl opacity-50 pointer-events-none dark:bg-purple-900/30" />
-            <div className="absolute top-40 left-10 w-80 h-80 rounded-full bg-cyan-200/40 mix-blend-multiply filter blur-3xl opacity-50 pointer-events-none dark:bg-cyan-900/40" />
+      <div className="pb-100">
+        <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
+          <div className="grid grid-cols-[390px_1fr] gap-5">
+            <FxGuruSidebar />
+            <div className="">
 
-            <div className="text-center pt-12 md:pt-8 pb-4 flex flex-col items-center justify-center max-w-lg mx-auto z-20">
-              <div className="text-2xl md:text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-2 whitespace-nowrap">Welcome to FXGuru</div>
-              <div className="text-base md:text-lg text-muted-foreground mb-2 px-4">Stock insights are waiting. Talk to the FX Guru Assistant.</div>
-            </div>
-
-            <Stack className="items-center justify-center flex-1 z-10 w-full mb-8 md:mb-0" direction="column" size="lg" wrap={true}>
-              <div className="flex flex-col md:flex-row gap-6 items-center justify-center w-full max-w-4xl">
-                <div className="flex flex-col items-center max-w-[320px] w-full group">
-                  <div className="relative z-20 -mb-16 transition-transform duration-500 group-hover:-translate-y-4">
-                    <div className="w-40 h-44 bg-linear-to-br from-blue-700 to-indigo-900 rounded-t-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-slate-800">
-                      <span className="text-5xl">📈</span>
+              <div className="bg-white rounded-xl border border-solid border-border-light300 px-4 py-[60px]">
+                <div className="max-w-[980px] mx-auto">
+                  <div className="pb-10">
+                    <div className="flex justify-center">
+                      <img src={FxguruIcon} alt="FxguruIcon" className="block" />
                     </div>
-                  </div>
-                  <Card className="pt-20 pb-6 px-6 text-center shadow-xl w-full border-white/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-[32px] min-h-[220px]">
-                    <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400 mb-3  leading-tight">Turn Charts Into Actionable Insights</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed px-2">
-                      Instantly Turn Raw Charts Into Clear, Actionable Trade Insights With AI That Identifies Trends, Key Levels, Market Structure, And High-Probability Setups.
+                    <h2 className="text-3xl text-black font-bold text-center mb-3">
+                      Welcome to FXGuru
+                    </h2>
+                    <p className="text-lg font-medium text-black700 max-w-[733px] mx-auto text-center">
+                      Your intelligent forex trading companion. Get instant market insights, chart
+                      analysis,
+                      and expert-level trading strategies powered by AI.
                     </p>
-                  </Card>
-                </div>
-
-                <div className="flex flex-col items-center max-w-[320px] w-full group">
-                  <div className="relative z-20 -mb-16 transition-transform duration-500 group-hover:-translate-y-4">
-                    <div className="w-40 h-44 bg-linear-to-br from-slate-900 to-black rounded-t-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-slate-800">
-                      <span className="text-5xl">🐻</span>
-                    </div>
                   </div>
-                  <Card className="pt-20 pb-6 px-6 text-center shadow-xl w-full border-white/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-[32px] min-h-[220px]">
-                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-3 leading-tight">Ask Anything to The FX Guru Assistant</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed px-2">
-                      Unlock Market Intelligence With The FXGuru Assistant — Ask Anything About Stocks, Analysis, Or Strategies And Get Expert-Level Insights In Seconds.
-                    </p>
-                  </Card>
-                </div>
-              </div>
-            </Stack>
-
-            <div className="w-full max-w-3xl z-20 pb-12 mt-auto mx-auto px-4 align-bottom">
-              <div
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                className={`relative flex flex-col p-2 rounded-3xl border-2 transition-all duration-300 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] 
+                  <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    className={`relative flex flex-col rounded-3xl border transition-all duration-300 bg-white shadow-xs
                   ${isDragging
-                    ? "border-indigo-500 border-dashed bg-indigo-50/20 dark:bg-indigo-500/10 scale-[1.02] shadow-[0_0_20px_rgba(99,102,241,0.3)]"
-                    : "border-indigo-500/20 dark:border-indigo-500/30 bg-white/80 dark:bg-slate-900/80"
-                  } 
-                  focus-within:border-indigo-500 focus-within:shadow-[0_0_20px_rgba(99,102,241,0.2)] focus-within:ring-1 focus-within:ring-indigo-500`}
-              >
-                {previewFile && (
-                  <div className="relative w-fit mb-3 ml-2 group animate-in zoom-in duration-200">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={previewFile} alt="Preview" className="h-24 md:h-32 w-auto rounded-2xl object-cover border-2 border-indigo-500/20 shadow-md" />
-                    <button
-                      onClick={clearFile}
-                      className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full p-1.5 shadow-lg hover:bg-red-600 transition-colors"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
+                        ? "border-primary border-dashed bg-primary/5 scale-[1.01]"
+                        : "border-primary"
+                      } 
+                  focus-within:shadow-[0_0_20px_rgba(168,221,21,0.2)]`}
+                  >
+                    {/* Top Section: Icon + Textarea */}
+                    <div className="flex items-start gap-3 p-5 pb-2">
+                      <div className="shrink-0 mt-1">
+                        <img src={AskIcon} alt="AskIcon" />
+                      </div>
+                      <textarea
+                        placeholder={selectedFile ? "File uploaded. Submit to continue." : "Ask anything about forex trading, chart and strategies.."}
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        disabled={isLoading || !!selectedFile}
+                        className="flex-1 bg-transparent border-none outline-none text-base text-black800 placeholder:text-black/40 focus:ring-0 disabled:opacity-50 min-h-[50px] resize-none"
+                        onKeyDown={handleKeyPress}
+                      />
+                    </div>
+
+                    {/* Middle Section: Image Preview (if any) */}
+                    {previewFile && (
+                      <div className="px-5 pb-3">
+                        <div className="relative w-fit group animate-in zoom-in duration-200">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={previewFile} alt="Preview" className="h-20 w-auto rounded-xl object-cover border-2 border-primary/20 shadow-sm" />
+                          <button
+                            onClick={clearFile}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Bottom Section: Upload + Send */}
+                    <div className="flex items-center justify-between p-4 pt-0">
+                      <div className="flex items-center justify-center" onClick={() => fileInputRef.current?.click()}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                          <path d="M14.0007 2.33203C20.4439 2.33203 25.6673 7.55537 25.6673 13.9987C25.6673 20.4421 20.4439 25.6653 14.0007 25.6653C7.55733 25.6653 2.33398 20.4421 2.33398 13.9987M10.3945 2.90005C9.21732 3.28226 8.12223 3.84655 7.14244 4.55968M4.56165 7.14045C3.84839 8.12042 3.28402 9.21574 2.9018 10.3931" stroke="#121212" stroke-opacity="0.7" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+                          <path d="M14.0007 9.33203V18.6653M18.6673 13.9987H9.33398" stroke="#121212" stroke-opacity="0.7" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </div>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        className="hidden"
+                        accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
+                        onChange={handleFileChange}
+                      />
+
+                      <Button
+                        className="bg-primary  text-black font-medium rounded-full cursor-pointer px-5 py-2 h-auto flex items-center gap-2 shadow-xs transition-transform active:scale-95 disabled:opacity-50"
+                        onClick={handleSend}
+                        disabled={isLoading || (!inputValue.trim() && !selectedFile)}
+                      >
+                        {isLoading ? (
+                          <Loader2 className="size-5 animate-spin" />
+                        ) : (
+                          <>
+                            <Sparkles className="size-4" />
+                            <span>Ask Guru</span>
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
-                )}
-                <div className="flex flex-row items-center w-full px-1 flex-wrap md:flex-nowrap gap-y-2">
-                  <Button
-                    variant="ghost"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="rounded-full w-10 h-10 p-0 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800 shrink-0"
-                  >
-                    <ImageIcon className="size-5" />
-                  </Button>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    className="hidden"
-                    accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
-                    onChange={handleFileChange}
-                  />
-                  <input
-                    type="text"
-                    placeholder={selectedFile ? "File uploaded. Submit to continue." : "Ask Anything About Stocks Or Investments..."}
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    disabled={isLoading || !!selectedFile}
-                    className="flex-1 min-w-0 bg-transparent border-none outline-none px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:ring-0 disabled:opacity-50"
-                    onKeyDown={handleKeyPress}
-                  />
-                  <Button
-                    className="rounded-full w-10 h-10 p-0 shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition-transform active:scale-95"
-                    onClick={handleSend}
-                    disabled={isLoading || (!inputValue.trim() && !selectedFile)}
-                  >
-                    {isLoading ? <Loader2 className="size-5 animate-spin" /> : <Send className="size-4 -ml-0.5" />}
-                  </Button>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
+                    <div className="p-4 rounded-xl border border-blue-200 bg-white shadow-xs relative overflow-hidden flex flex-col gap-4 group transition-all hover:shadow-md">
+                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-100/50 rounded-full blur-3xl pointer-events-none" />
+                      <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <Sparkles className="w-12 h-12 text-blue-400" />
+                      </div>
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-blue-50 text-blue-600 shadow-xs relative z-10">
+                        <TrendingUp className="w-6 h-6" />
+                      </div>
+                      <div className="space-y-2 relative z-10">
+                        <h3 className="font-bold text-black text-lg">Chart Analysis</h3>
+                        <p className="text-sm text-black700 leading-relaxed">
+                          Upload any forex chart and get instant AI-powered analysis with trend identification, support/resistance levels, and trade opportunities.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Card 2: Trading Insights */}
+                    <div className="p-4 rounded-xl border border-emerald-200 bg-white shadow-xs relative overflow-hidden flex flex-col gap-4 group transition-all hover:shadow-md">
+                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-100/50 rounded-full blur-3xl pointer-events-none" />
+                      <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <Sparkles className="w-12 h-12 text-emerald-400" />
+                      </div>
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-emerald-50 text-emerald-600 shadow-xs relative z-10">
+                        <Lightbulb className="w-6 h-6" />
+                      </div>
+                      <div className="space-y-2 relative z-10">
+                        <h3 className="font-bold text-black text-lg">Trading Insights</h3>
+                        <p className="text-sm text-black700 leading-relaxed">
+                          Ask questions about forex strategies, market conditions, technical indicators, and get expert-level answers instantly.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Card 3: Strategy Builder */}
+                    <div className="p-4 rounded-xl border border-red-200 bg-white shadow-xs relative overflow-hidden flex flex-col gap-4 group transition-all hover:shadow-md">
+                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-red-100/50 rounded-full blur-3xl pointer-events-none" />
+                      <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <Sparkles className="w-12 h-12 text-red-400" />
+                      </div>
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-red-50 text-red-600 shadow-xs relative z-10">
+                        <ClipboardList className="w-6 h-6" />
+                      </div>
+                      <div className="space-y-2 relative z-10">
+                        <h3 className="font-semibold text-black text-lg">Strategy Builder</h3>
+                        <p className="text-sm text-black700 leading-relaxed">
+                          Create and refine your trading strategies with AI guidance tailored to your risk tolerance and goals.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
+
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   )
@@ -950,137 +979,134 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
   }
 
   return (
-    <div className="">
-      <FxGuruSidebar currentChatId={chatId} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      <AnimatePresence mode="wait">
-        <motion.div
-          key="chat-detail"
-          className="flex flex-1 flex-col w-full h-full overflow-hidden"
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 40 }}
-          transition={{ duration: 0.4, type: "tween", ease: "easeInOut" }}
-        >
-          <div className="sticky top-0 z-10 p-4 border-b border-border bg-background shadow-xs shrink-0">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:hidden text-muted-foreground mr-1"
-                  onClick={() => setIsSidebarOpen(true)}
-                >
-                  <Menu className="h-5 w-5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="rounded-full w-8 h-8 md:w-9 md:h-9 p-0 text-muted-foreground hover:text-foreground"
-                  onClick={() => router.push("/fx-guru")}
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-                <div className="font-bold text-base md:text-lg text-indigo-600 dark:text-indigo-400">FXGuru</div>
-              </div>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="text-xs border border-border"
-                onClick={() => router.push("/fx-guru")}
-              >
-                New Chat
-              </Button>
-            </div>
-          </div>
+    <div className="pt-100">
+      <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
+        <div className="grid grid-cols-[390px_1fr] gap-5 pb-8">
+          <FxGuruSidebar currentChatId={chatId} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key="chat-detail"
+              className="flex flex-1 flex-col w-full h-[calc(100dvh-132px)] overflow-auto bg-white rounded-xl border border-solid border-border-light300"
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 40 }}
+              transition={{ duration: 0.4, type: "tween", ease: "easeInOut" }}
+            >
+              <div className="flex-1 overflow-y-auto w-full p-4 space-y-6">
+                {isHistoryLoading && messages.length === 0 && (
+                  <div className="flex items-center justify-center h-full">
+                    <p className="text-muted-foreground text-sm">Loading conversation…</p>
+                  </div>
+                )}
+                {!isHistoryLoading && messages.length === 0 && (
+                  <div className="flex items-center justify-center h-full">
+                    <p className="text-muted-foreground text-sm">No previous messages found. Ask a follow-up question to continue.</p>
+                  </div>
+                )}
+                {messages.map((message) => (
+                  <MessageBubble key={message.id} message={message} />
+                ))}
 
-          <div className="flex-1 overflow-y-auto w-full p-4 space-y-6">
-            {isHistoryLoading && messages.length === 0 && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-muted-foreground text-sm">Loading conversation…</p>
+                {isLoading && (
+                  <div className="flex gap-3 justify-start animate-in fade-in zoom-in duration-300">
+                    <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">AI</AvatarFallback>
+                    </Avatar>
+                    <div className="bg-card border border-border p-4 rounded-2xl rounded-tl-sm shadow-xs flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                      <span className="text-sm text-foreground/80">
+                        {selectedFile ? "Analyzing image..." : "Analyzing market data..."}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
               </div>
-            )}
-            {!isHistoryLoading && messages.length === 0 && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-muted-foreground text-sm">No previous messages found. Ask a follow-up question to continue.</p>
-              </div>
-            )}
-            {messages.map((message) => (
-              <MessageBubble key={message.id} message={message} />
-            ))}
 
-            {isLoading && (
-              <div className="flex gap-3 justify-start animate-in fade-in zoom-in duration-300">
-                <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
-                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">AI</AvatarFallback>
-                </Avatar>
-                <div className="bg-card border border-border p-4 rounded-2xl rounded-tl-sm shadow-xs flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                  <span className="text-sm text-foreground/80">
-                    {selectedFile ? "Analyzing image..." : "Analyzing market data..."}
-                  </span>
+              <div className="sticky bottom-0 p-4 ">
+                <div
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  className={`relative flex flex-col rounded-[32px] border transition-all duration-300 bg-white shadow-xs 
+                ${isDragging
+                      ? "border-primary border-dashed bg-primary/5 scale-[1.01]"
+                      : "border-primary"
+                    } 
+                focus-within:shadow-[0_0_20px_rgba(168,221,21,0.2)]`}
+                >
+                  {/* Top Section: Icon + Textarea */}
+                  <div className="flex items-start gap-3 p-5 pb-2">
+                    <div className="shrink-0 mt-1">
+                      {/* Black Smiley Icon */}
+                      <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center relative overflow-hidden">
+                        <div className="w-3 h-1.5 border-b-2 border-white rounded-full mt-[-2px]"></div>
+                        <div className="absolute -bottom-1 -left-1 w-2.5 h-2.5 bg-black rotate-45"></div>
+                      </div>
+                    </div>
+                    <textarea
+                      placeholder={selectedFile ? "File uploaded. Submit to continue." : "Ask anything about forex trading, chart and strategies.."}
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      disabled={isLoading || !!selectedFile}
+                      className="flex-1 bg-transparent border-none outline-none text-base text-black800 placeholder:text-black/40 focus:ring-0 disabled:opacity-50 min-h-[50px] resize-none"
+                      onKeyDown={handleKeyPress}
+                    />
+                  </div>
+
+                  {/* Middle Section: Image Preview (if any) */}
+                  {previewFile && (
+                    <div className="px-5 pb-3">
+                      <div className="relative w-fit group animate-in zoom-in duration-200">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={previewFile} alt="Preview" className="h-20 w-auto rounded-xl object-cover border-2 border-primary/20 shadow-sm" />
+                        <button
+                          onClick={clearFile}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Bottom Section: Upload + Send */}
+                  <div className="flex items-center justify-between p-5 pt-0">
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-10 h-10 rounded-full border border-border-light300 flex items-center justify-center text-black/60 hover:bg-muted transition-colors"
+                    >
+                      <Plus className="w-6 h-6" />
+                    </button>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      className="hidden"
+                      accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
+                      onChange={handleFileChange}
+                    />
+
+                    <Button
+                      className="bg-primary hover:bg-primary/90 text-black font-semibold rounded-full px-6 py-2.5 h-auto flex items-center gap-2 shadow-xs transition-transform active:scale-95 disabled:opacity-50"
+                      onClick={handleSend}
+                      disabled={isLoading || (!inputValue.trim() && !selectedFile)}
+                    >
+                      {isLoading ? (
+                        <Loader2 className="size-5 animate-spin" />
+                      ) : (
+                        <>
+                          <Sparkles className="size-4" />
+                          <span>Ask Guru</span>
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          <div className="p-4 bg-background border-t border-border z-10 shrink-0">
-            {previewFile && (
-              <div className="relative w-fit mb-3 group animate-in zoom-in duration-200">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={previewFile} alt="Preview" className="h-20 w-auto rounded-xl object-cover border-2 border-primary/20 shadow-sm" />
-                <button
-                  onClick={clearFile}
-                  className="absolute -top-2.5 -right-2.5 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            )}
-            <div
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              className={`relative flex flex-row items-center flex-wrap md:flex-nowrap gap-y-2 border rounded-2xl transition-all duration-200 pr-2 py-1 bg-background shadow-xs 
-                ${isDragging
-                  ? "border-primary border-dashed ring-2 ring-primary/20 bg-primary/5 scale-[1.01]"
-                  : "border-input focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary"
-                }`}
-            >
-              <Button
-                variant="ghost"
-                onClick={() => fileInputRef.current?.click()}
-                className="rounded-full w-9 h-9 p-0 text-slate-500 hover:text-primary hover:bg-primary/5 ml-1"
-              >
-                <ImageIcon className="size-4" />
-              </Button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                className="hidden"
-                accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
-                onChange={handleFileChange}
-              />
-              <input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder={selectedFile ? "File uploaded." : "Ask a follow-up question..."}
-                className="flex-1 min-w-0 min-h-[40px] p-2 bg-transparent text-sm border-none outline-none focus:ring-0 disabled:opacity-50"
-                disabled={isLoading || !!selectedFile}
-              />
-              <Button
-                onClick={handleSend}
-                size="sm"
-                className="h-9 w-9 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground transition-all active:scale-95 shrink-0 shadow-sm"
-                disabled={(!inputValue.trim() && !selectedFile) || isLoading}
-              >
-                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-              </Button>
-            </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
     </div>
   )
 }

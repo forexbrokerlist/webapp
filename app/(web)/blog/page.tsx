@@ -49,16 +49,22 @@ export default async function () {
 
   return (
     <>
-      <Breadcrumbs items={breadcrumbs} />
+      {/* <Breadcrumbs items={breadcrumbs} /> */}
 
-      <Intro>
-        <IntroTitle>{metadata.title}</IntroTitle>
-        <IntroDescription>{metadata.description}</IntroDescription>
-      </Intro>
+      <div className="pt-[140px] pb-100 max-mobile:pb-16 max-mobile:pt-[120px]">
+        <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
+          <Intro className="pb-10">
+            <IntroTitle>{metadata.title}</IntroTitle>
+            <IntroDescription>{metadata.description}</IntroDescription>
+          </Intro>
 
-      <PostList posts={posts} />
+          <PostList posts={posts} />
 
-      <StructuredData data={structuredData} />
+          <StructuredData data={structuredData} />
+        </div>
+      </div>
+      <div className='w-full h-[1px] bg-[linear-gradient(90deg,#F0F1EC_0%,#A8DD15_50%,#F0F1EC_100%)]'></div>
+
     </>
   )
 }

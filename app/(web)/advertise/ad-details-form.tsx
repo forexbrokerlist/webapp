@@ -110,7 +110,7 @@ export const AdDetailsForm = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSave)}
-        className={cx("grid w-full gap-5 @md:grid-cols-2", className)}
+        className={cx("grid w-full gap-5 grid-cols-2", className)}
         noValidate
         {...props}
       >
@@ -215,6 +215,7 @@ export const AdDetailsForm = ({
           name="faviconUrl"
           render={({ field }) => (
             <FormMedia
+              className="max-mobile:col-span-full"
               form={form}
               field={field}
               path={`${path}/favicon`}
@@ -237,10 +238,11 @@ export const AdDetailsForm = ({
         />
 
         <Controller
+
           control={form.control}
           name="bannerUrl"
           render={({ field }) => (
-            <FormMedia form={form} field={field} path={`${path}/banner`}>
+            <FormMedia form={form} field={field} path={`${path}/banner`} className="max-mobile:col-span-full">
               {({ value }) =>
                 value && (
                   <Image
@@ -256,7 +258,7 @@ export const AdDetailsForm = ({
           )}
         />
 
-        <Button type="submit" size="lg" className="col-span-full mt-2">
+        <Button type="submit" size="lg" variant="secondary" className="col-span-full text-base mt-2">
           {t("create.button_label")}
         </Button>
       </form>

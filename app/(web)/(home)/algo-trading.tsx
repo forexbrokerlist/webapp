@@ -127,8 +127,9 @@ export default function AlgoTrading({ partners = [], title, description, categor
                                     className='pt-4'
                                     transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
                                 >
+                                     <Link href={`${category.slug}/${partner.slug}`}>
                                     <Button variant='primary' size='md' className='flex items-center bg-[#F0F1EC] text-black100 font-medium w-full gap-2'>
-                                        <Link href={`${category.slug}/${partner.slug}`}>
+                                      
                                             Run Bot
                                             <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-black100">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -136,8 +137,9 @@ export default function AlgoTrading({ partners = [], title, description, categor
                                                     <path d="M2.29102 7.85718H13.3107" stroke="white" stroke-width="0.982143" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg>
                                             </div>
-                                        </Link>
                                     </Button>
+                                        </Link>
+
                                 </motion.div>
                             </div>
 

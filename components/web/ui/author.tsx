@@ -12,25 +12,27 @@ export type AuthorProps = ComponentProps<typeof Stack> & {
 
 export const Author = ({ name, image, prefix, url, note, ...props }: AuthorProps) => {
   return (
-    <Stack size="sm" wrap={false} {...props}>
-      {image && (
-        <Image
-          src={image}
-          alt={`${name}'s profile`}
-          width={48}
-          height={48}
-          className="size-10 rounded-full group-hover:[[href]]:brightness-90"
-        />
-      )}
+    <div wrap={false} {...props}>
+      <div className="flex justify-center pb-4 max-mobile:pb-2">
+        {image && (
+          <Image
+            src={image}
+            alt={`${name}'s profile`}
+            width={48}
+            height={48}
+            className="size-10 rounded-full group-hover:[[href]]:brightness-90"
+          />
+        )}
 
-      <div className="flex-1 text-sm/normal text-secondary-foreground">
-        <h3 className="truncate *:font-medium *:[[href]]:hover:text-foreground">
+      </div>
+      <div className="">
+        <h3 className="text-base max-mobile:text-sm font-medium text-black100 text-center">
           {prefix ? `${prefix} ` : ""}
           {url ? <ExternalLink href={url as string}>{name}</ExternalLink> : <span>{name}</span>}
         </h3>
 
-        {note && <span className="opacity-50 truncate">{note}</span>}
+        {note && <span className="text-sm max-mobile:text-sm text-black700 text-center block font-medium">{note}</span>}
       </div>
-    </Stack>
+    </div>
   )
 }

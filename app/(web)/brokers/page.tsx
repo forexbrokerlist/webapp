@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server"
 import { cache, Suspense } from "react"
+import CommonBanner from "~/components/web/common-banner"
 import { StructuredData } from "~/components/web/structured-data"
 import { ToolListingSkeleton } from "~/components/web/tools/tool-listing"
 import { ToolQuery } from "~/components/web/tools/tool-query"
@@ -8,6 +9,7 @@ import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
+const BrokersImage = '/assets/images/brokers.png';
 
 type Props = {
   searchParams: Promise<any>
@@ -53,23 +55,36 @@ export default async function (props: Props) {
 
   return (
     <>
-      <Breadcrumbs items={breadcrumbs} />
+      <CommonBanner
+        image={BrokersImage}
+        description='Explore a comprehensive list of forex brokers with detailed insights, features, ratings, and trading conditions. Easily search, filter, and compare brokers to find the perfect match for your trading needs.'
+        highlightedText="All Forex Brokers –" title="Discover, 
+Compare & Choose the Best 
+Trading Platforms" />
+      <div className="">
+        {/* <Breadcrumbs items={breadcrumbs} /> */}
 
-      <Intro>
-        <IntroTitle>{metadata.title}</IntroTitle>
-        <IntroDescription className="max-w-3xl">{metadata.description}</IntroDescription>
-      </Intro>
+        <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
+          <div className="pb-100 max-mobile:py-16">
+            <Intro className="pb-[40px]">
+              <IntroTitle>{metadata.title}</IntroTitle>
+              <IntroDescription className="max-w-3xl">{metadata.description}</IntroDescription>
+            </Intro>
 
-      <Suspense fallback={<ToolListingSkeleton />}>
-        <ToolQuery
-          searchParams={props.searchParams}
-          search={{ placeholder }}
-          options={{ enableFilters: true }}
-          ad="Tools"
-        />
-      </Suspense>
+            <Suspense fallback={<ToolListingSkeleton />}>
+              <ToolQuery
+                searchParams={props.searchParams}
+                search={{ placeholder }}
+                options={{ enableFilters: true }}
+                ad="Tools"
+              />
+            </Suspense>
 
-      <StructuredData data={structuredData} />
+          </div>
+        </div>
+        <div className='w-full h-[1px] bg-[linear-gradient(90deg,#F0F1EC_0%,#A8DD15_50%,#F0F1EC_100%)]'></div>
+        <StructuredData data={structuredData} />
+      </div>
     </>
   )
 }

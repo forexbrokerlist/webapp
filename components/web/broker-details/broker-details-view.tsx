@@ -1,5 +1,5 @@
 import React from 'react'
-import TableOfContents from './table-of-contents'
+import TableOfContents from '~/components/common/table-of-contents'
 import { Button } from '~/components/common/button';
 import { MoveRight } from 'lucide-react';
 import SuggestedBroker from './suggested-broker';
@@ -15,21 +15,32 @@ import Link from 'next/link';
 const ForexImage = '/assets/images/FBL Logo.png';
 
 
-export default function BrokerDetailsView({broker, randomBrokers, trustedBrokers}:{broker:any, randomBrokers: any[], trustedBrokers?: any[]}) {
+export default function BrokerDetailsView({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
     return (
         <div>
             <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 '>
                 <div className='grid grid-cols-[216px_1fr_380px] gap-5'>
                     <div>
-                        <TableOfContents broker={broker} />
+                        <TableOfContents
+                            broker={broker}
+                            items={[
+                                "Broker & Trading Details",
+                                "Trading Specifications",
+                                "Platform & Features",
+                                "Broker Review",
+                                "User Review",
+                                "Compare Broker",
+                                "FAQ"
+                            ]}
+                        />
                     </div>
                     <div className='grid grid-cols-1 gap-5'>
-                        <TradingDetails broker={broker}/>
-                        <TradingSpecifications broker={broker}/>
-                        <BrokerReview broker={broker}/>
+                        <TradingDetails broker={broker} />
+                        <TradingSpecifications broker={broker} />
+                        <BrokerReview broker={broker} reviewTitle='Broker Review' />
                         <UserReview />
                         <CompareBrokers broker={broker} trustedBrokers={trustedBrokers} />
-                        <FaqSection broker={broker}/>
+                        <FaqSection broker={broker} />
                     </div>
                     <div>
                         <div className='p-5 sticky top-[100px] z-[99] mb-5 rounded-xl border-[0.5px] border-[#A8DD15] bg-[#FFFFFE] shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]'>
@@ -52,11 +63,11 @@ export default function BrokerDetailsView({broker, randomBrokers, trustedBrokers
                                 <img className='block w-full' src={ForexImage} alt="ForexImage" />
                             </div>
                             <Button variant='primary' className='justify-center flex items-center text-sm w-full bg-black100'>
-                               <Link href="/advertise">
-                                Advertise on Forex Brokers Listing
-                                <div className='flex items-center'>
-                                    <MoveRight className=' w-4 h-4' />
-                                </div>
+                                <Link href="/advertise">
+                                    Advertise on Forex Brokers Listing
+                                    <div className='flex items-center'>
+                                        <MoveRight className=' w-4 h-4' />
+                                    </div>
                                 </Link>
                             </Button>
                         </div>

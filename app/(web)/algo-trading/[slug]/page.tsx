@@ -539,7 +539,7 @@ export default async function (props: Props) {
         </Section.Content>
 
         <Section.Sidebar className="max-md:contents">
-          {/* Advertisement */}
+
           <Suspense fallback={<AdCardSkeleton className="max-md:order-3" />}>
             <AdCard type="ToolPage" className="max-md:order-3" />
           </Suspense>

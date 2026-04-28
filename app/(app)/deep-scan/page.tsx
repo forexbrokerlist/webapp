@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function DeepScanPage() {
   return (
-    <div className="flex flex-col min-h-[calc(100vh-160px-var(--header-height))] bg-background">
+    <div className="">
       <DeepScanChat />
     </div>
   )

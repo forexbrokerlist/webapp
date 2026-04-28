@@ -8,7 +8,7 @@ const TripleArrow = () => (
     </svg>
 )
 
-export default function BrokerReview({ broker }: { broker: any }) {
+export default function BrokerReview({ broker, reviewTitle, sectionId = "broker-review" }: { broker: any, reviewTitle?: string, sectionId?: string }) {
     const sections = (broker?.review_article || "")
         .split("##")
         .map((section: string) => section.trim())
@@ -24,11 +24,11 @@ export default function BrokerReview({ broker }: { broker: any }) {
     const regulatorCount = broker?.regulators?.split(',').filter(Boolean).length || 0;
 
     return (
-        <div id='broker-review' className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
+        <div id={sectionId} className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
             <div className='p-4 relative flex items-center '>
                 <div className='absolute top-3 left-0 w-1 h-[26px] bg-primary rounded-r-[4px]'></div>
                 <h3 className='text-base text-black100 font-semibold uppercase'>
-                    BROKER REVIEW
+                    {reviewTitle}
                 </h3>
             </div>
             <div className='px-4 pb-4'>

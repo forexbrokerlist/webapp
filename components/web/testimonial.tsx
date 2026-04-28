@@ -4,6 +4,7 @@ import { Markdown } from "~/components/web/markdown"
 import { Author } from "~/components/web/ui/author"
 import { siteConfig } from "~/config/site"
 import { cva, cx, type VariantProps } from "~/lib/utils"
+import StarFill from "../common/icons/star-fill"
 
 const testimonialVariants = cva({
   base: "flex flex-col gap-4 max-w-2xl",
@@ -28,8 +29,14 @@ export const Testimonial = async ({ className, alignment, ...props }: Testimonia
 
   return (
     <blockquote className={cx(testimonialVariants({ alignment, className }))} {...props}>
-      <Markdown className="text-lg/relaxed" code={t("quote", { siteName: siteConfig.name })} />
-
+      <div className="flex pb-2 items-center gap-1 justify-center">
+        <StarFill />
+        <StarFill />
+        <StarFill />
+        <StarFill />
+        <StarFill />
+      </div>
+      <Markdown className="text-lg max-mobile:text-sm text-black100 mb-5 font-medium max-w-[726px] mx-auto text-center" code={t("quote", { siteName: siteConfig.name })} />
       <Author
         name={t("author.name")}
         note={t("author.note")}

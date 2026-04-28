@@ -8,6 +8,7 @@ import { BrokerClaimButton } from '../brokers/broker-claim-button';
 import { ProductListSkeleton } from '../products/product-list';
 import { PlanQuery } from '../plans/plan-query';
 import { headers } from "next/headers"
+import { Badge } from '../../common/badge'
 
 
 
@@ -50,8 +51,8 @@ const FramImage = '/assets/images/laptop-fram.png';
 const Profilegroup = '/assets/images/profilegroup.svg';
 
 
-export default async function BrokerDetailsHero({ broker }: { broker: any }) {
-    const heroFeatures = [
+export default async function BrokerDetailsHero({ broker, heroFeatures, showVerified = false, showDemo = false, showCrmPara = false }: { broker: any, heroFeatures?: { value: string, label: string }[], showVerified?: boolean, showDemo?: boolean, showCrmPara?: boolean }) {
+    const defaultHeroFeatures = [
         { value: broker.minimum_deposit || 'N/A', label: 'Min Deposit' },
         { value: broker.minimum_raw_spreads || 'N/A', label: 'Raw Spread' },
         { value: broker.maxLeverage || 'N/A', label: 'Max Leverage' },
@@ -79,20 +80,37 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
                                 <div className='w-[65px] h-[65px] rounded-full flex items-center justify-center border border-solid border-primary'>
                                     <img src={(await getPresignedUrlFromFull(broker.logoUrl)) ?? undefined} alt="logo" className='max-w-[45px] bg-white block object-contain' />
                                 </div>
-                                <div>
+                                <div >
+                                    <div className='flex items-center gap-3'>
                                     <h2 className='text-4xl text-primary font-semibold'>
                                         {broker?.broker_name}
                                     </h2>
-                                    <p className='text-base font-medium text-black100'>
+                                    {showVerified && broker?.isSponsor && (
+                                        <Badge variant="info" size="md" className="rounded-full px-3">Verified</Badge>
+                                    )}
+                                    {showDemo && broker?.demoAccount && (
+                                        <Badge variant="success" size="md" className="rounded-full px-3">Free Demo</Badge>
+                                    )}
+                                    </div>
+                                   {
+                                        showCrmPara?<p className='text-base font-medium text-black100 flex items-center'>
+                                      by  {broker?.company_name || '-'} <span className='mx-2 opacity-50'>·</span> Founded {broker?.year_established ? Math.floor(broker.year_established) : '-'} <span className='mx-2 opacity-50'>·</span> {broker?.headquarters || '-'}
+                                    </p>:
+                                   <p className='text-base font-medium text-black100'>
                                         {broker.subtitle || "750,000+ traders worldwide. 0.0 pip spreads, 99.5% fill rate"}
-                                    </p>
+                                    </p> } 
                                 </div>
                             </div>
                             <p className='text-base font-medium text-black700 mb-5'>
                                 {broker.description || "FP Markets stands out as a solid, no-nonsense Forex and CFD broker that, over the years, has evolved into one of the more reliable names in the industry, with its raw spreads, lightning-fast execution, and a well-optimized MT4 experience."}
                             </p>
                             <div className='grid grid-cols-4 gap-0 pb-6'>
-                                {heroFeatures.map((feature, index) => (
+                                {(heroFeatures && heroFeatures.length > 0) ? heroFeatures.map((feature, index) => (
+                                    <div key={index} className='px-6 py-1.5 first:pl-0 last:pr-0 last:border-none border-solid border-r border-border-light300'>
+                                        <h3 className='text-[15px] text-black100 font-semibold leading-none mb-2.5'>{feature.value}</h3>
+                                        <p className='text-[12px] text-black700 font-medium leading-none'>{feature.label}</p>
+                                    </div>
+                                )) : defaultHeroFeatures.map((feature, index) => (
                                     <div key={index} className='px-6 py-1.5 first:pl-0 last:pr-0 last:border-none border-solid border-r border-border-light300'>
                                         <h3 className='text-[15px] text-black100 font-semibold leading-none mb-2.5'>{feature.value}</h3>
                                         <p className='text-[12px] text-black700 font-medium leading-none'>{feature.label}</p>
@@ -173,7 +191,7 @@ export default async function BrokerDetailsHero({ broker }: { broker: any }) {
                                 <img
                                     src={(await getPresignedUrlFromFull(broker.screenshotUrl || broker.bannerUrl)) ?? ''}
                                     alt="Broker Screenshot"
-                                    className="absolute z-[999] w-[75.5%] h-[82%] top-[5%] left-[12.2%] object-top"
+                                    className="absolute z-[999] w-[75.5%] h-[76%] top-[5%] mt-[14px] left-[12.2%] object-top"
                                 />
                             )}
                         </div>

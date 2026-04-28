@@ -3,6 +3,7 @@
 import { type ComponentProps } from "react"
 import { Button } from "~/components/common/button"
 import { motion } from "framer-motion"
+import Link from "next/link"
 
 const Herobanner = '/assets/images/herobanner.png';
 
@@ -64,6 +65,7 @@ export const Hero = ({ className, ...props }: ComponentProps<"section">) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
               >
+                <Link href="/brokers">
                 <Button size="md" variant="primary" className="px-5 gap-2.5 group relative z-[9]">
                   Find Your Broker
                   <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
@@ -73,6 +75,7 @@ export const Hero = ({ className, ...props }: ComponentProps<"section">) => {
                     </svg>
                   </div>
                 </Button>
+                </Link>
               </motion.div>
 
               <motion.div
