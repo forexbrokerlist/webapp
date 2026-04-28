@@ -6,6 +6,9 @@ import {
   BusinessSize,
   SupportChannel,
   PricingModel,
+  LearningFormat,
+  SkillLevel,
+  ProviderType,
 } from "~/.generated/prisma/browser";
 
 import {
@@ -133,7 +136,26 @@ export const brokerSchema = z.object({
   support_hours: z.string().optional(),
   languages_supported: z.array(z.string()).optional(),
   pricingModel: z.nativeEnum(PricingModel).default(PricingModel.MonthlySaas),
-
+  provider_type: z.nativeEnum(ProviderType).default(ProviderType.OnlineAcademy),
+  skill_level: z.array(z.nativeEnum(SkillLevel)).optional(),
+  learning_format: z.array(z.nativeEnum(LearningFormat)).optional(),
+  topics_covered: z.array(z.string()).optional(),
+  outcomes: z.array(z.string()).optional(),
+  certificate_available: z.boolean().optional().nullable(),
+  community_access: z.boolean().optional().nullable(),
+  mentorship_available: z.boolean().optional().nullable(),
+  courseModules: z
+    .array(
+      z.object({
+        id: z.number().optional(),
+        title: z.string().min(1, "Title is required"),
+        difficulty: z.enum(["Beginner", "Intermediate", "Advanced"]),
+        duration: z.string().min(1, "Duration is required"),
+        topics: z.array(z.string()).optional(),
+        order: z.number().optional(),
+      }),
+    )
+    .optional(),
 });
 
 export type BrokerSchema = z.infer<typeof brokerSchema>;

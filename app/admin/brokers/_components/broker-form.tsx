@@ -4,13 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useHotkeys } from "@mantine/hooks"
 import { formatDateTime, getRandomString, slugify } from "@primoui/utils"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { EyeIcon, InfoIcon, PencilIcon, Trash, Plus } from "lucide-react"
+import { EyeIcon, InfoIcon, PencilIcon, Trash, Plus, Copy } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { type ComponentProps, useMemo, useRef, useState } from "react"
 import { Controller, FormProvider as Form, useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { type Brokers, ToolStatus, ToolTier, DeploymentType, BusinessSize, SupportChannel, PricingModel } from "~/.generated/prisma/browser"
+import { type Brokers, ToolStatus, ToolTier, DeploymentType, BusinessSize, SupportChannel, PricingModel, LearningFormat, SkillLevel, ProviderType } from "~/.generated/prisma/browser"
 import { ToolActions } from "~/app/admin/brokers/_components/broker-actions"
 import { ToolPublishActions } from "~/app/admin/brokers/_components/broker-publish-actions"
 import { AIGenerateContent } from "~/components/admin/ai/generate-content"
@@ -162,6 +162,15 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       support_hours: broker?.support_hours ?? "",
       languages_supported: broker?.languages_supported ?? [],
       pricingModel: broker?.pricingModel ?? PricingModel.MonthlySaas,
+      provider_type: broker?.provider_type ?? ProviderType.OnlineAcademy,
+      skill_level: broker?.skill_level ?? [],
+      learning_format: broker?.learning_format ?? [],
+      topics_covered: broker?.topics_covered ?? [],
+      outcomes: broker?.outcomes ?? [],
+      certificate_available: broker?.certificate_available ?? false,
+      community_access: broker?.community_access ?? false,
+      mentorship_available: broker?.mentorship_available ?? false,
+      courseModules: broker?.courseModules ?? [],
       // platformIntegrations: broker?.platformIntegrations ?? [],
       // keyFeatures: broker?.keyFeatures ?? [],
     },
@@ -756,10 +765,11 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
         <AccountTypesField control={form.control} register={form.register} />
         <LanguagesSupportedField control={form.control} register={form.register} />
         <FAQsField control={form.control} register={form.register} />
+        <CourseModulesField control={form.control} register={form.register} />
 
-      
 
-     
+
+
 
         <div className="col-span-full pt-4 border-t mt-4">
           <H3>Service & Support</H3>
@@ -822,6 +832,27 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
 
         <Controller
           control={form.control}
+          name="provider_type"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Provider Type</FieldLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.values(ProviderType).map((type) => (
+                    <SelectItem key={type} value={type}>{type}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
           name="support_hours"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
@@ -871,6 +902,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
+        <OutcomesField control={form.control} register={form.register} />
 
         <div className="col-span-full grid grid-cols-1 @lg:grid-cols-2 gap-4">
           <Controller
@@ -1005,6 +1037,146 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
               <FieldLabel htmlFor={field.name}>SEO Meta Description</FieldLabel>
               <TextArea id={field.name} {...field} value={field.value || ''} placeholder="Enter meta description for search engines" />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <div className="col-span-full pt-4 border-t mt-4">
+          <H3>Education & Learning</H3>
+          <Hint>Educational content, learning formats, and additional features</Hint>
+        </div>
+
+        <Controller
+          control={form.control}
+          name="skill_level"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel>Skill Level</FieldLabel>
+              <div className="flex flex-wrap gap-4 mt-2">
+                {Object.values(SkillLevel).map((level) => (
+                  <label key={level} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                      checked={field.value?.includes(level)}
+                      onChange={(e) => {
+                        const currentValues = field.value || []
+                        if (e.target.checked) {
+                          field.onChange([...currentValues, level])
+                        } else {
+                          field.onChange(currentValues.filter((v: any) => v !== level))
+                        }
+                      }}
+                    />
+                    <span className="text-sm">{level}</span>
+                  </label>
+                ))}
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="learning_format"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel>Learning Format</FieldLabel>
+              <div className="flex flex-wrap gap-4 mt-2">
+                {Object.values(LearningFormat).map((format) => (
+                  <label key={format} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                      checked={field.value?.includes(format)}
+                      onChange={(e) => {
+                        const currentValues = field.value || []
+                        if (e.target.checked) {
+                          field.onChange([...currentValues, format])
+                        } else {
+                          field.onChange(currentValues.filter((v: any) => v !== format))
+                        }
+                      }}
+                    />
+                    <span className="text-sm">{format}</span>
+                  </label>
+                ))}
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="topics_covered"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>Topics Covered</FieldLabel>
+              <TextArea id={field.name} {...field} value={field.value || ''} placeholder="Enter topics covered, separated by commas" />
+              <Hint>Separate topics with commas (e.g., Technical Analysis, Risk Management, Trading Psychology)</Hint>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+
+
+        <Controller
+          control={form.control}
+          name="certificate_available"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Certificate Available</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="community_access"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Community Access</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="mentorship_available"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Mentorship Available</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
             </Field>
           )}
         />
@@ -1217,6 +1389,49 @@ function AccountTypesField({ control, register }: { control: any, register: any 
   )
 }
 
+function OutcomesField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "outcomes",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>What You'll Learn</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`outcomes.${index}`)}
+              placeholder="Enter learning outcome"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add What You'll Learn
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
 function FAQsField({ control, register }: { control: any, register: any }) {
   const { fields, append, remove } = useFieldArray({
     control,
@@ -1308,6 +1523,113 @@ function LanguagesSupportedField({ control, register }: { control: any, register
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Language
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function CourseModulesField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "courseModules",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Course Modules</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="border rounded-lg p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <h4 className="font-medium">Module {index + 1}</h4>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                onClick={() => remove(index)}
+                className="shrink-0"
+              >
+                <Trash className="w-4 h-4 text-destructive" />
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 @lg:grid-cols-2 gap-3">
+              <div>
+                <FieldLabel htmlFor={`courseModules.${index}.title`}>Title</FieldLabel>
+                <Input
+                  {...register(`courseModules.${index}.title`)}
+                  placeholder="Enter module title"
+                />
+              </div>
+              <div>
+                <FieldLabel htmlFor={`courseModules.${index}.difficulty`}>Difficulty</FieldLabel>
+                <Select
+                  {...register(`courseModules.${index}.difficulty`)}
+                  onValueChange={(value) => {
+                    const event = { target: { value } }
+                    register(`courseModules.${index}.difficulty`).onChange(event)
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select difficulty" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Beginner">Beginner</SelectItem>
+                    <SelectItem value="Intermediate">Intermediate</SelectItem>
+                    <SelectItem value="Advanced">Advanced</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <FieldLabel htmlFor={`courseModules.${index}.duration`}>Duration</FieldLabel>
+                <Input
+                  {...register(`courseModules.${index}.duration`)}
+                  placeholder="e.g., 2 hours, 1 week"
+                />
+              </div>
+              <div>
+                <FieldLabel htmlFor={`courseModules.${index}.order`}>Order</FieldLabel>
+                <Input
+                  {...register(`courseModules.${index}.order`)}
+                  type="number"
+                  placeholder="Module order"
+                  onChange={(e) => {
+                    const value = e.target.value ? parseInt(e.target.value) : ''
+                    const event = { target: { value } }
+                    register(`courseModules.${index}.order`).onChange(event)
+                  }}
+                />
+              </div>
+            </div>
+            <div>
+              <FieldLabel htmlFor={`courseModules.${index}.topics`}>Topics (comma-separated)</FieldLabel>
+              <Input
+                {...register(`courseModules.${index}.topics`)}
+                placeholder="Enter topics separated by commas"
+                onChange={(e) => {
+                  const topics = e.target.value.split(',').map(topic => topic.trim()).filter(Boolean)
+                  const event = { target: { value: topics } }
+                  register(`courseModules.${index}.topics`).onChange(event)
+                }}
+              />
+            </div>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append({
+            title: "",
+            difficulty: "Beginner",
+            duration: "",
+            topics: [],
+            order: fields.length + 1,
+          })}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Course Module
         </Button>
       </Stack>
     </div>

@@ -30,6 +30,7 @@ import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
 import { findBrokerBySlug } from "~/server/web/tools/queries"
 import { getPresignedUrlFromFull, getScreenshotFetchUrl } from "~/lib/media"
+import ForexTradingCourseDetails from "~/components/web/forex-trading-course-details"
 
 type Props = {
   params: {
@@ -101,7 +102,7 @@ export default async function (props: Props) {
 
   return (
     <>
-      <Section>
+      {/* <Section>
         <Section.Content className="max-md:contents">
           <Sticky isOverlay>
             <Stack className="@container self-stretch justify-between items-start md:items-center gap-y-4 flex-col md:flex-row">
@@ -195,13 +196,14 @@ export default async function (props: Props) {
         </Section.Content>
 
         <Section.Sidebar className="max-md:contents">
-          {/* Advertisement */}
+       
           <Suspense fallback={<AdCardSkeleton className="max-md:order-3" />}>
             <AdCard type="ToolPage" className="max-md:order-3" />
           </Suspense>
         </Section.Sidebar>
-      </Section>
-
+      </Section> */}
+      
+      <ForexTradingCourseDetails broker={broker} />
       <StructuredData data={structuredData} />
     </>
   )
