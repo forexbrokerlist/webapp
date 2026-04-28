@@ -106,7 +106,7 @@ export const Nav = ({ className, title, ...props }: NavProps) => {
   return (
     <TooltipProvider delayDuration={0} disableHoverableContent>
       <div
-        className={cx("flex flex-wrap items-center p-1 bg-background border rounded-lg", className)}
+        className={cx("flex flex-wrap items-center p-1 bg-background border border-border-light300 rounded-lg", className)}
         {...props}
       >
         <button type="button" className={navItemVariants()} onClick={handleCopyLink}>

@@ -90,11 +90,6 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
             <NavLink href="/categories" exact className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>
               Browse
             </NavLink>
-       
-
-
-
-            
 
             <NavLink href="/brokers" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.tools")}</NavLink>
            <DropdownMenu>

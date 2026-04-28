@@ -39,14 +39,18 @@ export default async function () {
 
   return (
     <>
-      <Intro>
-        <IntroTitle size="h3">{metadata.title}</IntroTitle>
-        <IntroDescription className="md:text-sm">{metadata.description}</IntroDescription>
-      </Intro>
+      <div >
+        <div>
+          <Intro className="mb-4">
+            <IntroTitle size="h3">{metadata.title}</IntroTitle>
+            <IntroDescription className="md:text-sm">{metadata.description}</IntroDescription>
+          </Intro>
 
-      <Suspense fallback={<LoaderIcon className="animate-spin mx-auto" />}>
-        <Login />
-      </Suspense>
+          <Suspense fallback={<LoaderIcon className="animate-spin mx-auto" />}>
+            <Login />
+          </Suspense>
+        </div>
+      </div>
     </>
   )
 }

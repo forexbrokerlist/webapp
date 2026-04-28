@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 import { cache, Suspense } from "react"
+import CommonBanner from "~/components/web/common-banner"
 import { StructuredData } from "~/components/web/structured-data"
 import { ToolListingSkeleton } from "~/components/web/tools/tool-listing"
 import { ToolQuery } from "~/components/web/tools/tool-query"
@@ -13,6 +14,7 @@ import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
 import { findCategory } from "~/server/web/categories/queries"
+const BrokersImage = '/assets/images/brokers.png';
 
 type Props = PageProps<"/categories/[slug]">
 
@@ -90,24 +92,38 @@ export default async function (props: Props) {
 
   return (
     <>
-      <Breadcrumbs items={breadcrumbs} />
+      <CommonBanner
+        image={BrokersImage}
+        description='Explore the top regulated forex brokers offering CFDs on forex, stocks, indices, commodities, and crypto. 
+Compare their trading platforms, spreads, minimum deposits, and features to find the perfect broker for your trading 
+style.'
+        highlightedText="All Forex Brokers –" title="Discover, 
+Compare & Choose the Best 
+Trading Platforms" />
+      <div className=" pb-100">
+        <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
+          {/* <Breadcrumbs items={breadcrumbs} /> */}
 
-      <Intro>
-        <IntroTitle>{metadata.title}</IntroTitle>
-        <IntroDescription className="max-w-3xl">{metadata.description}</IntroDescription>
-      </Intro>
+          <Intro className="pb-[40px]">
+            <IntroTitle>{metadata.title}</IntroTitle>
+            <IntroDescription className="max-w-3xl">{metadata.description}</IntroDescription>
+          </Intro>
 
-      <Suspense fallback={<ToolListingSkeleton />}>
-        <ToolQuery
-          searchParams={props.searchParams}
-          where={{ categories: { some: { slug: category.slug } } }}
-          search={{ placeholder }}
-          ad="Tools"
-          list={{ categorySlug: category.slug }}
-        />
-      </Suspense>
+          <Suspense fallback={<ToolListingSkeleton />}>
+            <ToolQuery
+              searchParams={props.searchParams}
+              where={{ categories: { some: { slug: category.slug } } }}
+              search={{ placeholder }}
+              ad="Tools"
+              list={{ categorySlug: category.slug }}
+            />
+          </Suspense>
 
-      <StructuredData data={structuredData} />
+          <StructuredData data={structuredData} />
+        </div>
+      </div>
+      <div className='w-full h-[1px] bg-[linear-gradient(90deg,#F0F1EC_0%,#A8DD15_50%,#F0F1EC_100%)]'></div>
+
     </>
   )
 }

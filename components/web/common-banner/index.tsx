@@ -1,5 +1,7 @@
+"use client"
 import React from 'react';
 import { Play } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface CommonBannerProps {
     highlightedText?: string | null;
@@ -23,20 +25,34 @@ export default function CommonBanner({ highlightedText, title, description, imag
 
                     <div className='grid grid-cols-[1fr_408px] items-center gap-10 py-5 px-[90px]'>
                         <div className="relative z-10 w-full ">
-                            <h1 className='text-[50px] mb-3 text-black100 font-bold leading-[60px] max-w-[739px]'>
+                            <motion.h1 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5 }}
+                                className='text-[50px] mb-3 text-black100 font-bold leading-[60px] max-w-[739px]'>
                                 <span className='text-[#A8DD15]'> {highlightedText} </span>
                                 {title}
-                            </h1>
-                            <p className="text-black700 text-lg font-normal max-w-[700px]">
+                            </motion.h1>
+                            <motion.p 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.2 }}
+                                className="text-black700 text-lg font-normal max-w-[700px]">
                                 {description}
-                            </p>
+                            </motion.p>
                         </div>
 
                         {/* Right Graphics */}
                         <div className="relative z-10 w-full ">
 
                             {/* <img src={image} alt={image} /> */}
-                            <img src={image} alt={image} />
+                            <motion.img 
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.5, delay: 0.4 }}
+                                src={image} 
+                                alt={image} 
+                            />
                         </div>
                     </div>
 
@@ -45,3 +61,4 @@ export default function CommonBanner({ highlightedText, title, description, imag
         </div>
     )
 }
+

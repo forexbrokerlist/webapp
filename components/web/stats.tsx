@@ -7,13 +7,13 @@ import { Stat } from "~/components/web/ui/stat"
 import { cva, cx, type VariantProps } from "~/lib/utils"
 
 const statsVariants = cva({
-  base: "flex flex-wrap items-start justify-between gap-x-4 gap-y-8",
+  base: "flex flex-wrap items-start  gap-[30px]",
 
   variants: {
     alignment: {
-      start: "items-start justify-between text-start",
-      center: "items-center justify-around text-center",
-      end: "items-end justify-between text-end",
+      start: "items-start  text-start",
+      center: "items-center  text-center",
+      end: "items-end  text-end",
     },
   },
 
@@ -47,10 +47,10 @@ export const Stats = ({ alignment, className, ...props }: StatsProps) => {
             locales={locale}
             // @ts-expect-error
             style={{ "--number-flow-char-height": "0.75em" }}
-            className="text-5xl font-display font-semibold"
+            className="text-4xl font-display font-semibold"
           />
 
-          <p className="text-sm text-muted-foreground lg:text-base">{label}</p>
+          <p className="text-base text-black700 font-medium">{label}</p>
         </MDXComponents.a>
       ))}
     </div>
