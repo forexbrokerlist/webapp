@@ -39,10 +39,10 @@ export default async function ({ searchParams }: any) {
         highlightedText="Advertise With Us –" title="Reach 
 Thousands of Active Forex 
 Traders" />
-      <div className="pt-[40px] pb-100">
+      <div className="pt-[40px] pb-100 max-mobile:py-16">
         <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
-          <div className="grid grid-cols-2 gap-7">
-            <div className="flex flex-col justify-between">
+          <div className="grid grid-cols-2 gap-7 max-tab:grid-cols-1 max-mobile:gap-5">
+            <div className="flex flex-col justify-between max-tab:gap-16">
               {/* slider */}
               <div>
                 <Testimonial />

@@ -36,7 +36,7 @@ export const Testimonial = async ({ className, alignment, ...props }: Testimonia
         <StarFill />
         <StarFill />
       </div>
-      <Markdown className="text-lg text-black100 mb-5 font-medium max-w-[726px] mx-auto text-center" code={t("quote", { siteName: siteConfig.name })} />
+      <Markdown className="text-lg max-mobile:text-sm text-black100 mb-5 font-medium max-w-[726px] mx-auto text-center" code={t("quote", { siteName: siteConfig.name })} />
       <Author
         name={t("author.name")}
         note={t("author.note")}

@@ -152,8 +152,10 @@ export default async function () {
             </p>
           </Prose>
           <StructuredData data={structuredData} />
+
         </div>
       </div>
+      <div className='w-full h-[1px] bg-[linear-gradient(90deg,#F0F1EC_0%,#A8DD15_50%,#F0F1EC_100%)]'></div>
     </>
   )
 }

@@ -13,7 +13,7 @@ export type AuthorProps = ComponentProps<typeof Stack> & {
 export const Author = ({ name, image, prefix, url, note, ...props }: AuthorProps) => {
   return (
     <div wrap={false} {...props}>
-      <div className="flex justify-center pb-4">
+      <div className="flex justify-center pb-4 max-mobile:pb-2">
         {image && (
           <Image
             src={image}
@@ -26,12 +26,12 @@ export const Author = ({ name, image, prefix, url, note, ...props }: AuthorProps
 
       </div>
       <div className="">
-        <h3 className="text-base font-medium text-black100 text-center">
+        <h3 className="text-base max-mobile:text-sm font-medium text-black100 text-center">
           {prefix ? `${prefix} ` : ""}
           {url ? <ExternalLink href={url as string}>{name}</ExternalLink> : <span>{name}</span>}
         </h3>
 
-        {note && <span className="text-sm text-black700 text-center block font-medium">{note}</span>}
+        {note && <span className="text-sm max-mobile:text-sm text-black700 text-center block font-medium">{note}</span>}
       </div>
     </div>
   )

@@ -41,7 +41,7 @@ export default async function () {
 
   return (
     <>
-      <div className="pt-[140px] pb-100">
+      <div className="pt-[140px] pb-100 max-mobile:pb-16 max-mobile:pt-[120px]">
         <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
           <Intro className="pb-10">
             <IntroTitle>{metadata.title}</IntroTitle>
@@ -124,6 +124,7 @@ export default async function () {
         </div>
       </div>
 
+      <div className='w-full h-[1px] bg-[linear-gradient(90deg,#F0F1EC_0%,#A8DD15_50%,#F0F1EC_100%)]'></div>
 
       <StructuredData data={structuredData} />
     </>

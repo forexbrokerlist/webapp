@@ -215,6 +215,7 @@ export const AdDetailsForm = ({
           name="faviconUrl"
           render={({ field }) => (
             <FormMedia
+              className="max-mobile:col-span-full"
               form={form}
               field={field}
               path={`${path}/favicon`}
@@ -237,10 +238,11 @@ export const AdDetailsForm = ({
         />
 
         <Controller
+
           control={form.control}
           name="bannerUrl"
           render={({ field }) => (
-            <FormMedia form={form} field={field} path={`${path}/banner`}>
+            <FormMedia form={form} field={field} path={`${path}/banner`} className="max-mobile:col-span-full">
               {({ value }) =>
                 value && (
                   <Image

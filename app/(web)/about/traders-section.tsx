@@ -56,9 +56,9 @@ const trustPoints = [
 
 export default function TradersSection() {
     return (
-        <section className='py-100  relative overflow-hidden'>
+        <section className='py-100 max-mobile:py-16 relative overflow-hidden'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
-                <div className='text-center mb-16'>
+                <div className='text-center pb-16 max-mobile:pb-10'>
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -72,7 +72,7 @@ export default function TradersSection() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.1 }}
-                        className='text-lg text-black700 font-medium max-w-[630px] mx-auto'
+                        className='text-lg max-mobile:text-base text-black700 font-medium max-w-[630px] mx-auto'
                     >
                         Forex Brokers Listing is more than just a directory. Our platform brings together everything a trader needs in one place.
                     </motion.p>
@@ -87,7 +87,7 @@ export default function TradersSection() {
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
                             whileHover={{ y: -5 }}
-                            className='bg-white border border-border-light300 rounded-2xl p-8 flex justify-between gap-6 group relative overflow-hidden transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] hover:border-primary/20'
+                            className='bg-white border border-border-light300 rounded-xl max-laptop:p-5 p-8 flex justify-between gap-6 group relative overflow-hidden transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] hover:border-primary/20'
                         >
                             {/* Screenshot Style: Vibrant Blur Accent */}
                             <div
@@ -96,10 +96,10 @@ export default function TradersSection() {
                             />
 
                             <div className='flex-1 relative z-10'>
-                                <h3 className='text-2xl font-bold text-black100 mb-2 leading-tight'>
+                                <h3 className='text-2xl max-laptop:text-xl font-bold text-black100 mb-2 leading-tight'>
                                     {point.value} {point.title}
                                 </h3>
-                                <p className='text-lg font-medium text-black700 leading-relaxed'>
+                                <p className='text-lg max-laptop:text-base font-medium text-black700 leading-relaxed'>
                                     {point.desc}
                                 </p>
                             </div>

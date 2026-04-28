@@ -54,10 +54,10 @@ export default function WhatWeOffer() {
     return (
         <section className=' relative'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
-                <div className='grid grid-cols-[1fr_1.2fr] max-laptop:grid-cols-1 gap-20 items-start'>
+                <div className='grid grid-cols-[1fr_1.2fr] max-tab:grid-cols-1  gap-20 items-start'>
 
                     {/* Left Sticky Content */}
-                    <div className='laptop:sticky laptop:top-32'>
+                    <div className=''>
                         <motion.h2
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -79,7 +79,7 @@ export default function WhatWeOffer() {
                         </motion.p>
 
                         {/* Interactive Visualizer based on hover */}
-                        <div className='hidden laptop:flex w-full h-64 rounded-3xl bg-[#FAFAFA] border border-border-light300 items-center justify-center relative overflow-hidden'>
+                        <div className=' laptop:flex w-full h-64 rounded-3xl bg-[#FAFAFA] border border-border-light300 items-center justify-center relative overflow-hidden'>
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={hoveredIndex ?? 'default'}
@@ -122,19 +122,19 @@ export default function WhatWeOffer() {
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
                                 onMouseEnter={() => setHoveredIndex(index)}
-                                className='group relative border-b  border-border-light300 py-6 laptop:py-6 cursor-pointer overflow-hidden flex items-start gap-6 max-mobile:gap-4 transition-colors'
+                                className='group relative border-b  border-border-light300 py-6 max-mobile:py-4 laptop:py-6 cursor-pointer overflow-hidden flex items-start gap-6 max-mobile:gap-4 transition-colors'
                             >
                                 {/* Active background slide effect */}
                                 <div className={`absolute inset-0 bg-[#F5FDE8] transition-transform duration-500 ease-out -z-10 ${hoveredIndex === index ? 'translate-y-0' : 'translate-y-full'}`} />
 
                                 {/* Number */}
-                                <span className={`text-2xl font-semibold block pt-1 transition-colors min-w-[40px] ${hoveredIndex === index ? 'text-primary' : 'text-black300'}`}>
+                                <span className={`text-2xl max-mobile:text-lg font-semibold block pt-1 transition-colors min-w-[40px] ${hoveredIndex === index ? 'text-primary' : 'text-black300'}`}>
                                     0{index + 1}
                                 </span>
 
                                 <div className='flex-1'>
                                     <div className='flex items-center justify-between mb-0'>
-                                        <h3 className={`text-2xl max-mobile:text-2xl font-semibold transition-colors ${hoveredIndex === index ? 'text-black' : 'text-black100'}`}>
+                                        <h3 className={`text-2xl max-mobile:text-lg font-semibold transition-colors ${hoveredIndex === index ? 'text-black' : 'text-black100'}`}>
                                             {item.title}
                                         </h3>
 
@@ -150,8 +150,8 @@ export default function WhatWeOffer() {
                                     </div>
 
                                     <div className={`grid transition-[grid-template-rows] duration-500 ease-out ${hoveredIndex === index ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
-                                        <p className='overflow-hidden text-lg text-black700 font-medium leading-relaxed max-w-[85%]'>
-                                            <span className='block pt-4'>{item.description}</span>
+                                        <p className='overflow-hidden text-lg max-mobile:text-sm text-black700 font-medium leading-relaxed max-w-[85%]'>
+                                            <span className='block pt-4 max-mobile:pt-1'>{item.description}</span>
                                         </p>
                                     </div>
                                 </div>

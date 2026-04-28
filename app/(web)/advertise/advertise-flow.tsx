@@ -62,7 +62,7 @@ export const AdvertiseFlow = ({
   return (
     <div className="">
       {step === 1 && (
-        <div className="bg-white rounded-xl border border-solid border-border-light300 p-[30px] relative animate-in fade-in duration-500">
+        <div className="bg-white max-mobile:py-5 max-mobile:px-3  rounded-xl border border-solid border-border-light300 p-[30px] relative animate-in fade-in duration-500">
           <h2 className="text-xl text-black100 font-semibold mb-6">
             Ad Details: Enter your ad information
           </h2>
