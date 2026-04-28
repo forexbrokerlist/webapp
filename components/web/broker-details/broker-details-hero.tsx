@@ -51,7 +51,7 @@ const FramImage = '/assets/images/laptop-fram.png';
 const Profilegroup = '/assets/images/profilegroup.svg';
 
 
-export default async function BrokerDetailsHero({ broker, heroFeatures, showVerified = false, showDemo = false, showCrmPara = false }: { broker: any, heroFeatures?: { value: string, label: string }[], showVerified?: boolean, showDemo?: boolean, showCrmPara?: boolean }) {
+export default async function BrokerDetailsHero({ broker, heroFeatures, showVerified = false, showDemo = false, showCrmPara = false,showTrialAvailable=false,showBeginnerFriendly=false }: { broker: any, heroFeatures?: { value: string, label: string }[], showVerified?: boolean, showDemo?: boolean, showCrmPara?: boolean,showTrialAvailable?: boolean,showBeginnerFriendly?:boolean }) {
     const defaultHeroFeatures = [
         { value: broker.minimum_deposit || 'N/A', label: 'Min Deposit' },
         { value: broker.minimum_raw_spreads || 'N/A', label: 'Raw Spread' },
@@ -91,6 +91,12 @@ export default async function BrokerDetailsHero({ broker, heroFeatures, showVeri
                                     {showDemo && broker?.demoAccount && (
                                         <Badge variant="success" size="md" className="rounded-full px-3">Free Demo</Badge>
                                     )}
+                                    {showTrialAvailable && broker?.free_trial_available && (
+                                        <Badge variant="success" size="md" className="rounded-full px-3">Free Trial</Badge>
+                                    )}
+                                    {
+                                       showBeginnerFriendly && broker?.beginner_friendly && <Badge variant="beginner" size="md" className="rounded-full px-3">Beginner Friendly</Badge>
+                                    }
                                     </div>
                                    {
                                         showCrmPara?<p className='text-base font-medium text-black100 flex items-center'>

@@ -45,6 +45,7 @@ const upsert = adminProcedure
       subcategoryIds,
       tagIds,
       faqs,
+      courseModules,
       ...data
     } = input;
     const existingBroker = id
@@ -77,6 +78,16 @@ const upsert = adminProcedure
                 order: i,
               })),
             },
+            courseModules: {
+              deleteMany: {},
+              create: courseModules?.map((module, i) => ({
+                title: module.title,
+                difficulty: module.difficulty,
+                duration: module.duration,
+                topics: module.topics || [],
+                order: module.order || i + 1,
+              })),
+            },
           },
         })
       : await db.brokers.create({
@@ -97,6 +108,15 @@ const upsert = adminProcedure
                 question: f.question,
                 answer: f.answer,
                 order: i,
+              })),
+            },
+            courseModules: {
+              create: courseModules?.map((module, i) => ({
+                title: module.title,
+                difficulty: module.difficulty,
+                duration: module.duration,
+                topics: module.topics || [],
+                order: module.order || i + 1,
               })),
             },
           },

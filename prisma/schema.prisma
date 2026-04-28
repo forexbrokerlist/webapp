@@ -325,6 +325,26 @@ enum PricingModel {
   MonthlySaas
   OneTime 
   Custom 
+  Freemium
+  Subscription
+  Free
+}
+enum LearningFormat{ 
+  Video 
+  Text
+  LiveSessions
+  Webinar 
+}
+enum ProviderType {
+ OnlineAcademy
+  Mentor 
+  Youtube 
+  Academy
+}
+enum SkillLevel {
+  Beginner
+  Intermediate
+  Advanced
 }
 
 model Brokers {
@@ -406,6 +426,16 @@ model Brokers {
   support_channels                  SupportChannel[]
   support_hours                     String? 
   languages_supported               String[] 
+  
+  provider_type                     ProviderType   @default(OnlineAcademy)
+
+  skill_level                       SkillLevel[]
+  learning_format                   LearningFormat[]
+  topics_covered                    String[]          
+  outcomes                          String[]
+  certificate_available             Boolean?
+  community_access                  Boolean?
+  mentorship_available              Boolean?
   // Admin & Submission fields
   submitterName  String?
   submitterEmail String?
@@ -422,6 +452,7 @@ model Brokers {
   subscriptions BrokerSubscription[]
   payments      Payment[]
   claims        BrokerClaim[]
+  courseModules CourseModule[]
   owner         User?                @relation(fields: [ownerId], references: [id])
   ownerId       String?
   features    String[]  
@@ -434,7 +465,28 @@ model Brokers {
   @@index([createdAt])
   @@map("forex_brokers")
 }
+enum DifficultyLevel {
+  Beginner
+  Intermediate
+  Advanced
+}
 
+model CourseModule {
+  id             Int             @id @default(autoincrement())
+  title          String
+  difficulty     DifficultyLevel
+  duration       String
+  topics         String[]
+  order          Int
+  brokerId       Int
+  broker         Brokers         @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  
+  @@index([brokerId])
+  @@index([order])
+  @@map("course_modules")
+}
 model Sponsor {
   id         String          @id @default(cuid())
   name       String          @db.Citext

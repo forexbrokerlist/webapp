@@ -174,7 +174,14 @@ export const findBrokerById = async (id: number) => {
       support_hours: true,
       languages_supported: true,
       pricingModel: true,
-    
+      provider_type: true,
+      skill_level: true,
+      learning_format: true,
+      topics_covered: true,
+      outcomes: true,
+      certificate_available: true,
+      community_access: true,
+      mentorship_available: true,
 
       typeId: true,
       isSponsor: true,
@@ -203,6 +210,17 @@ export const findBrokerById = async (id: number) => {
           id: true,
           question: true,
           answer: true,
+          order: true,
+        },
+        orderBy: { order: "asc" },
+      },
+      courseModules: {
+        select: {
+          id: true,
+          title: true,
+          difficulty: true,
+          duration: true,
+          topics: true,
           order: true,
         },
         orderBy: { order: "asc" },
