@@ -42,14 +42,14 @@ const missionData = [
 
 export default function OurMission() {
     return (
-        <section className='py-100 overflow-hidden'>
+        <section className='py-100 overflow-hidden max-mobile:py-16'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
-                <div className='pb-[60px] text-center'>
+                <div className='pb-[60px] max-mobile:pb-10 text-center'>
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className='text-[42px] max-mobile:text-3xl max-mobile:leading-10 leading-normal text-black100 font-bold mb-4'
+                        className='text-[42px]  max-mobile:text-3xl max-mobile:leading-10 leading-normal text-black100 font-bold mb-4'
                     >
                         Our Mission
                     </motion.h2>
@@ -73,7 +73,7 @@ export default function OurMission() {
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
                             whileHover={{ y: -8 }}
-                            className='bg-white border border-solid border-border-light300 rounded-xl p-8 relative overflow-hidden group transition-all duration-300 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] hover:border-primary/20'
+                            className='bg-white border border-solid border-border-light300 max-mobile:p-5 rounded-xl p-8 relative overflow-hidden group transition-all duration-300 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] hover:border-primary/20'
                         >
                             {/* Animated Glow Background */}
                             <div

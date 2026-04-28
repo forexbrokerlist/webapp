@@ -47,10 +47,10 @@ export const Stats = ({ alignment, className, ...props }: StatsProps) => {
             locales={locale}
             // @ts-expect-error
             style={{ "--number-flow-char-height": "0.75em" }}
-            className="text-4xl font-display font-semibold"
+            className="text-4xl max-mobile:text-2xl font-display font-semibold"
           />
 
-          <p className="text-base text-black700 font-medium">{label}</p>
+          <p className="text-base max-mobile:text-sm text-black700 font-medium">{label}</p>
         </MDXComponents.a>
       ))}
     </div>

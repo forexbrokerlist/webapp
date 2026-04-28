@@ -5,10 +5,10 @@ const RightImage = '/assets/images/line-frame.png';
 
 export default function WantToBePart() {
     return (
-        <div className='pb-100'>
-            <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
-                <div className="bg-[url('/assets/images/black-layer.png')] px-100 max-tab:px-10 max-mobile:px-5 max-mobile:rounded-none bg-cover bg-center bg-no-repeat rounded-3xl ">
-                    <div className='grid grid-cols-[1fr_593px] max-tab:grid-cols-1 items-center'>
+        <div className='pb-100 max-mobile:pb-16'>
+            <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-0'>
+                <div className="bg-[url('/assets/images/black-layer.png')] px-100 max-laptop:px-16 max-tab:px-10 max-mobile:px-5 max-mobile:rounded-none bg-cover bg-center bg-no-repeat rounded-3xl ">
+                    <div className='grid grid-cols-[1fr_593px] max-laptop:grid-cols-[1fr_493px] max-tab:grid-cols-1 items-center'>
                         <div className='py-[60px]'>
                             <h2 className='text-[42px] max-mobile:text-3xl max-mobile:mb-2 max-mobile:leading-10 leading-normal text-white font-bold'>
                                 Want to Be Part of It?

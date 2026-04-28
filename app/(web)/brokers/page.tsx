@@ -65,7 +65,7 @@ Trading Platforms" />
         {/* <Breadcrumbs items={breadcrumbs} /> */}
 
         <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
-          <div className="pb-100">
+          <div className="pb-100 max-mobile:py-16">
             <Intro className="pb-[40px]">
               <IntroTitle>{metadata.title}</IntroTitle>
               <IntroDescription className="max-w-3xl">{metadata.description}</IntroDescription>

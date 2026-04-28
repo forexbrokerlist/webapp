@@ -53,15 +53,15 @@ export default async function () {
 all your needs.'
         highlightedText="Contact Us –" title="We’re Here to Help 
 You Anytime" />
-      <div className="pt-[40px] pb-100">
+      <div className="pt-[40px] pb-100 max-mobile:py-16">
         <div className="max-w-[1460px] px-5 mx-auto">
-          <div className="grid grid-cols-[1fr_390px] gap-0 rounded-2xl bg-white">
-            <div className="p-[35px]">
-              <div className="pb-[35px]">
-                <h2 className="text-black200 text-3xl font-bold mb-2">
+          <div className="grid grid-cols-[1fr_390px] max-mobile:grid-cols-1 gap-0 max-mobile:rounded-xl rounded-2xl bg-white">
+            <div className="p-[35px] max-mobile:p-5">
+              <div className="pb-[35px] max-mobile:pb-5">
+                <h2 className="text-black200 text-3xl max-mobile:text-2xl font-bold mb-2">
                   Connect With Our Team for Inquiries
                 </h2>
-                <p className="text-lg text-black700 max-w-[731px] font-medium">
+                <p className="text-lg max-mobile:text-base text-black700 max-w-[731px] font-medium">
                   Need assistance with listings, advertising, or partnerships? Send us a message and our dedicated team will review your request and get back to you promptly with the
                   right support and guidance.
                 </p>
@@ -70,13 +70,13 @@ You Anytime" />
             </div>
             <div className="bg-[#a8dd151a] flex flex-col justify-between">
               <div>
-                <div className="bg-primary p-5 rounded-r-2xl relative">
+                <div className="bg-primary p-5 max-mobile:rounded-none rounded-r-2xl relative">
                   <img src={MessageImage} alt="MessageImage" className="block absolute right-4 top-4 max-w-100" />
                   <div className="relative">
-                    <h3 className="text-xl text-black100 font-semibold mb-4">
+                    <h3 className="text-xl max-mobile:mb-2 text-black100 font-semibold mb-4">
                       We're here to help
                     </h3>
-                    <p className="text-lg text-black100 font-medium">
+                    <p className="text-lg max-mobile:text-base text-black100 font-medium">
                       Have questions, feedback, or just want to share your thoughts? We genuinely love to hear from you! Feel free to reach out anytime your
                       input is valuable to us.
                     </p>
@@ -106,7 +106,7 @@ You Anytime" />
                       </svg>
                     </div>
                     <div>
-                      <p className="text-base font-medium text-black700">
+                      <p className="text-base  font-medium text-black700">
                         Most requests receive a reply within 1-2 business days.
                       </p>
                     </div>

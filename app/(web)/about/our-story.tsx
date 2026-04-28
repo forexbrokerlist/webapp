@@ -6,37 +6,37 @@ const Gaining = '/assets/images/Gaining.svg';
 const Global = '/assets/images/Global.svg';
 export default function OurStory() {
     return (
-        <div className='pt-[40px]'>
+        <div className='pt-[40px] max-mobile:pt-16'>
             <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4'>
-                <div className='grid grid-cols-[494px_1fr] gap-[140px]'>
+                <div className='grid max-tab:grid-cols-1 max-laptop:grid-cols-[394px_1fr] max-laptop:gap-10 grid-cols-[494px_1fr] gap-[140px]'>
                     <div>
-                        <motion.h2 
+                        <motion.h2
                             initial={{ opacity: 0, x: -30 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.8, ease: "easeOut" }}
-                            className='text-4xl font-semibold mb-2 text-black100'
+                            className='text-4xl max-mobile:text-3xl max-mobile:leading-[40px] font-semibold mb-2 text-black100'
                         >
                             Our Story
                         </motion.h2>
-                        <motion.p 
+                        <motion.p
                             initial={{ opacity: 0, x: -30 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-                            className='text-lg font-medium text-black700'
+                            className='text-lg max-mobile:text-base font-medium text-black700'
                         >
                             Founded in 2026, Forex Brokers Listing was born out of a simple but powerful observation: the forex market is vast and ever-growing, yet finding reliable, transparent, and up-to-date information about brokers remains a genuine
                         </motion.p>
                     </div>
                     <div>
                         <div className='flex items-end'>
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, y: 40 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.7, ease: "easeOut" }}
-                                className='min-w-[450px] grid grid-cols-[35px_1fr] gap-5 bg-[#F5FDE8] border border-[#C7EF85] rounded-xl border-solid  p-4 max-w-[450px] w-full'
+                                className='min-w-[450px] max-mobile:min-w-full max-mobile:max-w-full max-laptop:min-w-[380px] max-laptop:max-w-[380px] grid grid-cols-[35px_1fr] gap-5 bg-[#F5FDE8] border border-[#C7EF85] rounded-xl border-solid  p-4 max-w-[450px] w-full'
                             >
                                 <div className='w-full bg-black100 h-[full] rounded-full flex items-center justify-center'>
                                     <p className='text-sm -rotate-90 text-white font-semibold'>
@@ -58,7 +58,7 @@ export default function OurStory() {
                                     </div>
                                 </div>
                             </motion.div>
-                            <div className='max-w-[300px] w-full'>
+                            <div className='max-w-[300px] max-mobile:hidden max-laptop:max-w-[200px] w-full'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="313" height="98" viewBox="0 0 313 98" fill="none">
                                     {/* Animated flowing line overlay */}
                                     <motion.path
@@ -82,8 +82,8 @@ export default function OurStory() {
                                 </svg>
                             </div>
                         </div>
-                        <div className='flex items-end justify-end'>
-                            <div className='max-w-[300px] w-full'>
+                        <div className='flex items-end justify-end max-laptop:pt-5 max-mobile:py-5'>
+                            <div className='max-w-[300px] max-mobile:hidden max-laptop:max-w-[200px] w-full'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="278" height="136" viewBox="0 0 278 136" fill="none">
                                     {/* Animated flowing line overlay */}
                                     <motion.path
@@ -106,12 +106,12 @@ export default function OurStory() {
                                     </defs>
                                 </svg>
                             </div>
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, y: 40 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
-                                className='min-w-[450px] grid grid-cols-[35px_1fr] gap-5 bg-white border border-border-light300 rounded-xl border-solid  p-4 max-w-[450px] w-full'
+                                className='min-w-[450px] max-mobile:min-w-full max-mobile:max-w-full max-laptop:min-w-[380px] max-laptop:max-w-[380px] grid grid-cols-[35px_1fr] gap-5 bg-white border border-border-light300 rounded-xl border-solid  p-4 max-w-[450px] w-full'
                             >
                                 <div className='w-full bg-primary h-[full] rounded-full flex items-center justify-center'>
                                     <p className='text-sm -rotate-90 text-black100 font-semibold'>
@@ -136,12 +136,12 @@ export default function OurStory() {
 
                         </div>
                         <div className='flex items-end'>
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, y: 40 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.7, ease: "easeOut", delay: 0.6 }}
-                                className='min-w-[450px] grid grid-cols-[35px_1fr] gap-5 bg-[#E8FDF9] border border-[#89E6D5] rounded-xl border-solid  p-4 max-w-[450px] w-full'
+                                className='min-w-[450px] max-mobile:min-w-full max-mobile:max-w-full  max-laptop:min-w-[380px] max-laptop:max-w-[380px] grid grid-cols-[35px_1fr] gap-5 bg-[#E8FDF9] border border-[#89E6D5] rounded-xl border-solid  p-4 max-w-[450px] w-full'
                             >
                                 <div className='w-full bg-[#00614E] h-[full] rounded-full flex items-center justify-center'>
                                     <p className='text-sm -rotate-90 text-white font-semibold'>
