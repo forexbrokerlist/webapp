@@ -76,6 +76,7 @@ export default function BlogSection({ posts = [] }: BlogSectionProps) {
                             </Link>
                         </Button>
                     </motion.div>
+
                 </div>
                 <motion.div
                     className='grid grid-cols-3 max-tab:grid-cols-2 gap-6 max-mobile:gap-4 max-mobile:grid-cols-1'

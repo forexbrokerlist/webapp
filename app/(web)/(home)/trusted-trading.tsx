@@ -99,14 +99,16 @@ export default function TrustedTrading({ platforms, title, description }: Truste
                         className='max-mobile:pt-5'
                         transition={{ duration: 0.6, delay: 0.2 }}
                     >
+                          <Link href="/categories/trusted-trading-platforms">
                         <Button variant='primary' size='md' className='flex items-center gap-2'>
-                           <Link href="/categories/trusted-trading-platforms">
+                         
                             View More
                             <div>
                                 <MoveRight />
                             </div>
-                            </Link>
                         </Button>
+                            </Link>
+
                     </motion.div>
                 </div>
                 <div className='grid grid-cols-3 gap-6 max-tab:grid-cols-1 max-tab:gap-5'>
@@ -195,14 +197,16 @@ export default function TrustedTrading({ platforms, title, description }: Truste
                             </p>
                             <img src={ForexImage} alt="ForexImage" className='block w-full' />
                             <div>
+                                <Link href="/advertise">
                                 <Button size='md' variant='primary' className='bg-black100 text-sm py-2 w-full font-medium text-primary'>
-                                  <Link href="/advertise">
+                                
                                     Advertise on Forex Brokers Listing
                                     <div className='flex items-center'>
                                         <MoveRight />
                                     </div>
-                                    </Link>
                                 </Button>
+                                    </Link>
+
                             </div>
                         </motion.div>
                     </div>
