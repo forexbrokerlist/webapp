@@ -59,29 +59,30 @@ export default async function (props: Props) {
         image={BrokersImage}
         description='Explore a comprehensive list of forex brokers with detailed insights, features, ratings, and trading conditions. Easily search, filter, and compare brokers to find the perfect match for your trading needs.'
         highlightedText="All Forex Brokers –" title="Discover, 
-Compare & Choose the Best 
+Compare & Choose The Best 
 Trading Platforms" />
       <div className="">
         {/* <Breadcrumbs items={breadcrumbs} /> */}
 
         <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
           <div className="pb-100 max-mobile:py-16">
-            <Intro className="pb-[40px]">
+            {/* <Intro className="pb-[40px]">
               <IntroTitle>{metadata.title}</IntroTitle>
               <IntroDescription className="max-w-3xl">{metadata.description}</IntroDescription>
-            </Intro>
+            </Intro> */}
 
             <Suspense fallback={<ToolListingSkeleton />}>
               <ToolQuery
                 searchParams={props.searchParams}
                 search={{ placeholder }}
-                options={{ enableFilters: true }}
+                overrideParams={{ category: "forex-brokers" }}
+                options={{ enableFilters: false }}
                 ad="Tools"
               />
             </Suspense>
 
           </div>
-        </div>
+        </div> 
         <div className='w-full h-[1px] bg-[linear-gradient(90deg,#F0F1EC_0%,#A8DD15_50%,#F0F1EC_100%)]'></div>
         <StructuredData data={structuredData} />
       </div>

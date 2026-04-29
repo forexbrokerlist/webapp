@@ -211,6 +211,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
         ? ([{ isSponsor: "desc" }, { [sortBy]: sortOrder }] as any)
         : [
             { isSponsor: "desc" },
+            { order: "asc" },
             { year_established: "desc" },
             { broker_name: "asc" },
           ],
@@ -242,6 +243,7 @@ export const findBrokers = async ({
       : [{ isSponsor: "desc" }, orderBy]
     : [
         { isSponsor: "desc" },
+        { order: "asc" },
         { year_established: "desc" },
         { broker_name: "asc" },
       ];
@@ -369,6 +371,45 @@ export const findRandomCrmProviders = async (
   const whereClause: Prisma.BrokersWhereInput = {
     status: ToolStatus.Published,
     type: { slug: "crm" },
+    ...(excludeSlug && { slug: { not: excludeSlug } }),
+  };
+
+  const itemCount = await db.brokers.count({ where: whereClause });
+
+  if (itemCount === 0) return [];
+
+  const skip = Math.max(0, Math.floor(Math.random() * (itemCount - take + 1)));
+
+  return db.brokers.findMany({
+    where: whereClause,
+    select: {
+      broker_name: true,
+      logoUrl: true,
+      screenshotUrl: true,
+      slug: true,
+      categories: {
+        select: {
+          slug: true,
+        },
+        take: 1,
+      },
+    },
+    take,
+    skip,
+  });
+};
+export const findRandomBridgeProviders = async (
+  take: number = 3,
+  excludeSlug?: string,
+) => {
+  "use cache";
+
+  cacheTag("brokers");
+  cacheLife("minutes");
+
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "forexbridge" },
     ...(excludeSlug && { slug: { not: excludeSlug } }),
   };
 

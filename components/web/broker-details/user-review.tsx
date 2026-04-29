@@ -85,10 +85,10 @@ export default function UserReview() {
                                 Verified Customer Feedback
                             </span>
                         </div>
-                        <div className='flex items-center gap-2 bg-[#F59E0B] border border-amber-600 p-3 rounded-full py-2 px-4'>
-                            <span className='text-base font-bold text-white'>4.8 Out of 5</span>
-                            <div className='w-px h-4 bg-white opacity-50'></div>
-                            <span className='text-base bg-[#E89812] border rounded-full font-medium text-white opacity-90'>Total Reviews: 15K</span>
+                        <div className='flex items-center gap-2 shadow-[0px_0px_20px_0px_#00000014] bg-[#F59E0B] border-solid border-white border-2 p-3 rounded-full py-2 px-4'>
+                            <span className='text-sm font-semibold text-white'>4.8 Out of 5</span>
+                          
+                            <span className='text-xs block py-1 px-2 bg-[#E89812] border rounded-full font-medium text-white opacity-90'>Total Reviews: 15K</span>
                         </div>
                     </div>
 

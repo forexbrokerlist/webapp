@@ -37,14 +37,18 @@ export default async function ({ children }: PropsWithChildren) {
 
   return (
     <>
-      <Intro>
-        <IntroTitle>{metadata.title}</IntroTitle>
-        <IntroDescription>{metadata.description}</IntroDescription>
-      </Intro>
+      <div className="pt-[140px] pb-100 max-mobile:pb-16 max-mobile:pt-[120px]">
+        <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
+          <Intro className="pb-10">
+            <IntroTitle>{metadata.title}</IntroTitle>
+            <IntroDescription>{metadata.description}</IntroDescription>
+          </Intro>
 
-      <div className="flex flex-col gap-4">
-        <DashboardTabs />
-        {children}
+          <div className="flex flex-col gap-4">
+            <DashboardTabs />
+            {children}
+          </div>
+        </div>
       </div>
     </>
   )

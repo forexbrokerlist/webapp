@@ -2,10 +2,11 @@ import React from 'react'
 import PlatformFeatures from './platform-features';
 import ProsCons from './pros-cons';
 import TopicsSkillsSection from '../forex-trading-course-details/topics-skills-section';
+import BestSuitedFor from '../forex-bridge-provider-details/bestSuitedFor';
 
 const RoundIcon = '/assets/images/round.svg';
 
-export default function TradingSpecifications({ broker, showTradingHours = true, showAccountFunding = true, showTradingSpreads = true, showStarRatings = true, showFeatures = false, platformSectionId = "platform-&-features",showSkills=false }: { broker: any, showTradingHours?: boolean, showAccountFunding?: boolean, showTradingSpreads?: boolean, showStarRatings?: boolean, showFeatures?: boolean, platformSectionId?: string,showSkills?:boolean }) {
+export default function TradingSpecifications({ broker, showTradingHours = true, showAccountFunding = true, showTradingSpreads = true, showStarRatings = true, showFeatures = false, platformSectionId = "platform-&-features",showSkills=false,bridgeTitle,showBestSuitedFor=false }: { broker: any, showTradingHours?: boolean, showAccountFunding?: boolean, showTradingSpreads?: boolean, showStarRatings?: boolean, showFeatures?: boolean, platformSectionId?: string,showSkills?:boolean,bridgeTitle?:string,showBestSuitedFor?:boolean}) {
     const tradingHoursRaw = broker.trading_hours;
     let tradingHours: { label: string, value: string }[] = [];
 
@@ -168,11 +169,15 @@ export default function TradingSpecifications({ broker, showTradingHours = true,
 
                 </div>
             </div>
+
             <div id={platformSectionId} className='px-4'>
            {showSkills&&       <div id="topics-skills">
                                             <TopicsSkillsSection broker={broker} />
                                         </div>
-            }    {!showSkills && <PlatformFeatures broker={broker} showStarRatings={showStarRatings} showFeatures={showFeatures} />}
+            }    {!showSkills && !showBestSuitedFor && <PlatformFeatures bridgeTitle={bridgeTitle} broker={broker} showStarRatings={showStarRatings} showFeatures={showFeatures} />}
+            {!showSkills&&showBestSuitedFor&&broker?.best_suited_for.length>0&&
+            <BestSuitedFor bridgeTitle={bridgeTitle} broker={broker} showStarRatings={showStarRatings} showFeatures={showFeatures} />
+            }
                 <div className='pt-4'>
                     <ProsCons broker={broker} />
                 </div>

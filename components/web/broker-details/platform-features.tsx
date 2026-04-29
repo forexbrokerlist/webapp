@@ -14,7 +14,7 @@ const StarIcon = ({ filled }: { filled: boolean }) => (
     </svg>
 );
 
-export default function PlatformFeatures({ broker, showStarRatings = true, showFeatures = false }: { broker: any, showStarRatings?: Boolean, showFeatures?: Boolean }) {
+export default function PlatformFeatures({ broker, showStarRatings = true, showFeatures = false,bridgeTitle }: { broker: any, showStarRatings?: Boolean, showFeatures?: Boolean,bridgeTitle?:string  }) {
     const platformsRaw = broker.trading_platforms || "";
     const platforms = platformsRaw ? platformsRaw.split(',').map((p: string) => p.trim()) : ["MetaTrader 4", "MetaTrader 5"];
     const features = broker.features || [];
