@@ -1,5 +1,5 @@
 import { getInitials } from "@primoui/utils"
-import { BookmarkIcon, LogOutIcon, ShieldHalfIcon, TrendingUpIcon, UserIcon } from "lucide-react"
+import { BookmarkIcon, CheckCircle, LogOutIcon, ShieldHalfIcon, TrendingUpIcon, UserIcon } from "lucide-react"
 import { motion } from "motion/react"
 import { useTranslations } from "next-intl"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/common/avatar"
@@ -78,7 +78,13 @@ export const UserMenu = () => {
               </NavLink>
             </DropdownMenuItem>
           )}
-
+          
+            <DropdownMenuItem asChild>
+              <NavLink href="/submit" prefix={<CheckCircle />}>
+                {t("navigation.add_broker")}
+              </NavLink>
+            </DropdownMenuItem>
+        
           <DropdownMenuItem asChild>
             <NavLink href="/dashboard" prefix={<UserIcon />}>
               {t("navigation.dashboard")}

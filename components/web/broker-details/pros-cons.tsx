@@ -4,8 +4,8 @@ import ArrowIcon from '~/components/common/icons/arrow-icon';
 const RoundIcon = '/assets/images/round.svg';
 
 export default function ProsCons({ broker }: { broker: any }) {
-    const pros = broker.pros ? broker.pros.split(';').filter((p: string) => p.trim()) : [];
-    const cons = broker.cons ? broker.cons.split(';').filter((c: string) => c.trim()) : [];
+    const pros = broker.pros ? broker.pros.split(/[;,]/).map((p: string) => p.trim()).filter(Boolean) : [];
+    const cons = broker.cons ? broker.cons.split(/[;,]/).map((c: string) => c.trim()).filter(Boolean) : [];
 
     return (
         <div className='grid grid-cols-2 gap-4 pb-4'>
