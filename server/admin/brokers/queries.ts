@@ -182,6 +182,14 @@ export const findBrokerById = async (id: number) => {
       certificate_available: true,
       community_access: true,
       mentorship_available: true,
+      solution_type: true,
+      target_clients: true,
+      asset_classes: true,
+      latency: true,
+      white_label: true,
+      setup_time: true,
+      liquiditySources: true,
+      best_suited_for: true,
 
       typeId: true,
       isSponsor: true,
@@ -205,6 +213,8 @@ export const findBrokerById = async (id: number) => {
       copy_traders_rating: true,
       automated_traders_rating: true,
       investors_rating: true,
+      overall_review_rating: true,
+      total_reviews: true,
       faqs: {
         select: {
           id: true,
@@ -225,6 +235,7 @@ export const findBrokerById = async (id: number) => {
         },
         orderBy: { order: "asc" },
       },
+      reviews: true,
     },
   });
 };

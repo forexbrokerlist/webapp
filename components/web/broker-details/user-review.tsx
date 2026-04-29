@@ -78,82 +78,62 @@ export default function UserReview() {
             </div>
             <div className='px-4 pb-4'>
                 <div className='border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
-                    <div className='flex items-center gap-2 pb-3'>
-                        <img src={RoundIcon} alt="RoundIcon" className='block' />
-                        <span className='block text-base font-medium text-black'>
-                            Verified Customer Feedback
-                        </span>
+                    <div className='flex items-center justify-between pb-3'>
+                        <div className='flex items-center gap-2'>
+                            <img src={RoundIcon} alt="RoundIcon" className='block' />
+                            <span className='block text-base font-medium text-black'>
+                                Verified Customer Feedback
+                            </span>
+                        </div>
+                        <div className='flex items-center gap-2 bg-[#F59E0B] border border-amber-600 p-3 rounded-full py-2 px-4'>
+                            <span className='text-base font-bold text-white'>4.8 Out of 5</span>
+                            <div className='w-px h-4 bg-white opacity-50'></div>
+                            <span className='text-base bg-[#E89812] border rounded-full font-medium text-white opacity-90'>Total Reviews: 15K</span>
+                        </div>
                     </div>
+
                     <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
-                    <div className='pt-5 pb-2'>
-                        <div className='grid pb-5 grid-cols-[160px_1fr] gap-12 items-center'>
-                            <div>
-                                <div className='flex justify-center pb-3'>
-                                    <img src={CounterIcon} alt="CounterIcon" className='block' />
-                                </div>
-                                <p className='text-base font-medium text-black100 text-center'>
-                                    Total Reviews: 15K
-                                </p>
-                            </div>
-                            <div className='flex flex-col gap-3.5'>
-                                {ratings.map((item, index) => (
-                                    <div key={index} className="flex items-center gap-4">
-                                        <span className="w-[85px] text-base font-medium text-black700 shrink-0">
-                                            {item.label}
-                                        </span>
-                                        <div className="flex-1 h-[8px] bg-[#FCF2E1] rounded-full">
-                                            <div
-                                                className="h-full bg-[#FBA100] rounded-full"
-                                                style={{ width: `${(item.score / 5) * 100}%` }}
-                                            ></div>
-                                        </div>
-                                        <span className="w-6 text-base font-medium text-black700 text-right shrink-0">
-                                            {item.score}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        <div className='grid grid-cols-3 gap-4 pb-5 border-b border-solid border-border-light300'>
-                            {reviews.map((review, index) => (
-                                <div key={index} className="relative overflow-hidden bg-[#f9f1e266] border border-[#EFE1C7] rounded-xl p-4 flex flex-col justify-between gap-4">
-                                    <QuoteMark />
 
-                                    <div className="relative z-10 flex flex-col gap-3">
-                                        <div className="flex items-center gap-[2px]">
-                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                <StarIcon key={star} filled={star <= review.rating} />
-                                            ))}
-                                        </div>
-                                        <p className="text-[14px] leading-relaxed text-black100 font-medium">
-                                            {review.text}
-                                        </p>
-                                    </div>
 
-                                    <div className="relative z-10 flex items-center gap-3">
-                                        <img src={review.avatar} alt={review.name} className="w-10 h-10 rounded-full object-cover bg-[#E2E8F0]" />
-                                        <div>
-                                            <h4 className="text-[14px] font-semibold text-black100">{review.name}</h4>
-                                            <span className="block text-[12px] font-medium text-black700">{review.date}</span>
-                                        </div>
+                    <div className='grid grid-cols-3 gap-4 pb-5 pt-4 border-b border-solid border-border-light300 '>
+                        {reviews.map((review, index) => (
+                            <div key={index} className="relative overflow-hidden bg-[#f9f1e266] border border-[#EFE1C7] rounded-xl p-4 flex flex-col justify-between gap-4">
+                                <QuoteMark />
+
+                                <div className="relative z-10 flex flex-col gap-3">
+                                    <div className="flex items-center gap-[2px]">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <StarIcon key={star} filled={star <= review.rating} />
+                                        ))}
+                                    </div>
+                                    <p className="text-[14px] leading-relaxed text-black100 font-medium">
+                                        {review.text}
+                                    </p>
+                                </div>
+
+                                <div className="relative z-10 flex items-center gap-3">
+                                    <img src={review.avatar} alt={review.name} className="w-10 h-10 rounded-full object-cover bg-[#E2E8F0]" />
+                                    <div>
+                                        <h4 className="text-[14px] font-semibold text-black100">{review.name}</h4>
+                                        <span className="block text-[12px] font-medium text-black700">{review.date}</span>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                        <div className='pt-4 flex items-center justify-between hidden'>
-                            <p className='text-base text-black100 font-medium'>
-                                Showing 3 of 15,000+ verified reviews
-                            </p>
-                            <Button variant='secondary' className='flex items-center gap-2 text-sm'>
-                                Write a Review
-                                <div className='flex items-center'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
-                                        <path d="M17.0221 9.5013C17.0221 13.6549 13.6549 17.0221 9.5013 17.0221C8.21239 17.0221 6.99916 16.6979 5.9388 16.1265C4.45979 15.3296 3.46454 16.0705 2.58682 16.2034C2.45368 16.2236 2.32108 16.1752 2.22586 16.0801C2.08133 15.9355 2.05382 15.712 2.13366 15.5238C2.47815 14.7119 2.79446 13.1732 2.36317 11.8763C2.11489 11.1298 1.98047 10.3312 1.98047 9.5013C1.98047 5.34766 5.34766 1.98047 9.5013 1.98047C13.6549 1.98047 17.0221 5.34766 17.0221 9.5013Z" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
-                                        <path d="M8.10536 11.9972L6.73047 12.2721L7.00544 10.8972C7.06129 10.618 7.19855 10.3615 7.39993 10.1602L10.6184 6.94172C10.9 6.66005 11.3567 6.66005 11.6384 6.94172L12.0609 7.36422C12.3425 7.64588 12.3425 8.10259 12.0609 8.38418L8.8424 11.6027C8.64108 11.804 8.38458 11.9413 8.10536 11.9972Z" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                </div>
-                            </Button>
-                        </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className='pt-4 flex items-center justify-between hidden'>
+                        <p className='text-base text-black100 font-medium'>
+                            Showing 3 of 15,000+ verified reviews
+                        </p>
+                        <Button variant='secondary' className='flex items-center gap-2 text-sm'>
+                            Write a Review
+                            <div className='flex items-center'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
+                                    <path d="M17.0221 9.5013C17.0221 13.6549 13.6549 17.0221 9.5013 17.0221C8.21239 17.0221 6.99916 16.6979 5.9388 16.1265C4.45979 15.3296 3.46454 16.0705 2.58682 16.2034C2.45368 16.2236 2.32108 16.1752 2.22586 16.0801C2.08133 15.9355 2.05382 15.712 2.13366 15.5238C2.47815 14.7119 2.79446 13.1732 2.36317 11.8763C2.11489 11.1298 1.98047 10.3312 1.98047 9.5013C1.98047 5.34766 5.34766 1.98047 9.5013 1.98047C13.6549 1.98047 17.0221 5.34766 17.0221 9.5013Z" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M8.10536 11.9972L6.73047 12.2721L7.00544 10.8972C7.06129 10.618 7.19855 10.3615 7.39993 10.1602L10.6184 6.94172C10.9 6.66005 11.3567 6.66005 11.6384 6.94172L12.0609 7.36422C12.3425 7.64588 12.3425 8.10259 12.0609 8.38418L8.8424 11.6027C8.64108 11.804 8.38458 11.9413 8.10536 11.9972Z" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                        </Button>
                     </div>
                 </div>
             </div>

@@ -46,6 +46,7 @@ const upsert = adminProcedure
       tagIds,
       faqs,
       courseModules,
+      reviews,
       ...data
     } = input;
     const existingBroker = id
@@ -61,6 +62,7 @@ const upsert = adminProcedure
           data: {
             ...data,
             slug,
+            typeId: data.typeId || null,
             categories: {
               set: categoryIds?.map((id) => ({ id })),
             },

@@ -118,6 +118,8 @@ export const brokerSchema = z.object({
   copy_traders_rating: z.number().optional().nullable(),
   automated_traders_rating: z.number().optional().nullable(),
   investors_rating: z.number().optional().nullable(),
+  overall_review_rating: z.number().optional().nullable(),
+  total_reviews: z.string().optional(),
   faqs: z
     .array(
       z.object({
@@ -144,6 +146,14 @@ export const brokerSchema = z.object({
   certificate_available: z.boolean().optional().nullable(),
   community_access: z.boolean().optional().nullable(),
   mentorship_available: z.boolean().optional().nullable(),
+  solution_type: z.string().optional(),
+  target_clients: z.array(z.string()).optional(),
+  asset_classes: z.array(z.string()).optional(),
+  latency: z.string().optional(),
+  white_label: z.boolean().optional().nullable(),
+  setup_time: z.string().optional(),
+  liquiditySources: z.array(z.string()).optional(),
+  best_suited_for: z.array(z.string()).optional(),
   courseModules: z
     .array(
       z.object({
@@ -153,6 +163,19 @@ export const brokerSchema = z.object({
         duration: z.string().min(1, "Duration is required"),
         topics: z.array(z.string()).optional(),
         order: z.number().optional(),
+      }),
+    )
+    .optional(),
+  reviews: z
+    .array(
+      z.object({
+        id: z.string().optional(),
+        reviewer_name: z.string().nullable().optional(),
+        reviewer_location: z.string().nullable().optional(),
+        rating: z.number().nullable().optional(),
+        description: z.string().nullable().optional(),
+        createdAt: z.date().nullable().optional(),
+        updatedAt: z.date().nullable().optional(),
       }),
     )
     .optional(),

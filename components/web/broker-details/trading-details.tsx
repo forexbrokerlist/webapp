@@ -1,8 +1,8 @@
 import React from 'react'
 const RoundIcon = '/assets/images/round.svg';
 
-export default function TradingDetails({ broker }: { broker: any }) {
-    const brokerDetails = [
+export default function TradingDetails({ broker,leftHeader,rightHeader,leftSideDetails,rightSideDetails }: { broker: any,leftHeader?:string,rightHeader?:string,leftSideDetails?:any,rightSideDetails?:any }) {
+    const brokerDetails = leftSideDetails || [
         { label: "Headquarters", value: broker.headquarters || "-" },
         { label: "Established", value: broker.year_established || "-" },
         { label: "Min Deposit", value: broker.minimum_deposit || "-" },
@@ -14,7 +14,8 @@ export default function TradingDetails({ broker }: { broker: any }) {
        
     ];
 
-    const additionalDetails = [
+
+    const additionalDetails = rightSideDetails || [
                { label: "Retail Loss Rate", value: broker.retail_loss_rate || "-" },
         { label: "Min Raw Spreads", value: broker.minimum_raw_spreads || "-" },
         { label: "Min Std Spreads", value: broker.minimum_standard_spreads || "-" },
@@ -41,12 +42,12 @@ export default function TradingDetails({ broker }: { broker: any }) {
                         <div className='flex items-center gap-2 pb-3'>
                             <img src={RoundIcon} alt="RoundIcon" className='block' />
                             <span className='block text-base font-medium text-black'>
-                                Broker Details:
+                                {leftHeader||"Broker Details:"}
                             </span>
                         </div>
                         <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
                         <div className='pt-2'>
-                            {brokerDetails.map((detail, index) => (
+                            {brokerDetails.map((detail:any, index:number) => (
                                 <div key={index} className='flex justify-between items-center last:pb-0 py-2 border-b border-border-light300 last:border-0 border-solid'>
                                     <span className='text-[15px] font-medium text-black700'>{detail.label}</span>
                                       {detail.isPositive !== undefined ? (
@@ -67,12 +68,12 @@ export default function TradingDetails({ broker }: { broker: any }) {
                         <div className='flex items-center gap-2 pb-3'>
                             <img src={RoundIcon} alt="RoundIcon" className='block' />
                             <span className='block text-base font-medium text-black'>
-                                Trading Condition:
+                                {rightHeader||"Trading Condition:"}
                             </span>
                         </div>
                         <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
                         <div className='pt-2'>
-                            {additionalDetails.map((detail, index) => (
+                            {additionalDetails.map((detail:any, index:number) => (
                                 <div key={index} className='flex justify-between items-center last:pb-0 py-2 border-b border-border-light300 last:border-0 border-solid'>
                                     <div className='flex items-center gap-2'>
                                         <span className='text-[15px] font-medium text-black700'>{detail.label}</span>
