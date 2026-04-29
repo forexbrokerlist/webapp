@@ -179,6 +179,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       white_label: broker?.white_label ?? false,
       setup_time: broker?.setup_time ?? "",
       liquiditySources: broker?.liquiditySources ?? [],
+      best_suited_for: broker?.best_suited_for ?? [],
       courseModules: broker?.courseModules ?? [],
       reviews: broker?.reviews?.map(review => ({
         ...review,
@@ -798,7 +799,6 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
         <AccountTypesField control={form.control} register={form.register} />
         <LanguagesSupportedField control={form.control} register={form.register} />
         <AssetClassesField control={form.control} register={form.register} />
-        <LiquiditySourcesField control={form.control} register={form.register} />
         <FAQsField control={form.control} register={form.register} />
         <CourseModulesField control={form.control} register={form.register} />
 
@@ -997,6 +997,8 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
 
         <TargetClientsField control={form.control} register={form.register} />
         <AssetClassesField control={form.control} register={form.register} />
+        <LiquiditySourcesField control={form.control} register={form.register} />
+        <BestSuitedForField control={form.control} register={form.register} />
 
         <OutcomesField control={form.control} register={form.register} />
 
@@ -2022,3 +2024,47 @@ function LiquiditySourcesField({ control, register }: { control: any, register: 
     </div>
   )
 }
+
+function BestSuitedForField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "best_suited_for",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Best Suited For</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`best_suited_for.${index}`)}
+              placeholder="Enter best suited for"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Best Suited For
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+

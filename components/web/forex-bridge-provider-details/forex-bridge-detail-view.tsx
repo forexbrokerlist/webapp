@@ -27,18 +27,18 @@ export default function ForexBridgeProviderDetailsView({ broker, randomBrokers =
                         <TableOfContents
                             broker={broker}
                             items={[
-                                "CRM Details",
+                                "Tool Details",
                                 "Trading Specifications",
-                                "Platform & Features",
-                                "CRM Review",
+                                "Best Suited For",
+                                "Tool Review",
                                 "User Review",
-                                "Compare CRM",
+                                // "Compare CRM",
                                 "FAQ"
                             ]}
                         />
                     </div>
                     <div className='grid grid-cols-1 gap-5'>
-                        <TradingDetails broker={broker}  leftHeader='Provider Details' rightHeader='Technical Specs'   leftSideDetails={ [
+                        <TradingDetails broker={broker}  tradingDetailsLabel="Tool Details" tradingDetailsId="tool-details" leftHeader='Provider Details' rightHeader='Technical Specs'   leftSideDetails={ [
         { label: "Company Type", value: broker.bestFor && broker.bestFor.length>0&&broker.bestFor.join("/") || "-" },
        
        { label: "Headquarters", value: broker.headquarters || "-" },
@@ -62,12 +62,12 @@ export default function ForexBridgeProviderDetailsView({ broker, randomBrokers =
         
         
     ]}/>
-                        <TradingSpecifications broker={broker} showTradingHours={false} showAccountFunding={false} showTradingSpreads={false} showStarRatings={false} showFeatures={false} platformSectionId="platform-&-features" />
+                        <TradingSpecifications bridgeTitle={"Best Suited For"} broker={broker} showBestSuitedFor={true} showTradingHours={false} showAccountFunding={false} showTradingSpreads={false} showStarRatings={false} showFeatures={false} platformSectionId="platform-&-features" />
 
                         <BrokerReview
                             broker={broker}
-                            reviewTitle={`${broker?.broker_name || '-'} Review ${new Date().getFullYear()} — Forex CRM & Back Office Software for Brokers`}
-                            sectionId="crm-review"
+                            reviewTitle={`${broker?.broker_name || '-'} Review ${new Date().getFullYear()} — Liquidity Bridge & Execution Engine for Forex Brokers `}
+                            sectionId="tool-review"
                         />
                         <UserReview />
                       

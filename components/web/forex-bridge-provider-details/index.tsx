@@ -4,7 +4,7 @@ import BrokerDetailsHero from '../broker-details/broker-details-hero'
 import ForexBridgeProviderDetailsView from './forex-bridge-detail-view'
 // import ForexTradingCourseDetailsView from './forex-trading-course-details-view'
 
-export default function ForexBridgeProviderDetails({ broker }: { broker: any }) {
+export default function ForexBridgeProviderDetails({ broker,randomBrokers }: { broker: any,randomBrokers:any[] }) {
     console.log("broker",broker)
     return (
        <div>
@@ -15,7 +15,7 @@ export default function ForexBridgeProviderDetails({ broker }: { broker: any }) 
                 
                 { value: broker.execution_types||'-' , label: 'Execution Type' }
             ]}/>
-       <ForexBridgeProviderDetailsView broker={broker}/> 
+       <ForexBridgeProviderDetailsView broker={broker} randomBrokers={randomBrokers} /> 
        </div>
 
     )

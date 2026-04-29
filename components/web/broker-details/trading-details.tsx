@@ -1,7 +1,7 @@
 import React from 'react'
 const RoundIcon = '/assets/images/round.svg';
 
-export default function TradingDetails({ broker,leftHeader,rightHeader,leftSideDetails,rightSideDetails }: { broker: any,leftHeader?:string,rightHeader?:string,leftSideDetails?:any,rightSideDetails?:any }) {
+export default function TradingDetails({ broker,leftHeader,rightHeader,leftSideDetails,rightSideDetails,tradingDetailsLabel,tradingDetailsId }: { broker: any,leftHeader?:string,rightHeader?:string,leftSideDetails?:any,rightSideDetails?:any,tradingDetailsLabel?:string,tradingDetailsId?:string}) {
     const brokerDetails = leftSideDetails || [
         { label: "Headquarters", value: broker.headquarters || "-" },
         { label: "Established", value: broker.year_established || "-" },
@@ -29,11 +29,11 @@ export default function TradingDetails({ broker,leftHeader,rightHeader,leftSideD
             ];
 
     return (
-        <div id='broker-trading-details' className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
+        <div id={tradingDetailsId||'broker-trading-details'} className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
             <div className='p-4 relative flex items-center '>
                 <div className='absolute top-3 left-0 w-1 h-[26px] bg-primary rounded-r-[4px]'></div>
                 <h3 className='text-base text-black100 font-semibold uppercase'>
-                    BROKER & TRADING DETAILS
+{tradingDetailsLabel||"BROKER & TRADING DETAILS"}
                 </h3>
             </div>
             <div className='px-4 pb-4'>
