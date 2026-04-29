@@ -36,10 +36,14 @@ export default function CourseModulesSection({
     }
   };
 
+  const formatModuleNumber = (num: number) => {
+    return num < 10 ? `0${num}` : num.toString();
+  };
+
 
 
   return (
-    <div   className="border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-6 mt-6">
+    <div className="border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-6 mt-6">
       <div className='flex items-center gap-2 pb-3' id="course-modules">
         <img src={RoundIcon} alt="RoundIcon" className='block' />
         <span className='block text-base font-medium text-black'>
@@ -49,27 +53,28 @@ export default function CourseModulesSection({
 
       <div className="w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)] mb-6"></div>
 
-      <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {courseModules
           .sort((a, b) => (a.order || 0) - (b.order || 0))
           .map((module, index) => (
-            <div key={module.id || index} className="border border-border-light200 rounded-lg p-4 bg-white hover:shadow-md transition-shadow">
+            <div key={module.id || index} className="border border-primary/70 rounded-lg p-4 bg-white hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-bold">{index + 1}</span>
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center border-6 p-4 border-[#e5f5b9]">
+                      <span className="text-black text-sm font-bold">{formatModuleNumber(index + 1)}</span>
                     </div>
-                    <h4 className="text-lg font-semibold text-black capitalize">
+                    <h4 className="text-sm font-semibold text-black capitalize">
                       {module.title}
                     </h4>
                   </div>
 
-                  <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-4 text-sm mt-4">
                     <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(module.difficulty)}`}>
 
                       {module.difficulty}
                     </span>
+                    <div className="h-4 w-[1px] bg-gray-300"></div>
                     <span className="text-gray-600 flex items-center gap-1">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />

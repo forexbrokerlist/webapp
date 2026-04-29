@@ -45,14 +45,16 @@ export default function InvestInEverything() {
                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
               }}
             >
+               <Link href={`/brokers`}>
               <Button variant='primary' size='md' className={` border-none py-2.5 bg-white text-black100  flex justify-between items-center group`}>
-                <Link href={`/brokers`}>
+               
                 Browse All Brokers
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 bg-black100 `}>
                   <MoveRight className="text-white" />
                 </div>
-                </Link>
               </Button>
+                </Link>
+
             </motion.div>
           </motion.div>
 

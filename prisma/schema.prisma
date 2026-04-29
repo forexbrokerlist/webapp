@@ -314,6 +314,10 @@ enum BusinessSize {
   Startup
   MidSize
   Enterprise
+  RetailBrokers 
+  WhiteLabelOps
+  TechVendor 
+  B2B 
 }
 enum SupportChannel {
   Email
@@ -328,6 +332,8 @@ enum PricingModel {
   Freemium
   Subscription
   Free
+  License
+  VolumeBased
 }
 enum LearningFormat{ 
   Video 
@@ -346,7 +352,26 @@ enum SkillLevel {
   Intermediate
   Advanced
 }
+model Review {
+  id        String   @id @default(cuid())
+  reviewer_name     String?  @db.VarChar(100)
+  reviewer_location     String?  @db.VarChar(100)
 
+ 
+ 
+  rating            Int?
+  description       String?  @db.Text
+   createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now()) @updatedAt
+
+  // Relations
+  broker   Brokers @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+  brokerId Int
+  
+  @@index([brokerId])
+  @@index([rating])
+  @@map("broker_reviews")
+}
 model Brokers {
   id                                 Int        @id @default(autoincrement())
   average_trading_cost_bitcoin       String?    @db.VarChar(82)
@@ -436,6 +461,17 @@ model Brokers {
   certificate_available             Boolean?
   community_access                  Boolean?
   mentorship_available              Boolean?
+
+
+  // Bridge Provider Fields
+  solution_type                     String? 
+  target_clients                    String[]  
+  asset_classes                     String[]
+  latency                           String?
+  white_label                         Boolean?    
+  setup_time                        String?
+  liquiditySources                  String[]
+  best_suited_for                   String[]
   // Admin & Submission fields
   submitterName  String?
   submitterEmail String?
@@ -444,6 +480,12 @@ model Brokers {
   publishedAt    DateTime?
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @default(now()) @updatedAt
+
+  // Review Ratings 
+  overall_review_rating Float?
+  total_reviews String?   @db.VarChar(20)
+  reviews    Review[]
+
 
   // Relations
   tags          Tag[]

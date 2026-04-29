@@ -61,14 +61,16 @@ export default function AlgoTrading({ partners = [], title, description, categor
                         className='max-mobile:pt-4'
                         transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
                     >
-                        <Button variant='primary' size='md' className='flex items-center gap-2'>
                             <Link href={`/categories/${category?.slug || 'algo-trading'}`}>
+
+                        <Button variant='primary' size='md' className='flex items-center gap-2'>
                                 Explore All
                                 <div>
                                     <MoveRight />
                                 </div>
-                            </Link>
                         </Button>
+                            </Link>
+
                     </motion.div>
                 </div>
 
