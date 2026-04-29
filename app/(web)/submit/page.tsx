@@ -54,28 +54,32 @@ export default async function ({ searchParams }: { searchParams: Promise<{ plan?
 
   return (
     <>
-      <Intro>
-        <IntroTitle>{metadata.title}</IntroTitle>
-        <IntroDescription>{metadata.description}</IntroDescription>
-      </Intro>
+      <div className="pt-[140px] pb-100 max-mobile:pb-16 max-mobile:pt-[120px]">
+        <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
+          <Intro className="pb-10">
+            <IntroTitle>{metadata.title}</IntroTitle>
+            <IntroDescription>{metadata.description}</IntroDescription>
+          </Intro>
 
-      <Section>
-        <Section.Content>
-          {!session?.user && (
-            <Hint className="mb-6 p-4 bg-muted rounded-lg text-center font-medium">
-              You must be logged in to submit a broker.
-            </Hint>
-          )}
-          <SubmitForm
-            categories={categories}
-            subcategories={subcategories}
-            tags={tags}
-            plan={plan}
-            plans={allPlans}
-            isCancelled={cancelled === "true"}
-          />
-        </Section.Content>
-      </Section>
+          <Section>
+            <Section.Content>
+              {!session?.user && (
+                <Hint className="mb-6 p-4 bg-muted rounded-lg text-center font-medium">
+                  You must be logged in to submit a broker.
+                </Hint>
+              )}
+              <SubmitForm
+                categories={categories}
+                subcategories={subcategories}
+                tags={tags}
+                plan={plan}
+                plans={allPlans}
+                isCancelled={cancelled === "true"}
+              />
+            </Section.Content>
+          </Section>
+        </div>
+      </div>
     </>
   )
 }
