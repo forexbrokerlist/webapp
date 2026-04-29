@@ -152,6 +152,8 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       copy_traders_rating: broker?.copy_traders_rating ?? null,
       automated_traders_rating: broker?.automated_traders_rating ?? null,
       investors_rating: broker?.investors_rating ?? null,
+      overall_review_rating: broker?.overall_review_rating ?? null,
+      total_reviews: broker?.total_reviews ?? "",
       faqs: broker?.faqs ?? [],
       deployment_type: broker?.deployment_type ?? DeploymentType.Both,
       starting_price: broker?.starting_price ?? "",
@@ -171,6 +173,13 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       community_access: broker?.community_access ?? false,
       mentorship_available: broker?.mentorship_available ?? false,
       courseModules: broker?.courseModules ?? [],
+      reviews: broker?.reviews?.map(review => ({
+        ...review,
+        reviewer_name: review.reviewer_name || undefined,
+        reviewer_location: review.reviewer_location || undefined,
+        rating: review.rating || undefined,
+        description: review.description || undefined,
+      })) ?? [],
       // platformIntegrations: broker?.platformIntegrations ?? [],
       // keyFeatures: broker?.keyFeatures ?? [],
     },
@@ -738,6 +747,23 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
 
         <Controller
           control={form.control}
+          name="total_reviews"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Total Reviews</FieldLabel>
+              <Input
+                id={field.name}
+                {...field}
+                value={field.value || ''}
+                placeholder="e.g. 1,234 reviews"
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
           name="description"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="col-span-full">
@@ -1171,9 +1197,48 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
         />
 
         <div className="col-span-full pt-4">
-          <H3>Trader Ratings</H3>
-          <Hint>Ratings for different trader profiles (0-5)</Hint>
+          <H3>User Reviews</H3>
+          <Hint>Ratings and review statistics for different trader profiles (0-5)</Hint>
         </div>
+
+        <Controller
+          control={form.control}
+          name="overall_review_rating"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Overall Review Rating</FieldLabel>
+              <Input
+                id={field.name}
+                type="number"
+                step="0.1"
+                min="0"
+                max="5"
+                {...field}
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="total_reviews"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Total Reviews</FieldLabel>
+              <Input
+                id={field.name}
+                {...field}
+                value={field.value || ''}
+                placeholder="e.g. 1,234 reviews"
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <ReviewsField control={form.control} register={form.register} />
 
         {([
           { name: "newer_traders_rating", label: "Newer Traders Rating" },
@@ -1662,6 +1727,95 @@ function TopicsCoveredField({ control, register }: { control: any, register: any
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Topic
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function ReviewsField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "reviews",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Customer Reviews</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="border rounded-lg p-4 space-y-4">
+            <div className="flex justify-between items-start">
+              <h4 className="font-medium">Review {index + 1}</h4>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                onClick={() => remove(index)}
+                className="shrink-0"
+              >
+                <Trash className="w-4 h-4 text-destructive" />
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 @lg:grid-cols-2 gap-4">
+              <div>
+                <FieldLabel htmlFor={`reviews.${index}.reviewer_name`}>Reviewer Name</FieldLabel>
+                <Input
+                  {...register(`reviews.${index}.reviewer_name`)}
+                  placeholder="Enter reviewer name"
+                />
+              </div>
+              <div>
+                <FieldLabel htmlFor={`reviews.${index}.reviewer_location`}>Location</FieldLabel>
+                <Input
+                  {...register(`reviews.${index}.reviewer_location`)}
+                  placeholder="Enter location (e.g., Mumbai, India)"
+                />
+              </div>
+            </div>
+
+            <div>
+              <div>
+                <FieldLabel htmlFor={`reviews.${index}.rating`}>Rating (1-5)</FieldLabel>
+                <Input
+                  {...register(`reviews.${index}.rating`)}
+                  type="number"
+                  min="1"
+                  max="5"
+                  onChange={(e) => {
+                    const value = e.target.value ? parseInt(e.target.value) : ''
+                    const event = { target: { value } }
+                    register(`reviews.${index}.rating`).onChange(event)
+                  }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <FieldLabel htmlFor={`reviews.${index}.description`}>Review Description</FieldLabel>
+              <TextArea
+                {...register(`reviews.${index}.description`)}
+                placeholder="Enter review description..."
+                rows={3}
+              />
+            </div>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append({
+            reviewer_name: "",
+            reviewer_location: "",
+            rating: null,
+            description: "",
+          })}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Review
         </Button>
       </Stack>
     </div>

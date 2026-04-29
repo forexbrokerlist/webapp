@@ -346,7 +346,26 @@ enum SkillLevel {
   Intermediate
   Advanced
 }
+model Review {
+  id        String   @id @default(cuid())
+  reviewer_name     String?  @db.VarChar(100)
+  reviewer_location     String?  @db.VarChar(100)
 
+ 
+ 
+  rating            Int?
+  description       String?  @db.Text
+   createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now()) @updatedAt
+
+  // Relations
+  broker   Brokers @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+  brokerId Int
+  
+  @@index([brokerId])
+  @@index([rating])
+  @@map("broker_reviews")
+}
 model Brokers {
   id                                 Int        @id @default(autoincrement())
   average_trading_cost_bitcoin       String?    @db.VarChar(82)
@@ -444,6 +463,12 @@ model Brokers {
   publishedAt    DateTime?
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @default(now()) @updatedAt
+
+  // Review Ratings 
+  overall_review_rating Float?
+  total_reviews String?   @db.VarChar(20)
+  reviews    Review[]
+
 
   // Relations
   tags          Tag[]
