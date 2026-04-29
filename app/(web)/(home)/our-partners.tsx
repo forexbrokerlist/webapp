@@ -6,10 +6,10 @@ import { Button } from '~/components/common/button';
 import Link from 'next/link';
 import { Favicon } from '~/components/web/ui/favicon';
 
-export default function OurPartners({ 
-    liquidityPartners, 
-    PSPCategory, 
-    PSPPartners, 
+export default function OurPartners({
+    liquidityPartners,
+    PSPCategory,
+    PSPPartners,
     TradingPalformPartners,
     liquidityTitle,
     liquidityDescription,
@@ -17,10 +17,10 @@ export default function OurPartners({
     pspDescription,
     tradingPlatformTitle,
     tradingPlatformDescription
-}: { 
-    liquidityPartners: any[], 
+}: {
+    liquidityPartners: any[],
     PSPCategory?: any,
-    PSPPartners: any[], 
+    PSPPartners: any[],
     TradingPalformPartners: any[],
     liquidityTitle: string,
     liquidityDescription: string,
@@ -66,14 +66,16 @@ export default function OurPartners({
                                     </p>
                                 </div>
                                 <div className='max-mobile:pt-4'>
-                                    <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                        <Link href="/categories/liquidity-providers">
+                                    <Link href="/categories/liquidity-providers">
+                                        <Button variant='primary' size='md' className='flex items-center gap-2'>
+
                                             View More
                                             <div>
                                                 <MoveRight />
                                             </div>
-                                        </Link>
-                                    </Button>
+                                        </Button>
+                                    </Link>
+
                                 </div>
                             </div>
                             <motion.div
@@ -121,9 +123,9 @@ export default function OurPartners({
                                                         </p>
                                                     </div>
                                                     <div className='pt-3 mt-auto'>
-                                                       <Link href={`/liquidity-providers/${partner.slug}`}>
-                                                        <Button size="md" variant="primary" className="px-5 gap-2.5 py-1.5 w-full justify-center text-xs group">
-                                                           
+                                                        <Link href={`/liquidity-providers/${partner.slug}`}>
+                                                            <Button size="md" variant="primary" className="px-5 gap-2.5 py-1.5 w-full justify-center text-xs group">
+
                                                                 Learn More
                                                                 <div className="w-4 h-4 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -131,9 +133,9 @@ export default function OurPartners({
                                                                         <path d="M1.48633 5.0957H8.63368" stroke="#1A1A1A" strokeWidth="0.637019" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
                                                                     </svg>
                                                                 </div>
-                                                        </Button>
-                                                            </Link>
- 
+                                                            </Button>
+                                                        </Link>
+
                                                     </div>
                                                 </div>
                                             </motion.div>
@@ -165,14 +167,16 @@ export default function OurPartners({
                                     </p>
                                 </div>
                                 <div>
-                                    <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                        <Link href="/categories/forex-trading-platform">
+                                    <Link href="/categories/forex-trading-platform">
+                                        <Button variant='primary' size='md' className='flex items-center gap-2'>
+
                                             View More
                                             <div>
                                                 <MoveRight />
                                             </div>
-                                        </Link>
-                                    </Button>
+                                        </Button>
+                                    </Link>
+
                                 </div>
                             </div>
                             <motion.div
@@ -192,24 +196,24 @@ export default function OurPartners({
                                     {
                                         TradingPalformPartners.map((partner, index) => {
                                             return (
-                                                <motion.div
-                                                    key={partner.id}
-                                                    variants={{
-                                                        hidden: { opacity: 0, scale: 0.8 },
-                                                        visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 24 } }
-                                                    }}
-                                                    whileHover={{ y: -5, scale: 1.05 }}
-                                                    className="px-5 py-4 rounded-[12px] border border-[rgba(26,26,26,0.16)] bg-[rgba(255,255,255,0.1)] backdrop-blur-[87.7px] shadow-sm flex flex-col items-center justify-center"
-                                                >
-                                                    <Link href={`/forex-trading-platform/${partner.slug}`}>
-                                                    <div className='flex justify-center h-10 w-full'>
-                                                        <Favicon src={partner.logoUrl} title={partner.name} size={32} contained className="size-full object-contain" />
-                                                    </div>
-                                                    <p className='mt-3 text-sm max-laptop:mt-2 text-black700 text-center font-medium w-full'>
-                                                        {partner.name}
-                                                    </p>
-                                                    </Link>
-                                                </motion.div>
+                                                <Link href={`/forex-trading-platform/${partner.slug}`} className='block'>
+                                                    <motion.div
+                                                        key={partner.id}
+                                                        variants={{
+                                                            hidden: { opacity: 0, scale: 0.8 },
+                                                            visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 24 } }
+                                                        }}
+                                                        whileHover={{ y: -5, scale: 1.05 }}
+                                                        className="px-5 py-4 rounded-[12px] border border-[rgba(26,26,26,0.16)] bg-[rgba(255,255,255,0.1)] backdrop-blur-[87.7px] shadow-sm flex flex-col items-end justify-between min-h-[135px]"
+                                                    >
+                                                        <div className='flex justify-center h-10 w-full'>
+                                                            <Favicon src={partner.logoUrl} title={partner.name} size={32} contained className="size-full object-contain" />
+                                                        </div>
+                                                        <p className='mt-3 text-sm max-laptop:mt-2 text-black700 text-center font-medium w-full'>
+                                                            {partner.name}
+                                                        </p>
+                                                    </motion.div>
+                                                </Link>
                                             )
                                         })
                                     }
@@ -329,14 +333,16 @@ export default function OurPartners({
                             })()}
                         </motion.div>
                         <div className='flex justify-center pt-5 max-mobile:pb-4 pb-10 mt-auto'>
-                            <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                <Link href={`/categories/${PSPCategory?.slug || 'forex-psp-partners'}`}>
+                            <Link href={`/categories/${PSPCategory?.slug || 'forex-psp-partners'}`}>
+
+                                <Button variant='primary' size='md' className='flex items-center gap-2'>
                                     View More
                                     <div>
                                         <MoveRight />
                                     </div>
-                                </Link>
-                            </Button>
+                                </Button>
+                            </Link>
+
                         </div>
                     </motion.div>
                 </div>

@@ -86,14 +86,16 @@ export default function CategoriesCard({
                                 <p className='text-base text-black700 mb-5 font-medium max-mobile:text-sm'>
                                     {AlgoCategory?.description || 'A curated collection of the best retail Traders and Technically Skilled Traders'}
                                 </p>
+                               <Link href={`/categories/${AlgoCategory?.slug || 'algo-trading'}`}>
                                 <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                    <Link href={`/categories/${AlgoCategory?.slug || 'algo-trading'}`}>
+                                    
                                         View Item
                                         <div>
                                             <MoveRight className='w-4 h-4' />
                                         </div>
-                                    </Link>
                                 </Button>
+                                    </Link>
+
                             </div>
                             <div className='flex justify-center'>
                                 <div className='max-w-[270px] w-full relative flex items-center justify-center h-[270px] max-mobile:h-[220px] max-mobile:max-w-[220px]'>
@@ -203,14 +205,16 @@ export default function CategoriesCard({
                                 }
                             </div>
                             <div className='mt-auto flex items-center justify-center pt-4'>
-                                <Button variant='primary' size='md' className='flex items-center gap-2'>
                                     <Link href={`/categories/${bridgeCategory?.slug || 'bridge-and-plug-in-partners'}`}>
+                               
+                                <Button variant='primary' size='md' className='flex items-center gap-2'>
                                         View Item
                                         <div>
                                             <MoveRight className='w-4 h-4' />
                                         </div>
-                                    </Link>
                                 </Button>
+                                    </Link>
+
                             </div>
                         </div>
                         <div className='bg-white relative rounded-2xl border border-solid border-border-light500 p-[30px] max-mobile:p-6 pb-5 flex flex-col'>
@@ -224,14 +228,16 @@ export default function CategoriesCard({
                                 <img src={CrmIcon} alt="CrmIcon" className='block w-full max-w-[280px] h-auto' />
                             </div>
                             <div className='mt-auto flex items-center justify-center laptop:absolute laptop:bottom-8 laptop:left-1/2 laptop:-translate-x-1/2 w-full'>
-                                <Button variant='primary' size='md' className='flex items-center gap-2'>
                                     <Link href={`/categories/${crmCategory?.slug || 'forex-crm-providers'}`}>
+                               
+                                <Button variant='primary' size='md' className='flex items-center gap-2'>
                                         View Item
                                         <div>
                                             <MoveRight className='w-4 h-4' />
                                         </div>
-                                    </Link>
                                 </Button>
+                                    </Link>
+
                             </div>
                         </div>
                     </div>
@@ -311,14 +317,16 @@ export default function CategoriesCard({
                                     </p>
                                 </div>
                                 <div className='shrink-0'>
-                                    <Button variant='primary' size='md' className='flex items-center gap-2'>
                                         <Link href="/brokers">
+                                   
+                                    <Button variant='primary' size='md' className='flex items-center gap-2'>
                                             View Item
                                             <div>
                                                 <MoveRight className='w-4 h-4' />
                                             </div>
-                                        </Link>
                                     </Button>
+                                        </Link>
+
                                 </div>
                             </div>
                         </div>
@@ -354,14 +362,16 @@ export default function CategoriesCard({
                                 </div>
                             </div>
                             <div className='p-[30px] max-mobile:p-6 pt-4 flex justify-center'>
-                                <Button variant='primary' size='md' className='flex items-center gap-2 z-20'>
                                     <Link href={`/categories/${liquidityCategory?.slug || 'liquidity-providers'}`}>
+                                
+                                <Button variant='primary' size='md' className='flex items-center gap-2 z-20'>
                                         View Item
                                         <div>
                                             <MoveRight className='w-4 h-4' />
                                         </div>
-                                    </Link>
                                 </Button>
+                                    </Link>
+
                             </div>
                         </div>
                     </div>
@@ -409,14 +419,16 @@ export default function CategoriesCard({
                                 }
                             </div>
                             <div className='mt-auto flex items-center justify-center'>
-                                <Button variant='primary' size='md' className='flex items-center gap-2'>
                                     <Link href={`/categories/${trustedCategory?.slug || 'trusted-trading-platforms'}`}>
+
+                                <Button variant='primary' size='md' className='flex items-center gap-2'>
                                         View Item
                                         <div>
                                             <MoveRight className='w-4 h-4' />
                                         </div>
-                                    </Link>
                                 </Button>
+                                    </Link>
+
                             </div>
                         </div>
                         <div className='bg-white overflow-hidden flex rounded-2xl border border-solid border-border-light500 p-[30px] max-mobile:p-6 max-tab:col-span-2 max-mobile:col-span-1'>
@@ -428,14 +440,16 @@ export default function CategoriesCard({
                                     <p className='text-base text-black700 mb-5 font-medium max-mobile:text-sm'>
                                         {tradingCategory?.description || 'A curated collection of the best connect with trusted trading platform partners.'}
                                     </p>
-                                    <Button variant='primary' size='md' className='flex items-center gap-2'>
                                         <Link href={`/categories/${tradingCategory?.slug || 'forex-trading-platform'}`}>
+
+                                    <Button variant='primary' size='md' className='flex items-center gap-2'>
                                             View Item
                                             <div>
                                                 <MoveRight className='w-4 h-4' />
                                             </div>
-                                        </Link>
                                     </Button>
+                                        </Link>
+
                                 </div>
                                 <div className='max-tab:order-1 flex justify-center'>
                                     <img src={PlatformImage} alt="PlatformImage" className='block w-full max-w-[280px] h-auto object-contain' />
