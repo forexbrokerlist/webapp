@@ -146,6 +146,14 @@ export const brokerSchema = z.object({
   certificate_available: z.boolean().optional().nullable(),
   community_access: z.boolean().optional().nullable(),
   mentorship_available: z.boolean().optional().nullable(),
+  solution_type: z.string().optional(),
+  target_clients: z.array(z.string()).optional(),
+  asset_classes: z.array(z.string()).optional(),
+  latency: z.string().optional(),
+  white_label: z.boolean().optional().nullable(),
+  setup_time: z.string().optional(),
+  liquiditySources: z.array(z.string()).optional(),
+  best_suited_for: z.array(z.string()).optional(),
   courseModules: z
     .array(
       z.object({

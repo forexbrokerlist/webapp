@@ -172,6 +172,13 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       certificate_available: broker?.certificate_available ?? false,
       community_access: broker?.community_access ?? false,
       mentorship_available: broker?.mentorship_available ?? false,
+      solution_type: broker?.solution_type ?? "",
+      target_clients: broker?.target_clients ?? [],
+      asset_classes: broker?.asset_classes ?? [],
+      latency: broker?.latency ?? "",
+      white_label: broker?.white_label ?? false,
+      setup_time: broker?.setup_time ?? "",
+      liquiditySources: broker?.liquiditySources ?? [],
       courseModules: broker?.courseModules ?? [],
       reviews: broker?.reviews?.map(review => ({
         ...review,
@@ -790,6 +797,8 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
         <FeaturesField control={form.control} register={form.register} />
         <AccountTypesField control={form.control} register={form.register} />
         <LanguagesSupportedField control={form.control} register={form.register} />
+        <AssetClassesField control={form.control} register={form.register} />
+        <LiquiditySourcesField control={form.control} register={form.register} />
         <FAQsField control={form.control} register={form.register} />
         <CourseModulesField control={form.control} register={form.register} />
 
@@ -928,6 +937,67 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
+        <div className="col-span-full pt-4 border-t mt-4">
+          <H3>Bridge Provider Details</H3>
+          <Hint>Specific fields for Bridge Providers</Hint>
+        </div>
+
+        <Controller
+          control={form.control}
+          name="solution_type"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Solution Type</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. FIX API, Bridge" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="latency"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Latency</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. < 1ms" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="setup_time"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Setup Time</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. 24 hours" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="white_label"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>White Label Support</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <TargetClientsField control={form.control} register={form.register} />
+        <AssetClassesField control={form.control} register={form.register} />
+
         <OutcomesField control={form.control} register={form.register} />
 
         <div className="col-span-full grid grid-cols-1 @lg:grid-cols-2 gap-4">
@@ -1816,6 +1886,137 @@ function ReviewsField({ control, register }: { control: any, register: any }) {
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Review
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+const TARGET_CLIENT_OPTIONS = [
+  "Retail Brokers",
+  "Institutional Brokers",
+  "Prime Brokers",
+  "Hedge Funds",
+  "Family Offices",
+  "Banks",
+  "White Labels",
+  "Prop Trading Firms",
+] as const
+
+function TargetClientsField({ control }: { control: any, register?: any }) {
+  return (
+    <Controller
+      control={control}
+      name="target_clients"
+      render={({ field }) => (
+        <Field className="col-span-full">
+          <FieldLabel>Target Clients</FieldLabel>
+          <div className="flex flex-wrap gap-4 mt-2">
+            {TARGET_CLIENT_OPTIONS.map((option) => (
+              <label key={option} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                  checked={field.value?.includes(option)}
+                  onChange={(e) => {
+                    const currentValues: string[] = field.value || []
+                    if (e.target.checked) {
+                      field.onChange([...currentValues, option])
+                    } else {
+                      field.onChange(currentValues.filter((v: string) => v !== option))
+                    }
+                  }}
+                />
+                <span className="text-sm">{option}</span>
+              </label>
+            ))}
+          </div>
+        </Field>
+      )}
+    />
+  )
+}
+
+function AssetClassesField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "asset_classes",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Asset Classes</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`asset_classes.${index}`)}
+              placeholder="Enter asset class"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Asset Class
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function LiquiditySourcesField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "liquiditySources",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Liquidity Sources</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`liquiditySources.${index}`)}
+              placeholder="Enter liquidity source"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Liquidity Source
         </Button>
       </Stack>
     </div>

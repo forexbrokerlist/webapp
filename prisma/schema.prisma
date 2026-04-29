@@ -314,6 +314,10 @@ enum BusinessSize {
   Startup
   MidSize
   Enterprise
+  RetailBrokers 
+  WhiteLabelOps
+  TechVendor 
+  B2B 
 }
 enum SupportChannel {
   Email
@@ -328,6 +332,8 @@ enum PricingModel {
   Freemium
   Subscription
   Free
+  License
+  VolumeBased
 }
 enum LearningFormat{ 
   Video 
@@ -455,6 +461,17 @@ model Brokers {
   certificate_available             Boolean?
   community_access                  Boolean?
   mentorship_available              Boolean?
+
+
+  // Bridge Provider Fields
+  solution_type                     String? 
+  target_clients                    String[]  
+  asset_classes                     String[]
+  latency                           String?
+  white_label                         Boolean?    
+  setup_time                        String?
+  liquiditySources                  String[]
+  best_suited_for                   String[]
   // Admin & Submission fields
   submitterName  String?
   submitterEmail String?
