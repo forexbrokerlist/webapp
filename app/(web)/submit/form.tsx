@@ -48,7 +48,7 @@ export const SubmitForm = ({
   const [showCancelled, setShowCancelled] = useState(props.isCancelled)
   const [step, setStep] = useState<1 | 2>(1)
   const [submittedBroker, setSubmittedBroker] = useState<{ id: number; slug: string; name: string } | null>(null)
-  
+
   // Persist plan across redirects (Cregis might drop query parameters on cancel)
   const [activePlan, setActivePlan] = useState(props.plan)
 
@@ -61,7 +61,7 @@ export const SubmitForm = ({
       if (stored) {
         try {
           setActivePlan(JSON.parse(stored))
-        } catch (e) {}
+        } catch (e) { }
       }
     }
   }, [props.plan, props.isCancelled])
@@ -137,14 +137,14 @@ export const SubmitForm = ({
 
         // Fallback: If no $200 plan or selected plan found, move to Step 2 if plans are available
         if (plans && plans.length > 0) {
-            setSubmittedBroker({ 
-              id: data.id, 
-              slug: data.slug || "", 
-              name: data.broker_name || "Broker" 
-            })
-            setStep(2)
-            window.scrollTo({ top: 0, behavior: "smooth" })
-            return
+          setSubmittedBroker({
+            id: data.id,
+            slug: data.slug || "",
+            name: data.broker_name || "Broker"
+          })
+          setStep(2)
+          window.scrollTo({ top: 0, behavior: "smooth" })
+          return
         }
 
         toast.success(t("submitted_success", { name: data.broker_name || "Broker" }))
@@ -168,8 +168,8 @@ export const SubmitForm = ({
             If you experienced an issue, you can try again or contact support.
           </p>
         </div>
-        <Button 
-          size="lg" 
+        <Button
+          size="lg"
           className="mt-4"
           onClick={() => {
             setShowCancelled(false)
@@ -186,525 +186,534 @@ export const SubmitForm = ({
     return (
       <div className="col-span-full flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500 py-8">
         <div className="flex flex-col gap-3 text-center">
-            <h2 className="text-3xl font-bold tracking-tight">Boost Your Visibility</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Your broker <span className="text-foreground font-semibold">"{submittedBroker.name}"</span> has been successfully submitted! 
-                Choose a plan below to finalize your listing and reach more traders.
-            </p>
+          <h2 className="text-3xl font-bold tracking-tight">Boost Your Visibility</h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Your broker <span className="text-foreground font-semibold">"{submittedBroker.name}"</span> has been successfully submitted!
+            Choose a plan below to finalize your listing and reach more traders.
+          </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto w-full">
-            {plans?.map((plan) => (
-                <PlanCard 
-                    key={plan.id}
-                    plan={plan}
-                    brokerId={String(submittedBroker.id)}
-                    className="flex-1"
-                    onClick={(selectedPlan) => {
-                        if (selectedPlan.price === 0) {
-                            toast.success(t("submitted_success", { name: submittedBroker.name }))
-                            router.push(`/submit/${submittedBroker.slug}/success`)
-                            return
-                        }
-                        
-                        checkoutAction.execute({
-                            lineItems: [{ price: selectedPlan.id, quantity: 1 }],
-                            successUrl: `/submit/${submittedBroker.slug}/success`,
-                            cancelUrl: `/submit?plan=${selectedPlan.slug}`,
-                            mode: "payment",
-                            metadata: { planId: selectedPlan.id, brokerId: String(submittedBroker.id), type: "subscription" }
-                        })
-                    }}
-                />
-            ))}
+          {plans?.map((plan) => (
+            <PlanCard
+              key={plan.id}
+              plan={plan}
+              brokerId={String(submittedBroker.id)}
+              className="flex-1"
+              onClick={(selectedPlan) => {
+                if (selectedPlan.price === 0) {
+                  toast.success(t("submitted_success", { name: submittedBroker.name }))
+                  router.push(`/submit/${submittedBroker.slug}/success`)
+                  return
+                }
+
+                checkoutAction.execute({
+                  lineItems: [{ price: selectedPlan.id, quantity: 1 }],
+                  successUrl: `/submit/${submittedBroker.slug}/success`,
+                  cancelUrl: `/submit?plan=${selectedPlan.slug}`,
+                  mode: "payment",
+                  metadata: { planId: selectedPlan.id, brokerId: String(submittedBroker.id), type: "subscription" }
+                })
+              }}
+            />
+          ))}
         </div>
-        
+
         <div className="flex justify-center mt-8 pt-6 border-t border-border/10">
-            <Button variant="ghost" className="text-muted-foreground hover:text-foreground" onClick={() => router.push(`/submit/${submittedBroker.slug}/success`)}>
-                Skip for now, keep as standard listing
-            </Button>
+          <Button variant="ghost" className="text-muted-foreground hover:text-foreground" onClick={() => router.push(`/submit/${submittedBroker.slug}/success`)}>
+            Skip for now, keep as standard listing
+          </Button>
         </div>
       </div>
     )
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={handleSubmitWithAction}
-        className={cx("grid w-full gap-5 @md:grid-cols-2", className)}
-        noValidate
-        {...props}
-      >
-        <h3 className="col-span-full font-semibold text-xl -mb-2">Basic Information</h3>
-        <Controller
-          control={form.control}
-          name="broker_name"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel data-required htmlFor={field.name}>
-                Name:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="Ex. Rejoice Forex"
-                data-1p-ignore
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+    <div className="bg-white rounded-xl p-6 max-mobile:p-3 max-mobile:rounded-lg">
+      <Form {...form}>
+        <form
+          onSubmit={handleSubmitWithAction}
+          className={cx("", className)}
+          noValidate
+          {...props}
+        >
+          <h3 className="text-xl mb-5 font-semibold text-black100">
+            Basic Information
+          </h3>
+          <div className="grid mb-5 bg-[#F0F1EC] p-5 rounded-2xl max-mobile:rounded-lg max-mobile:p-3 border border-solid border-[#E7F4CC] grid-cols-1 md:grid-cols-2 gap-5">
+            <Controller
+              control={form.control}
+              name="broker_name"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel data-required htmlFor={field.name}>
+                    Name:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="Ex. Rejoice Forex"
+                    data-1p-ignore
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="broker_website"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Website URL:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                type="url"
-                size="lg"
-                placeholder="https://example.com"
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="broker_website"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Website URL:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    type="url"
+                    size="lg"
+                    placeholder="https://example.com"
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="headquarters"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Headquarters:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="Cyprus, UK, etc."
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="headquarters"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Headquarters:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="Cyprus, UK, etc."
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="year_established"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Year Established:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                type="number"
-                size="lg"
-                placeholder="2010"
-                {...field}
-                value={(field.value as string | number) || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="year_established"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Year Established:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    type="number"
+                    size="lg"
+                    placeholder="2010"
+                    {...field}
+                    value={(field.value as string | number) || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="regulators"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="col-span-full">
-              <FieldLabel htmlFor={field.name}>
-                Regulators:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="FCA, ASIC, CySEC..."
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="regulators"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="col-span-full">
+                  <FieldLabel htmlFor={field.name}>
+                    Regulators:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="FCA, ASIC, CySEC..."
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="description"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="col-span-full">
-              <FieldLabel htmlFor={field.name}>Description:</FieldLabel>
-              <TextArea id={field.name} size="lg" placeholder="Broker description" {...field} value={field.value || ""} />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="description"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="col-span-full">
+                  <FieldLabel htmlFor={field.name}>Description:</FieldLabel>
+                  <TextArea id={field.name} size="lg" placeholder="Broker description" {...field} value={field.value || ""} />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+          </div>
 
-        <h3 className="col-span-full font-semibold text-xl mt-4 -mb-2">Classification</h3>
+          <h3 className="text-xl mb-5 font-semibold text-black100">Classification</h3>
+          <div className="grid mb-5 bg-[#F0F1EC] p-5 rounded-2xl max-mobile:rounded-lg max-mobile:p-3 border border-solid border-[#E7F4CC] grid-cols-1 md:grid-cols-2 gap-5">
+            <Controller
+              control={form.control}
+              name="categoryIds"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>Categories:</FieldLabel>
+                  <RelationSelector
+                    relations={categories}
+                    ids={field.value ?? []}
+                    setIds={field.onChange}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="categoryIds"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Categories:</FieldLabel>
-              <RelationSelector
-                relations={categories}
-                ids={field.value ?? []}
-                setIds={field.onChange}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="subcategoryIds"
+              render={({ field, fieldState }) => {
+                const selectedCategoryIds = form.watch("categoryIds") ?? []
+                const filteredSubcategories = subcategories.filter(s =>
+                  selectedCategoryIds.length === 0 || selectedCategoryIds.includes(s.categoryId)
+                )
 
-        <Controller
-          control={form.control}
-          name="subcategoryIds"
-          render={({ field, fieldState }) => {
-            const selectedCategoryIds = form.watch("categoryIds") ?? []
-            const filteredSubcategories = subcategories.filter(s =>
-              selectedCategoryIds.length === 0 || selectedCategoryIds.includes(s.categoryId)
-            )
+                return (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>Subcategories:</FieldLabel>
+                    <RelationSelector
+                      relations={filteredSubcategories}
+                      ids={field.value ?? []}
+                      setIds={field.onChange}
+                    />
+                    <Hint>Only subcategories of selected categories are shown.</Hint>
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )
+              }}
+            />
 
-            return (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Subcategories:</FieldLabel>
-                <RelationSelector
-                  relations={filteredSubcategories}
-                  ids={field.value ?? []}
-                  setIds={field.onChange}
-                />
-                <Hint>Only subcategories of selected categories are shown.</Hint>
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )
-          }}
-        />
+            <Controller
+              control={form.control}
+              name="tagIds"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="col-span-full">
+                  <FieldLabel htmlFor={field.name}>Tags:</FieldLabel>
+                  <RelationSelector
+                    relations={tags}
+                    ids={field.value ?? []}
+                    setIds={field.onChange}
+                  />
+                  <Hint>Select any relevant tags for this broker.</Hint>
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+          </div>
 
-        <Controller
-          control={form.control}
-          name="tagIds"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="col-span-full">
-              <FieldLabel htmlFor={field.name}>Tags:</FieldLabel>
-              <RelationSelector
-                relations={tags}
-                ids={field.value ?? []}
-                setIds={field.onChange}
-              />
-              <Hint>Select any relevant tags for this broker.</Hint>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+          <h3 className="text-xl mb-5 font-semibold text-black100">Trading Conditions</h3>
+          <div className="grid mb-5 bg-[#F0F1EC] p-5 rounded-2xl max-mobile:rounded-lg max-mobile:p-3 border border-solid border-[#E7F4CC] grid-cols-1 md:grid-cols-2 gap-5">
+            <Controller
+              control={form.control}
+              name="trading_platforms"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Trading Platforms:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="MT4, MT5, cTrader..."
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <h3 className="col-span-full font-semibold text-xl mt-4 -mb-2">Trading Conditions</h3>
+            <Controller
+              control={form.control}
+              name="execution_types"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Execution Types:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="STP, ECN, Market Maker"
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="trading_platforms"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Trading Platforms:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="MT4, MT5, cTrader..."
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="profit_share"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Profit Share:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="80% to 90%"
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="execution_types"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Execution Types:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="STP, ECN, Market Maker"
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="retail_loss_rate"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Retail Loss Rate:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="76.2%"
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+          </div>
 
-        <Controller
-          control={form.control}
-          name="profit_share"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Profit Share:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="80% to 90%"
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+          <h3 className="text-xl mb-5 font-semibold text-black100">Accounts & Funding</h3>
+          <div className="grid mb-5 bg-[#F0F1EC] p-5 rounded-2xl max-mobile:rounded-lg max-mobile:p-3 border border-solid border-[#E7F4CC] grid-cols-1 md:grid-cols-2 gap-5">
+            <Controller
+              control={form.control}
+              name="minimum_deposit"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Minimum Deposit:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="$100"
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="retail_loss_rate"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Retail Loss Rate:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="76.2%"
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="funding_methods"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Funding Methods:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="Bank Wire, Credit Card, PayPal"
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <h3 className="col-span-full font-semibold text-xl mt-4 -mb-2">Accounts & Funding</h3>
+            <Controller
+              control={form.control}
+              name="deposit_options"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Deposit Options:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="Skrill, Neteller, Crypto"
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="minimum_deposit"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Minimum Deposit:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="$100"
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="withdrawal_options"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Withdrawal Options:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="Skrill, Neteller, Crypto"
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="funding_methods"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Funding Methods:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="Bank Wire, Credit Card, PayPal"
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="deposit_fees"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Deposit Fees:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="0% / None"
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="deposit_options"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Deposit Options:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="Skrill, Neteller, Crypto"
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="withdrawal_fee"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Withdrawal Fee:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="$5 for Wire, 0 for eWallets"
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="withdrawal_options"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Withdrawal Options:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="Skrill, Neteller, Crypto"
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="inactivity_fee"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Inactivity Fee:
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    size="lg"
+                    placeholder="$10 per month after 1 year"
+                    {...field}
+                    value={field.value || ""}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+          </div>
+          <h3 className="text-xl mb-5 font-semibold text-black100">Pros & Cons</h3>
+          <div className="grid mb-5 bg-[#F0F1EC] p-5 rounded-2xl max-mobile:rounded-lg max-mobile:p-3 border border-solid border-[#E7F4CC] grid-cols-1 md:grid-cols-2 gap-5">
+            <Controller
+              control={form.control}
+              name="pros"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="col-span-full">
+                  <FieldLabel htmlFor={field.name}>Pros:</FieldLabel>
+                  <TextArea id={field.name} size="lg" placeholder="List of pros separated by semicolon: Pro 1; Pro 2" {...field} value={field.value || ""} />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="deposit_fees"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Deposit Fees:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="0% / None"
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="cons"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="col-span-full">
+                  <FieldLabel htmlFor={field.name}>Cons:</FieldLabel>
+                  <TextArea id={field.name} size="lg" placeholder="List of cons separated by semicolon: Con 1; Con 2" {...field} value={field.value || ""} />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="withdrawal_fee"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Withdrawal Fee:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="$5 for Wire, 0 for eWallets"
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="beginner_friendly"
+              render={({ field, fieldState }) => (
+                <Field
+                  orientation="horizontal"
+                  className="col-span-full items-center gap-2 mt-2"
+                  data-invalid={fieldState.invalid}
+                >
+                  <Checkbox id={field.name} checked={field.value} onCheckedChange={field.onChange} />
+                  <FieldLabel htmlFor={field.name} className="font-normal text-sm">
+                    This broker is beginner-friendly
+                  </FieldLabel>
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
 
-        <Controller
-          control={form.control}
-          name="inactivity_fee"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Inactivity Fee:
-              </FieldLabel>
-              <Input
-                id={field.name}
-                size="lg"
-                placeholder="$10 per month after 1 year"
-                {...field}
-                value={field.value || ""}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            <Controller
+              control={form.control}
+              name="newsletterOptIn"
+              render={({ field, fieldState }) => (
+                <Field
+                  orientation="horizontal"
+                  className="col-span-full items-center gap-2 mt-4"
+                  data-invalid={fieldState.invalid}
+                >
+                  <Checkbox id={field.name} checked={field.value} onCheckedChange={field.onChange} />
+                  <FieldLabel htmlFor={field.name} className="font-normal">
+                    {t("newsletter_label")}
+                  </FieldLabel>
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+          </div>
 
-        <h3 className="col-span-full font-semibold text-xl mt-4 -mb-2">Pros & Cons</h3>
+          {serverError && <Hint className="col-span-full">{serverError}</Hint>}
 
-        <Controller
-          control={form.control}
-          name="pros"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="col-span-full">
-              <FieldLabel htmlFor={field.name}>Pros:</FieldLabel>
-              <TextArea id={field.name} size="lg" placeholder="List of pros separated by semicolon: Pro 1; Pro 2" {...field} value={field.value || ""} />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="cons"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="col-span-full">
-              <FieldLabel htmlFor={field.name}>Cons:</FieldLabel>
-              <TextArea id={field.name} size="lg" placeholder="List of cons separated by semicolon: Con 1; Con 2" {...field} value={field.value || ""} />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="beginner_friendly"
-          render={({ field, fieldState }) => (
-            <Field
-              orientation="horizontal"
-              className="col-span-full items-center gap-2 mt-2"
-              data-invalid={fieldState.invalid}
-            >
-              <Checkbox id={field.name} checked={field.value} onCheckedChange={field.onChange} />
-              <FieldLabel htmlFor={field.name} className="font-normal text-sm">
-                This broker is beginner-friendly
-              </FieldLabel>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="newsletterOptIn"
-          render={({ field, fieldState }) => (
-            <Field
-              orientation="horizontal"
-              className="col-span-full items-center gap-2 mt-4"
-              data-invalid={fieldState.invalid}
-            >
-              <Checkbox id={field.name} checked={field.value} onCheckedChange={field.onChange} />
-              <FieldLabel htmlFor={field.name} className="font-normal">
-                {t("newsletter_label")}
-              </FieldLabel>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        {serverError && <Hint className="col-span-full">{serverError}</Hint>}
-
-        <div className="col-span-full">
-          <Button type="submit" variant="primary" isPending={action.isPending || checkoutAction.isPending} className="flex min-w-32">
-            {t("submit_button")}
-          </Button>
-        </div>
-      </form>
-    </Form>
+          <div className="col-span-full">
+            <Button type="submit" variant="secondary" isPending={action.isPending || checkoutAction.isPending} className="flex min-w-32">
+              {t("submit_button")}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   )
 }

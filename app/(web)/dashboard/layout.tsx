@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server"
 import type { PropsWithChildren } from "react"
 import { cache } from "react"
 import { DashboardTabs } from "~/app/(web)/dashboard/tabs"
+import TextBanner from "~/components/textBanner"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
@@ -37,13 +38,12 @@ export default async function ({ children }: PropsWithChildren) {
 
   return (
     <>
-      <div className="pt-[140px] pb-100 max-mobile:pb-16 max-mobile:pt-[120px]">
+      <TextBanner
+        title={metadata.title}
+        description={metadata.description}
+      />
+      <div className="pt-10 pb-100 max-mobile:pb-16 ">
         <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
-          <Intro className="pb-10">
-            <IntroTitle>{metadata.title}</IntroTitle>
-            <IntroDescription>{metadata.description}</IntroDescription>
-          </Intro>
-
           <div className="flex flex-col gap-4">
             <DashboardTabs />
             {children}
