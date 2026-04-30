@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/common/dialog'
-import { searchBrokersAction } from '~/app/(web)/broker/[slug]/actions';
+import { searchBrokersAction } from '~/app/(web)/forex-broker/[slug]/actions';
 import { X } from 'lucide-react';
 import Link from 'next/link';
 
