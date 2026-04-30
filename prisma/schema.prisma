@@ -472,6 +472,12 @@ model Brokers {
   setup_time                        String?
   liquiditySources                  String[]
   best_suited_for                   String[]
+
+
+  // Liquidity Provider 
+  peak_capacity                     String? 
+  global_hubs                       String[]
+  no_last_look                      Boolean?
   // Admin & Submission fields
   submitterName  String?
   submitterEmail String?

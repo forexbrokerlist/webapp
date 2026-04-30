@@ -265,6 +265,7 @@ export const findBrokerBySlug = async (slug: string) => {
     where: { status: ToolStatus.Published, slug },
     include: {
       faqs: true,
+      type: true,
       categories: true,
       courseModules: {
         orderBy: { order: "asc" },
@@ -437,6 +438,45 @@ export const findRandomBridgeProviders = async (
     skip,
   });
 };
+export const findRandomLiquidityProviders = async (
+  take: number = 3,
+  excludeSlug?: string,
+) => {
+  "use cache";
+
+  cacheTag("brokers");
+  cacheLife("minutes");
+
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "liquidity" },
+    ...(excludeSlug && { slug: { not: excludeSlug } }),
+  };
+
+  const itemCount = await db.brokers.count({ where: whereClause });
+
+  if (itemCount === 0) return [];
+
+  const skip = Math.max(0, Math.floor(Math.random() * (itemCount - take + 1)));
+
+  return db.brokers.findMany({
+    where: whereClause,
+    select: {
+      broker_name: true,
+      logoUrl: true,
+      screenshotUrl: true,
+      slug: true,
+      categories: {
+        select: {
+          slug: true,
+        },
+        take: 1,
+      },
+    },
+    take,
+    skip,
+  });
+};
 
 export const findBrokersForComparison = async (take: number = 20) => {
   // "use cache"
@@ -475,17 +515,17 @@ export const findBrokersForComparison = async (take: number = 20) => {
     stats: [
       {
         label: "Min Deposit",
-        value: broker.minimum_deposit || "N/A",
+        value: broker.minimum_deposit || "-",
         type: "text",
       },
       {
         label: "Raw Spread",
-        value: broker.minimum_raw_spreads || "N/A",
+        value: broker.minimum_raw_spreads || "-",
         type: "text",
       },
       {
         label: "Max Leverage",
-        value: broker.maxLeverage || "N/A",
+        value: broker.maxLeverage || "-",
         type: "text",
       },
       {
@@ -515,7 +555,7 @@ export const findBrokersForComparison = async (take: number = 20) => {
               if (platformList.length <= 2) return platformList.join(", ");
               return `${platformList.slice(0, 2).join(", ")}, +${platformList.length - 2} others`;
             })()
-          : "N/A",
+          : "-",
         type: "text",
       },
       {
@@ -552,7 +592,10 @@ export const findCrmProvidersForComparison = async (take: number = 20) => {
       trading_platforms: true,
       features: true,
       demoAccount: true,
+      api_access: true,
+      deployment_type: true,
       starting_price: true,
+      bestFor: true,
       overall_rating: true,
     },
     take,
@@ -578,11 +621,41 @@ export const findCrmProvidersForComparison = async (take: number = 20) => {
         type: "text",
       },
       {
-        label: "IB Module",
+        label: "IB/Affiliate Module",
         value: broker.features?.some((f) => f.toLowerCase().includes("ib"))
           ? "Yes"
           : "No",
         type: broker.features?.some((f) => f.toLowerCase().includes("ib"))
+          ? "badge-dark"
+          : "badge-danger",
+      },
+         {
+        label: "KYC/AML automation",
+        value: broker.features?.some((f) => {
+          const lowerF = f.toLowerCase();
+          return lowerF.includes("kyc") || lowerF.includes("aml");
+        })
+          ? "Yes"
+          : "No",
+        type: broker.features?.some((f) => {
+          const lowerF = f.toLowerCase();
+          return lowerF.includes("kyc") || lowerF.includes("aml");
+        })
+          ? "badge-dark"
+          : "badge-danger",
+      },
+         {
+        label: "Client Portal",
+        value: broker.features?.some((f) => {
+          const lowerF = f.toLowerCase();
+          return lowerF.includes("client portal");
+        })
+          ? "Yes"
+          : "No",
+        type: broker.features?.some((f) => {
+          const lowerF = f.toLowerCase();
+          return lowerF.includes("client portal");
+        })
           ? "badge-dark"
           : "badge-danger",
       },
@@ -592,12 +665,331 @@ export const findCrmProvidersForComparison = async (take: number = 20) => {
         type: broker.demoAccount ? "badge-dark" : "badge-danger",
       },
       {
-        label: "Starting price",
-        value: broker.starting_price || "N/A",
+        label: "API access",
+        value: broker.api_access ? "Yes" : "No",
+        type: broker.api_access ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "Deployment Type",
+        value: broker.deployment_type || "-",
         type: "text",
       },
       {
+        label: "Starting price",
+        value: broker.starting_price || "-",
+        type: "text",
+      },
+      {
+        label: "Best For",
+        value: broker.bestFor?.join(", ") || "-",
+        type: "text",
+      },
+      
+      {
         label: "Overall rating",
+        value: broker.overall_rating || "0",
+        type: "star",
+      },
+    ],
+  }));
+};
+
+export const findForexEducationProvidersForComparison = async (take: number = 20) => {
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "educationplatforms" },
+  };
+
+  const rawBrokers = await db.brokers.findMany({
+    where: whereClause,
+    select: {
+      id: true,
+      broker_name: true,
+      logoUrl: true,
+      skill_level: true,
+      learning_format: true,
+      free_trial_available: true,
+      certificate_available: true,
+      community_access: true,
+      mentorship_available: true,
+      trading_platforms: true,
+      pricingModel: true,
+      languages_supported: true,
+      headquarters: true,
+      overall_rating: true,
+    },
+    take,
+  });
+
+  return rawBrokers.map((broker) => ({
+    id: broker.id,
+    name: broker.broker_name || "Unknown Provider",
+    logoUrl: broker.logoUrl,
+    stats: [
+      {
+        label: "Skill level",
+        value: (() => {
+          const levels = broker.skill_level || [];
+          if (levels.length === 0) return "-";
+          const hasBeginner = levels.includes("Beginner");
+          const hasIntermediate = levels.includes("Intermediate");
+          const hasAdvanced = levels.includes("Advanced");
+
+          if (hasBeginner && hasAdvanced) return "Beginner -> Advanced";
+          if (hasBeginner && hasIntermediate) return "Beginner -> Intermediate";
+          if (hasIntermediate && hasAdvanced) return "Intermediate -> Advanced";
+          return levels[0];
+        })(),
+        type: "text",
+      },
+      {
+        label: "Learning format",
+        value: (broker.learning_format || []).join(" + ") || "-",
+        type: "text",
+      },
+      {
+        label: "Free trial",
+        value: broker.free_trial_available ? "Yes" : "No",
+        type: broker.free_trial_available ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "Certificate on completion",
+        value: broker.certificate_available ? "Yes" : "No",
+        type: broker.certificate_available ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "Community access",
+        value: broker.community_access ? "Yes" : "No",
+        type: broker.community_access ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "1-on-1 mentorship",
+        value: broker.mentorship_available ? "Available" : "No",
+        type: broker.mentorship_available ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "MT4 / MT5 training",
+        value: broker.trading_platforms
+          ? broker.trading_platforms.toLowerCase().includes("mt4") ||
+            broker.trading_platforms.toLowerCase().includes("mt5")
+            ? "Yes"
+            : "No"
+          : "No",
+        type:
+          broker.trading_platforms?.toLowerCase().includes("mt4") ||
+          broker.trading_platforms?.toLowerCase().includes("mt5")
+            ? "badge-dark"
+            : "badge-danger",
+      },
+      {
+        label: "Pricing model",
+        value: broker.pricingModel || "-",
+        type: "text",
+      },
+      {
+        label: "Language",
+        value: (broker.languages_supported || []).join(", ") || "English",
+        type: "text",
+      },
+      {
+        label: "HQ / Region",
+        value: broker.headquarters || "-",
+        type: "text",
+      },
+      {
+        label: "Score",
+        value: broker.overall_rating || "0",
+        type: "star",
+      },
+    ],
+  }));
+};
+
+
+export const findBridgeProvidersForComparison = async (take: number = 20) => {
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "forexbridge" },
+  };
+
+  const rawBrokers = await db.brokers.findMany({
+    where: whereClause,
+    select: {
+      id: true,
+      broker_name: true,
+      logoUrl: true,
+      solution_type: true,
+      trading_platforms: true,
+      latency: true,
+      target_clients: true,
+      white_label: true,
+      api_access: true,
+      demoAccount: true,
+      pricingModel: true,
+      setup_time: true,
+      overall_rating: true,
+    },
+    take,
+  });
+
+  return rawBrokers.map((broker) => ({
+    id: broker.id,
+    name: broker.broker_name || "Unknown Provider",
+    logoUrl: broker.logoUrl,
+    stats: [
+      {
+        label: "Solution type",
+        value: broker.solution_type || "-",
+        type: "text",
+      },
+      {
+        label: "Compatible platforms",
+        value: broker.trading_platforms || "-",
+        type: "text",
+      },
+      {
+        label: "Latency",
+        value: broker.latency || "-",
+        type: "text",
+      },
+      {
+        label: "Target clients",
+        value: (broker.target_clients || []).join(", ") || "-",
+        type: "text",
+      },
+      {
+        label: "White label",
+        value: broker.white_label ? "Yes" : "No",
+        type: broker.white_label ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "API access",
+        value: broker.api_access ? "Yes" : "No",
+        type: broker.api_access ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "Demo available",
+        value: broker.demoAccount ? "Yes" : "No",
+        type: broker.demoAccount ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "Pricing model",
+        value: broker.pricingModel || "-",
+        type: "text",
+      },
+      {
+        label: "Setup time",
+        value: broker.setup_time || "-",
+        type: "text",
+      },
+      {
+        label: "Score",
+        value: broker.overall_rating || "0",
+        type: "star",
+      },
+    ],
+  }));
+};
+
+export const findLiquidityProvidersForComparison = async (take: number = 20) => {
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "liquidity" },
+  };
+
+  const rawBrokers = await db.brokers.findMany({
+    where: whereClause,
+    select: {
+      id: true,
+      broker_name: true,
+      logoUrl: true,
+      solution_type: true,
+      latency: true,
+      asset_classes: true,
+      no_last_look: true,
+      target_clients: true,
+      white_label: true,
+      api_access: true,
+      pricingModel: true,
+      demoAccount: true,
+      regulators: true,
+      overall_rating: true,
+    },
+    take,
+  });
+
+  return rawBrokers.map((broker) => ({
+    id: broker.id,
+    name: broker.broker_name || "Unknown Provider",
+    logoUrl: broker.logoUrl,
+    stats: [
+      {
+        label: "Provider type",
+        value: broker.solution_type || "-",
+        type: "text",
+      },
+      {
+        label: "Execution latency",
+        value: broker.latency || "-",
+        type: "text",
+      },
+      {
+        label: "Asset classes",
+        value: broker.asset_classes && broker.asset_classes.length > 0 
+          ? (broker.asset_classes.length > 2 
+              ? `${broker.asset_classes.slice(0, 2).join(", ")}, +${broker.asset_classes.length - 2} others`
+              : broker.asset_classes.join(", "))
+          : "-",
+        type: "text",
+      },
+      {
+        label: "No last look",
+        value: broker.no_last_look ? "Yes" : "No",
+        type: broker.no_last_look ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "Target clients",
+        value: broker.target_clients && broker.target_clients.length > 0 
+          ? (() => {
+              const mapped = broker.target_clients.map(t => {
+                if (t === "Hedge Funds") return "Funds";
+                if (t === "Prop Trading Firms") return "Prop Firms";
+                return t;
+              });
+              return mapped.length > 3 
+                ? `${mapped.slice(0, 3).join(", ")}, +${mapped.length - 3} others`
+                : mapped.join(", ");
+            })()
+          : "-",
+        type: "text",
+      },
+      {
+        label: "White label",
+        value: broker.white_label ? "Yes" : "No",
+        type: broker.white_label ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "API access",
+        value: broker.api_access ? "Yes" : "No",
+        type: broker.api_access ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "Pricing model",
+        value: broker.pricingModel || "-",
+        type: "text",
+      },
+      {
+        label: "Demo available",
+        value: broker.demoAccount ? "Yes" : "No",
+        type: broker.demoAccount ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "Regulators",
+        value: broker.regulators || "-",
+        type: "text",
+      },
+      {
+        label: "Score",
         value: broker.overall_rating || "0",
         type: "star",
       },

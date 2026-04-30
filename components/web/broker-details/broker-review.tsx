@@ -9,7 +9,20 @@ const TripleArrow = () => (
 )
 
 export default function BrokerReview({ broker, reviewTitle, sectionId = "broker-review" }: { broker: any, reviewTitle?: string, sectionId?: string }) {
-    const sections = (broker?.review_article || "")
+    const rawArticle = broker?.review_article || "";
+    let customDisclaimer = "";
+    
+    // Try to find disclaimer in the full text first (matches "**Disclaimer:**" or "Disclaimer:")
+    const disclaimerRegex = /(?:\n|^)(?:\*\*|#+ )?Disclaimer:?\s*(?:\*\*)?\s*(.*)(?:\n|$)/i;
+    const disclaimerMatch = rawArticle.match(disclaimerRegex);
+    
+    let processedArticle = rawArticle;
+    if (disclaimerMatch) {
+        customDisclaimer = disclaimerMatch[1].trim();
+        processedArticle = rawArticle.replace(disclaimerMatch[0], "").trim();
+    }
+
+    const sections = processedArticle
         .split("##")
         .map((section: string) => section.trim())
         .filter(Boolean)
@@ -20,6 +33,14 @@ export default function BrokerReview({ broker, reviewTitle, sectionId = "broker-
                 content: contentLines.join("\n").trim(),
             };
         });
+
+    const filteredSections = sections.filter((s: { title?: string, content: string }) => s.title?.toLowerCase() !== 'disclaimer');
+    
+    // If we didn't find it with regex but it exists as a section, use that
+    const disclaimerSection = sections.find((s: { title?: string, content: string }) => s.title?.toLowerCase() === 'disclaimer');
+    if (disclaimerSection && !customDisclaimer) {
+        customDisclaimer = disclaimerSection.content;
+    }
 
     const regulatorCount = broker?.regulators?.split(',').filter(Boolean).length || 0;
 
@@ -58,8 +79,8 @@ export default function BrokerReview({ broker, reviewTitle, sectionId = "broker-
                         )}
                     {/* Review Text Items */}
                     <div className='flex flex-col gap-4'>
-                        {sections.length > 0 ? (
-                            sections.map((section: any, index: number) => (
+                        {filteredSections.length > 0 ? (
+                            filteredSections.map((section: any, index: number) => (
                                 <div key={index} className='flex items-start gap-2'>
                                     <div className='flex-shrink-0 pt-[3px]'>
                                         <TripleArrow />
@@ -91,7 +112,11 @@ export default function BrokerReview({ broker, reviewTitle, sectionId = "broker-
                             <TripleArrow />
                         </div>
                         <p className='text-[15px] font-medium text-black700 leading-[1.6]'>
-                            Disclaimer: Forex trading involves significant risk. Past performance does not guarantee future results. Always verify a broker's regulatory status before depositing funds
+                            {customDisclaimer ? (
+                                <Markdown code={`Disclaimer: ${customDisclaimer}`} />
+                            ) : (
+                                "Disclaimer: Forex trading involves significant risk. Past performance does not guarantee future results. Always verify a broker's regulatory status before depositing funds"
+                            )}
                         </p>
                     </div>
 

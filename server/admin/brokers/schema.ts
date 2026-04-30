@@ -152,6 +152,9 @@ export const brokerSchema = z.object({
   latency: z.string().optional(),
   white_label: z.boolean().optional().nullable(),
   setup_time: z.string().optional(),
+  peak_capacity: z.string().optional(),
+  global_hubs: z.array(z.string()).optional(),
+  no_last_look: z.boolean().optional().nullable(),
   liquiditySources: z.array(z.string()).optional(),
   best_suited_for: z.array(z.string()).optional(),
   courseModules: z

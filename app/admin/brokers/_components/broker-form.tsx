@@ -178,6 +178,9 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       latency: broker?.latency ?? "",
       white_label: broker?.white_label ?? false,
       setup_time: broker?.setup_time ?? "",
+      peak_capacity: broker?.peak_capacity ?? "",
+      global_hubs: broker?.global_hubs ?? [],
+      no_last_look: broker?.no_last_look ?? false,
       liquiditySources: broker?.liquiditySources ?? [],
       best_suited_for: broker?.best_suited_for ?? [],
       courseModules: broker?.courseModules ?? [],
@@ -937,6 +940,45 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
+        <div className="col-span-full pt-4 border-t mt-4">
+          <H3>Liquidity Provider Details</H3>
+          <Hint>Specific fields for Bridge & Liquidity Providers</Hint>
+        </div>
+
+        <Controller
+          control={form.control}
+          name="peak_capacity"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Peak Capacity</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. 50,000 orders/sec" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="no_last_look"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>No Last Look</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <GlobalHubsField control={form.control} register={form.register} />
+
         <div className="col-span-full pt-4 border-t mt-4">
           <H3>Bridge Provider Details</H3>
           <Hint>Specific fields for Bridge Providers</Hint>
@@ -2068,3 +2110,45 @@ function BestSuitedForField({ control, register }: { control: any, register: any
   )
 }
 
+function GlobalHubsField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "global_hubs",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Global Hubs</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`global_hubs.${index}`)}
+              placeholder="Enter global hub (e.g. London, Tokyo)"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Global Hub
+        </Button>
+      </Stack>
+    </div>
+  )
+}

@@ -28,9 +28,10 @@ import { Sticky } from "~/components/web/ui/sticky"
 import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
-import { findBrokerBySlug } from "~/server/web/tools/queries"
+import { findBrokerBySlug, findLiquidityProvidersForComparison, findRandomLiquidityProviders } from "~/server/web/tools/queries"
 import { getPresignedUrlFromFull, getScreenshotFetchUrl } from "~/lib/media"
 
+import LiquidityProviderDetails from "~/components/web/liquidity-provider-details"
 type Props = {
   params: {
     slug: string
@@ -64,10 +65,26 @@ const getData = cache(async ({ params }: Props) => {
     ],
     structuredData: [generateCollectionPage(url, title, description)],
   })
-
+   const randomBrokersRaw = await findRandomLiquidityProviders(3, slug)
+    const randomBrokers = await Promise.all(
+      randomBrokersRaw.map(async (b) => ({
+        ...b,
+        screenshotUrl: await getPresignedUrlFromFull(b.screenshotUrl),
+        logoUrl: await getPresignedUrlFromFull(b.logoUrl),
+      }))
+    )
+    const trustedBrokers = await findLiquidityProvidersForComparison(10)
+    const trustedBrokersWithUrl = await Promise.all(
+      trustedBrokers.map(async (b) => ({
+        ...b,
+       
+        logoUrl: await getPresignedUrlFromFull(b.logoUrl),
+      }))
+    )
   const screenshotUrl = await getPresignedUrlFromFull(broker.screenshotUrl)
+  const logoUrl = await getPresignedUrlFromFull(broker.logoUrl)
 
-  return { broker: { ...broker, screenshotUrl }, ...data }
+  return { broker: { ...broker, screenshotUrl,logoUrl },randomBrokers,trustedBrokers: trustedBrokersWithUrl, ...data }
 })
 
 
@@ -88,12 +105,12 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 }
 
 export default async function (props: Props) {
-  const { broker, metadata, structuredData } = await getData(props)
+  const { broker, metadata, structuredData, randomBrokers,trustedBrokers} = await getData(props)
   const headerList = await headers()
 
   return (
     <>
-      <Section>
+      {/* <Section>
         <Section.Content className="max-md:contents">
           <Sticky isOverlay>
             <Stack className="@container self-stretch justify-between items-start md:items-center gap-y-4 flex-col md:flex-row">
@@ -181,7 +198,7 @@ export default async function (props: Props) {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            {/* Broker Details */}
+            
             {(broker.headquarters || broker.year_established || broker.minimum_deposit || broker.execution_types || broker.regulators) && (
               <Card className="p-0 overflow-hidden shadow-sm h-full">
                 <CardHeader className="bg-muted/30 py-4 px-6 border-b">
@@ -222,7 +239,7 @@ export default async function (props: Props) {
               </Card>
             )}
 
-            {/* Trading Conditions */}
+           
             {(broker.daily_loss_limit || broker.retail_loss_rate || broker.trading_hours || broker.minimum_raw_spreads || broker.minimum_standard_spreads || broker.minimum_commission_for_forex || broker.profit_share) && (
               <Card className="p-0 overflow-hidden shadow-sm h-full">
                 <CardHeader className="bg-muted/30 py-4 px-6 border-b">
@@ -303,7 +320,7 @@ export default async function (props: Props) {
               </Card>
             )}
 
-            {/* Accounts & Funding */}
+        
             {(broker.deposit_options || broker.withdrawal_options || broker.funding_methods || broker.funded_account_options || broker.deposit_fees || broker.withdrawal_fee) && (
               <Card className="p-0 overflow-hidden shadow-sm h-full">
                 <CardHeader className="bg-muted/30 py-4 px-6 border-b">
@@ -365,7 +382,7 @@ export default async function (props: Props) {
               </Card>
             )}
 
-            {/* Trading Costs */}
+        
             {(broker.average_trading_cost_eur_usd || broker.average_trading_cost_gbp_usd || broker.average_trading_cost_gold || broker.average_trading_cost_bitcoin || broker.average_trading_cost_wti_crude_oil || broker.inactivity_fee || broker.maximum_evaluation_fee) && (
               <Card className="p-0 overflow-hidden shadow-sm h-full">
                 <CardHeader className="bg-muted/30 py-4 px-6 border-b">
@@ -418,7 +435,7 @@ export default async function (props: Props) {
               </Card>
             )}
 
-            {/* Platform & Features */}
+        
             {(broker.trading_platforms || broker.trader_table || broker.regulators_table) && (
               <Card className="p-0 overflow-hidden shadow-sm h-full md:col-span-2">
                 <CardHeader className="bg-muted/30 py-4 px-6 border-b">
@@ -539,14 +556,18 @@ export default async function (props: Props) {
         </Section.Content>
 
         <Section.Sidebar className="max-md:contents">
-          {/* Advertisement */}
+         
           <Suspense fallback={<AdCardSkeleton className="max-md:order-3" />}>
             <AdCard type="ToolPage" className="max-md:order-3" />
           </Suspense>
         </Section.Sidebar>
-      </Section>
-
-      <StructuredData data={structuredData} />
+      </Section> */}
+<LiquidityProviderDetails 
+    broker={broker as any}
+    randomBrokers={randomBrokers}
+    trustedBrokers={trustedBrokers}
+/>
+      <StructuredData data={structuredData}/>
     </>
   )
 }

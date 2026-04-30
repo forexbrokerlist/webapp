@@ -188,6 +188,9 @@ export const findBrokerById = async (id: number) => {
       latency: true,
       white_label: true,
       setup_time: true,
+      peak_capacity: true,
+      global_hubs: true,
+      no_last_look: true,
       liquiditySources: true,
       best_suited_for: true,
 
