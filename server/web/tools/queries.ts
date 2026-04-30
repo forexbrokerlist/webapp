@@ -477,7 +477,45 @@ export const findRandomLiquidityProviders = async (
     skip,
   });
 };
+export const findRandomPSPPartners = async (
+  take: number = 3,
+  excludeSlug?: string,
+) => {
+  "use cache";
 
+  cacheTag("brokers");
+  cacheLife("minutes");
+
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "psp" },
+    ...(excludeSlug && { slug: { not: excludeSlug } }),
+  };
+
+  const itemCount = await db.brokers.count({ where: whereClause });
+
+  if (itemCount === 0) return [];
+
+  const skip = Math.max(0, Math.floor(Math.random() * (itemCount - take + 1)));
+
+  return db.brokers.findMany({
+    where: whereClause,
+    select: {
+      broker_name: true,
+      logoUrl: true,
+      screenshotUrl: true,
+      slug: true,
+      categories: {
+        select: {
+          slug: true,
+        },
+        take: 20,
+      },
+    },
+    take,
+    skip,
+  });
+};
 export const findBrokersForComparison = async (take: number = 20) => {
   // "use cache"
 
@@ -996,3 +1034,107 @@ export const findLiquidityProvidersForComparison = async (take: number = 20) => 
     ],
   }));
 };
+
+
+export const findPSPPartnersForComparison = async (take: number = 20) => {
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "psp" },
+  };
+  
+  const rawBrokers = await db.brokers.findMany({
+    where: whereClause,
+    select: {
+      id: true,
+      broker_name: true,
+      slug: true,
+      logoUrl: true,
+      company_type: true,
+      target_clients: true,
+      settlement_time: true,
+      auto_fiat_conversion: true,
+      supported_cryptos: true,
+      fiat_currencies: true,
+      integration_type: true,
+      white_label: true,
+      kyb_required: true,
+      mass_payout: true,
+      overall_rating: true,
+      type: {
+        select: { slug: true }
+      }
+    },
+    take,
+  });
+
+  return rawBrokers.map((broker) => ({
+    id: broker.id,
+    name: broker.broker_name || "Unknown Provider",
+    slug: broker.slug,
+    typeSlug: broker.type?.slug,
+    logoUrl: broker.logoUrl,
+    stats: [
+      {
+        label: "Company type",
+        value: broker.company_type || "-",
+        type: "text",
+      },
+      {
+        label: "Target clients",
+        value: broker.target_clients && broker.target_clients.length > 0 
+          ? (broker.target_clients.length > 3 
+              ? `${broker.target_clients.slice(0, 3).join(", ")}, +${broker.target_clients.length - 3} others`
+              : broker.target_clients.join(", "))
+          : "-",
+        type: "text",
+      },
+      {
+        label: "Settlement",
+        value: broker.settlement_time || "-",
+        type: "text",
+      },
+      {
+        label: "Auto fiat conversion",
+        value: broker.auto_fiat_conversion ? "Yes" : "No",
+        type: broker.auto_fiat_conversion ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "Supported cryptos",
+        value: broker.supported_cryptos || "-",
+        type: "text",
+      },
+      {
+        label: "Fiat currencies",
+        value: broker.fiat_currencies || "-",
+        type: "text",
+      },
+      {
+        label: "Integration",
+        value: broker.integration_type && broker.integration_type.length > 0 
+          ? broker.integration_type.join(", ")
+          : "-",
+        type: "text",
+      },
+      {
+        label: "White label",
+        value: broker.white_label ? "Yes" : "No",
+        type: broker.white_label ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "KYB required",
+        value: broker.kyb_required ? "Business" : "No",
+        type: broker.kyb_required ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "Mass payout",
+        value: broker.mass_payout ? "Yes" : "No",
+        type: broker.mass_payout ? "badge-dark" : "badge-danger",
+      },
+      {
+        label: "Score",
+        value: broker.overall_rating || "0",
+        type: "star",
+      },
+    ],
+  }));
+};

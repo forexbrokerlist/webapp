@@ -103,7 +103,7 @@ export default function ForexBridgeProviderDetailsView({ broker, randomBrokers =
                                 </Link>
                             </Button>
                         </div>
-                        <SuggestedBroker brokers={randomBrokers} suggestionTitle='Suggested CRMS' />
+                        <SuggestedBroker brokers={randomBrokers} suggestionTitle='Suggested Bridge Providers'  />
                     </div>
                 </div>
             </div>

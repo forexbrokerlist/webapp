@@ -45,7 +45,7 @@ const BrandIcon = () => (
 
 
 
-const EmptyCompareSlot = ({ onClick, isEducation, isBridge, isLiquidity }: { onClick: () => void, isEducation: boolean, isBridge: boolean, isLiquidity: boolean }) => (
+const EmptyCompareSlot = ({ onClick, isEducation, isBridge, isLiquidity, isPSP }: { onClick: () => void, isEducation: boolean, isBridge: boolean, isLiquidity: boolean, isPSP: boolean }) => (
     <div onClick={onClick} className="relative rounded-xl border-[1.5px] border-dashed border-[#A8DD15] bg-[#FBFCFA] p-4 flex flex-col items-center justify-center text-center overflow-hidden cursor-pointer hover:bg-[#F5F8EA] transition-colors">
         {/* Decorative Circles */}
         <svg className="absolute top-[-30px] right-[-30px] opacity-40 pointer-events-none" width="180" height="180" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,7 +56,7 @@ const EmptyCompareSlot = ({ onClick, isEducation, isBridge, isLiquidity }: { onC
             <circle cx="80" cy="80" r="50" stroke="#A8DD15" strokeOpacity="0.4" strokeWidth="1" strokeDasharray="4 4" />
             <circle cx="80" cy="80" r="70" stroke="#A8DD15" strokeOpacity="0.4" strokeWidth="1" strokeDasharray="4 4" />
         </svg>
-
+ 
         <div className="w-[42px] h-[42px] bg-[#A8DD15] rounded-full flex items-center justify-center mb-4 z-10 transition-transform hover:scale-105">
             <div className="w-5 h-5 rounded-full border-[1.5px] border-[#1A1A1A] flex items-center justify-center">
                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -64,8 +64,8 @@ const EmptyCompareSlot = ({ onClick, isEducation, isBridge, isLiquidity }: { onC
                 </svg>
             </div>
         </div>
-        <h4 className="text-[16px] font-bold text-[#1A1A1A] mb-2 z-10">Compare {isEducation ? 'Trading Courses' : isBridge ? 'Bridge Providers' : isLiquidity ? 'Liquidity Providers' : 'CRM Software'}</h4>
-        <p className="text-[13px] text-[#666666] max-w-[220px] leading-relaxed z-10">Click to select another {isEducation ? 'trading course' : isBridge ? 'bridge provider' : isLiquidity ? 'liquidity provider' : 'CRM software'} and see a detailed side-by-side comparison</p>
+        <h4 className="text-[16px] font-bold text-[#1A1A1A] mb-2 z-10">Compare {isEducation ? 'Trading Courses' : isBridge ? 'Bridge Providers' : isLiquidity ? 'Liquidity Providers' : isPSP ? 'PSP Partners' : 'CRM Software'}</h4>
+        <p className="text-[13px] text-[#666666] max-w-[220px] leading-relaxed z-10">Click to select another {isEducation ? 'trading course' : isBridge ? 'bridge provider' : isLiquidity ? 'liquidity provider' : isPSP ? 'PSP partner' : 'CRM software'} and see a detailed side-by-side comparison</p>
     </div>
 );
 
@@ -78,6 +78,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                 let item = r.replace(/\s*\(.*?\)/g, '').trim();
                 if (item === "Hedge Funds") return "Funds";
                 if (item === "Prop Trading Firms") return "Prop Firms";
+                if (item === "Forex brokers") return "Brokers";
                 return item;
             })
             .filter(Boolean)
@@ -91,9 +92,11 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
     const isEducation = broker.type?.slug === 'educationplatforms';
     const isBridge = broker.type?.slug === 'forexbridge';
     const isLiquidity = broker.type?.slug === 'liquidity';
+    const isPSP = broker.type?.slug === 'psp';
 
     const initialBrokers = [
         {
+            id: broker.id,
             name: broker.broker_name,
             slug: broker.slug,
             typeSlug: broker.type?.slug,
@@ -285,6 +288,66 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                             type: "star",
                         },
                     ];
+                } else if (isPSP) {
+                    return [
+                        {
+                            label: "Company type",
+                            value: broker.company_type || "-",
+                            type: "text",
+                        },
+                        {
+                            label: "Target clients",
+                            value: formatList(broker.target_clients?.join(", "), 3, false),
+                            type: "text",
+                        },
+                        {
+                            label: "Settlement",
+                            value: broker.settlement_time || "-",
+                            type: "text",
+                        },
+                        {
+                            label: "Auto fiat conversion",
+                            value: broker.auto_fiat_conversion ? "Yes" : "No",
+                            type: broker.auto_fiat_conversion ? "badge-dark" : "badge-danger",
+                        },
+                        {
+                            label: "Supported cryptos",
+                            value: broker.supported_cryptos || "-",
+                            type: "text",
+                        },
+                        {
+                            label: "Fiat currencies",
+                            value: broker.fiat_currencies || "-",
+                            type: "text",
+                        },
+                        {
+                            label: "Integration",
+                            value: broker.integration_type && broker.integration_type.length > 0 
+                                ? broker.integration_type.join(", ")
+                                : "-",
+                            type: "text",
+                        },
+                        {
+                            label: "White label",
+                            value: broker.white_label ? "Yes" : "No",
+                            type: broker.white_label ? "badge-dark" : "badge-danger",
+                        },
+                        {
+                            label: "KYB required",
+                            value: broker.kyb_required ? "Business" : "No",
+                            type: broker.kyb_required ? "badge-dark" : "badge-danger",
+                        },
+                        {
+                            label: "Mass payout",
+                            value: broker.mass_payout ? "Yes" : "No",
+                            type: broker.mass_payout ? "badge-dark" : "badge-danger",
+                        },
+                        {
+                            label: "Score",
+                            value: broker.overall_rating || "0",
+                            type: "star",
+                        },
+                    ];
                 }
 
                 const mt4 = broker.trading_platforms?.toLowerCase().includes('mt4');
@@ -340,21 +403,24 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
         null
     ];
 
-    const filteredTrustedBrokers = trustedBrokers.filter(tb => tb.id !== broker.id);
     const [slots, setSlots] = useState<any[]>(initialBrokers);
     const [activeSlot, setActiveSlot] = useState<number | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
-    const [displayBrokers, setDisplayBrokers] = useState<any[]>(filteredTrustedBrokers.slice(0, 18));
+    
+    // Calculate initial filtered list using initialBrokers since slots state isn't available for the initial render's value
+    const initialSelectedIds = initialBrokers.filter(s => s !== null).map(s => s.id);
+    const [displayBrokers, setDisplayBrokers] = useState<any[]>(trustedBrokers.filter(tb => !initialSelectedIds.includes(tb.id)).slice(0, 18));
     const [isSearching, setIsSearching] = useState(false);
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(async () => {
-            const typeSlug = isEducation ? 'educationplatforms' : isBridge ? 'forexbridge' : isLiquidity ? 'liquidity' : 'crm';
+            const typeSlug = isEducation ? 'educationplatforms' : isBridge ? 'forexbridge' : isLiquidity ? 'liquidity' : isPSP ? 'psp' : 'crm';
             if (searchTerm) {
                 setIsSearching(true);
                 try {
                     const results = await searchBrokersAction(searchTerm, typeSlug);
-                    setDisplayBrokers(results.filter((b: any) => b.id !== broker.id));
+                    const currentSelectedIds = slots.filter(s => s !== null).map(s => s.id);
+                    setDisplayBrokers(results.filter((b: any) => !currentSelectedIds.includes(b.id)));
                 } catch (error) {
                     console.error("Search failed:", error);
                 } finally {
@@ -362,13 +428,15 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                 }
             } else {
                 if (trustedBrokers.length > 0) {
-                    setDisplayBrokers(filteredTrustedBrokers.slice(0, 18));
+                    const currentSelectedIds = slots.filter(s => s !== null).map(s => s.id);
+                    setDisplayBrokers(trustedBrokers.filter(tb => !currentSelectedIds.includes(tb.id)).slice(0, 18));
                 } else {
                     // If no trusted brokers, fetch some initial results
                     setIsSearching(true);
                     try {
                         const results = await searchBrokersAction("", typeSlug);
-                        setDisplayBrokers(results.filter((b: any) => b.id !== broker.id));
+                        const currentSelectedIds = slots.filter(s => s !== null).map(s => s.id);
+                        setDisplayBrokers(results.filter((b: any) => !currentSelectedIds.includes(b.id)));
                     } catch (error) {
                         console.error("Initial fetch failed:", error);
                     } finally {
@@ -379,12 +447,13 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
         }, 300);
 
         return () => clearTimeout(delayDebounceFn);
-    }, [searchTerm, trustedBrokers, isEducation, isBridge, isLiquidity]);
+    }, [searchTerm, trustedBrokers, isEducation, isBridge, isLiquidity, isPSP, slots]);
 
     const handleSelectBroker = (broker: any) => {
         if (activeSlot === null) return;
         const newSlots = [...slots];
         newSlots[activeSlot] = {
+            id: broker.id,
             name: broker.name,
             slug: broker.slug,
             typeSlug: broker.typeSlug,
@@ -421,17 +490,19 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                 return `/forex-bridge-providers/${slug}`;
             case 'educationplatforms':
                 return `/forex-trading-courses/${slug}`;
+            case 'psp':
+                return `/forex-psp-partners/${slug}`;
             default:
                 return `/broker/${slug}`;
         }
     };
 
     return (
-        <div id={isEducation ? 'compare-trading-courses' : isBridge ? 'compare-bridge-providers' : isLiquidity? 'compare-liquidity-providers': 'compare-crm'} className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
+        <div id={isEducation ? 'compare-trading-courses' : isBridge ? 'compare-bridge-providers' : isLiquidity? 'compare-liquidity-providers': isPSP ? 'compare-psp-partners' : 'compare-crm'} className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
             <div className='p-4 relative flex items-center '>
                 <div className='absolute top-3 left-0 w-1 h-[26px] bg-primary rounded-r-[4px]'></div>
                 <h3 className='text-base text-black100 font-semibold uppercase'>
-                    COMPARE {isEducation ? 'TRADING COURSES' : isBridge ? 'BRIDGE PROVIDERS' : isLiquidity? 'LIQUIDITY PROVIDERS': 'CRM'}
+                    COMPARE {isEducation ? 'TRADING COURSES' : isBridge ? 'BRIDGE PROVIDERS' : isLiquidity? 'LIQUIDITY PROVIDERS': isPSP ? 'PSP PARTNERS' : 'CRM'}
                 </h3>
             </div>
             <div className='px-4 pb-4'>
@@ -447,15 +518,14 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                     )}
 
                                     <div className="flex items-center gap-3 pb-4">
-                                        <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-[0_2px_8px_rgba(0,0,0,0.05)] border border-[#f0f0f0] overflow-hidden shrink-0">
+                                        <div className="w-12 h-12 rounded-full flex items-center justify-center bg-white shadow-[0_2px_8px_rgba(0,0,0,0.05)] border border-[#f0f0f0] overflow-hidden shrink-0">
                                             {broker.logoUrl ? (
                                                 <img
                                                     src={broker.logoUrl}
                                                     alt={broker.name}
-                                                    className="max-w-[24px] max-h-[24px] object-contain"
+                                                    className="w-full h-full p-2 object-contain"
                                                     onError={(e) => {
-                                                        (e.target as HTMLImageElement).style.display = 'none';
-                                                        (e.target as HTMLImageElement).parentElement!.innerHTML = '<div class="flex items-center justify-center w-full h-full bg-white"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="12" fill="#0D61F2" /><path d="M9 7H13C14.6569 7 16 8.34315 16 10C16 11.6569 14.6569 13 13 13H11V16H9V7ZM11 9V11H13C13.5523 11 14 10.5523 14 10C14 9.44772 13.5523 9 13 9H11Z" fill="white" /></svg></div>';
+                                                        (e.target as HTMLImageElement).src = '/assets/images/FBL Logo.png'; // Fallback to a real image if available
                                                     }}
                                                 />
                                             ) : (
@@ -524,13 +594,21 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                                 'Target clients',
                                                 'Setup time',
                                                 'Demo available',
-                                                'Regulators'
+                                                'Regulators',
+                                                'Company type',
+                                                'Settlement',
+                                                'Auto fiat conversion',
+                                                'Supported cryptos',
+                                                'Fiat currencies',
+                                                'Integration',
+                                                'KYB required',
+                                                'Mass payout'
                                             ].includes(stat.label);
 
                                             return (
                                                 <div
                                                     key={i}
-                                                    className={`grid grid-cols-[120px_1fr] gap-4 py-2 border-b border-[#e6e6e6] items-start ${(isEducation || isBridge || isLiquidity) && needsAlignment ? 'min-h-[50px]' : ''}`}
+                                                    className={`grid grid-cols-[120px_1fr] gap-4 py-2 border-b border-[#e6e6e6] items-start ${(isEducation || isBridge || isLiquidity || isPSP) && needsAlignment ? 'min-h-[63px]' : ''}`}
                                                 >
                                                     <span className="text-[14px] font-medium text-black700">{stat.label}</span>
                                                     <div className="flex justify-end">
@@ -556,7 +634,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                     </div>
                                 </div>
                             ) : (
-                                <EmptyCompareSlot key={idx} isEducation={isEducation} isBridge={isBridge} isLiquidity={isLiquidity} onClick={() => {
+                                <EmptyCompareSlot key={idx} isEducation={isEducation} isBridge={isBridge} isLiquidity={isLiquidity} isPSP={isPSP} onClick={() => {
                                     // Find the first empty slot from left to right (excluding slot 0 which is always occupied)
                                     const firstEmptySlot = slots.findIndex((slot, index) => index > 0 && slot === null);
                                     setActiveSlot(firstEmptySlot !== -1 ? firstEmptySlot : idx);
@@ -575,11 +653,11 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
             }}>
                 <DialogContent className="max-w-6xl max-h-[85vh] overflow-hidden flex flex-col p-0 border-none shadow-2xl">
                     <DialogHeader className="p-6 pb-4 bg-white sticky top-0 z-10">
-                        <DialogTitle className="text-xl font-bold text-black100">Select {isEducation ? 'Trading Course' : isBridge ? 'Bridge Provider' : isLiquidity ? 'Liquidity Provider' : 'CRM Software'} to Compare</DialogTitle>
+                        <DialogTitle className="text-xl font-bold text-black100">Select {isEducation ? 'Trading Course' : isBridge ? 'Bridge Provider' : isLiquidity ? 'Liquidity Provider' : isPSP ? 'PSP Partner' : 'CRM Software'} to Compare</DialogTitle>
                         <div className="mt-4 relative">
                             <input
                                 type="text"
-                                placeholder={`Search ${isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : 'CRM software'}...`}
+                                placeholder={`Search ${isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : isPSP ? 'PSP partners' : 'CRM software'}...`}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-border-light300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
@@ -593,7 +671,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                         {isSearching ? (
                             <div className="py-10 text-center col-span-full">
                                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                                <p className="text-black600 font-medium">Searching {isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : 'CRM software'}...</p>
+                                <p className="text-black600 font-medium">Searching {isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : isPSP ? 'PSP partners' : 'CRM software'}...</p>
                             </div>
                         ) : displayBrokers.length > 0 ? (
                             displayBrokers.map((tb: any, i: number) => (
@@ -605,14 +683,14 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-white shadow-sm border border-border-light200 overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
                                             {tb.logoUrl ? (
-                                                <img src={tb.logoUrl} alt={tb.name} className="max-w-[32px] max-h-[32px] object-contain" />
+                                                <img src={tb.logoUrl} alt={tb.name} className="w-full h-full p-2 object-contain" />
                                             ) : (
                                                 <BrandIcon />
                                             )}
                                         </div>
                                         <div>
                                             <h5 className="font-bold text-black100 group-hover:text-primary transition-colors">{tb.name}</h5>
-                                            <p className="text-[12px] text-black600 font-medium">{tb.stats.find((s: any) => s.label === "Starting price" || s.label === "Skill level" || s.label === "Provider type")?.value || (isEducation ? "Education Provider" : isLiquidity ? "Liquidity Provider" : "CRM Provider")}</p>
+                                            <p className="text-[12px] text-black600 font-medium">{tb.stats.find((s: any) => s.label === "Starting price" || s.label === "Skill level" || s.label === "Provider type" || s.label === "Company type")?.value || (isEducation ? "Education Provider" : isLiquidity ? "Liquidity Provider" : isPSP ? "PSP Partner" : "CRM Provider")}</p>
                                         </div>
                                     </div>
                                     <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -629,7 +707,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                         <path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
                                 </div>
-                                <p className="text-black600 font-medium">No {isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : 'CRM software'} found matching "{searchTerm}"</p>
+                                <p className="text-black600 font-medium">No {isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : isPSP ? 'PSP partners' : 'CRM software'} found matching "{searchTerm}"</p>
                             </div>
                         )}
                     </div>

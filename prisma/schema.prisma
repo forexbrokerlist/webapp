@@ -478,6 +478,20 @@ model Brokers {
   peak_capacity                     String? 
   global_hubs                       String[]
   no_last_look                      Boolean?
+
+
+// PSP Partner 
+ company_type                       String? 
+ settlement_time                    String?   
+ auto_fiat_conversion               Boolean?  
+ kyb_required                        Boolean?  
+ supported_cryptos                  String?
+ fiat_currencies                    String?
+integration_type                   String[]
+mass_payout                       Boolean?   
+checkout_page                        Boolean?   
+
+
   // Admin & Submission fields
   submitterName  String?
   submitterEmail String?

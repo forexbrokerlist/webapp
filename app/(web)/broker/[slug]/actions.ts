@@ -261,6 +261,7 @@ export async function searchBrokersAction(query: string, typeSlug: string = "bro
                             const mapped = broker.target_clients.map(t => {
                                 if (t === "Hedge Funds") return "Funds";
                                 if (t === "Prop Trading Firms") return "Prop Firms";
+                                if (t === "Forex brokers") return "Brokers";
                                 return t;
                             });
                             return mapped.length > 3 
@@ -294,6 +295,78 @@ export async function searchBrokersAction(query: string, typeSlug: string = "bro
                     label: "Regulators",
                     value: broker.regulators || "-",
                     type: "text",
+                },
+                {
+                    label: "Score",
+                    value: broker.overall_rating || "0",
+                    type: "star",
+                },
+            ];
+        } else if (typeSlug === "psp") {
+            stats = [
+                {
+                    label: "Company type",
+                    value: broker.company_type || "-",
+                    type: "text",
+                },
+                {
+                    label: "Target clients",
+                    value: broker.target_clients && broker.target_clients.length > 0 
+                        ? (() => {
+                            const mapped = broker.target_clients.map(t => {
+                                if (t === "Hedge Funds") return "Funds";
+                                if (t === "Prop Trading Firms") return "Prop Firms";
+                                if (t === "Forex brokers") return "Brokers";
+                                return t;
+                            });
+                            return mapped.length > 3 
+                                ? `${mapped.slice(0, 3).join(", ")}, +${mapped.length - 3} others`
+                                : mapped.join(", ");
+                        })()
+                        : "-",
+                    type: "text",
+                },
+                {
+                    label: "Settlement",
+                    value: broker.settlement_time || "-",
+                    type: "text",
+                },
+                {
+                    label: "Auto fiat conversion",
+                    value: broker.auto_fiat_conversion ? "Yes" : "No",
+                    type: broker.auto_fiat_conversion ? "badge-dark" : "badge-danger",
+                },
+                {
+                    label: "Supported cryptos",
+                    value: broker.supported_cryptos || "-",
+                    type: "text",
+                },
+                {
+                    label: "Fiat currencies",
+                    value: broker.fiat_currencies || "-",
+                    type: "text",
+                },
+                {
+                    label: "Integration",
+                    value: broker.integration_type && broker.integration_type.length > 0 
+                        ? broker.integration_type.join(", ")
+                        : "-",
+                    type: "text",
+                },
+                {
+                    label: "White label",
+                    value: broker.white_label ? "Yes" : "No",
+                    type: broker.white_label ? "badge-dark" : "badge-danger",
+                },
+                {
+                    label: "KYB required",
+                    value: broker.kyb_required ? "Business" : "No",
+                    type: broker.kyb_required ? "badge-dark" : "badge-danger",
+                },
+                {
+                    label: "Mass payout",
+                    value: broker.mass_payout ? "Yes" : "No",
+                    type: broker.mass_payout ? "badge-dark" : "badge-danger",
                 },
                 {
                     label: "Score",

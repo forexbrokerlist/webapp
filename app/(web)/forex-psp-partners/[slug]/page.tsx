@@ -28,8 +28,9 @@ import { Sticky } from "~/components/web/ui/sticky"
 import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
-import { findBrokerBySlug } from "~/server/web/tools/queries"
+import { findBrokerBySlug,findRandomPSPPartners,findPSPPartnersForComparison } from "~/server/web/tools/queries"
 import { getPresignedUrlFromFull, getScreenshotFetchUrl } from "~/lib/media"
+import ForexPSPDetails from "~/components/web/forex-psp-details"
 
 type Props = {
   params: {
@@ -64,8 +65,23 @@ const getData = cache(async ({ params }: Props) => {
   })
 
   const screenshotUrl = await getPresignedUrlFromFull(broker.screenshotUrl)
-
-  return { broker: { ...broker, screenshotUrl }, ...data }
+  const logoUrl = await getPresignedUrlFromFull(broker.logoUrl)
+   const randomBrokersRaw = await findRandomPSPPartners(3, slug)
+    const randomBrokers = await Promise.all(
+      randomBrokersRaw.map(async (b) => ({
+        ...b,
+        screenshotUrl: await getPresignedUrlFromFull(b.screenshotUrl),
+        logoUrl: await getPresignedUrlFromFull(b.logoUrl),
+      }))
+    )
+      const trustedBrokersRaw = await findPSPPartnersForComparison(12)
+      const trustedBrokers = await Promise.all(
+        trustedBrokersRaw.map(async (b) => ({
+          ...b,
+          logoUrl: await getPresignedUrlFromFull(b.logoUrl),
+        }))
+      )
+  return { broker: { ...broker, screenshotUrl,logoUrl}, randomBrokers,trustedBrokers, ...data }
 })
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
@@ -96,12 +112,12 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 }
 
 export default async function (props: Props) {
-  const { broker, metadata, structuredData } = await getData(props)
+  const { broker, metadata, structuredData,randomBrokers,trustedBrokers} = await getData(props)
   const headerList = await headers()
 
   return (
     <>
-      <Section>
+      {/* <Section>
         <Section.Content className="max-md:contents">
           <Sticky isOverlay>
             <Stack className="@container self-stretch justify-between items-start md:items-center gap-y-4 flex-col md:flex-row">
@@ -195,13 +211,13 @@ export default async function (props: Props) {
         </Section.Content>
 
         <Section.Sidebar className="max-md:contents">
-          {/* Advertisement */}
+          
           <Suspense fallback={<AdCardSkeleton className="max-md:order-3" />}>
             <AdCard type="ToolPage" className="max-md:order-3" />
           </Suspense>
         </Section.Sidebar>
-      </Section>
-
+      </Section> */}
+      <ForexPSPDetails broker={broker} randomBrokers={randomBrokers} trustedBrokers={trustedBrokers}/>
       <StructuredData data={structuredData} />
     </>
   )
