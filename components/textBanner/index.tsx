@@ -7,7 +7,7 @@ interface CommonBannerProps {
     highlightedText?: string | null;
     title: string;
     description: string;
-    image: string;
+    image?: string;
 }
 
 export default function TextBanner({ highlightedText, title, description, image }: CommonBannerProps) {
