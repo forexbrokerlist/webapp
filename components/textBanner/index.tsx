@@ -40,6 +40,7 @@ export default function TextBanner({ highlightedText, title, description, image 
                                 className="text-black700 text-center mx-auto max-mobile:text-base text-lg font-normal max-w-[700px] line-clamp-3">
                                 {description}
                             </motion.p>
+                            
                         </div>
 
 
