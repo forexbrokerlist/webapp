@@ -12,13 +12,13 @@ export default function BrokerReview({ broker, reviewTitle, sectionId = "broker-
     const rawArticle = broker?.review_article || "";
     let customDisclaimer = "";
     
-    // Try to find disclaimer in the full text first (matches "**Disclaimer:**" or "Disclaimer:")
-    const disclaimerRegex = /(?:\n|^)(?:\*\*|#+ )?Disclaimer:?\s*(?:\*\*)?\s*(.*)(?:\n|$)/i;
+    // Try to find disclaimer in the full text first (matches "**Disclaimer:**", "_Disclaimer:_", etc.)
+    const disclaimerRegex = /(?:\n|^)(?:[*_]{1,2}|#+ )?\s*Disclaimer:?\s*([\s\S]*?)(?:\n\n|\n$|$)/i;
     const disclaimerMatch = rawArticle.match(disclaimerRegex);
     
     let processedArticle = rawArticle;
     if (disclaimerMatch) {
-        customDisclaimer = disclaimerMatch[1].trim();
+        customDisclaimer = disclaimerMatch[1].trim().replace(/[*_]+$/, "").trim();
         processedArticle = rawArticle.replace(disclaimerMatch[0], "").trim();
     }
 
@@ -27,10 +27,12 @@ export default function BrokerReview({ broker, reviewTitle, sectionId = "broker-
         .map((section: string) => section.trim())
         .filter(Boolean)
         .map((section: string) => {
-            const [title, ...contentLines] = section.split("\n");
+            const lines = section.split("\n");
+            const title = lines[0]?.trim();
+            const content = lines.slice(1).join("\n").trim();
             return {
-                title: title?.trim(),
-                content: contentLines.join("\n").trim(),
+                title,
+                content,
             };
         });
 
@@ -42,6 +44,16 @@ export default function BrokerReview({ broker, reviewTitle, sectionId = "broker-
         customDisclaimer = disclaimerSection.content;
     }
 
+    // NEW LOGIC: If the article starts with a ## header, use that as the reviewTitle
+    // and remove the title from the first section so it doesn't repeat.
+    let displayTitle = reviewTitle;
+    const finalSections = [...filteredSections];
+    
+    if (processedArticle.trim().startsWith("##") && finalSections.length > 0) {
+        displayTitle = finalSections[0].title || reviewTitle;
+        finalSections[0] = { ...finalSections[0], title: "" };
+    }
+
     const regulatorCount = broker?.regulators?.split(',').filter(Boolean).length || 0;
 
     return (
@@ -49,7 +61,7 @@ export default function BrokerReview({ broker, reviewTitle, sectionId = "broker-
             <div className='p-4 relative flex items-center '>
                 <div className='absolute top-3 left-0 w-1 h-[26px] bg-primary rounded-r-[4px]'></div>
                 <h3 className='text-base text-black100 font-semibold uppercase'>
-                    {reviewTitle}
+                    {displayTitle}
                 </h3>
             </div>
             <div className='px-4 pb-4'>
@@ -79,8 +91,8 @@ export default function BrokerReview({ broker, reviewTitle, sectionId = "broker-
                         )}
                     {/* Review Text Items */}
                     <div className='flex flex-col gap-4'>
-                        {filteredSections.length > 0 ? (
-                            filteredSections.map((section: any, index: number) => (
+                        {finalSections.length > 0 ? (
+                            finalSections.map((section: any, index: number) => (
                                 <div key={index} className='flex items-start gap-2'>
                                     <div className='flex-shrink-0 pt-[3px]'>
                                         <TripleArrow />

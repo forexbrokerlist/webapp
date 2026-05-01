@@ -88,7 +88,7 @@ export async function searchBrokersAction(query: string, typeSlug: string = "bro
                 },
                 {
                     label: "Best For",
-                    value: broker.bestFor?.join(", ") || "-",
+                    value: broker.bestFor&& broker.bestFor.length>0 ? broker.bestFor?.join(', ') : '-',
                     type: "text",
                 },
                 {
@@ -156,7 +156,7 @@ export async function searchBrokersAction(query: string, typeSlug: string = "bro
                 },
                 {
                     label: "Pricing model",
-                    value: broker.pricingModel || "-",
+                    value: broker.pricingModel && broker.pricingModel?.length>0 && broker.pricingModel.join('/') || "-",
                     type: "text",
                 },
                 {
@@ -214,7 +214,7 @@ export async function searchBrokersAction(query: string, typeSlug: string = "bro
                 },
                 {
                     label: "Pricing model",
-                    value: broker.pricingModel || "-",
+                    value: broker.pricingModel && broker.pricingModel?.length>0 && broker.pricingModel.join('/') || "-",
                     type: "text",
                 },
                 {
@@ -283,7 +283,7 @@ export async function searchBrokersAction(query: string, typeSlug: string = "bro
                 },
                 {
                     label: "Pricing model",
-                    value: broker.pricingModel || "-",
+                    value: broker.pricingModel&&broker.pricingModel?.length > 0 ? broker.pricingModel.join("/") : "-",
                     type: "text",
                 },
                 {

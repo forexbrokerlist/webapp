@@ -45,7 +45,7 @@ const BrandIcon = () => (
 
 
 
-const EmptyCompareSlot = ({ onClick, isEducation, isBridge, isLiquidity, isPSP }: { onClick: () => void, isEducation: boolean, isBridge: boolean, isLiquidity: boolean, isPSP: boolean }) => (
+const EmptyCompareSlot = ({ onClick, isEducation, isBridge, isLiquidity, isPSP, isTrading }: { onClick: () => void, isEducation: boolean, isBridge: boolean, isLiquidity: boolean, isPSP: boolean, isTrading: boolean }) => (
     <div onClick={onClick} className="relative rounded-xl border-[1.5px] border-dashed border-[#A8DD15] bg-[#FBFCFA] p-4 flex flex-col items-center justify-center text-center overflow-hidden cursor-pointer hover:bg-[#F5F8EA] transition-colors">
         {/* Decorative Circles */}
         <svg className="absolute top-[-30px] right-[-30px] opacity-40 pointer-events-none" width="180" height="180" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -64,13 +64,13 @@ const EmptyCompareSlot = ({ onClick, isEducation, isBridge, isLiquidity, isPSP }
                 </svg>
             </div>
         </div>
-        <h4 className="text-[16px] font-bold text-[#1A1A1A] mb-2 z-10">Compare {isEducation ? 'Trading Courses' : isBridge ? 'Bridge Providers' : isLiquidity ? 'Liquidity Providers' : isPSP ? 'PSP Partners' : 'CRM Software'}</h4>
-        <p className="text-[13px] text-[#666666] max-w-[220px] leading-relaxed z-10">Click to select another {isEducation ? 'trading course' : isBridge ? 'bridge provider' : isLiquidity ? 'liquidity provider' : isPSP ? 'PSP partner' : 'CRM software'} and see a detailed side-by-side comparison</p>
+        <h4 className="text-[16px] font-bold text-[#1A1A1A] mb-2 z-10">Compare {isEducation ? 'Trading Courses' : isBridge ? 'Bridge Providers' : isLiquidity ? 'Liquidity Providers' : isPSP ? 'PSP Partners' : isTrading ? 'Trading Platforms' : 'CRM Software'}</h4>
+        <p className="text-[13px] text-[#666666] max-w-[220px] leading-relaxed z-10">Click to select another {isEducation ? 'trading course' : isBridge ? 'bridge provider' : isLiquidity ? 'liquidity provider' : isPSP ? 'PSP partner' : isTrading ? 'trading platform' : 'CRM software'} and see a detailed side-by-side comparison</p>
     </div>
 );
 
 
-export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker: any, trustedBrokers?: any[] }) {
+export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId }: { broker: any, trustedBrokers?: any[], sectionId?: string }) {
     const formatList = (str: string | null | undefined, max: number = 3, showOthersCount: boolean = true) => {
         if (!str) return "None";
         const list = str.split(',')
@@ -93,6 +93,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
     const isBridge = broker.type?.slug === 'forexbridge';
     const isLiquidity = broker.type?.slug === 'liquidity';
     const isPSP = broker.type?.slug === 'psp';
+    const isTrading = broker.type?.slug === 'trading';
 
     const initialBrokers = [
         {
@@ -162,7 +163,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                         },
                         {
                             label: "Pricing model",
-                            value: broker.pricingModel || "-",
+                            value: broker.pricingModel&&broker.pricingModel.length>0 ? broker.pricingModel.join("/") : "-",
                             type: "text",
                         },
                         {
@@ -216,7 +217,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                         },
                         {
                             label: "Pricing model",
-                            value: broker.pricingModel || "-",
+                            value: broker.pricingModel  && broker.pricingModel.length > 0 ? broker.pricingModel.join("/") : "-",
                             type: "text",
                         },
                         {
@@ -269,7 +270,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                         },
                         {
                             label: "Pricing model",
-                            value: broker.pricingModel || "-",
+                            value: broker.pricingModel&&broker.pricingModel.length>0 ? broker.pricingModel.join("/") : "-",
                             type: "text",
                         },
                         {
@@ -348,6 +349,75 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                             type: "star",
                         },
                     ];
+                } else if (isTrading) {
+                    return [
+                        {
+                            label: "Platform type",
+                            value: broker.platform_type?.join(" / ") || "-",
+                            type: "text"
+                        },
+                        {
+                            label: "Best for",
+                            value: broker.bestFor&& broker.bestFor.length>0 ? broker.bestFor?.join(', ') : '-',
+                            type: "text"
+                        },
+                        {
+                            label: "White label price",
+                            value: broker.white_label_price || "-",
+                            type: "text"
+                        },
+                        {
+                            label: "Server licence",
+                            value: broker.server_license || "-",
+                            type: "text"
+                        },
+                        {
+                            label: "Deployment",
+                            value: broker.deployment_type?.join(", ") || "-",
+                            type: "text"
+                        },
+                        {
+                            label: "Charting",
+                            value: broker.charting_tools?.join(" + ") || "-",
+                            type: "text"
+                        },
+                        {
+                            label: "MT5 backend",
+                            value: broker.mt5_backend ? "Supported" : "No",
+                            type: broker.mt5_backend ? "badge-success" : "badge-danger"
+                        },
+                        {
+                            label: "Prop firm tools",
+                            value: broker.prop_firm_support?.join(", ") || "-",
+                            type: "text"
+                        },
+                        {
+                            label: "Setup time",
+                            value: broker.setup_time || "-",
+                            type: "text"
+                        },
+                        {
+                            label: "Yearly commitment",
+                            value: broker.yearly_commitment ? "Required" : "Not required",
+                            type: broker.yearly_commitment ? "badge-danger" : "badge-success"
+                        },
+                        {
+                            label: "Hosting included",
+                            value: broker.hosting_included ? "Yes" : "No",
+                            type: broker.hosting_included ? "badge-success" : "badge-danger"
+                        },
+                        {
+                            label: "Demo available",
+                            value: broker.demoAccount ? "Yes" : "No",
+                            type: broker.demoAccount ? "badge-success" : "badge-danger"
+                        },
+                        {
+                            label: `Clients (${new Date().getFullYear()})`,
+                            value: broker.clients_count || "-",
+                            type: "text"
+                        },
+                        { label: "Overall rating", value: broker.overall_rating, type: "star" }
+                    ];
                 }
 
                 const mt4 = broker.trading_platforms?.toLowerCase().includes('mt4');
@@ -386,7 +456,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                     },
                     {
                         label: "Deployment Type",
-                        value: broker.deployment_type || "-",
+                        value: broker.deployment_type && broker.deployment_type.length > 0 && broker.deployment_type.join(",") || "-",
                         type: "text"
                     },
                     { label: "Starting price", value: broker.starting_price || "-", type: "text" },
@@ -414,7 +484,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(async () => {
-            const typeSlug = isEducation ? 'educationplatforms' : isBridge ? 'forexbridge' : isLiquidity ? 'liquidity' : isPSP ? 'psp' : 'crm';
+            const typeSlug = isEducation ? 'educationplatforms' : isBridge ? 'forexbridge' : isLiquidity ? 'liquidity' : isPSP ? 'psp' : isTrading ? 'trading' : 'crm';
             if (searchTerm) {
                 setIsSearching(true);
                 try {
@@ -447,7 +517,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
         }, 300);
 
         return () => clearTimeout(delayDebounceFn);
-    }, [searchTerm, trustedBrokers, isEducation, isBridge, isLiquidity, isPSP, slots]);
+    }, [searchTerm, trustedBrokers, isEducation, isBridge, isLiquidity, isPSP, isTrading, slots]);
 
     const handleSelectBroker = (broker: any) => {
         if (activeSlot === null) return;
@@ -498,11 +568,11 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
     };
 
     return (
-        <div id={isEducation ? 'compare-trading-courses' : isBridge ? 'compare-bridge-providers' : isLiquidity? 'compare-liquidity-providers': isPSP ? 'compare-psp-partners' : 'compare-crm'} className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
+        <div id={sectionId || (isEducation ? 'compare-trading-courses' : isBridge ? 'compare-bridge-providers' : isLiquidity? 'compare-liquidity-providers': isPSP ? 'compare-psp-partners' : isTrading ? 'compare-trading-platforms' : 'compare-crm')} className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
             <div className='p-4 relative flex items-center '>
                 <div className='absolute top-3 left-0 w-1 h-[26px] bg-primary rounded-r-[4px]'></div>
                 <h3 className='text-base text-black100 font-semibold uppercase'>
-                    COMPARE {isEducation ? 'TRADING COURSES' : isBridge ? 'BRIDGE PROVIDERS' : isLiquidity? 'LIQUIDITY PROVIDERS': isPSP ? 'PSP PARTNERS' : 'CRM'}
+                    COMPARE {isEducation ? 'TRADING COURSES' : isBridge ? 'BRIDGE PROVIDERS' : isLiquidity? 'LIQUIDITY PROVIDERS': isPSP ? 'PSP PARTNERS' : isTrading ? 'TRADING PLATFORMS' : 'CRM'}
                 </h3>
             </div>
             <div className='px-4 pb-4'>
@@ -575,7 +645,9 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                                 'Skill level',
                                                 'Learning format',
                                                 'Deployment Type',
+                                                'Deployment',
                                                 'Best For',
+                                                'Best for',
                                                 'Pricing model',
                                                 'HQ / Region',
                                                 'MT4/MT5',
@@ -602,13 +674,22 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                                 'Fiat currencies',
                                                 'Integration',
                                                 'KYB required',
-                                                'Mass payout'
+                                                'Mass payout',
+                                                'Platform type',
+                                                'White label price',
+                                                'Server licence',
+                                                'Charting',
+                                                'MT5 backend',
+                                                'Prop firm tools',
+                                                'Yearly commitment',
+                                                'Hosting included',
+                                                `Clients (${new Date().getFullYear()})`
                                             ].includes(stat.label);
 
                                             return (
                                                 <div
                                                     key={i}
-                                                    className={`grid grid-cols-[120px_1fr] gap-4 py-2 border-b border-[#e6e6e6] items-start ${(isEducation || isBridge || isLiquidity || isPSP) && needsAlignment ? 'min-h-[63px]' : ''}`}
+                                                    className={`grid grid-cols-[120px_1fr] gap-4 py-2 border-b border-[#e6e6e6] items-start ${(isEducation || isBridge || isLiquidity || isPSP || isTrading) && needsAlignment ? 'min-h-[63px]' : ''}`}
                                                 >
                                                     <span className="text-[14px] font-medium text-black700">{stat.label}</span>
                                                     <div className="flex justify-end">
@@ -627,6 +708,9 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                                         {stat.type === 'badge-danger' && (
                                                             <span className="bg-[#FEE2E2] text-[#991B1B] text-[11px] font-semibold px-4 py-0.5 rounded-full">{stat.value}</span>
                                                         )}
+                                                        {stat.type === 'badge-success' && (
+                                                            <span className="bg-[#E5F0DF] text-[#296D2C] text-[11px] font-semibold px-4 py-0.5 rounded-full">{stat.value}</span>
+                                                        )}
                                                     </div>
                                                 </div>
                                             );
@@ -634,7 +718,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                     </div>
                                 </div>
                             ) : (
-                                <EmptyCompareSlot key={idx} isEducation={isEducation} isBridge={isBridge} isLiquidity={isLiquidity} isPSP={isPSP} onClick={() => {
+                                <EmptyCompareSlot key={idx} isEducation={isEducation} isBridge={isBridge} isLiquidity={isLiquidity} isPSP={isPSP} isTrading={isTrading} onClick={() => {
                                     // Find the first empty slot from left to right (excluding slot 0 which is always occupied)
                                     const firstEmptySlot = slots.findIndex((slot, index) => index > 0 && slot === null);
                                     setActiveSlot(firstEmptySlot !== -1 ? firstEmptySlot : idx);

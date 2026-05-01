@@ -19,6 +19,7 @@ import { Button } from "~/components/common/button"
 import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { FormMedia } from "~/components/common/form-media"
 import { H3 } from "~/components/common/heading"
+import { Checkbox } from "~/components/common/checkbox"
 import { Hint } from "~/components/common/hint"
 import { Input, inputVariants } from "~/components/common/input"
 import { Link } from "~/components/common/link"
@@ -155,7 +156,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       overall_review_rating: broker?.overall_review_rating ?? null,
       total_reviews: broker?.total_reviews ?? "",
       faqs: broker?.faqs ?? [],
-      deployment_type: broker?.deployment_type ?? DeploymentType.Both,
+      deployment_type: broker?.deployment_type ?? [],
       starting_price: broker?.starting_price ?? "",
       bestFor: broker?.bestFor ?? [],
       free_trial_available: broker?.free_trial_available ?? false,
@@ -163,8 +164,8 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       support_channels: broker?.support_channels ?? [],
       support_hours: broker?.support_hours ?? "",
       languages_supported: broker?.languages_supported ?? [],
-      pricingModel: broker?.pricingModel ?? PricingModel.MonthlySaas,
-      provider_type: broker?.provider_type ?? ProviderType.OnlineAcademy,
+      pricingModel: broker?.pricingModel ?? [],
+      provider_type: broker?.provider_type ?? [],
       skill_level: broker?.skill_level ?? [],
       learning_format: broker?.learning_format ?? [],
       topics_covered: broker?.topics_covered ?? [],
@@ -192,6 +193,20 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       integration_type: broker?.integration_type ?? [],
       mass_payout: broker?.mass_payout ?? false,
       checkout_page: broker?.checkout_page ?? false,
+      platform_type: broker?.platform_type ?? [],
+      prop_firm_support: broker?.prop_firm_support ?? [],
+      brokers_onboarded: broker?.brokers_onboarded ?? "",
+      trader_accounts: broker?.trader_accounts ?? "",
+      white_label_price: broker?.white_label_price ?? "",
+      server_license: broker?.server_license ?? "",
+      charting_tools: broker?.charting_tools ?? [],
+      mt5_backend: broker?.mt5_backend ?? false,
+      yearly_commitment: broker?.yearly_commitment ?? false,
+      clients_count: broker?.clients_count ?? "",
+      hosting_included: broker?.hosting_included ?? false,
+      crm_integrations: broker?.crm_integrations ?? "",
+      liquidity_connect: broker?.liquidity_connect ?? "",
+      kyc_compliance: broker?.kyc_compliance ?? "",
       courseModules: broker?.courseModules ?? [],
       reviews: broker?.reviews?.map(review => ({
         ...review,
@@ -807,12 +822,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           )}
         />
 
-        <FeaturesField control={form.control} register={form.register} />
-        <AccountTypesField control={form.control} register={form.register} />
-        <LanguagesSupportedField control={form.control} register={form.register} />
-        <AssetClassesField control={form.control} register={form.register} />
-        <FAQsField control={form.control} register={form.register} />
-        <CourseModulesField control={form.control} register={form.register} />
+
 
 
 
@@ -820,83 +830,8 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
 
         <div className="col-span-full pt-4 border-t mt-4">
           <H3>Service & Support</H3>
-          <Hint>Details about deployment, pricing, and support channels</Hint>
+          <Hint>Additional service details</Hint>
         </div>
-
-        <Controller
-          control={form.control}
-          name="deployment_type"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Deployment Type</FieldLabel>
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.values(DeploymentType).map((type) => (
-                    <SelectItem key={type} value={type}>{type}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="starting_price"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Starting Price</FieldLabel>
-              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. $50/mo or Free" />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="pricingModel"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Pricing Model</FieldLabel>
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.values(PricingModel).map((model) => (
-                    <SelectItem key={model} value={model}>{model}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="provider_type"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Provider Type</FieldLabel>
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.values(ProviderType).map((type) => (
-                    <SelectItem key={type} value={type}>{type}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
 
         <Controller
           control={form.control}
@@ -949,6 +884,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
+
         <div className="col-span-full pt-4 border-t mt-4">
           <H3>Liquidity Provider Details</H3>
           <Hint>Specific fields for Bridge & Liquidity Providers</Hint>
@@ -993,39 +929,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           <Hint>Specific fields for Bridge Providers</Hint>
         </div>
 
-        <Controller
-          control={form.control}
-          name="solution_type"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Solution Type</FieldLabel>
-              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. FIX API, Bridge" />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-        <Controller
-          control={form.control}
-          name="latency"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Latency</FieldLabel>
-              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. < 1ms" />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-        <Controller
-          control={form.control}
-          name="setup_time"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Setup Time</FieldLabel>
-              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. 24 hours" />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+
         <Controller
           control={form.control}
           name="white_label"
@@ -1046,73 +950,21 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           )}
         />
 
-        <TargetClientsField control={form.control} register={form.register} />
+        <FeaturesField control={form.control} register={form.register} />
+        <AccountTypesField control={form.control} register={form.register} />
+        <LanguagesSupportedField control={form.control} register={form.register} />
         <AssetClassesField control={form.control} register={form.register} />
+        <FAQsField control={form.control} register={form.register} />
+        <CourseModulesField control={form.control} register={form.register} />
+
+        <TargetClientsField control={form.control} register={form.register} />
         <LiquiditySourcesField control={form.control} register={form.register} />
         <BestSuitedForField control={form.control} register={form.register} />
-
         <OutcomesField control={form.control} register={form.register} />
 
-        <div className="col-span-full grid grid-cols-1 @lg:grid-cols-2 gap-4">
-          <Controller
-            control={form.control}
-            name="bestFor"
-            render={({ field }) => (
-              <Field>
-                <FieldLabel>Best For (Business Size)</FieldLabel>
-                <div className="flex flex-wrap gap-4 mt-2">
-                  {Object.values(BusinessSize).map((size) => (
-                    <label key={size} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
-                        checked={field.value?.includes(size)}
-                        onChange={(e) => {
-                          const currentValues = field.value || []
-                          if (e.target.checked) {
-                            field.onChange([...currentValues, size])
-                          } else {
-                            field.onChange(currentValues.filter((v: any) => v !== size))
-                          }
-                        }}
-                      />
-                      <span className="text-sm">{size}</span>
-                    </label>
-                  ))}
-                </div>
-              </Field>
-            )}
-          />
 
-          <Controller
-            control={form.control}
-            name="support_channels"
-            render={({ field }) => (
-              <Field>
-                <FieldLabel>Support Channels</FieldLabel>
-                <div className="flex flex-wrap gap-4 mt-2">
-                  {Object.values(SupportChannel).map((channel) => (
-                    <label key={channel} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
-                        checked={field.value?.includes(channel)}
-                        onChange={(e) => {
-                          const currentValues = field.value || []
-                          if (e.target.checked) {
-                            field.onChange([...currentValues, channel])
-                          } else {
-                            field.onChange(currentValues.filter((v: any) => v !== channel))
-                          }
-                        }}
-                      />
-                      <span className="text-sm">{channel}</span>
-                    </label>
-                  ))}
-                </div>
-              </Field>
-            )}
-          />
+        <div className="col-span-full grid grid-cols-1 @lg:grid-cols-2 gap-4">
+
         </div>
 
         <IntegrationTypeField control={form.control} register={form.register} />
@@ -1330,65 +1182,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           <Hint>Educational content, learning formats, and additional features</Hint>
         </div>
 
-        <Controller
-          control={form.control}
-          name="skill_level"
-          render={({ field }) => (
-            <Field>
-              <FieldLabel>Skill Level</FieldLabel>
-              <div className="flex flex-wrap gap-4 mt-2">
-                {Object.values(SkillLevel).map((level) => (
-                  <label key={level} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
-                      checked={field.value?.includes(level)}
-                      onChange={(e) => {
-                        const currentValues = field.value || []
-                        if (e.target.checked) {
-                          field.onChange([...currentValues, level])
-                        } else {
-                          field.onChange(currentValues.filter((v: any) => v !== level))
-                        }
-                      }}
-                    />
-                    <span className="text-sm">{level}</span>
-                  </label>
-                ))}
-              </div>
-            </Field>
-          )}
-        />
 
-        <Controller
-          control={form.control}
-          name="learning_format"
-          render={({ field }) => (
-            <Field>
-              <FieldLabel>Learning Format</FieldLabel>
-              <div className="flex flex-wrap gap-4 mt-2">
-                {Object.values(LearningFormat).map((format) => (
-                  <label key={format} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
-                      checked={field.value?.includes(format)}
-                      onChange={(e) => {
-                        const currentValues = field.value || []
-                        if (e.target.checked) {
-                          field.onChange([...currentValues, format])
-                        } else {
-                          field.onChange(currentValues.filter((v: any) => v !== format))
-                        }
-                      }}
-                    />
-                    <span className="text-sm">{format}</span>
-                  </label>
-                ))}
-              </div>
-            </Field>
-          )}
-        />
 
         <TopicsCoveredField control={form.control} register={form.register} />
 
@@ -1557,6 +1351,196 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             </Field>
           )}
         />
+
+        <div className="col-span-full mt-8 mb-4">
+          <H3>Trading Platform Details</H3>
+          <hr className="mt-2" />
+        </div>
+
+        <PlatformTypeField control={form.control} register={form.register} />
+        <PropFirmSupportField control={form.control} register={form.register} />
+        <ChartingToolsField control={form.control} register={form.register} />
+
+        <Controller
+          control={form.control}
+          name="brokers_onboarded"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Brokers Onboarded</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="trader_accounts"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Trader Accounts</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="white_label_price"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>White Label Price</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="server_license"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Server License</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="clients_count"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Clients Count</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="mt5_backend"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>MT5 Backend</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="yearly_commitment"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Yearly Commitment</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <DeploymentTypeField control={form.control} register={form.register} />
+
+        <Controller
+          control={form.control}
+          name="starting_price"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Starting Price</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <PricingModelField control={form.control} register={form.register} />
+
+        <BestForField control={form.control} register={form.register} />
+        <SupportChannelsField control={form.control} register={form.register} />
+        <SkillLevelField control={form.control} register={form.register} />
+        <LearningFormatField control={form.control} register={form.register} />
+        <ProviderTypeField control={form.control} register={form.register} />
+
+        <Controller
+          control={form.control}
+          name="hosting_included"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Hosting Included</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="crm_integrations"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>CRM Integrations</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. Salesforce, HubSpot" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="liquidity_connect"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Liquidity Connect</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. Prime of Prime, Direct Bank" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="kyc_compliance"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>KYC & Compliance</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. Sumsub, Onfido" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+
+
 
         {broker?.submitterEmail && (
           <>
@@ -2337,6 +2321,433 @@ function IntegrationTypeField({ control, register }: { control: any, register: a
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Integration Type
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+function PlatformTypeField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "platform_type",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Platform Type</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`platform_type.${index}`)}
+              placeholder="Enter platform type"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Platform Type
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function PropFirmSupportField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "prop_firm_support",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Prop Firm Support</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`prop_firm_support.${index}`)}
+              placeholder="Enter prop firm support"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Prop Firm Support
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function ChartingToolsField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "charting_tools",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Charting Tools</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`charting_tools.${index}`)}
+              placeholder="Enter charting tool"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Charting Tool
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+function BestForField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "bestFor",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Best For</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`bestFor.${index}`)}
+              placeholder="e.g. Retail Brokers, Prop Firms, ECN"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Best For
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+function DeploymentTypeField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "deployment_type",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Deployment Type</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`deployment_type.${index}`)}
+              placeholder="e.g. Cloud, Self-Hosted, Web"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Deployment Type
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function PricingModelField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "pricingModel",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Pricing Model</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`pricingModel.${index}`)}
+              placeholder="e.g. Monthly SaaS, One-Time, License"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Pricing Model
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function SupportChannelsField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "support_channels",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Support Channels</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`support_channels.${index}`)}
+              placeholder="e.g. Email, Phone, Live Chat"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Support Channel
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function SkillLevelField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "skill_level",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Skill Level</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`skill_level.${index}`)}
+              placeholder="e.g. Beginner, Intermediate, Advanced"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Skill Level
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function LearningFormatField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "learning_format",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Learning Format</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`learning_format.${index}`)}
+              placeholder="e.g. Video, Text, Live Sessions"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Learning Format
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function ProviderTypeField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "provider_type",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Provider Type</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`provider_type.${index}`)}
+              placeholder="e.g. Online Academy, Mentor, Youtube"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Provider Type
         </Button>
       </Stack>
     </div>
