@@ -8,9 +8,9 @@ export default async function ForexCrmDetails({ broker, randomBrokers = [], trus
         <div>
             {/* <ForexCrmDetailsHero broker={broker} /> */}
             <BrokerDetailsHero broker={broker} heroFeatures={[
-                { value: broker.deployment_type || '-', label: 'Deployment' },
+                { value: broker.deployment_type && broker.deployment_type.length > 0 && broker.deployment_type.join(",") || '-', label: 'Deployment' },
                 { value: broker.starting_price || '-', label: 'Starting Price' },
-                { value: broker.bestFor?.join(', ') || '-', label: 'Best For' },
+                { value: broker.bestFor&& broker.bestFor.length>0 ? broker.bestFor?.join(', ') : '-', label: 'Best For' },
                 { value: broker.demoAccount ? 'Yes' : 'No', label: 'Demo Account' }
             ]} showDemo={true} showVerified={true} showCrmPara={true}/>
             {/* <BrokerDetailsView broker={broker} randomBrokers={randomBrokers} trustedBrokers={trustedBrokers} /> */}

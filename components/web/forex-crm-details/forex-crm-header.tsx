@@ -53,9 +53,9 @@ const Profilegroup = '/assets/images/profilegroup.svg';
 
 export default async function ForexCrmDetailsHero({ broker }: { broker: any }) {
     const heroFeatures = [
-        { value: broker.deployment_type || '-', label: 'Deployment' },
+        { value: broker.deployment_type && broker.deployment_type.length > 0 && broker.deployment_type.join(",") || '-', label: 'Deployment' },
         { value: broker.starting_price || '-', label: 'Starting Price' },
-        { value: broker.bestFor?.join(', ') || '-', label: 'Best For' },
+        { value: broker.bestFor&& broker.bestFor.length>0 ? broker.bestFor?.join(', ') : '-', label: 'Best For' },
         { value: broker.demoAccount?'Yes':'No', label: 'Demo Account' },
     ];
     const headerList = await headers()

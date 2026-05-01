@@ -89,7 +89,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
 
                         <TradingDetails broker={broker} sectionTitle={"Trading Course Details"} brokerDetails={[
 
-                            { label: "Provider Type", value: broker.provider_type ? String(broker.provider_type).replace(/OnlineAcademy/g, 'Online Academy') : "-" },
+                            { label: "Provider Type", value: broker.provider_type &&broker.provider_type.length>0?broker.provider_type.join(","): "-" },
 
                             { label: "Skill Levels", value: broker.skill_level && broker.skill_level.length > 0 ? String(broker.skill_level).replace(/,/g, ', ') : "-" },
 
@@ -103,7 +103,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
 
                         ]} additionalDetails={[
 
-                            { label: "Pricing Model", value: broker.pricingModel ? String(broker.pricingModel).replace(/,/g, ', ') : "-" },
+                            { label: "Pricing Model", value: broker.pricingModel&&broker.pricingModel.length>0 ? broker.pricingModel.join("/") : "-" },
 
                             { label: "HQ", value: broker.headquarters || "-" },
 

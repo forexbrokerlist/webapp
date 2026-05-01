@@ -127,7 +127,7 @@ export default function TrustedTrading({ platforms, title, description }: Truste
                                 transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.1 }}
                                 className='rounded-[16px] mb-6 border-[0.5px] border-[#A8DD15] bg-white shadow-[0_2px_20px_0_rgba(0,0,0,0.05)] overflow-hidden'
                             >
-                                <Link href={`/broker/${featured.slug}`}>
+                                <Link href={`/forex-broker/${featured.slug}`}>
                                 <div className='p-5 pb-0 relative z-10'>
                                     <div className='flex items-center justify-between pb-4 max-mobile:grid max-mobile:grid-cols-1 max-mobile:gap-3'>
                                         <div className='flex items-center gap-3'>

@@ -445,20 +445,20 @@ model Brokers {
   automated_traders_rating          Float?      
   investors_rating                  Float?        
   faqs                              FAQ[]
-  deployment_type                   DeploymentType   @default(Both)
+  deployment_type                   String[]         
   starting_price                    String?   
-  pricingModel                      PricingModel   @default(MonthlySaas)
-  bestFor                           BusinessSize[]
+  pricingModel                      String[]   
+  bestFor                           String[]
   free_trial_available              Boolean?   
   api_access                        Boolean?
-  support_channels                  SupportChannel[]
+  support_channels                  String[]
   support_hours                     String? 
   languages_supported               String[] 
   
-  provider_type                     ProviderType   @default(OnlineAcademy)
+  provider_type                     String[]
 
-  skill_level                       SkillLevel[]
-  learning_format                   LearningFormat[]
+  skill_level                       String[]
+  learning_format                   String[]
   topics_covered                    String[]          
   outcomes                          String[]
   certificate_available             Boolean?
@@ -506,7 +506,9 @@ mt5_backend                        Boolean?
 yearly_commitment                  Boolean? 
 clients_count                      String? 
 hosting_included                   Boolean? 
-
+crm_integrations                   String?   
+liquidity_connect                  String?   
+kyc_compliance                     String?      
 
 
   // Admin & Submission fields
