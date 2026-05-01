@@ -308,6 +308,9 @@ enum DeploymentType {
   Cloud
   SelfHosted
   Both
+  Web
+  Desktop
+  MobileApp
   Other
 }
 enum BusinessSize {
@@ -472,6 +475,40 @@ model Brokers {
   setup_time                        String?
   liquiditySources                  String[]
   best_suited_for                   String[]
+
+
+  // Liquidity Provider 
+  peak_capacity                     String? 
+  global_hubs                       String[]
+  no_last_look                      Boolean?
+
+
+// PSP Partner 
+ company_type                       String? 
+ settlement_time                    String?   
+ auto_fiat_conversion               Boolean?  
+ kyb_required                        Boolean?  
+ supported_cryptos                  String?
+ fiat_currencies                    String?
+integration_type                   String[]
+mass_payout                       Boolean?   
+checkout_page                        Boolean?   
+
+// Trading Platform 
+platform_type                      String[] 
+prop_firm_support                  String[] 
+brokers_onboarded                  String?  
+trader_accounts                    String?  
+white_label_price                  String?
+server_license                     String?
+charting_tools                     String[] 
+mt5_backend                        Boolean? 
+yearly_commitment                  Boolean? 
+clients_count                      String? 
+hosting_included                   Boolean? 
+
+
+
   // Admin & Submission fields
   submitterName  String?
   submitterEmail String?

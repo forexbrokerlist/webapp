@@ -19,7 +19,8 @@ import CompareBrokers from '../forex-crm-details/compare-crm';
 const ForexImage = '/assets/images/FBL Logo.png';
 
 
-export default function ForexBridgeProviderDetailsView({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
+export default function LiquidityProviderDetailsView({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
+    console.log('LiquidityProviderDetailsView - randomBrokers:', randomBrokers);
     return (
         <div>
             <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 '>
@@ -28,37 +29,71 @@ export default function ForexBridgeProviderDetailsView({ broker, randomBrokers =
                         <TableOfContents
                             broker={broker}
                             items={[
-                                "Tool Details",
+                                "Provider Details",
                                 "Trading Specifications",
                                 "Best Suited For",
-                                "Tool Review",
+                                "Provider Review",
                                 "User Review",
-                                "Compare Bridge Providers",
+                                "Compare Liquidity Providers",
                                 "FAQ"
                             ]}
                         />
                     </div>
                     <div className='grid grid-cols-1 gap-5'>
-                        <TradingDetails broker={broker}  tradingDetailsLabel="Tool Details" tradingDetailsId="tool-details" leftHeader='Provider Details' rightHeader='Technical Specs'   leftSideDetails={ [
+                        <TradingDetails broker={broker}  tradingDetailsLabel="Company Details" tradingDetailsId="provider-details" leftHeader='Provider Details' rightHeader='Technical Specs'   leftSideDetails={ [
         { label: "Company Type", value: broker.bestFor && broker.bestFor.length>0&&broker.bestFor.join("/") || "-" },
        
        { label: "Headquarters", value: broker.headquarters || "-" },
         { label: "Established", value: broker.year_established || "-" },
-        { label: "Solution Type", value: broker.solution_type || "-" },
-        { label: "Execution Type", value: broker.execution_types || "-" },
-        { label: "Target Clients", value: broker.target_clients&&broker.target_clients.length>0&&broker.target_clients.join("+") || "-" },
+         
+        { label: "Execution Model", value: broker.execution_types || "-" },
+        { label: "Regulators", value: broker.regulators || "-" },
+       
+        { 
+            label: "Target Clients", 
+            value: broker.target_clients && broker.target_clients.length > 0 
+                ? (broker.target_clients.length > 2 
+                    ? `${broker.target_clients.slice(0, 2).join(", ")}, +${broker.target_clients.length - 2} others`
+                    : broker.target_clients.join(", "))
+                : "-" 
+        },
         { label: "Pricing Model", value: broker.pricingModel&&broker.pricingModel.length>0&&broker.pricingModel || "-" },
         { label: "Demo/Trial", value: (broker.demoAccount || broker.free_trial_available) ? "Available" : "Not Available", isNew: true, isPositive: !!(broker.demoAccount || broker.free_trial_available) },
        
     ]} rightSideDetails={[ 
         { label: "Compatible Platforms", value: broker.trading_platforms || "-" },
-        { label: "Latency", value: broker.latency || "-" },
-        { label: "Liquidity Sources", value: broker.liquiditySources&&broker.liquiditySources.length>0&&broker.liquiditySources.join(", ") || "-" },
-        { label: "Assets Classes", value: broker.asset_classes&&broker.asset_classes.length>0&&broker.asset_classes.join(", ") || "-" },
+       
+        { label: "Execution Latency", value: broker.latency || "-" },
+        { label: "Peak Capacity", value: broker.peak_capacity || "-" },
+        // { 
+        //     label: "Liquidity Sources", 
+        //     value: broker.liquiditySources && broker.liquiditySources.length > 0 
+        //         ? (broker.liquiditySources.length > 3 
+        //             ? `${broker.liquiditySources.slice(0, 3).join(", ")}, +${broker.liquiditySources.length - 3} others`
+        //             : broker.liquiditySources.join(", "))
+        //         : "-" 
+        // },
+        { 
+            label: "Assets Classes", 
+            value: broker.asset_classes && broker.asset_classes.length > 0 
+                ? (broker.asset_classes.length > 3 
+                    ? `${broker.asset_classes.slice(0, 3).join(", ")}, +${broker.asset_classes.length - 3} others`
+                    : broker.asset_classes.join(", "))
+                : "-" 
+        },
+        { label: "Execution Type", value: broker.execution_types || "-" },
+        { 
+            label: "Global Hubs", 
+            value: broker.global_hubs && broker.global_hubs.length > 0 
+                ? (broker.global_hubs.length > 2 
+                    ? `${broker.global_hubs.slice(0, 2).join(", ")}, +${broker.global_hubs.length - 2} others`
+                    : broker.global_hubs.join(", "))
+                : "-" 
+        },
         { label: "White Label", value: broker.white_label?"Yes":"No",isPositive:broker.white_label },
         { label: "API access", value: broker.api_access?"Yes--Fixed API":"No",isPositive:broker.api_access },
-        { label: "Support", value: broker.support_hours || "-" },
-        {label:"Setup Time",value:broker.setup_time||"-"}
+        // { label: "Support", value: broker.support_hours || "-" },
+        // {label:"Setup Time",value:broker.setup_time||"-"}
 
         
         
@@ -68,7 +103,7 @@ export default function ForexBridgeProviderDetailsView({ broker, randomBrokers =
                         <BrokerReview
                             broker={broker}
                             reviewTitle={`${broker?.broker_name || '-'} Review ${new Date().getFullYear()} — Liquidity Bridge & Execution Engine for Forex Brokers `}
-                            sectionId="tool-review"
+                            sectionId="provider-review"
                         />
                         <UserReview />
                         <CompareBrokers broker={broker} trustedBrokers={trustedBrokers} />
@@ -103,7 +138,7 @@ export default function ForexBridgeProviderDetailsView({ broker, randomBrokers =
                                 </Link>
                             </Button>
                         </div>
-                        <SuggestedBroker brokers={randomBrokers} suggestionTitle='Suggested Bridge Providers'  />
+                        <SuggestedBroker brokers={randomBrokers} suggestionTitle='Suggested Liquidity Providers'  />
                     </div>
                 </div>
             </div>

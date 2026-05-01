@@ -152,8 +152,20 @@ export const brokerSchema = z.object({
   latency: z.string().optional(),
   white_label: z.boolean().optional().nullable(),
   setup_time: z.string().optional(),
+  peak_capacity: z.string().optional(),
+  global_hubs: z.array(z.string()).optional(),
+  no_last_look: z.boolean().optional().nullable(),
   liquiditySources: z.array(z.string()).optional(),
   best_suited_for: z.array(z.string()).optional(),
+  company_type: z.string().optional(),
+  settlement_time: z.string().optional(),
+  auto_fiat_conversion: z.boolean().optional().nullable(),
+  kyb_required: z.boolean().optional().nullable(),
+  supported_cryptos: z.string().optional(),
+  fiat_currencies: z.string().optional(),
+  integration_type: z.array(z.string()).optional(),
+  mass_payout: z.boolean().optional().nullable(),
+  checkout_page: z.boolean().optional().nullable(),
   courseModules: z
     .array(
       z.object({

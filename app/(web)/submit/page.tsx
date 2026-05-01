@@ -41,6 +41,7 @@ import { findTags } from "~/server/web/tags/queries"
 import { findPlanBySlug, findPlans } from "~/server/web/plans/queries"
 import { getServerSession } from "~/lib/auth"
 import { Hint } from "~/components/common/hint"
+import TextBanner from "~/components/textBanner"
 
 export default async function ({ searchParams }: { searchParams: Promise<{ plan?: string, cancelled?: string }> }) {
   const { plan: planSlug, cancelled } = await searchParams
@@ -54,15 +55,16 @@ export default async function ({ searchParams }: { searchParams: Promise<{ plan?
 
   return (
     <>
-      <div className="pt-[140px] pb-100 max-mobile:pb-16 max-mobile:pt-[120px]">
-        <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
-          <Intro className="pb-10">
-            <IntroTitle>{metadata.title}</IntroTitle>
-            <IntroDescription>{metadata.description}</IntroDescription>
-          </Intro>
+      <TextBanner
+        title="Submit Your"
+        highlightedText="Forex Broker"
+        description="Listing your broker on forex brokers listing is a great way to get more we list high quality brokers that help traders succeed."
+      />
+      <div className="pt-10 pb-100 max-mobile:pb-16">
+        <div className="max-w-[1280px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
 
-          <Section>
-            <Section.Content>
+          <>
+            <>
               {!session?.user && (
                 <Hint className="mb-6 p-4 bg-muted rounded-lg text-center font-medium">
                   You must be logged in to submit a broker.
@@ -76,10 +78,12 @@ export default async function ({ searchParams }: { searchParams: Promise<{ plan?
                 plans={allPlans}
                 isCancelled={cancelled === "true"}
               />
-            </Section.Content>
-          </Section>
+            </>
+          </>
         </div>
       </div>
+      <div className='w-full h-[1px] bg-[linear-gradient(90deg,#F0F1EC_0%,#A8DD15_50%,#F0F1EC_100%)]'></div>
+
     </>
   )
 }

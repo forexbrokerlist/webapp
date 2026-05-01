@@ -29,7 +29,7 @@ import { Sticky } from "~/components/web/ui/sticky"
 import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
-import { findBrokerBySlug,findRandomBridgeProviders } from "~/server/web/tools/queries"
+import { findBrokerBySlug,findRandomBridgeProviders,findBridgeProvidersForComparison } from "~/server/web/tools/queries"
 import { getPresignedUrlFromFull, getScreenshotFetchUrl } from "~/lib/media"
 import ForexBridgeProviderDetails from "~/components/web/forex-bridge-provider-details"
 
@@ -74,7 +74,15 @@ const getData = cache(async ({ params }: Props) => {
       logoUrl: await getPresignedUrlFromFull(b.logoUrl),
     }))
   )
-  return { broker: { ...broker, screenshotUrl },randomBrokers, ...data }
+  const trustedBrokersRaw = await findBridgeProvidersForComparison(12)
+    const trustedBrokers = await Promise.all(
+      trustedBrokersRaw.map(async (b) => ({
+        ...b,
+        logoUrl: await getPresignedUrlFromFull(b.logoUrl),
+      }))
+    )
+  const logoUrl = await getPresignedUrlFromFull(broker.logoUrl)
+  return { broker: { ...broker, screenshotUrl, logoUrl },randomBrokers,trustedBrokers, ...data }
 })
 
 
@@ -106,7 +114,7 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 }
 
 export default async function (props: Props) {
-  const { broker, metadata, structuredData,randomBrokers } = await getData(props)
+  const { broker, metadata, structuredData,randomBrokers,trustedBrokers } = await getData(props)
   const headerList = await headers()
 
 
@@ -212,7 +220,7 @@ export default async function (props: Props) {
           </Suspense>
         </Section.Sidebar>
       </Section> */}
-      <ForexBridgeProviderDetails broker={broker} randomBrokers={randomBrokers} />
+      <ForexBridgeProviderDetails broker={broker} randomBrokers={randomBrokers} trustedBrokers={trustedBrokers}/>
       <StructuredData data={structuredData} />
     </>
   )
