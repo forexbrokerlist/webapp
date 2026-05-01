@@ -1,13 +1,38 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/common/dialog'
-import { searchBrokersAction } from '~/app/(web)/broker/[slug]/actions';
+import { searchBrokersAction } from '~/app/(web)/forex-broker/[slug]/actions';
 import { X } from 'lucide-react';
 
-const StarIcon = ({ filled }: { filled: boolean }) => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill={filled ? "#FBA100" : "#E2E8F0"} xmlns="http://www.w3.org/2000/svg">
-        <path d="M12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26Z" />
-    </svg>
+const StarIcon = ({ fillPercentage }: { fillPercentage: number }) => (
+    <div className="relative inline-block w-4 h-4 shrink-0">
+        {/* Empty Star (Gray) */}
+        <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="#E2E8F0"
+            xmlns="http://www.w3.org/2000/svg"
+            className="absolute top-0 left-0"
+        >
+            <path d="M12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26Z" />
+        </svg>
+        {/* Filled Star (Yellow) clipped by width */}
+        <div
+            className="absolute top-0 left-0 overflow-hidden h-full"
+            style={{ width: `${fillPercentage}%` }}
+        >
+            <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="#FBA100"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path d="M12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26Z" />
+            </svg>
+        </div>
+    </div>
 );
 
 const BrandIcon = () => (
@@ -190,12 +215,22 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                         {broker.stats.map((stat: any, i: number) => {
                                             if (stat.type === 'star') {
                                                 return (
-                                                    <div key={i} className="flex justify-between items-center pt-4">
-                                                        <span className="text-[14px] font-semibold text-black700">{stat.label}</span>
-                                                        <div className="flex items-center gap-[2px]">
-                                                            {[1, 2, 3, 4, 5].map(star => (
-                                                                <StarIcon key={star} filled={star <= Math.round(Number(stat.value))} />
-                                                            ))}
+                                                    <div key={i} className="flex justify-between items-center py-2 border-b border-[#e6e6e6]">
+                                                        <span className="text-[14px] font-medium text-black700">{stat.label}</span>
+                                                        <div className="flex items-center gap-1.5 bg-[#F0F2EC66] rounded-full px-3 py-0.5 border border-[#1212120D]">
+                                                            <div className="flex items-center gap-[1px]">
+                                                                {[...Array(5)].map((_, i) => {
+                                                                    const rating = parseFloat(stat.value || '0');
+                                                                    const fillPercentage = Math.min(100, Math.max(0, (rating - i) * 100));
+                                                                    return (
+                                                                        <StarIcon
+                                                                            key={i}
+                                                                            fillPercentage={fillPercentage}
+                                                                        />
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                            <span className="text-[12px] font-bold text-black100">{stat.value}/5</span>
                                                         </div>
                                                     </div>
                                                 );

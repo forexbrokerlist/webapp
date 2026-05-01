@@ -178,8 +178,20 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       latency: broker?.latency ?? "",
       white_label: broker?.white_label ?? false,
       setup_time: broker?.setup_time ?? "",
+      peak_capacity: broker?.peak_capacity ?? "",
+      global_hubs: broker?.global_hubs ?? [],
+      no_last_look: broker?.no_last_look ?? false,
       liquiditySources: broker?.liquiditySources ?? [],
       best_suited_for: broker?.best_suited_for ?? [],
+      company_type: broker?.company_type ?? "",
+      settlement_time: broker?.settlement_time ?? "",
+      auto_fiat_conversion: broker?.auto_fiat_conversion ?? false,
+      kyb_required: broker?.kyb_required ?? false,
+      supported_cryptos: broker?.supported_cryptos ?? "",
+      fiat_currencies: broker?.fiat_currencies ?? "",
+      integration_type: broker?.integration_type ?? [],
+      mass_payout: broker?.mass_payout ?? false,
+      checkout_page: broker?.checkout_page ?? false,
       courseModules: broker?.courseModules ?? [],
       reviews: broker?.reviews?.map(review => ({
         ...review,
@@ -938,6 +950,45 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           )}
         />
         <div className="col-span-full pt-4 border-t mt-4">
+          <H3>Liquidity Provider Details</H3>
+          <Hint>Specific fields for Bridge & Liquidity Providers</Hint>
+        </div>
+
+        <Controller
+          control={form.control}
+          name="peak_capacity"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Peak Capacity</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. 50,000 orders/sec" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="no_last_look"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>No Last Look</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <GlobalHubsField control={form.control} register={form.register} />
+
+        <div className="col-span-full pt-4 border-t mt-4">
           <H3>Bridge Provider Details</H3>
           <Hint>Specific fields for Bridge Providers</Hint>
         </div>
@@ -1063,6 +1114,141 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
             )}
           />
         </div>
+
+        <IntegrationTypeField control={form.control} register={form.register} />
+
+        <div className="col-span-full pt-4 border-t mt-4">
+          <H3>PSP Partner Details</H3>
+          <Hint>Specific fields for Payment Service Providers</Hint>
+        </div>
+
+        <Controller
+          control={form.control}
+          name="company_type"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Company Type</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. Crypto Gateway, E-wallet" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="settlement_time"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Settlement Time</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. T+1, Instant" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="supported_cryptos"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Supported Cryptos</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. BTC, ETH, USDT" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="fiat_currencies"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Fiat Currencies</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. USD, EUR, GBP" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="auto_fiat_conversion"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Auto Fiat Conversion</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="kyb_required"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>KYB Required</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="mass_payout"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Mass Payout Support</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="checkout_page"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Hosted Checkout Page</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
 
         <Controller
           control={form.control}
@@ -1903,6 +2089,9 @@ const TARGET_CLIENT_OPTIONS = [
   "Banks",
   "White Labels",
   "Prop Trading Firms",
+  "Forex brokers",
+  "eCommerce",
+  "SaaS",
 ] as const
 
 function TargetClientsField({ control }: { control: any, register?: any }) {
@@ -2068,3 +2257,88 @@ function BestSuitedForField({ control, register }: { control: any, register: any
   )
 }
 
+function GlobalHubsField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "global_hubs",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Global Hubs</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`global_hubs.${index}`)}
+              placeholder="Enter global hub (e.g. London, Tokyo)"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Global Hub
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function IntegrationTypeField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "integration_type",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Integration Types</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`integration_type.${index}`)}
+              placeholder="Enter integration type (e.g. API, Hosted Page, SDK)"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Integration Type
+        </Button>
+      </Stack>
+    </div>
+  )
+}

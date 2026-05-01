@@ -139,7 +139,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
             {/* <Button size="md" variant="primary" className="px-7" asChild>
               <Link href="/submit">{t("navigation.submit")}</Link>
             </Button> */}
-            <div className='w-[50px] h-[50px] border cursor-pointer bg-white border-solid border-border-light800 transition-all duration-300 hover:border-primary flex items-center justify-center rounded-full'>
+            <div className='w-[50px] h-[50px] border cursor-pointer hidden bg-white border-solid border-border-light800 transition-all duration-300 hover:border-primary  items-center justify-center rounded-full'>
               <User className='text-black100 w-6 h-6' />
             </div>
             <UserMenu />

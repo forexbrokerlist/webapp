@@ -24,7 +24,7 @@ import BrokerReview from '../broker-details/broker-review';
 
 import UserReview from '../broker-details/user-review';
 
-// import CompareBrokers from './compare-crm';
+import CompareBrokers from '../forex-crm-details/compare-crm';
 
 import FaqSection from '../broker-details/faq-section';
 
@@ -75,7 +75,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
 
                                 "User Review",
 
-
+                                "Compare Trading Courses",
 
                                 "FAQ"
 
@@ -141,7 +141,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
 
                         <UserReview />
 
-                        {/* <CompareBrokers broker={broker} trustedBrokers={trustedBrokers} /> */}
+                        <CompareBrokers broker={broker} trustedBrokers={trustedBrokers} />
 
                         <FaqSection broker={broker} />
 

@@ -28,7 +28,7 @@ import { Sticky } from "~/components/web/ui/sticky"
 import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
-import { findBrokerBySlug, findRandomBrokers, findRandomCourses } from "~/server/web/tools/queries"
+import { findBrokerBySlug, findForexEducationProvidersForComparison, findRandomBrokers, findRandomCourses } from "~/server/web/tools/queries"
 import { db } from "~/services/db"
 import { getPresignedUrlFromFull, getScreenshotFetchUrl } from "~/lib/media"
 import ForexTradingCourseDetails from "~/components/web/forex-trading-course-details"
@@ -71,7 +71,13 @@ const getData = cache(async ({ params }: Props) => {
     screenshotUrl: b.screenshotUrl,
     categories: b.categories,
   }))
-
+ const trustedBrokersRaw = await findForexEducationProvidersForComparison(12)
+  const trustedBrokers = await Promise.all(
+    trustedBrokersRaw.map(async (b) => ({
+      ...b,
+      logoUrl: await getPresignedUrlFromFull(b.logoUrl),
+    }))
+  )
   // Debug: Log the final processed random brokers
   console.log('Final random brokers (simplified):', randomBrokers)
 
@@ -87,7 +93,7 @@ const getData = cache(async ({ params }: Props) => {
     structuredData: [generateCollectionPage(url, title, description)],
   })
 
-  return { broker: { ...broker, screenshotUrl, logoUrl }, randomBrokers, ...data }
+  return { broker: { ...broker, screenshotUrl, logoUrl }, randomBrokers,trustedBrokers, ...data }
 })
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
@@ -118,7 +124,7 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 }
 
 export default async function (props: Props) {
-  const { broker, randomBrokers, metadata, structuredData } = await getData(props)
+  const { broker, randomBrokers, metadata, structuredData,trustedBrokers} = await getData(props)
   const headerList = await headers()
 
   console.log('Page component - randomBrokers from getData:', randomBrokers)
@@ -227,7 +233,7 @@ export default async function (props: Props) {
         </Section.Sidebar>
       </Section> */}
 
-      <ForexTradingCourseDetails broker={broker} randomBrokers={randomBrokers} />
+      <ForexTradingCourseDetails broker={broker} randomBrokers={randomBrokers} trustedBrokers={trustedBrokers}/>
       <StructuredData data={structuredData} />
     </>
   )
