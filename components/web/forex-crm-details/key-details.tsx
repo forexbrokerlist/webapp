@@ -5,8 +5,8 @@ const RoundIcon = '/assets/images/round.svg';
 
 export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", brokerDetails, additionalDetails, learnSection = false, sectionId = "crm-details" }: { broker: any, sectionTitle?: String, brokerDetails?: any[], additionalDetails?: any[], learnSection?: boolean, sectionId?: string }) {
     const brokerDetailsList = brokerDetails || [
-        { label: "Deployment Type", value: broker.deployment_type || "-" },
-        { label: "Pricing Model", value: broker.pricingModel ? String(broker.pricingModel).replace(/MonthlySaas/g, 'Monthly SaaS') : "-" },
+        { label: "Deployment Type", value: broker.deployment_type&&broker.deployment_type>0&&broker.deployment_type.join(',') || "-" },
+        { label: "Pricing Model", value: broker.pricingModel&&broker.pricingModel.length>0 ? broker.pricingModel.join("/") : "-" },
         { label: "Starting Price", value: broker.starting_price || "-" },
         { label: "Free Demo", value: broker.demoAccount ? "Yes" : "No", isPositive: broker.demoAccount },
         { label: "Free Trial", value: broker.trialAccount ? "Yes" : "No", isPositive: broker.trialAccount },

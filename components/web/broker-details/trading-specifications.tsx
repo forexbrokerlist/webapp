@@ -6,7 +6,7 @@ import BestSuitedFor from '../forex-bridge-provider-details/bestSuitedFor';
 
 const RoundIcon = '/assets/images/round.svg';
 
-export default function TradingSpecifications({ broker, showTradingHours = true, showAccountFunding = true, showTradingSpreads = true, showStarRatings = true, showFeatures = false, platformSectionId = "platform-&-features",showSkills=false,bridgeTitle,showBestSuitedFor=false }: { broker: any, showTradingHours?: boolean, showAccountFunding?: boolean, showTradingSpreads?: boolean, showStarRatings?: boolean, showFeatures?: boolean, platformSectionId?: string,showSkills?:boolean,bridgeTitle?:string,showBestSuitedFor?:boolean}) {
+export default function TradingSpecifications({ broker, showTradingHours = true, showAccountFunding = true, accountFundingHeading="Account Funding", accountFundingDetails, tradingSpreadsHeading="Trading Costs & Spreads", tradingSpreadsDetails, showTradingSpreads = true,showStarRatings = true, showFeatures = false, platformSectionId = "platform-&-features",showSkills=false,bridgeTitle,showBestSuitedFor=false }: { broker: any, showTradingHours?: boolean, showAccountFunding?: boolean, accountFundingHeading?: string, accountFundingDetails?: any[], tradingSpreadsHeading?: string, tradingSpreadsDetails?: any[], showTradingSpreads?: boolean,showStarRatings?: boolean, showFeatures?: boolean, platformSectionId?: string,showSkills?:boolean,bridgeTitle?:string,showBestSuitedFor?:boolean,showAccountFounding?:string}) {
     const tradingHoursRaw = broker.trading_hours;
     let tradingHours: { label: string, value: string }[] = [];
 
@@ -42,7 +42,7 @@ export default function TradingSpecifications({ broker, showTradingHours = true,
     const col1 = tradingHours.slice(0, half);
     const col2 = tradingHours.slice(half);
 
-    const accountFunding = [
+    const accountFunding = accountFundingDetails || [
         { label: "Account Types", value: broker.accountTypes?.join(", ") || "-", isNew: true },
         { label: "Deposit Fee", value: broker.deposit_fees || "-", isPositive: parseFloat(broker.deposit_fees?.replace(/[^0-9.]/g, '') || '0') > 0 },
         { label: "Withdrawal Fee", value: broker.withdrawal_fee || "-", isPositive: parseFloat(broker.withdrawal_fee?.replace(/[^0-9.]/g, '') || '0') > 0 },
@@ -50,7 +50,7 @@ export default function TradingSpecifications({ broker, showTradingHours = true,
         { label: "Inactivity Fee", value: broker.inactivity_fee || "-" },
     ];
 
-    const tradingCostSpreads = [
+    const tradingCostSpreads = tradingSpreadsDetails || [
         { label: "EUR/USD", value: broker.average_trading_cost_eur_usd || "-", isNew: true, },
         { label: "GBP/USD", value: broker.average_trading_cost_gbp_usd || "-", },
         { label: "Gold", value: broker.average_trading_cost_gold || "-", },
@@ -108,7 +108,7 @@ export default function TradingSpecifications({ broker, showTradingHours = true,
                         <div className='flex items-center gap-2 pb-3'>
                             <img src={RoundIcon} alt="RoundIcon" className='block' />
                             <span className='block text-base font-medium text-black'>
-                                Account Funding:
+                                {accountFundingHeading}
                             </span>
                         </div>
                         <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
@@ -140,7 +140,7 @@ export default function TradingSpecifications({ broker, showTradingHours = true,
                         <div className='flex items-center gap-2 pb-3'>
                             <img src={RoundIcon} alt="RoundIcon" className='block' />
                             <span className='block text-base font-medium text-black'>
-                                Trading Cost & Spreads:
+                                {tradingSpreadsHeading}
                             </span>
                         </div>
                         <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>

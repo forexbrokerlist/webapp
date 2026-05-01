@@ -516,6 +516,45 @@ export const findRandomPSPPartners = async (
     skip,
   });
 };
+export const findRandomTradingPlatforms = async (
+  take: number = 3,
+  excludeSlug?: string,
+) => {
+  "use cache";
+
+  cacheTag("brokers");
+  cacheLife("minutes");
+
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "trading" },
+    ...(excludeSlug && { slug: { not: excludeSlug } }),
+  };
+
+  const itemCount = await db.brokers.count({ where: whereClause });
+
+  if (itemCount === 0) return [];
+
+  const skip = Math.max(0, Math.floor(Math.random() * (itemCount - take + 1)));
+
+  return db.brokers.findMany({
+    where: whereClause,
+    select: {
+      broker_name: true,
+      logoUrl: true,
+      screenshotUrl: true,
+      slug: true,
+      categories: {
+        select: {
+          slug: true,
+        },
+        take: 20,
+      },
+    },
+    take,
+    skip,
+  });
+};
 export const findBrokersForComparison = async (take: number = 20) => {
   // "use cache"
 
@@ -719,7 +758,7 @@ export const findCrmProvidersForComparison = async (take: number = 20) => {
       },
       {
         label: "Best For",
-        value: broker.bestFor?.join(", ") || "-",
+        value:broker.bestFor&& broker.bestFor.length>0 ? broker.bestFor?.join(', ') : '-',
         type: "text",
       },
       
@@ -821,7 +860,7 @@ export const findForexEducationProvidersForComparison = async (take: number = 20
       },
       {
         label: "Pricing model",
-        value: broker.pricingModel || "-",
+        value: broker.pricingModel&&broker.pricingModel.length>0 ? broker.pricingModel.join("/") : "-",
         type: "text",
       },
       {
@@ -912,7 +951,7 @@ export const findBridgeProvidersForComparison = async (take: number = 20) => {
       },
       {
         label: "Pricing model",
-        value: broker.pricingModel || "-",
+        value:broker.pricingModel && broker.pricingModel?.length>0 && broker.pricingModel.join('/') || "-",
         type: "text",
       },
       {
@@ -1013,7 +1052,7 @@ export const findLiquidityProvidersForComparison = async (take: number = 20) => 
       },
       {
         label: "Pricing model",
-        value: broker.pricingModel || "-",
+        value:broker.pricingModel && broker.pricingModel?.length>0 && broker.pricingModel.join('/') || "-",
         type: "text",
       },
       {
@@ -1137,4 +1176,122 @@ export const findPSPPartnersForComparison = async (take: number = 20) => {
       },
     ],
   }));
-};
+};
+
+
+
+export const findTradingPlatformsForComparison = async (take: number = 20) => {
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "trading" },
+  };
+
+  const rawBrokers = await db.brokers.findMany({
+    where: whereClause,
+    select: {
+      id: true,
+      broker_name: true,
+      slug: true,
+      logoUrl: true,
+      platform_type: true,
+      bestFor: true,
+      white_label_price: true,
+      server_license: true,
+      deployment_type: true,
+      charting_tools: true,
+      mt5_backend: true,
+      prop_firm_support: true,
+      setup_time: true,
+      yearly_commitment: true,
+      hosting_included: true,
+      demoAccount: true,
+      clients_count: true,
+      overall_rating: true,
+      type: {
+        select: { slug: true },
+      },
+    },
+    take,
+  });
+
+  return rawBrokers.map((broker) => ({
+    id: broker.id,
+    name: broker.broker_name || "Unknown Provider",
+    slug: broker.slug,
+    typeSlug: broker.type?.slug,
+    logoUrl: broker.logoUrl,
+    stats: [
+      {
+        label: "Platform type",
+        value: broker.platform_type?.join(" / ") || "-",
+        type: "text",
+      },
+      {
+        label: "Best for",
+        value:broker.bestFor&& broker.bestFor.length>0 ? broker.bestFor?.join(', ') : '-',
+        type: "text",
+      },
+      {
+        label: "White label price",
+        value: broker.white_label_price || "-",
+        type: "text",
+      },
+      {
+        label: "Server licence",
+        value: broker.server_license || "-",
+        type: "text",
+      },
+      {
+        label: "Deployment",
+        value: broker.deployment_type?.join(", ") || "-",
+        type: "text",
+      },
+      {
+        label: "Charting",
+        value: broker.charting_tools?.join(" + ") || "-",
+        type: "text",
+      },
+      {
+        label: "MT5 backend",
+        value: broker.mt5_backend ? "Supported" : "No",
+        type: broker.mt5_backend ? "badge-success" : "badge-danger",
+      },
+      {
+        label: "Prop firm tools",
+        value: broker.prop_firm_support?.join(", ") || "-",
+        type: "text",
+      },
+      {
+        label: "Setup time",
+        value: broker.setup_time || "-",
+        type: "text",
+      },
+      {
+        label: "Yearly commitment",
+        value: broker.yearly_commitment ? "Required" : "Not required",
+        type: broker.yearly_commitment ? "badge-danger" : "badge-success",
+      },
+      {
+        label: "Hosting included",
+        value: broker.hosting_included ? "Yes" : "No",
+        type: broker.hosting_included ? "badge-success" : "badge-danger",
+      },
+      {
+        label: "Demo available",
+        value: broker.demoAccount ? "Yes" : "No",
+        type: broker.demoAccount ? "badge-success" : "badge-danger",
+      },
+      {
+        label: `Clients (${new Date().getFullYear()})`,
+        value: broker.clients_count || "-",
+        type: "text",
+      },
+      {
+        label: "Score",
+        value: broker.overall_rating || "0",
+        type: "star",
+      },
+    ],
+  }));
+};
+ 

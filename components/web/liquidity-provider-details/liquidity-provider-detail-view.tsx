@@ -57,7 +57,7 @@ export default function LiquidityProviderDetailsView({ broker, randomBrokers = [
                     : broker.target_clients.join(", "))
                 : "-" 
         },
-        { label: "Pricing Model", value: broker.pricingModel&&broker.pricingModel.length>0&&broker.pricingModel || "-" },
+        { label: "Pricing Model", value: broker.pricingModel&&broker.pricingModel.trim().length>0 ? broker.pricingModel.join("/") : "-" },
         { label: "Demo/Trial", value: (broker.demoAccount || broker.free_trial_available) ? "Available" : "Not Available", isNew: true, isPositive: !!(broker.demoAccount || broker.free_trial_available) },
        
     ]} rightSideDetails={[ 

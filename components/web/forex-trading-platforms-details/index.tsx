@@ -1,20 +1,18 @@
 import React from 'react'
-// import ForexPSPDetailsView from './forex-psp-details-view'
 import BrokerDetailsHero from '../broker-details/broker-details-hero'
+import ForexTradingPlatformsView from './forex-trading-platforms-view'
 
 export default async function ForexTradingPlatformsDetails({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
-    console.log("Crm broker", broker)
+    console.log("Trading Platform broker", broker)
     return (
         <div>
-            {/* <ForexCrmDetailsHero broker={broker} /> */}
             <BrokerDetailsHero broker={broker} heroFeatures={[
-                { value: broker.broker_name || '-', label: 'Name' },
-                { value: broker.headquarters || '-', label: 'Headquarters' },
-                { value: broker.year_established || '-', label: 'Est' },
-                { value: broker.overall_rating ? broker.overall_rating + '/5' : '-', label: 'Score' }
+                { value: broker.clients_count || '-', label: `Brokers Onboarded ${new Date().getFullYear()}` },
+                { value: broker.white_label_price || '-', label: 'White Label/Month' },
+                { value: broker.trader_accounts || '-', label: 'Trader Accounts' },
+                { value: broker.setup_time || '-', label: `Setup & Launch Time` },
             ]} showDemo={true} showVerified={true} showCrmPara={true}/>
-            {/* <BrokerDetailsView broker={broker} randomBrokers={randomBrokers} trustedBrokers={trustedBrokers} /> */}
-            {/* <ForexPSPDetailsView broker={broker} randomBrokers={randomBrokers} trustedBrokers={trustedBrokers} /> */}
+            <ForexTradingPlatformsView broker={broker} randomBrokers={randomBrokers} trustedBrokers={trustedBrokers} />
         </div>
     )
 }
