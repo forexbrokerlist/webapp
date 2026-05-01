@@ -8,10 +8,8 @@
     {
       "path": "/api/cron/update-broker-screenshots",
       "schedule": "0 0 1 * *"
-    },
-    {
-      "path": "/api/cron/update-broker-logos",
-      "schedule": "0 2 1 * *"
     }
+
   ]
 }
+  
