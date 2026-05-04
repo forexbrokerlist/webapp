@@ -180,6 +180,22 @@ export const brokerSchema = z.object({
   crm_integrations: z.string().optional(),
   liquidity_connect: z.string().optional(),
   kyc_compliance: z.string().optional(),
+  verified_performance: z.string().optional(),
+  bot_type: z.string().optional(),
+  strategy_type: z.array(z.string()).optional(),
+  risk_levels: z.array(z.string()).optional(),
+  win_rate: z.string().optional(),
+  trades_per_day: z.string().optional(),
+  supported_pairs: z.array(z.string()).optional(),
+  nfa_fifo: z.boolean().optional().nullable(),
+  ecn_compatible: z.boolean().optional().nullable(),
+  vps_required: z.boolean().optional().nullable(),
+  mobile_support: z.boolean().optional().nullable(),
+  gold_plan_price: z.string().optional(),
+  gold_plan_statements: z.array(z.string()).optional(),
+  diamond_plan_price: z.string().optional(),
+  diamond_plan_statements: z.array(z.string()).optional(),
+  automation_level: z.string().optional(),
   courseModules: z
     .array(
       z.object({

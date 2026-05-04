@@ -3,10 +3,11 @@ import PlatformFeatures from './platform-features';
 import ProsCons from './pros-cons';
 import TopicsSkillsSection from '../forex-trading-course-details/topics-skills-section';
 import BestSuitedFor from '../forex-bridge-provider-details/bestSuitedFor';
+import AlgoPricingSection from '../forex-algo-provider-details/algo-pricing-section';
 
 const RoundIcon = '/assets/images/round.svg';
 
-export default function TradingSpecifications({ broker, showTradingHours = true, showAccountFunding = true, accountFundingHeading="Account Funding", accountFundingDetails, tradingSpreadsHeading="Trading Costs & Spreads", tradingSpreadsDetails, showTradingSpreads = true,showStarRatings = true, showFeatures = false, platformSectionId = "platform-&-features",showSkills=false,bridgeTitle,showBestSuitedFor=false }: { broker: any, showTradingHours?: boolean, showAccountFunding?: boolean, accountFundingHeading?: string, accountFundingDetails?: any[], tradingSpreadsHeading?: string, tradingSpreadsDetails?: any[], showTradingSpreads?: boolean,showStarRatings?: boolean, showFeatures?: boolean, platformSectionId?: string,showSkills?:boolean,bridgeTitle?:string,showBestSuitedFor?:boolean,showAccountFounding?:string}) {
+export default function TradingSpecifications({ broker, showTradingHours = true, showAccountFunding = true, accountFundingHeading="Account Funding", accountFundingDetails, tradingSpreadsHeading="Trading Costs & Spreads", tradingSpreadsDetails, showTradingSpreads = true,showStarRatings = true, showFeatures = false, platformSectionId = "platform-&-features",showSkills=false,bridgeTitle,showBestSuitedFor=false,showPricingSection=false}: { broker: any, showTradingHours?: boolean, showAccountFunding?: boolean, accountFundingHeading?: string, accountFundingDetails?: any[], tradingSpreadsHeading?: string, tradingSpreadsDetails?: any[], showTradingSpreads?: boolean,showStarRatings?: boolean, showFeatures?: boolean, platformSectionId?: string,showSkills?:boolean,bridgeTitle?:string,showBestSuitedFor?:boolean,showAccountFounding?:string,showPricingSection?:boolean}) {
     const tradingHoursRaw = broker.trading_hours;
     let tradingHours: { label: string, value: string }[] = [];
 
@@ -174,9 +175,12 @@ export default function TradingSpecifications({ broker, showTradingHours = true,
            {showSkills&&       <div id="topics-skills">
                                             <TopicsSkillsSection broker={broker} />
                                         </div>
-            }    {!showSkills && !showBestSuitedFor && <PlatformFeatures bridgeTitle={bridgeTitle} broker={broker} showStarRatings={showStarRatings} showFeatures={showFeatures} />}
+            }    {!showSkills && !showBestSuitedFor && !showPricingSection && <PlatformFeatures bridgeTitle={bridgeTitle} broker={broker} showStarRatings={showStarRatings} showFeatures={showFeatures} />}
             {!showSkills&&showBestSuitedFor&&broker?.best_suited_for.length>0&&
             <BestSuitedFor bridgeTitle={bridgeTitle} broker={broker} showStarRatings={showStarRatings} showFeatures={showFeatures} />
+            }
+            {!showSkills&&!showBestSuitedFor&&showPricingSection &&
+            <AlgoPricingSection  broker={broker}   />
             }
                 <div className='pt-4'>
                     <ProsCons broker={broker} />

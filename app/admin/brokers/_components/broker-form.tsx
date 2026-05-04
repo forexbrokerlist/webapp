@@ -207,6 +207,22 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       crm_integrations: broker?.crm_integrations ?? "",
       liquidity_connect: broker?.liquidity_connect ?? "",
       kyc_compliance: broker?.kyc_compliance ?? "",
+      verified_performance: broker?.verified_performance ?? "",
+      bot_type: broker?.bot_type ?? "",
+      strategy_type: broker?.strategy_type ?? [],
+      risk_levels: broker?.risk_levels ?? [],
+      win_rate: broker?.win_rate ?? "",
+      trades_per_day: broker?.trades_per_day ?? "",
+      supported_pairs: broker?.supported_pairs ?? [],
+      nfa_fifo: broker?.nfa_fifo ?? false,
+      ecn_compatible: broker?.ecn_compatible ?? false,
+      vps_required: broker?.vps_required ?? false,
+      mobile_support: broker?.mobile_support ?? false,
+      gold_plan_price: broker?.gold_plan_price ?? "",
+      gold_plan_statements: broker?.gold_plan_statements ?? [],
+      diamond_plan_price: broker?.diamond_plan_price ?? "",
+      diamond_plan_statements: broker?.diamond_plan_statements ?? [],
+      automation_level: broker?.automation_level ?? "",
       courseModules: broker?.courseModules ?? [],
       reviews: broker?.reviews?.map(review => ({
         ...review,
@@ -1356,6 +1372,184 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           <H3>Trading Platform Details</H3>
           <hr className="mt-2" />
         </div>
+
+        <div className="col-span-full pt-4 border-t mt-4">
+          <H3>Forex Bot Provider Details</H3>
+          <Hint>Specific fields for Forex Bot Providers</Hint>
+        </div>
+
+        <Controller
+          control={form.control}
+          name="verified_performance"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Verified By</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. Myfxbook " />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="bot_type"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Bot Type</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. Scalper, Grid, News" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <StrategyTypeField control={form.control} register={form.register} />
+        <RiskLevelsField control={form.control} register={form.register} />
+
+        <Controller
+          control={form.control}
+          name="win_rate"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Win Rate</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. 75%" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="trades_per_day"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Trades Per Day</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. 5-10" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <SupportedPairsField control={form.control} register={form.register} />
+
+        <Controller
+          control={form.control}
+          name="automation_level"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Automation Level</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. Fully Automated, Semi-Automated" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="nfa_fifo"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>NFA/FIFO Compliant</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="ecn_compatible"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>ECN Compatible</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="vps_required"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>VPS Required</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="mobile_support"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Mobile Support</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="gold_plan_price"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Gold Plan Price</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. $499" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <GoldPlanStatementsField control={form.control} register={form.register} />
+
+        <Controller
+          control={form.control}
+          name="diamond_plan_price"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Diamond Plan Price</FieldLabel>
+              <Input id={field.name} {...field} value={field.value || ''} placeholder="e.g. $999" />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <DiamondPlanStatementsField control={form.control} register={form.register} />
 
         <PlatformTypeField control={form.control} register={form.register} />
         <PropFirmSupportField control={form.control} register={form.register} />
@@ -2748,6 +2942,220 @@ function ProviderTypeField({ control, register }: { control: any, register: any 
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Provider Type
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+function StrategyTypeField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "strategy_type",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Strategy Type</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`strategy_type.${index}`)}
+              placeholder="e.g. Trend Following, Scalping, Arbitrage"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Strategy Type
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function RiskLevelsField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "risk_levels",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Risk Levels</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`risk_levels.${index}`)}
+              placeholder="e.g. Low, Medium, High"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Risk Level
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function SupportedPairsField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "supported_pairs",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Supported Pairs</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`supported_pairs.${index}`)}
+              placeholder="e.g. EURUSD, GBPUSD, XAUUSD"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Supported Pair
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function GoldPlanStatementsField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "gold_plan_statements",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Gold Plan Statements (Links)</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`gold_plan_statements.${index}`)}
+              placeholder="Enter statement link (Myfxbook, MQL5, etc.)"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Gold Plan Statement
+        </Button>
+      </Stack>
+    </div>
+  )
+}
+
+function DiamondPlanStatementsField({ control, register }: { control: any, register: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "diamond_plan_statements",
+  })
+
+  return (
+    <div className="col-span-full">
+      <FieldLabel>Diamond Plan Statements (Links)</FieldLabel>
+      <Stack className="mt-2">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2">
+            <Input
+              {...register(`diamond_plan_statements.${index}`)}
+              placeholder="Enter statement link (Myfxbook, MQL5, etc.)"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(index)}
+              className="shrink-0"
+            >
+              <Trash className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="normal"
+          size="sm"
+          onClick={() => append("")}
+          className="w-full"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Diamond Plan Statement
         </Button>
       </Stack>
     </div>

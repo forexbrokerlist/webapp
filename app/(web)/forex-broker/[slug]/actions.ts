@@ -374,6 +374,91 @@ export async function searchBrokersAction(query: string, typeSlug: string = "bro
                     type: "star",
                 },
             ];
+        } else if (typeSlug === "botprovider") {
+            stats = [
+                {
+                    label: "Bot type",
+                    value: broker.bot_type?.replace(/\s*\(.*?\)/g, "") || "-",
+                    type: "text",
+                },
+                {
+                    label: "Strategy",
+                    value: broker.strategy_type && broker.strategy_type.length > 0
+                        ? broker.strategy_type.map(s => s.replace(/\s*\(.*?\)/g, "")).join(", ")
+                        : "-",
+                    type: "text",
+                },
+                {
+                    label: "Automation level",
+                    value: broker.automation_level&&broker.automation_level.length>0 ?broker.automation_level:"-",
+                    
+                    type: broker.automation_level?.toLowerCase().includes("fully") ? "badge-success" : "badge-warning",
+                },
+                {
+                    label: "Compatible platforms",
+                    value: broker.trading_platforms
+                        ? (() => {
+                            const platformList = broker.trading_platforms
+                                .split(",")
+                                .map((r: string) => r.replace(/\s*\(.*?\)/g, "").trim())
+                                .filter(Boolean);
+                            if (platformList.length <= 2) return platformList.join(", ");
+                            return `${platformList.slice(0, 2).join(", ")}, +${platformList.length - 2} others`;
+                        })()
+                        : "-",
+                    type: "text",
+                },
+                {
+                    label: "Win rate",
+                    value: broker.win_rate || "-",
+                    type: "text",
+                },
+                {
+                    label: "Verified performance",
+                    value: broker.verified_performance || "No",
+                    type: broker.verified_performance && broker.verified_performance !== "No" ? "badge-success" : "badge-danger",
+                },
+                {
+                    label: "Pricing model",
+                    value: broker.pricingModel && broker.pricingModel.length > 0 ? broker.pricingModel.join("/") : "-",
+                    type: "text",
+                },
+                {
+                    label: "Price",
+                    value: broker.starting_price || "-",
+                    type: "text",
+                },
+                {
+                    label: "Free trial",
+                    value: broker.free_trial_available ? "Yes" : broker.demoAccount ? "Demo only" : "No",
+                    type: broker.free_trial_available ? "badge-dark" : broker.demoAccount ? "badge-warning" : "badge-danger",
+                },
+                {
+                    label: "Best for",
+                    value: broker.bestFor && broker.bestFor.length > 0 ? broker.bestFor.join(" + ") : "-",
+                    type: "text",
+                },
+                {
+                    label: "Min deposit",
+                    value: broker.minimum_deposit || "-",
+                    type: "text",
+                },
+                {
+                    label: "Trades/day",
+                    value: broker.trades_per_day || "-",
+                    type: "text",
+                },
+                {
+                    label: "NFA/FIFO compatible",
+                    value: broker.nfa_fifo ? "Yes" : "No",
+                    type: broker.nfa_fifo ? "badge-success" : "badge-danger",
+                },
+                {
+                    label: "Score",
+                    value: broker.overall_rating || "0",
+                    type: "star",
+                },
+            ];
         } else {
             // Default broker stats
             stats = [

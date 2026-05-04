@@ -555,6 +555,45 @@ export const findRandomTradingPlatforms = async (
     skip,
   });
 };
+export const findRandomAlgoProviders = async (
+  take: number = 3,
+  excludeSlug?: string,
+) => {
+  "use cache";
+
+  cacheTag("brokers");
+  cacheLife("minutes");
+
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "botprovider" },
+    ...(excludeSlug && { slug: { not: excludeSlug } }),
+  };
+
+  const itemCount = await db.brokers.count({ where: whereClause });
+
+  if (itemCount === 0) return [];
+
+  const skip = Math.max(0, Math.floor(Math.random() * (itemCount - take + 1)));
+
+  return db.brokers.findMany({
+    where: whereClause,
+    select: {
+      broker_name: true,
+      logoUrl: true,
+      screenshotUrl: true,
+      slug: true,
+      categories: {
+        select: {
+          slug: true,
+        },
+        take: 20,
+      },
+    },
+    take,
+    skip,
+  });
+};
 export const findBrokersForComparison = async (take: number = 20) => {
   // "use cache"
 
@@ -1177,7 +1216,132 @@ export const findPSPPartnersForComparison = async (take: number = 20) => {
     ],
   }));
 };
+export const findAlgoProvidersForComparison = async (take: number = 20) => {
+  const whereClause: Prisma.BrokersWhereInput = {
+    status: ToolStatus.Published,
+    type: { slug: "botprovider" },
+  };
+  
+  const rawBrokers = await db.brokers.findMany({
+    where: whereClause,
+    select: {
+      id: true,
+      broker_name: true,
+      slug: true,
+      logoUrl: true,
+      bot_type: true,
+      strategy_type: true,
+      automation_level: true,
+      trading_platforms: true,
+      win_rate: true,
+      verified_performance: true,
+      pricingModel: true,
+      starting_price: true,
+      free_trial_available: true,
+      demoAccount: true,
+      bestFor: true,
+      minimum_deposit: true,
+      trades_per_day: true,
+      nfa_fifo: true,
+      overall_rating: true,
+      type: {
+        select: { slug: true }
+      }
+    },
+    take,
+  });
 
+  return rawBrokers.map((broker) => ({
+    id: broker.id,
+    name: broker.broker_name || "Unknown Provider",
+    slug: broker.slug,
+    typeSlug: broker.type?.slug,
+    logoUrl: broker.logoUrl,
+    stats: [
+      {
+        label: "Bot type",
+        value: broker.bot_type?.replace(/\s*\(.*?\)/g, "") || "-",
+        type: "text",
+      },
+      {
+        label: "Strategy",
+        value: broker.strategy_type && broker.strategy_type.length > 0
+          ? broker.strategy_type.map(s => s.replace(/\s*\(.*?\)/g, "")).join(", ")
+          : "-",
+        type: "text",
+      },
+      {
+        label: "Automation level",
+        value: broker.automation_level || "-",
+        type: broker.automation_level?.toLowerCase().includes("fully") ? "badge-success" : broker.automation_level ? "badge-warning" : "text",
+      },
+      {
+        label: "Compatible platforms",
+        value: broker.trading_platforms
+          ? (() => {
+              const platformList = broker.trading_platforms
+                .split(",")
+                .map((r: string) => r.replace(/\s*\(.*?\)/g, "").trim())
+                .filter(Boolean);
+              if (platformList.length <= 2) return platformList.join(", ");
+              return `${platformList.slice(0, 2).join(", ")}, +${platformList.length - 2} others`;
+            })()
+          : "-",
+        type: "text",
+      },
+      {
+        label: "Win rate",
+        value: broker.win_rate || "-",
+        type: "text",
+      },
+      {
+        label: "Verified performance",
+        value: broker.verified_performance || "No",
+        type: broker.verified_performance && broker.verified_performance !== "No" ? "badge-success" : "badge-danger",
+      },
+      {
+        label: "Pricing model",
+        value: broker.pricingModel && broker.pricingModel.length > 0 ? broker.pricingModel.join("/") : "-",
+        type: "text",
+      },
+      {
+        label: "Price",
+        value: broker.starting_price || "-",
+        type: "text",
+      },
+      {
+        label: "Free trial",
+        value: broker.free_trial_available ? "Yes" : broker.demoAccount ? "Demo only" : "No",
+        type: broker.free_trial_available ? "badge-dark" : broker.demoAccount ? "badge-warning" : "badge-danger",
+      },
+      {
+        label: "Best for",
+        value: broker.bestFor && broker.bestFor.length > 0 ? broker.bestFor.join(" + ") : "-",
+        type: "text",
+      },
+      {
+        label: "Min deposit",
+        value: broker.minimum_deposit || "-",
+        type: "text",
+      },
+      {
+        label: "Trades/day",
+        value: broker.trades_per_day || "-",
+        type: "text",
+      },
+      {
+        label: "NFA/FIFO compatible",
+        value: broker.nfa_fifo ? "Yes" : "No",
+        type: broker.nfa_fifo ? "badge-success" : "badge-danger",
+      },
+      {
+        label: "Score",
+        value: broker.overall_rating || "0",
+        type: "star",
+      },
+    ],
+  }));
+};
 
 
 export const findTradingPlatformsForComparison = async (take: number = 20) => {

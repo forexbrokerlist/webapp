@@ -510,6 +510,23 @@ crm_integrations                   String?
 liquidity_connect                  String?   
 kyc_compliance                     String?      
 
+// Forex Bot Provider
+verified_performance               String? 
+bot_type                           String? 
+strategy_type                      String[] 
+risk_levels                        String[] 
+win_rate                           String? 
+trades_per_day                     String? 
+supported_pairs                    String[] 
+nfa_fifo                           Boolean? 
+ecn_compatible                     Boolean?
+vps_required                       Boolean? 
+mobile_support                     Boolean?
+gold_plan_price                    String? 
+gold_plan_statements               String[]
+diamond_plan_price                 String? 
+diamond_plan_statements            String[] 
+automation_level                   String? 
 
   // Admin & Submission fields
   submitterName  String?
