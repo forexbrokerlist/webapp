@@ -1,0 +1,17 @@
+-- AlterTable
+ALTER TABLE "forex_brokers" ADD COLUMN     "automation_level" TEXT,
+ADD COLUMN     "bot_type" TEXT,
+ADD COLUMN     "diamond_plan_price" TEXT,
+ADD COLUMN     "diamond_plan_statements" TEXT[],
+ADD COLUMN     "ecn_compatible" BOOLEAN,
+ADD COLUMN     "gold_plan_price" TEXT,
+ADD COLUMN     "gold_plan_statements" TEXT[],
+ADD COLUMN     "mobile_support" BOOLEAN,
+ADD COLUMN     "nfa_fifo" BOOLEAN,
+ADD COLUMN     "risk_levels" TEXT[],
+ADD COLUMN     "strategy_type" TEXT[],
+ADD COLUMN     "supported_pairs" TEXT[],
+ADD COLUMN     "trades_per_day" TEXT,
+ADD COLUMN     "verified_performance" TEXT,
+ADD COLUMN     "vps_required" BOOLEAN,
+ADD COLUMN     "win_rate" TEXT;

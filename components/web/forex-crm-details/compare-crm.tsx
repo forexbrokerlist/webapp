@@ -45,7 +45,7 @@ const BrandIcon = () => (
 
 
 
-const EmptyCompareSlot = ({ onClick, isEducation, isBridge, isLiquidity, isPSP, isTrading }: { onClick: () => void, isEducation: boolean, isBridge: boolean, isLiquidity: boolean, isPSP: boolean, isTrading: boolean }) => (
+const EmptyCompareSlot = ({ onClick, isEducation, isBridge, isLiquidity, isPSP, isTrading, isAlgo }: { onClick: () => void, isEducation: boolean, isBridge: boolean, isLiquidity: boolean, isPSP: boolean, isTrading: boolean, isAlgo: boolean }) => (
     <div onClick={onClick} className="relative rounded-xl border-[1.5px] border-dashed border-[#A8DD15] bg-[#FBFCFA] p-4 flex flex-col items-center justify-center text-center overflow-hidden cursor-pointer hover:bg-[#F5F8EA] transition-colors">
         {/* Decorative Circles */}
         <svg className="absolute top-[-30px] right-[-30px] opacity-40 pointer-events-none" width="180" height="180" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -64,8 +64,8 @@ const EmptyCompareSlot = ({ onClick, isEducation, isBridge, isLiquidity, isPSP, 
                 </svg>
             </div>
         </div>
-        <h4 className="text-[16px] font-bold text-[#1A1A1A] mb-2 z-10">Compare {isEducation ? 'Trading Courses' : isBridge ? 'Bridge Providers' : isLiquidity ? 'Liquidity Providers' : isPSP ? 'PSP Partners' : isTrading ? 'Trading Platforms' : 'CRM Software'}</h4>
-        <p className="text-[13px] text-[#666666] max-w-[220px] leading-relaxed z-10">Click to select another {isEducation ? 'trading course' : isBridge ? 'bridge provider' : isLiquidity ? 'liquidity provider' : isPSP ? 'PSP partner' : isTrading ? 'trading platform' : 'CRM software'} and see a detailed side-by-side comparison</p>
+        <h4 className="text-[16px] font-bold text-[#1A1A1A] mb-2 z-10">Compare {isEducation ? 'Trading Courses' : isBridge ? 'Bridge Providers' : isLiquidity ? 'Liquidity Providers' : isPSP ? 'PSP Partners' : isTrading ? 'Trading Platforms' : isAlgo ? 'Algo Bot Providers' : 'CRM Software'}</h4>
+        <p className="text-[13px] text-[#666666] max-w-[220px] leading-relaxed z-10">Click to select another {isEducation ? 'trading course' : isBridge ? 'bridge provider' : isLiquidity ? 'liquidity provider' : isPSP ? 'PSP partner' : isTrading ? 'trading platform' : isAlgo ? 'algo bot provider' : 'CRM software'} and see a detailed side-by-side comparison</p>
     </div>
 );
 
@@ -94,6 +94,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
     const isLiquidity = broker.type?.slug === 'liquidity';
     const isPSP = broker.type?.slug === 'psp';
     const isTrading = broker.type?.slug === 'trading';
+    const isAlgo = broker.type?.slug === 'botprovider';
 
     const initialBrokers = [
         {
@@ -418,6 +419,90 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                         },
                         { label: "Overall rating", value: broker.overall_rating, type: "star" }
                     ];
+                } else if (isAlgo) {
+                    return [
+                        {
+                            label: "Bot type",
+                            value: broker.bot_type?.replace(/\s*\(.*?\)/g, "") || "-",
+                            type: "text",
+                        },
+                        {
+                            label: "Strategy",
+                            value: broker.strategy_type && broker.strategy_type.length > 0
+                                ? broker.strategy_type.map((s: string) => s.replace(/\s*\(.*?\)/g, "")).join(", ")
+                                : "-",
+                            type: "text",
+                        },
+                        {
+                            label: "Automation level",
+                            value: broker.automation_level&&broker.automation_level.length>0 ?broker.automation_level:"-",
+                            type:  "text",
+                        },
+                        {
+                            label: "Compatible platforms",
+                            value: broker.trading_platforms
+                                ? (() => {
+                                    const platformList = broker.trading_platforms
+                                        .split(",")
+                                        .map((r: string) => r.replace(/\s*\(.*?\)/g, "").trim())
+                                        .filter(Boolean);
+                                    if (platformList.length <= 2) return platformList.join(", ");
+                                    return `${platformList.slice(0, 2).join(", ")}, +${platformList.length - 2} others`;
+                                })()
+                                : "-",
+                            type: "text",
+                        },
+                        {
+                            label: "Win rate",
+                            value: broker.win_rate || "-",
+                            type: "text",
+                        },
+                        {
+                            label: "Verified performance",
+                            value: broker.verified_performance || "No",
+                            type: "text",
+                        },
+                        {
+                            label: "Pricing model",
+                            value: broker.pricingModel && broker.pricingModel.length > 0 ? broker.pricingModel.join("/") : "-",
+                            type: "text",
+                        },
+                        {
+                            label: "Price",
+                            value: broker.starting_price || "-",
+                            type: "text",
+                        },
+                        {
+                            label: "Free trial",
+                            value: broker.free_trial_available ? "Yes" : broker.demoAccount ? "Demo only" : "No",
+                            type: broker.free_trial_available ? "badge-dark" : broker.demoAccount ? "badge-warning" : "badge-danger",
+                        },
+                        {
+                            label: "Best for",
+                            value: broker.bestFor && broker.bestFor.length > 0 ? broker.bestFor.join(" + ") : "-",
+                            type: "text",
+                        },
+                        {
+                            label: "Min deposit",
+                            value: broker.minimum_deposit || "-",
+                            type: "text",
+                        },
+                        {
+                            label: "Trades/day",
+                            value: broker.trades_per_day || "-",
+                            type: "text",
+                        },
+                        {
+                            label: "NFA/FIFO compatible",
+                            value: broker.nfa_fifo ? "Yes" : "No",
+                            type: broker.nfa_fifo ? "badge-success" : "badge-danger",
+                        },
+                        {
+                            label: "Score",
+                            value: broker.overall_rating || "0",
+                            type: "star",
+                        },
+                    ];
                 }
 
                 const mt4 = broker.trading_platforms?.toLowerCase().includes('mt4');
@@ -484,7 +569,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(async () => {
-            const typeSlug = isEducation ? 'educationplatforms' : isBridge ? 'forexbridge' : isLiquidity ? 'liquidity' : isPSP ? 'psp' : isTrading ? 'trading' : 'crm';
+            const typeSlug = isEducation ? 'educationplatforms' : isBridge ? 'forexbridge' : isLiquidity ? 'liquidity' : isPSP ? 'psp' : isTrading ? 'trading' : isAlgo ? 'botprovider' : 'crm';
             if (searchTerm) {
                 setIsSearching(true);
                 try {
@@ -517,7 +602,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
         }, 300);
 
         return () => clearTimeout(delayDebounceFn);
-    }, [searchTerm, trustedBrokers, isEducation, isBridge, isLiquidity, isPSP, isTrading, slots]);
+    }, [searchTerm, trustedBrokers, isEducation, isBridge, isLiquidity, isPSP, isTrading, isAlgo, slots]);
 
     const handleSelectBroker = (broker: any) => {
         if (activeSlot === null) return;
@@ -562,17 +647,19 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                 return `/forex-trading-courses/${slug}`;
             case 'psp':
                 return `/forex-psp-partners/${slug}`;
+            case 'botprovider':
+                return `/algo-trading/${slug}`;
             default:
                 return `/broker/${slug}`;
         }
     };
 
     return (
-        <div id={sectionId || (isEducation ? 'compare-trading-courses' : isBridge ? 'compare-bridge-providers' : isLiquidity? 'compare-liquidity-providers': isPSP ? 'compare-psp-partners' : isTrading ? 'compare-trading-platforms' : 'compare-crm')} className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
+        <div id={sectionId || (isEducation ? 'compare-trading-courses' : isBridge ? 'compare-bridge-providers' : isLiquidity? 'compare-liquidity-providers': isPSP ? 'compare-psp-partners' : isTrading ? 'compare-trading-platforms' : isAlgo ? 'compare-algo-providers' : 'compare-crm')} className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
             <div className='p-4 relative flex items-center '>
                 <div className='absolute top-3 left-0 w-1 h-[26px] bg-primary rounded-r-[4px]'></div>
                 <h3 className='text-base text-black100 font-semibold uppercase'>
-                    COMPARE {isEducation ? 'TRADING COURSES' : isBridge ? 'BRIDGE PROVIDERS' : isLiquidity? 'LIQUIDITY PROVIDERS': isPSP ? 'PSP PARTNERS' : isTrading ? 'TRADING PLATFORMS' : 'CRM'}
+                    COMPARE {isEducation ? 'TRADING COURSES' : isBridge ? 'BRIDGE PROVIDERS' : isLiquidity? 'LIQUIDITY PROVIDERS': isPSP ? 'PSP PARTNERS' : isTrading ? 'TRADING PLATFORMS' : isAlgo ? 'ALGO BOT PROVIDERS' : 'CRM'}
                 </h3>
             </div>
             <div className='px-4 pb-4'>
@@ -683,13 +770,23 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                                                 'Prop firm tools',
                                                 'Yearly commitment',
                                                 'Hosting included',
-                                                `Clients (${new Date().getFullYear()})`
+                                                `Clients (${new Date().getFullYear()})`,
+                                                'Bot type',
+                                                'Strategy',
+                                                'Automation level',
+                                                'Win rate',
+                                                'Verified performance',
+                                                'Price',
+                                                'Free trial',
+                                                'Min deposit',
+                                                'Trades/day',
+                                                'NFA/FIFO compatible'
                                             ].includes(stat.label);
 
                                             return (
                                                 <div
                                                     key={i}
-                                                    className={`grid grid-cols-[120px_1fr] gap-4 py-2 border-b border-[#e6e6e6] items-start ${(isEducation || isBridge || isLiquidity || isPSP || isTrading) && needsAlignment ? 'min-h-[63px]' : ''}`}
+                                                    className={`grid grid-cols-[120px_1fr] gap-4 py-2 border-b border-[#e6e6e6] items-start ${(isEducation || isBridge || isLiquidity || isPSP || isTrading || isAlgo) && needsAlignment ? 'min-h-[63px]' : ''}`}
                                                 >
                                                     <span className="text-[14px] font-medium text-black700">{stat.label}</span>
                                                     <div className="flex justify-end">
@@ -718,7 +815,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                                     </div>
                                 </div>
                             ) : (
-                                <EmptyCompareSlot key={idx} isEducation={isEducation} isBridge={isBridge} isLiquidity={isLiquidity} isPSP={isPSP} isTrading={isTrading} onClick={() => {
+                                <EmptyCompareSlot key={idx} isEducation={isEducation} isBridge={isBridge} isLiquidity={isLiquidity} isPSP={isPSP} isTrading={isTrading} isAlgo={isAlgo} onClick={() => {
                                     // Find the first empty slot from left to right (excluding slot 0 which is always occupied)
                                     const firstEmptySlot = slots.findIndex((slot, index) => index > 0 && slot === null);
                                     setActiveSlot(firstEmptySlot !== -1 ? firstEmptySlot : idx);
@@ -737,11 +834,11 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
             }}>
                 <DialogContent className="max-w-6xl max-h-[85vh] overflow-hidden flex flex-col p-0 border-none shadow-2xl">
                     <DialogHeader className="p-6 pb-4 bg-white sticky top-0 z-10">
-                        <DialogTitle className="text-xl font-bold text-black100">Select {isEducation ? 'Trading Course' : isBridge ? 'Bridge Provider' : isLiquidity ? 'Liquidity Provider' : isPSP ? 'PSP Partner' : 'CRM Software'} to Compare</DialogTitle>
+                        <DialogTitle className="text-xl font-bold text-black100">Select {isEducation ? 'Trading Course' : isBridge ? 'Bridge Provider' : isLiquidity ? 'Liquidity Provider' : isPSP ? 'PSP Partner' : isAlgo ? 'Algo Bot Provider' : 'CRM Software'} to Compare</DialogTitle>
                         <div className="mt-4 relative">
                             <input
                                 type="text"
-                                placeholder={`Search ${isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : isPSP ? 'PSP partners' : 'CRM software'}...`}
+                                placeholder={`Search ${isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : isPSP ? 'PSP partners' : isAlgo ? 'algo bot providers' : 'CRM software'}...`}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-border-light300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
@@ -755,7 +852,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                         {isSearching ? (
                             <div className="py-10 text-center col-span-full">
                                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                                <p className="text-black600 font-medium">Searching {isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : isPSP ? 'PSP partners' : 'CRM software'}...</p>
+                                <p className="text-black600 font-medium">Searching {isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : isPSP ? 'PSP partners' : isAlgo ? 'algo bot providers' : 'CRM software'}...</p>
                             </div>
                         ) : displayBrokers.length > 0 ? (
                             displayBrokers.map((tb: any, i: number) => (
@@ -774,7 +871,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                                         </div>
                                         <div>
                                             <h5 className="font-bold text-black100 group-hover:text-primary transition-colors">{tb.name}</h5>
-                                            <p className="text-[12px] text-black600 font-medium">{tb.stats.find((s: any) => s.label === "Starting price" || s.label === "Skill level" || s.label === "Provider type" || s.label === "Company type")?.value || (isEducation ? "Education Provider" : isLiquidity ? "Liquidity Provider" : isPSP ? "PSP Partner" : "CRM Provider")}</p>
+                                            <p className="text-[12px] text-black600 font-medium">{tb.stats.find((s: any) => s.label === "Starting price" || s.label === "Skill level" || s.label === "Provider type" || s.label === "Company type" || s.label === "Bot type")?.value || (isEducation ? "Education Provider" : isLiquidity ? "Liquidity Provider" : isPSP ? "PSP Partner" : isAlgo ? "Algo Bot Provider" : "CRM Provider")}</p>
                                         </div>
                                     </div>
                                     <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -791,7 +888,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                                         <path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
                                 </div>
-                                <p className="text-black600 font-medium">No {isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : isPSP ? 'PSP partners' : 'CRM software'} found matching "{searchTerm}"</p>
+                                <p className="text-black600 font-medium">No {isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : isPSP ? 'PSP partners' : isAlgo ? 'algo bot providers' : 'CRM software'} found matching "{searchTerm}"</p>
                             </div>
                         )}
                     </div>

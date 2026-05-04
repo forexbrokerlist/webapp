@@ -51,7 +51,7 @@ const FramImage = '/assets/images/laptop-fram.png';
 const Profilegroup = '/assets/images/profilegroup.svg';
 
 
-export default async function BrokerDetailsHero({ broker, heroFeatures, showVerified = false, showDemo = false, showCrmPara = false, showBridgePara = false, showTrialAvailable=false,showBeginnerFriendly=false }: { broker: any, heroFeatures?: { value: string, label: string }[], showVerified?: boolean, showDemo?: boolean, showCrmPara?: boolean, showBridgePara?: boolean, showTrialAvailable?: boolean,showBeginnerFriendly?:boolean }) {
+export default async function BrokerDetailsHero({ broker, heroFeatures, showVerified = false, showDemo = false, showCrmPara = false, showBridgePara = false, showTrialAvailable=false,showBeginnerFriendly=false,showClients=false }: { broker: any, heroFeatures?: { value: string, label: string }[], showVerified?: boolean, showDemo?: boolean, showCrmPara?: boolean, showBridgePara?: boolean, showTrialAvailable?: boolean,showBeginnerFriendly?:boolean,showClients?:boolean }) {
     const defaultHeroFeatures = [
         { value: broker.minimum_deposit || 'N/A', label: 'Min Deposit' },
         { value: broker.minimum_raw_spreads || 'N/A', label: 'Raw Spread' },
@@ -83,7 +83,7 @@ export default async function BrokerDetailsHero({ broker, heroFeatures, showVeri
                                 <div >
                                     <div className='flex items-center gap-3'>
                                     <h2 className='text-4xl text-primary font-semibold'>
-                                        {broker?.broker_name}
+                                        {broker?.broker_name?.replace(/\s*\([^)]*\)/g, '')}
                                     </h2>
                                     {showVerified && broker?.isSponsor && (
                                         <Badge variant="info" size="md" className="rounded-full px-3">Verified</Badge>
@@ -100,7 +100,7 @@ export default async function BrokerDetailsHero({ broker, heroFeatures, showVeri
                                     </div>
                                    {
                                         (showCrmPara || showBridgePara)?<p className='text-base font-medium text-black100 flex items-center'>
-                                      {broker?.company_name&&`by`}  {broker?.company_name || broker?.subtitle||'-'} <span className='mx-2 opacity-50'>·</span> Founded {broker?.year_established ? Math.floor(broker.year_established) : '-'} <span className='mx-2 opacity-50'>·</span> {broker?.headquarters || '-'}
+                                      {broker?.company_name && `by ${broker.company_name}`} {!broker?.company_name && broker?.subtitle} <span className='mx-2 opacity-50'>·</span> Founded {broker?.year_established ? Math.floor(broker.year_established) : '-'} <span className='mx-2 opacity-50'>·</span> {!showClients ? (broker?.headquarters || '-') : `${broker?.clients_count || '0'} clients`}
                                     </p>:
                                    <p className='text-base font-medium text-black100'>
                                         {broker.subtitle || "750,000+ traders worldwide. 0.0 pip spreads, 99.5% fill rate"}
