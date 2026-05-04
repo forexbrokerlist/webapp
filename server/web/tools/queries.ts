@@ -270,6 +270,9 @@ export const findBrokerBySlug = async (slug: string) => {
       courseModules: {
         orderBy: { order: "asc" },
       },
+      reviews:{
+        orderBy:{createdAt:"desc"}
+      }
     },
   });
 };

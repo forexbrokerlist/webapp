@@ -20,6 +20,27 @@ const ForexImage = '/assets/images/FBL Logo.png';
 
 
 export default function ForexPSPDetailsView({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
+    // Build table of contents items dynamically based on content availability
+    const tableOfContentsItems = [];
+
+    // Always include these sections as they are core PSP information
+    tableOfContentsItems.push("Provider Details");
+    tableOfContentsItems.push("Trading Specifications");
+    tableOfContentsItems.push("Provider Review");
+
+    // Add User Review only if there are reviews
+    if (broker?.reviews && broker.reviews.length > 0) {
+        tableOfContentsItems.push("User Review");
+    }
+
+    // Always include Compare PSP Partners
+    tableOfContentsItems.push("Compare PSP Partners");
+
+    // Add FAQ only if there are FAQs
+    if (broker?.faqs && broker.faqs.length > 0) {
+        tableOfContentsItems.push("FAQ");
+    }
+
     return (
         <div>
             <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 '>
@@ -27,44 +48,36 @@ export default function ForexPSPDetailsView({ broker, randomBrokers = [], truste
                     <div>
                         <TableOfContents
                             broker={broker}
-                            items={[
-                                "Provider Details",
-                                "Trading Specifications",
-                               
-                                "Provider Review",
-                                "User Review",
-                                "Compare PSP Partners",
-                                "FAQ"
-                            ]}
+                            items={tableOfContentsItems}
                         />
                     </div>
                     <div className='grid grid-cols-1 gap-5'>
-                        <TradingDetails 
-                            broker={broker}  
-                            tradingDetailsLabel="Provider Details" 
-                            tradingDetailsId="provider-details" 
-                            leftHeader='Company Details' 
-                            rightHeader='Technical Specs'   
+                        <TradingDetails
+                            broker={broker}
+                            tradingDetailsLabel="Provider Details"
+                            tradingDetailsId="provider-details"
+                            leftHeader='Company Details'
+                            rightHeader='Technical Specs'
                             leftSideDetails={[
                                 { label: "Company Type", value: broker.company_type || "-" },
                                 { label: "Target Clients", value: broker.target_clients?.map((t: string) => t === "Forex brokers" ? "Brokers" : t).join(", ") || "-" },
-                              
+
                                 { label: "Settlement Time", value: broker.settlement_time || "-" },
                                 { label: "Auto Fiat Conversion", value: broker.auto_fiat_conversion ? "Yes" : "No", isPositive: broker.auto_fiat_conversion },
 
                                 { label: "KYB Required", value: broker.kyb_required ? "Yes" : "No", isPositive: broker.kyb_required },
-                                
+
                                 { label: "White Label", value: broker.white_label ? "Yes" : "No", isPositive: broker.white_label },
-                            ]} 
-                            rightSideDetails={[ 
+                            ]}
+                            rightSideDetails={[
                                 { label: "Supported Coins", value: broker.supported_cryptos || "-" },
 
                                 { label: "Fiat Currencies", value: broker.fiat_currencies || "-" },
-                                { label: "Integration", value: broker.integration_type&&broker.integration_type.length>0&&broker.integration_type.join(", ") || "-" },
-                              
+                                { label: "Integration", value: broker.integration_type && broker.integration_type.length > 0 && broker.integration_type.join(", ") || "-" },
+
                                 { label: "Checkout Page", value: broker.checkout_page ? "Yes" : "No", isPositive: broker.checkout_page },
                                 { label: "Mass Payout", value: broker.mass_payout ? "Yes" : "No", isPositive: broker.mass_payout },
-                              
+
                             ]}
                         />
                         <TradingSpecifications bridgeTitle={"Best Suited For"} broker={broker} showBestSuitedFor={true} showTradingHours={false} showAccountFunding={false} showTradingSpreads={false} showStarRatings={false} showFeatures={false} platformSectionId="platform-&-features" />
@@ -123,7 +136,7 @@ export default function ForexPSPDetailsView({ broker, randomBrokers = [], truste
                                 </Link>
                             </Button>
                         </div>
-                        <SuggestedBroker brokers={randomBrokers} suggestionTitle='Suggested PSP Partners'  />
+                        <SuggestedBroker brokers={randomBrokers} suggestionTitle='Suggested PSP Partners' />
                     </div>
                 </div>
             </div>
