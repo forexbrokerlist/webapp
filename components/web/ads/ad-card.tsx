@@ -48,7 +48,7 @@ const AdCard = async ({ className, type, explicitAd, fallback, ...props }: AdCar
           // Fallback to a custom banner
           <>
             <CardHeader wrap={false}>
-              <Favicon src={ad.faviconUrl ?? "/favicon.png"} title={ad.name} contained />
+              <Favicon src={ad.faviconUrl ?? "/favicon.png"} title={ad.name} contained className="size-16" />
 
               <H4 as="strong" className="truncate">
                 {ad.name}

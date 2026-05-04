@@ -46,7 +46,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
                             reviewTitle={`${broker?.broker_name || '-'} Review ${new Date().getFullYear()} — Forex CRM & Back Office Software for Brokers`}
                             sectionId="crm-review"
                         />
-                        <UserReview />
+                        <UserReview broker={broker} />
                         <CompareBrokers broker={broker} trustedBrokers={trustedBrokers} />
                         <FaqSection broker={broker} />
                     </div>

@@ -96,7 +96,7 @@ export default function ForexTradingPlatformsView({ broker, randomBrokers = [], 
                             reviewTitle={`${broker?.broker_name || '-'} Review ${new Date().getFullYear()} — Trading Platform for Forex Brokers`}
                             sectionId="platform-review"
                         />
-                        <UserReview />
+                        <UserReview broker={broker} />
                         <CompareBrokers broker={broker} trustedBrokers={trustedBrokers} sectionId="compare-trading-platforms" />
                         <FaqSection broker={broker} />
                     </div>

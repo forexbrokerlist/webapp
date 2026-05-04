@@ -77,7 +77,7 @@ export default function CategoriesCard({
         <>
             <section className='pb-100 max-mobile:pb-16'>
                 <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
-                    <div className='grid grid-cols-[1fr_390px_390px] max-tab:grid-cols-2 max-mobile:grid-cols-1 gap-6'>
+                    <div className='grid grid-cols-2 max-tab:grid-cols-2 max-mobile:grid-cols-1 gap-6'>
                         <div className='bg-white rounded-2xl items-center border border-solid border-border-light500 py-10 px-10 max-tab:py-8 max-tab:px-6 max-mobile:py-6 max-mobile:px-5 grid grid-cols-[1fr_333px] max-tab:grid-cols-1 gap-8'>
                             <div>
                                 <h2 className='text-2xl font-bold text-black100 mb-1.5 max-mobile:text-xl'>
@@ -187,7 +187,7 @@ export default function CategoriesCard({
                             <h2 className='text-2xl font-bold text-black100 mb-1.5 max-mobile:text-xl w-full'>
                                 {bridgeCategory?.label || bridgeCategory?.name || 'Bridge and Plug in Partners Tools'}
                             </h2>
-                            <p className='text-base text-black700 mb-5 font-medium max-w-[351px] max-mobile:text-sm w-full'>
+                            <p className='text-base text-black700 mb-5 font-medium  max-mobile:text-sm w-full'>
                                 {bridgeCategory?.description || 'A curated collection of bridge and plug-in partners to connect systems, automate workflows, and enhance functionality.'}
                             </p>
                             <div className='grid grid-cols-2 gap-x-4 gap-y-3 w-full mb-6'>
@@ -217,7 +217,7 @@ export default function CategoriesCard({
 
                             </div>
                         </div>
-                        <div className='bg-white relative rounded-2xl border border-solid border-border-light500 p-[30px] max-mobile:p-6 pb-5 flex flex-col'>
+                        {/* <div className='bg-white relative rounded-2xl border border-solid border-border-light500 p-[30px] max-mobile:p-6 pb-5 flex flex-col'>
                             <h2 className='text-2xl font-bold text-black100 mb-1.5 max-mobile:text-xl'>
                                 {crmCategory?.label || crmCategory?.name || 'CRM and Back Office Software Tools'}
                             </h2>
@@ -239,7 +239,7 @@ export default function CategoriesCard({
                                     </Link>
 
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                     <div className='pt-[30px] grid grid-cols-[390px_1fr_390px] max-tab:grid-cols-2 max-mobile:grid-cols-1 gap-6'>
                         <div className='bg-white overflow-hidden rounded-2xl border border-solid border-border-light500 flex flex-col'>

@@ -105,7 +105,7 @@ export default function LiquidityProviderDetailsView({ broker, randomBrokers = [
                             reviewTitle={`${broker?.broker_name || '-'} Review ${new Date().getFullYear()} — Liquidity Bridge & Execution Engine for Forex Brokers `}
                             sectionId="provider-review"
                         />
-                        <UserReview />
+                        <UserReview broker={broker}/>
                         <CompareBrokers broker={broker} trustedBrokers={trustedBrokers} />
                         <FaqSection broker={broker} />
                     </div>

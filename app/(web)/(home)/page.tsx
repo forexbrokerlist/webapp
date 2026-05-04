@@ -219,12 +219,12 @@ export default async function (props: any) {
         title={trustedCategory?.label || trustedCategory?.name || "Top-Rated Forex Brokers & Trading Platforms"}
         description={trustedCategory?.description || "Browse verified forex brokers and trading platforms, compare spreads, regulation, and features to find the right fit for your trading goals."}
       />
-      <CrmBackOffice
+      {/* <CrmBackOffice
         solutions={crmPlatform}
         category={crmCategory}
         title={crmCategory?.label || crmCategory?.name || "Forex CRM & Back Office Software for Brokers"}
         description={crmCategory?.description || "Compare forex CRM platforms and back office software providers designed to help brokers streamline operations, onboarding, and reporting."}
-      />
+      /> */}
       <ForexEducation
         partners={ForexPartners}
         category={ForexCategory}

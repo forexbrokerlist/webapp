@@ -89,7 +89,7 @@ export default function ForexPSPDetailsView({ broker, randomBrokers = [], truste
                             })()}
                             sectionId="provider-review"
                         />
-                        <UserReview />
+                        <UserReview broker={broker} />
                         <CompareBrokers broker={broker} trustedBrokers={trustedBrokers} />
                         <FaqSection broker={broker} />
                     </div>
