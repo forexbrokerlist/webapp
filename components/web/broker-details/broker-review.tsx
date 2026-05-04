@@ -94,9 +94,9 @@ export default function BrokerReview({ broker, reviewTitle, sectionId = "broker-
                         {finalSections.length > 0 ? (
                             finalSections.map((section: any, index: number) => (
                                 <div key={index} className='flex items-start gap-2'>
-                                    <div className='flex-shrink-0 pt-[3px]'>
+                                    {section.title && <div className='flex-shrink-0 pt-[3px]'>
                                         <TripleArrow />
-                                    </div>
+                                    </div>}
                                     <div className='flex flex-col'>
                                         {section.title && <h4 className='text-[16px] font-bold text-black100 mb-2'>{section.title}</h4>}
                                         <div className='text-[15px] font-medium text-black700 leading-[1.6]'>

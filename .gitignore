@@ -59,3 +59,5 @@ AGENTS.md
 # sitemap
 public/sitemap*.xml
 public/robots.txt
+
+backup.sql
