@@ -90,6 +90,15 @@ const upsert = adminProcedure
                 order: module.order || i + 1,
               })),
             },
+            reviews: {
+              deleteMany: {},
+              create: reviews?.map((review) => ({
+                reviewer_name: review.reviewer_name,
+                reviewer_location: review.reviewer_location,
+                review_rat: review.review_rat,
+                review_description: review.review_description,
+              })),
+            },
           },
         })
       : await db.brokers.create({
@@ -119,6 +128,14 @@ const upsert = adminProcedure
                 duration: module.duration,
                 topics: module.topics || [],
                 order: module.order || i + 1,
+              })),
+            },
+            reviews: {
+              create: reviews?.map((review) => ({
+                reviewer_name: review.reviewer_name,
+                reviewer_location: review.reviewer_location,
+                review_rat: review.review_rat,
+                review_description: review.review_description,
               })),
             },
           },

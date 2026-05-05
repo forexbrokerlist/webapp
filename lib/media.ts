@@ -204,18 +204,20 @@ export const enhanceLogo = async (
   buffer: Buffer,
   targetSize = 512,
 ): Promise<Buffer> => {
-  return sharp(buffer)
-    // Upscale with Lanczos3 — best quality interpolation for pixel-art & flat logos
-    .resize(targetSize, targetSize, {
-      fit: "contain",       // preserves aspect ratio, pads with transparency
-      background: { r: 0, g: 0, b: 0, alpha: 0 }, // transparent padding
-      kernel: sharp.kernel.lanczos3,
-    })
-    // Unsharp mask: radius=2, threshold=0 → gentle sharpening that works well on logos
-    .sharpen({ sigma: 1.2, m1: 0.5, m2: 1.5 })
-    // Lossless PNG — logos need sharp edges & exact colours, not lossy compression
-    .png({ compressionLevel: 8, palette: false })
-    .toBuffer();
+  return (
+    sharp(buffer)
+      // Upscale with Lanczos3 — best quality interpolation for pixel-art & flat logos
+      .resize(targetSize, targetSize, {
+        fit: "contain", // preserves aspect ratio, pads with transparency
+        background: { r: 0, g: 0, b: 0, alpha: 0 }, // transparent padding
+        kernel: sharp.kernel.lanczos3,
+      })
+      // Unsharp mask: radius=2, threshold=0 → gentle sharpening that works well on logos
+      .sharpen({ sigma: 1.2, m1: 0.5, m2: 1.5 })
+      // Lossless PNG — logos need sharp edges & exact colours, not lossy compression
+      .png({ compressionLevel: 8, palette: false })
+      .toBuffer()
+  );
 };
 
 /**
@@ -297,7 +299,9 @@ export const fetchAndUploadMedia = async (
 
     // Step 2: Fallback to Google if logo.dev returns nothing
     if (!buffer) {
-      console.log(`  ↩ logo.dev 404, trying Google favicon fallback for ${getDomain(url)}...`);
+      console.log(
+        `  ↩ logo.dev 404, trying Google favicon fallback for ${getDomain(url)}...`,
+      );
       const googleUrl = getFaviconFetchUrl(url);
       buffer = await fetchImageBuffer(googleUrl);
     }
@@ -312,7 +316,10 @@ export const fetchAndUploadMedia = async (
       const enhanced = await enhanceLogo(buffer);
       return uploadToS3Storage(enhanced, path);
     } catch (err) {
-      console.warn("Logo enhancement failed, uploading original:", getErrorMessage(err));
+      console.warn(
+        "Logo enhancement failed, uploading original:",
+        getErrorMessage(err),
+      );
       return uploadToS3Storage(buffer, path);
     }
   }

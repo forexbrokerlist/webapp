@@ -16,6 +16,28 @@ const ForexImage = '/assets/images/FBL Logo.png';
 
 
 export default function BrokerDetailsView({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
+    // Build table of contents items dynamically based on content availability
+    const tableOfContentsItems = [];
+
+    // Always include these sections as they are core broker information
+    tableOfContentsItems.push("Broker & Trading Details");
+    tableOfContentsItems.push("Trading Specifications");
+    tableOfContentsItems.push("Platform & Features");
+    tableOfContentsItems.push("Broker Review");
+
+    // Add User Review only if there are reviews
+    if (broker?.reviews && broker.reviews.length > 0) {
+        tableOfContentsItems.push("User Review");
+    }
+
+    // Add Compare Broker (always show for now, but could be made conditional)
+    tableOfContentsItems.push("Compare Broker");
+
+    // Add FAQ only if there are FAQs
+    if (broker?.faqs && broker.faqs.length > 0) {
+        tableOfContentsItems.push("FAQ");
+    }
+
     return (
         <div>
             <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 '>
@@ -23,22 +45,14 @@ export default function BrokerDetailsView({ broker, randomBrokers = [], trustedB
                     <div>
                         <TableOfContents
                             broker={broker}
-                            items={[
-                                "Broker & Trading Details",
-                                "Trading Specifications",
-                                "Platform & Features",
-                                "Broker Review",
-                                "User Review",
-                                "Compare Broker",
-                                "FAQ"
-                            ]}
+                            items={tableOfContentsItems}
                         />
                     </div>
                     <div className='grid grid-cols-1 gap-5'>
                         <TradingDetails broker={broker} />
                         <TradingSpecifications broker={broker} />
                         <BrokerReview broker={broker} reviewTitle='Broker Review' />
-                        <UserReview />
+                        <UserReview broker={broker} />
                         <CompareBrokers broker={broker} trustedBrokers={trustedBrokers} />
                         <FaqSection broker={broker} />
                     </div>

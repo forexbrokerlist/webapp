@@ -18,10 +18,10 @@ interface Platform {
     name: string;
     description: string;
     minDeposit: string;
-    logo: string;
+    logoUrl: string;
     isSponsor: boolean;
     rating: string;
-    slug:string ;
+    slug: string;
 }
 
 interface TrustedTradingProps {
@@ -41,31 +41,31 @@ const PlatformCard = ({ platform, index, delay = 0, className = "" }: { platform
         className={`rounded-[16px] mb-6 last:mb-0 border-[0.5px] border-[#A8DD15] p-5 max-laptop:p-4 bg-white shadow-[0_2px_20px_0_rgba(0,0,0,0.05)] ${className}`}
     >
         <Link href={`forex-broker/${platform.slug}`}>
-        <div className='flex items-center justify-between pb-4 max-mobile:grid max-mobile:grid-cols-1 max-mobile:gap-3'>
-            <div className='flex items-center gap-3'>
-                <div className='w-16 h-16 rounded-xl flex items-center justify-center bg-white shadow-[inset_0_0_15px_0_rgba(168,221,21,0.2)] overflow-hidden'>
-                    <Favicon src={platform.logo} title={platform.name} size={38} contained className="size-full" />
+            <div className='flex items-center justify-between pb-4 max-mobile:grid max-mobile:grid-cols-1 max-mobile:gap-3'>
+                <div className='flex items-center gap-3'>
+                    <div className='w-16 h-16 rounded-xl flex items-center justify-center bg-white shadow-[inset_0_0_15px_0_rgba(168,221,21,0.2)] overflow-hidden'>
+                        <Favicon src={platform.logoUrl} title={platform.name} size={38} contained className="size-full" />
+                    </div>
+                    <div className='flex items-center gap-2'>
+                        <h3 className='text-[22px] font-semibold font-monda text-black'>
+                            {platform.name}
+                        </h3>
+                        <VerifyIcon />
+                    </div>
                 </div>
-                <div className='flex items-center gap-2'>
-                    <h3 className='text-[22px] font-semibold font-monda text-black'>
-                        {platform.name}
-                    </h3>
-                    <VerifyIcon />
-                </div>
+
             </div>
-           
-        </div>
-        <p className='text-sm text-black800 font-medium mb-5 line-clamp-2'>
-            {platform.description}
-        </p>
-        <div className='flex items-center gap-2.5'>
-            <p className='text-sm uppercase text-black100 font-medium'>
-                MIN DEPOSIT:
+            <p className='text-sm text-black800 font-medium mb-5 line-clamp-2'>
+                {platform.description}
             </p>
-            <div className='w-fit text-sm font-medium text-black100 bg-[#F2F4F7] py-1.5 px-2.5 rounded-sm'>
-                {platform.minDeposit}
+            <div className='flex items-center gap-2.5'>
+                <p className='text-sm uppercase text-black100 font-medium'>
+                    MIN DEPOSIT:
+                </p>
+                <div className='w-fit text-sm font-medium text-black100 bg-[#F2F4F7] py-1.5 px-2.5 rounded-sm'>
+                    {platform.minDeposit}
+                </div>
             </div>
-        </div>
         </Link>
     </motion.div>
 );
@@ -86,10 +86,10 @@ export default function TrustedTrading({ platforms, title, description }: Truste
                         transition={{ duration: 0.6 }}
                     >
                         <h2 className='text-[42px] max-mobile:text-3xl leading-normal text-black100 font-bold font-monda'>
-                           {title}
+                            {title}
                         </h2>
                         <p className='text-lg max-mobile:text-base text-black700 font-medium max-w-[885px] whitespace-pre-line'>
-                          {description}
+                            {description}
                         </p>
                     </motion.div>
                     <motion.div
@@ -99,15 +99,15 @@ export default function TrustedTrading({ platforms, title, description }: Truste
                         className='max-mobile:pt-5'
                         transition={{ duration: 0.6, delay: 0.2 }}
                     >
-                          <Link href="/categories/trusted-trading-platforms">
-                        <Button variant='primary' size='md' className='flex items-center gap-2'>
-                         
-                            View More
-                            <div>
-                                <MoveRight />
-                            </div>
-                        </Button>
-                            </Link>
+                        <Link href="/categories/trusted-trading-platforms">
+                            <Button variant='primary' size='md' className='flex items-center gap-2'>
+
+                                View More
+                                <div>
+                                    <MoveRight />
+                                </div>
+                            </Button>
+                        </Link>
 
                     </motion.div>
                 </div>
@@ -128,20 +128,20 @@ export default function TrustedTrading({ platforms, title, description }: Truste
                                 className='rounded-[16px] mb-6 border-[0.5px] border-[#A8DD15] bg-white shadow-[0_2px_20px_0_rgba(0,0,0,0.05)] overflow-hidden'
                             >
                                 <Link href={`/forex-broker/${featured.slug}`}>
-                                <div className='p-5 pb-0 relative z-10'>
-                                    <div className='flex items-center justify-between pb-4 max-mobile:grid max-mobile:grid-cols-1 max-mobile:gap-3'>
-                                        <div className='flex items-center gap-3'>
-                                            <div className='w-16 h-16 rounded-xl flex items-center justify-center bg-white shadow-[inset_0_0_15px_0_rgba(168,221,21,0.2)] overflow-hidden'>
-                                                <Favicon src={featured.logo} title={featured.name} size={48} contained className="size-full" />
+                                    <div className='p-5 pb-0 relative z-10'>
+                                        <div className='flex items-center justify-between pb-4 max-mobile:grid max-mobile:grid-cols-1 max-mobile:gap-3'>
+                                            <div className='flex items-center gap-3'>
+                                                <div className='w-16 h-16 rounded-xl flex items-center justify-center bg-white shadow-[inset_0_0_15px_0_rgba(168,221,21,0.2)] overflow-hidden'>
+                                                    <Favicon src={featured.logoUrl} title={featured.name} size={48} contained className="size-full" />
+                                                </div>
+                                                <div className='flex items-center gap-2'>
+                                                    <h3 className='text-[22px] font-semibold font-monda text-black'>
+                                                        {featured.name}
+                                                    </h3>
+                                                    <VerifyIcon />
+                                                </div>
                                             </div>
-                                            <div className='flex items-center gap-2'>
-                                                <h3 className='text-[22px] font-semibold font-monda text-black'>
-                                                    {featured.name}
-                                                </h3>
-                                                <VerifyIcon />
-                                            </div>
-                                        </div>
-                                        {/* {featured.isSponsor && (
+                                            {/* {featured.isSponsor && (
                                             <div>
                                                 <button className='flex text-xs font-medium text-black100 items-center uppercase border-[0.8px] border-primary bg-white shadow-[0_0_10px_0_rgba(168,221,21,0.3)] gap-1.5 py-1.5 px-4 rounded-full'>
                                                     <SponserIcon />
@@ -149,21 +149,21 @@ export default function TrustedTrading({ platforms, title, description }: Truste
                                                 </button>
                                             </div>
                                         )} */}
-                                    </div>
-                                    <p className='text-sm text-black800 font-medium mb-5 line-clamp-2'>
-                                        {featured.description}
-                                    </p>
-                                    <div className='flex items-center gap-2.5'>
-                                        <p className='text-sm uppercase text-black100 font-medium'>
-                                            MIN DEPOSIT:
+                                        </div>
+                                        <p className='text-sm text-black800 font-medium mb-5 line-clamp-2'>
+                                            {featured.description}
                                         </p>
-                                        <div className='w-fit text-sm font-medium text-black100 bg-[#F2F4F7] py-1.5 px-2.5 rounded-sm'>
-                                            {featured.minDeposit}
+                                        <div className='flex items-center gap-2.5'>
+                                            <p className='text-sm uppercase text-black100 font-medium'>
+                                                MIN DEPOSIT:
+                                            </p>
+                                            <div className='w-fit text-sm font-medium text-black100 bg-[#F2F4F7] py-1.5 px-2.5 rounded-sm'>
+                                                {featured.minDeposit}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <img src={MapImage} alt="MapImage" className='block w-full mt-[-44px] object-center h-[185px] object-cover relative z-0' />
-                            </Link>
+                                    <img src={MapImage} alt="MapImage" className='block w-full mt-[-44px] object-center h-[185px] object-cover relative z-0' />
+                                </Link>
                             </motion.div>
                         )}
                         <motion.div
@@ -193,19 +193,19 @@ export default function TrustedTrading({ platforms, title, description }: Truste
                                 </div>
                             </div>
                             <p className='text-sm text-black100 font-medium mb-5'>
-                               Reach our audience of professional directory owners and boost your sales.
+                                Reach our audience of professional directory owners and boost your sales.
                             </p>
                             <img src={ForexImage} alt="ForexImage" className='block w-full' />
                             <div>
                                 <Link href="/advertise">
-                                <Button size='md' variant='primary' className='bg-black100 text-sm py-2 w-full font-medium text-primary'>
-                                
-                                    Advertise on Forex Brokers Listing
-                                    <div className='flex items-center'>
-                                        <MoveRight />
-                                    </div>
-                                </Button>
-                                    </Link>
+                                    <Button size='md' variant='primary' className='bg-black100 text-sm py-2 w-full font-medium text-primary'>
+
+                                        Advertise on Forex Brokers Listing
+                                        <div className='flex items-center'>
+                                            <MoveRight />
+                                        </div>
+                                    </Button>
+                                </Link>
 
                             </div>
                         </motion.div>

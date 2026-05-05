@@ -55,19 +55,48 @@ const reviews = [
     }
 ];
 
-const StarIcon = ({ filled }: { filled: boolean }) => (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill={filled ? "#FBA100" : "#E2E8F0"} xmlns="http://www.w3.org/2000/svg">
-        <path d="M12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26Z" />
-    </svg>
-);
-
 const QuoteMark = () => (
     <svg width="50" height="42" viewBox="0 0 60 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute top-4 right-4 opacity-[0.25]">
         <path d="M22 0V18H14C14 26 18 34 26 40L20 48C8 38 0 24 0 10V0H22ZM60 0V18H52C52 26 56 34 64 40L58 48C46 38 38 24 38 10V0H60Z" fill="#E6D3B3" />
     </svg>
 );
 
-export default function UserReview() {
+const StarIcon = ({ fillPercentage }: { fillPercentage: number }) => (
+    <div className="relative inline-block w-4 h-4 shrink-0">
+        {/* Empty Star (Gray) */}
+        <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="#E2E8F0"
+            xmlns="http://www.w3.org/2000/svg"
+            className="absolute top-0 left-0"
+        >
+            <path d="M12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26Z" />
+        </svg>
+        {/* Filled Star (Yellow) clipped by width */}
+        <div
+            className="absolute top-0 left-0 overflow-hidden h-full"
+            style={{ width: `${fillPercentage}%` }}
+        >
+            <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="#FBA100"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path d="M12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26Z" />
+            </svg>
+        </div>
+    </div>
+);
+
+export default function UserReview({ broker }: { broker: any }) {
+    if (!broker?.reviews || broker.reviews.length === 0) {
+        return null;
+    }
+
     return (
         <div id='user-review' className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
             <div className='p-4 relative flex items-center '>
@@ -86,9 +115,9 @@ export default function UserReview() {
                             </span>
                         </div>
                         <div className='flex items-center gap-2 shadow-[0px_0px_20px_0px_#00000014] bg-[#F59E0B] border-solid border-white border-2 p-3 rounded-full py-2 px-4'>
-                            <span className='text-sm font-semibold text-white'>4.8 Out of 5</span>
-                          
-                            <span className='text-xs block py-1 px-2 bg-[#E89812] border rounded-full font-medium text-white opacity-90'>Total Reviews: 15K</span>
+                            <span className='text-sm font-semibold text-white'>{broker.overall_review_rating || 4.8} Out of 5</span>
+
+                            <span className='text-xs block py-1 px-2 bg-[#E89812] border rounded-full font-medium text-white opacity-90'>Total Reviews: {broker.total_reviews || "15 k"}</span>
                         </div>
                     </div>
 
@@ -96,26 +125,35 @@ export default function UserReview() {
 
 
                     <div className='grid grid-cols-3 gap-4 pb-5 pt-4 border-b border-solid border-border-light300 '>
-                        {reviews.map((review, index) => (
+                        {broker.reviews.map((review: any, index: any) => (
                             <div key={index} className="relative overflow-hidden bg-[#f9f1e266] border border-[#EFE1C7] rounded-xl p-4 flex flex-col justify-between gap-4">
                                 <QuoteMark />
 
                                 <div className="relative z-10 flex flex-col gap-3">
                                     <div className="flex items-center gap-[2px]">
-                                        {[1, 2, 3, 4, 5].map((star) => (
-                                            <StarIcon key={star} filled={star <= review.rating} />
-                                        ))}
+                                        {[...Array(5)].map((_, i) => {
+                                            const rating = parseFloat(review.review_rat || '0');
+                                            const fillPercentage = Math.min(100, Math.max(0, (rating - i) * 100));
+                                            return (
+                                                <StarIcon
+                                                    key={i}
+                                                    fillPercentage={fillPercentage}
+                                                />
+                                            );
+                                        })}
                                     </div>
                                     <p className="text-[14px] leading-relaxed text-black100 font-medium">
-                                        {review.text}
+                                        {review.review_description}
                                     </p>
                                 </div>
 
                                 <div className="relative z-10 flex items-center gap-3">
-                                    <img src={review.avatar} alt={review.name} className="w-10 h-10 rounded-full object-cover bg-[#E2E8F0]" />
+                                    <div className="w-10 h-10 rounded-full bg-[#E2E8F0] flex items-center justify-center text-black100 font-semibold text-sm">
+                                        {(review.reviewer_name || "A").charAt(0).toUpperCase()}
+                                    </div>
                                     <div>
-                                        <h4 className="text-[14px] font-semibold text-black100">{review.name}</h4>
-                                        <span className="block text-[12px] font-medium text-black700">{review.date}</span>
+                                        <h4 className="text-[14px] font-semibold text-black100">{review.reviewer_name || "Anonymous"}</h4>
+                                        <span className="block text-[12px] font-medium text-black700">{review.reviewer_location || "Location not specified"}</span>
                                     </div>
                                 </div>
                             </div>
