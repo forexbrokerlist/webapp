@@ -107,7 +107,7 @@ export default function UserReview({ broker }: { broker: any }) {
             </div>
             <div className='px-4 pb-4'>
                 <div className='border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
-                    <div className='flex items-center justify-between pb-3'>
+                    <div className='flex items-center justify-between pb-3 max-mobile:flex-col max-mobile:items-start max-mobile:gap-4'>
                         <div className='flex items-center gap-2'>
                             <img src={RoundIcon} alt="RoundIcon" className='block' />
                             <span className='block text-base font-medium text-black'>
@@ -124,7 +124,7 @@ export default function UserReview({ broker }: { broker: any }) {
                     <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
 
 
-                    <div className='grid grid-cols-3 gap-4 pb-5 pt-4 border-b border-solid border-border-light300 '>
+                    <div className='grid grid-cols-3 max-tab:grid-cols-2 max-mobile:grid-cols-1 gap-4 pb-5 pt-4 border-b border-solid border-border-light300 '>
                         {broker.reviews.map((review: any, index: any) => (
                             <div key={index} className="relative overflow-hidden bg-[#f9f1e266] border border-[#EFE1C7] rounded-xl p-4 flex flex-col justify-between gap-4">
                                 <QuoteMark />

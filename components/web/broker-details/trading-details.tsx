@@ -37,7 +37,7 @@ export default function TradingDetails({ broker,leftHeader,rightHeader,leftSideD
                 </h3>
             </div>
             <div className='px-4 pb-4'>
-                <div className='grid grid-cols-2 gap-5'>
+                <div className='grid grid-cols-2 max-tab:grid-cols-1 gap-5'>
                     <div className='border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
                         <div className='flex items-center gap-2 pb-3'>
                             <img src={RoundIcon} alt="RoundIcon" className='block' />

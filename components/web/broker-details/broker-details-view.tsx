@@ -14,7 +14,7 @@ import FaqSection from './faq-section';
 import Link from 'next/link';
 const ForexImage = '/assets/images/FBL Logo.png';
 
-
+    
 export default function BrokerDetailsView({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
     // Build table of contents items dynamically based on content availability
     const tableOfContentsItems = [];
@@ -40,9 +40,9 @@ export default function BrokerDetailsView({ broker, randomBrokers = [], trustedB
 
     return (
         <div>
-            <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 '>
-                <div className='grid grid-cols-[216px_1fr_380px] gap-5'>
-                    <div>
+            <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4'>
+                <div className='grid grid-cols-[216px_1fr_380px] max-laptop:grid-cols-[200px_1fr_300px] max-tab:grid-cols-1 gap-5'>
+                    <div className='max-tab:hidden'>
                         <TableOfContents
                             broker={broker}
                             items={tableOfContentsItems}
@@ -58,18 +58,18 @@ export default function BrokerDetailsView({ broker, randomBrokers = [], trustedB
                     </div>
                     <div>
                         <div className='p-5 sticky top-[100px] z-[99] mb-5 rounded-xl border-[0.5px] border-[#A8DD15] bg-[#FFFFFE] shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]'>
-                            <div className='flex items-center gap-3 pb-2'>
-                                <div className='w-14 flex items-center justify-center h-14 rounded-md  bg-[rgba(255,255,255,0.14)] shadow-[inset_0_0_15px_0_rgba(168,221,21,0.20)]'>
+                            <div className='flex items-center gap-3 pb-2 max-mobile:flex-wrap max-mobile:justify-center'>
+                                <div className='w-14 shrink-0 flex items-center justify-center h-14 rounded-md  bg-[rgba(255,255,255,0.14)] shadow-[inset_0_0_15px_0_rgba(168,221,21,0.20)]'>
                                     <img src={"/assets/images/ForexLogo.png"} className='max-w-12 h-auto block object-contain' />
                                 </div>
-                                <p className='text-lg font-semibold text-black100'>
+                                <p className='text-lg font-semibold text-black100 max-mobile:text-center'>
                                     Your brand here
                                 </p>
-                                <button className='px-3 py-1 text-sm rounded-full font-semibold text-black100 bg-primary'>
+                                <button className='px-3 py-1 text-sm rounded-full font-semibold text-black100 bg-primary shrink-0'>
                                     Add New
                                 </button>
                             </div>
-                            <p className='text-sm text-black100 font-medium'>
+                            <p className='text-sm text-black100 font-medium max-mobile:text-center'>
                                 Reach our audience of professional directory owners and
                                 boost your sales.
                             </p>
