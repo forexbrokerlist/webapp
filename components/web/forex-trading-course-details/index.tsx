@@ -3,7 +3,7 @@ import React from 'react'
 import BrokerDetailsHero from '../broker-details/broker-details-hero'
 import ForexTradingCourseDetailsView from './forex-trading-course-details-view'
 export default async function ForexTradingCourseDetails({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
-    console.log("Crm broker", broker)
+   
     return (
         <div>
             {/* <ForexCrmDetailsHero broker={broker} /> */}

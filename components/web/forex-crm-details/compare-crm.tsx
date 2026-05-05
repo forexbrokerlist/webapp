@@ -56,7 +56,7 @@ const EmptyCompareSlot = ({ onClick, isEducation, isBridge, isLiquidity, isPSP, 
             <circle cx="80" cy="80" r="50" stroke="#A8DD15" strokeOpacity="0.4" strokeWidth="1" strokeDasharray="4 4" />
             <circle cx="80" cy="80" r="70" stroke="#A8DD15" strokeOpacity="0.4" strokeWidth="1" strokeDasharray="4 4" />
         </svg>
- 
+
         <div className="w-[42px] h-[42px] bg-[#A8DD15] rounded-full flex items-center justify-center mb-4 z-10 transition-transform hover:scale-105">
             <div className="w-5 h-5 rounded-full border-[1.5px] border-[#1A1A1A] flex items-center justify-center">
                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -70,7 +70,7 @@ const EmptyCompareSlot = ({ onClick, isEducation, isBridge, isLiquidity, isPSP, 
 );
 
 
-export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId }: { broker: any, trustedBrokers?: any[], sectionId?: string }) {
+export default function CompareBrokers({ broker, trustedBrokers = [], sectionId }: { broker: any, trustedBrokers?: any[], sectionId?: string }) {
     const formatList = (str: string | null | undefined, max: number = 3, showOthersCount: boolean = true) => {
         if (!str) return "None";
         const list = str.split(',')
@@ -84,7 +84,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
             .filter(Boolean)
             .filter(r => r.toLowerCase() !== 'other');
         if (list.length <= max) return list.join(', ');
-        return showOthersCount 
+        return showOthersCount
             ? `${list.slice(0, max).join(', ')}, +${list.length - max} others`
             : `${list.slice(0, max).join(', ')}...`;
     };
@@ -164,7 +164,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                         },
                         {
                             label: "Pricing model",
-                            value: broker.pricingModel&&broker.pricingModel.length>0 ? broker.pricingModel.join("/") : "-",
+                            value: broker.pricingModel && broker.pricingModel.length > 0 ? broker.pricingModel.join("/") : "-",
                             type: "text",
                         },
                         {
@@ -218,7 +218,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                         },
                         {
                             label: "Pricing model",
-                            value: broker.pricingModel  && broker.pricingModel.length > 0 ? broker.pricingModel.join("/") : "-",
+                            value: broker.pricingModel && broker.pricingModel.length > 0 ? broker.pricingModel.join("/") : "-",
                             type: "text",
                         },
                         {
@@ -271,7 +271,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                         },
                         {
                             label: "Pricing model",
-                            value: broker.pricingModel&&broker.pricingModel.length>0 ? broker.pricingModel.join("/") : "-",
+                            value: broker.pricingModel && broker.pricingModel.length > 0 ? broker.pricingModel.join("/") : "-",
                             type: "text",
                         },
                         {
@@ -324,7 +324,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                         },
                         {
                             label: "Integration",
-                            value: broker.integration_type && broker.integration_type.length > 0 
+                            value: broker.integration_type && broker.integration_type.length > 0
                                 ? broker.integration_type.join(", ")
                                 : "-",
                             type: "text",
@@ -359,7 +359,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                         },
                         {
                             label: "Best for",
-                            value: broker.bestFor&& broker.bestFor.length>0 ? broker.bestFor?.join(', ') : '-',
+                            value: broker.bestFor && broker.bestFor.length > 0 ? broker.bestFor?.join(', ') : '-',
                             type: "text"
                         },
                         {
@@ -435,8 +435,8 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                         },
                         {
                             label: "Automation level",
-                            value: broker.automation_level&&broker.automation_level.length>0 ?broker.automation_level:"-",
-                            type:  "text",
+                            value: broker.automation_level && broker.automation_level.length > 0 ? broker.automation_level : "-",
+                            type: "text",
                         },
                         {
                             label: "Compatible platforms",
@@ -561,7 +561,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
     const [slots, setSlots] = useState<any[]>(initialBrokers);
     const [activeSlot, setActiveSlot] = useState<number | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
-    
+
     // Calculate initial filtered list using initialBrokers since slots state isn't available for the initial render's value
     const initialSelectedIds = initialBrokers.filter(s => s !== null).map(s => s.id);
     const [displayBrokers, setDisplayBrokers] = useState<any[]>(trustedBrokers.filter(tb => !initialSelectedIds.includes(tb.id)).slice(0, 18));
@@ -655,11 +655,11 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
     };
 
     return (
-        <div id={sectionId || (isEducation ? 'compare-trading-courses' : isBridge ? 'compare-bridge-providers' : isLiquidity? 'compare-liquidity-providers': isPSP ? 'compare-psp-partners' : isTrading ? 'compare-trading-platforms' : isAlgo ? 'compare-algo-providers' : 'compare-crm')} className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
+        <div id={sectionId || (isEducation ? 'compare-trading-courses' : isBridge ? 'compare-bridge-providers' : isLiquidity ? 'compare-liquidity-providers' : isPSP ? 'compare-psp-partners' : isTrading ? 'compare-trading-platforms' : isAlgo ? 'compare-algo-providers' : 'compare-crm')} className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
             <div className='p-4 relative flex items-center '>
                 <div className='absolute top-3 left-0 w-1 h-[26px] bg-primary rounded-r-[4px]'></div>
                 <h3 className='text-base text-black100 font-semibold uppercase'>
-                    COMPARE {isEducation ? 'TRADING COURSES' : isBridge ? 'BRIDGE PROVIDERS' : isLiquidity? 'LIQUIDITY PROVIDERS': isPSP ? 'PSP PARTNERS' : isTrading ? 'TRADING PLATFORMS' : isAlgo ? 'ALGO BOT PROVIDERS' : 'CRM'}
+                    COMPARE {isEducation ? 'TRADING COURSES' : isBridge ? 'BRIDGE PROVIDERS' : isLiquidity ? 'LIQUIDITY PROVIDERS' : isPSP ? 'PSP PARTNERS' : isTrading ? 'TRADING PLATFORMS' : isAlgo ? 'ALGO BOT PROVIDERS' : 'CRM'}
                 </h3>
             </div>
             <div className='px-4 pb-4'>
@@ -728,65 +728,75 @@ export default function CompareBrokers({ broker, trustedBrokers = [] , sectionId
                                                 );
                                             }
 
-                                            const needsAlignment = [
+                                            const educationNeedsAlignment = [
                                                 'Skill level',
                                                 'Learning format',
-                                                'Deployment Type',
-                                                'Deployment',
                                                 'Best For',
-                                                'Best for',
                                                 'Pricing model',
-                                                'HQ / Region',
-                                                'MT4/MT5',
-                                                'IB/Affiliate Module',
-                                                'KYC/AML automation',
-                                                'Client Portal',
-                                                'Max Leverage',
-                                                'Regulations',
-                                                'Platforms',
-                                                'Solution type',
-                                                'Compatible platforms',
-                                                'Latency',
-                                                'Execution latency',
-                                                'Asset classes',
-                                                'No last look',
-                                                'Target clients',
-                                                'Setup time',
-                                                'Demo available',
-                                                'Regulators',
-                                                'Company type',
-                                                'Settlement',
-                                                'Auto fiat conversion',
-                                                'Supported cryptos',
-                                                'Fiat currencies',
-                                                'Integration',
-                                                'KYB required',
-                                                'Mass payout',
-                                                'Platform type',
-                                                'White label price',
-                                                'Server licence',
-                                                'Charting',
-                                                'MT5 backend',
-                                                'Prop firm tools',
-                                                'Yearly commitment',
-                                                'Hosting included',
-                                                `Clients (${new Date().getFullYear()})`,
-                                                'Bot type',
-                                                'Strategy',
-                                                'Automation level',
-                                                'Win rate',
-                                                'Verified performance',
-                                                'Price',
-                                                'Free trial',
-                                                'Min deposit',
-                                                'Trades/day',
-                                                'NFA/FIFO compatible'
+
                                             ].includes(stat.label);
 
+                                            const bridgeNeedsAlignment = [
+
+                                                'Compatible platforms',
+                                                'Target clients',
+                                                'Pricing model',
+
+                                            ].includes(stat.label);
+
+                                            const liquidityNeedsAlignment = [
+                                                'Execution latency',
+                                                'Asset classes',
+                                                'Target clients',
+                                                'Pricing model',
+                                                'Regulators'
+                                            ].includes(stat.label);
+
+                                            const pspNeedsAlignment = [
+                                                'Company type',
+                                                'Target clients',
+                                                'Supported cryptos',
+                                                'Fiat currencies',
+                                                'Integration'
+                                            ].includes(stat.label);
+
+                                            const tradingNeedsAlignment = [
+                                                'Server licence',
+                                                'Platform type',
+                                                'Best for',
+                                                'Deployment',
+                                                'Charting',
+                                                'Prop firm tools',
+
+                                            ].includes(stat.label);
+
+                                            const algoNeedsAlignment = [
+                                                'Win rate',
+                                                'Strategy',
+                                                'Pricing model',
+                                                'Min deposit',
+                                                'Compatible platforms',
+                                                'Best for',
+                                                'Trades/day'
+                                            ].includes(stat.label);
+
+                                            const crmNeedsAlignment = [
+                                                'Deployment Type',
+                                                'Best For',
+                                                'Pricing model'
+                                            ].includes(stat.label);
+
+                                            const needsAlignment = isEducation ? educationNeedsAlignment :
+                                                isBridge ? bridgeNeedsAlignment :
+                                                    isLiquidity ? liquidityNeedsAlignment :
+                                                        isPSP ? pspNeedsAlignment :
+                                                            isTrading ? tradingNeedsAlignment :
+                                                                isAlgo ? algoNeedsAlignment :
+                                                                    crmNeedsAlignment;
                                             return (
                                                 <div
                                                     key={i}
-                                                    className={`grid grid-cols-[120px_1fr] gap-4 py-2 border-b border-[#e6e6e6] items-start ${(isEducation || isBridge || isLiquidity || isPSP || isTrading || isAlgo) && needsAlignment ? 'min-h-[63px]' : ''}`}
+                                                    className={`grid grid-cols-[120px_1fr] gap-4 py-2 border-b border-[#e6e6e6] items-start ${needsAlignment ? 'min-h-[63px]' : ''}`}
                                                 >
                                                     <span className="text-[14px] font-medium text-black700">{stat.label}</span>
                                                     <div className="flex justify-end">

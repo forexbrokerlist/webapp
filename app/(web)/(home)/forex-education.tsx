@@ -25,7 +25,7 @@ interface Partner {
 }
 
 export default function ForexEducation({ partners = [], category, title, description }: { partners?: Partner[], category?: any, title: string, description: string }) {
-    console.log("partners", partners)
+   
     const SLIDES = partners.map(p => ({
         id: p.id,
         title: p.name,

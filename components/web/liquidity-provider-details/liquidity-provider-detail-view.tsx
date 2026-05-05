@@ -20,7 +20,7 @@ const ForexImage = '/assets/images/FBL Logo.png';
 
 
 export default function LiquidityProviderDetailsView({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
-    console.log('LiquidityProviderDetailsView - randomBrokers:', randomBrokers);
+  
 
     // Build table of contents items dynamically based on content availability
     const tableOfContentsItems = [];

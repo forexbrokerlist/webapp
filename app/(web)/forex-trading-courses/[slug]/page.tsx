@@ -59,9 +59,8 @@ const getData = cache(async ({ params }: Props) => {
   // Get random brokers from forex-trading-courses category
   const randomBrokersRaw = await findRandomCourses(1, slug)
 
-  // Debug: Log the raw random brokers data
-  console.log('Random brokers raw data:', randomBrokersRaw)
-  console.log('Current broker slug being excluded:', slug)
+
+
 
   // Simplify the data structure to avoid serialization issues
   const randomBrokers = randomBrokersRaw.map((b) => ({
@@ -78,8 +77,7 @@ const getData = cache(async ({ params }: Props) => {
       logoUrl: await getPresignedUrlFromFull(b.logoUrl),
     }))
   )
-  // Debug: Log the final processed random brokers
-  console.log('Final random brokers (simplified):', randomBrokers)
+  
 
   const t = await getTranslations()
   const url = `/crm/${broker.slug}`
@@ -127,8 +125,6 @@ export default async function (props: Props) {
   const { broker, randomBrokers, metadata, structuredData,trustedBrokers} = await getData(props)
   const headerList = await headers()
 
-  console.log('Page component - randomBrokers from getData:', randomBrokers)
-  console.log('Page component - randomBrokers length:', randomBrokers?.length)
 
   return (
     <>
