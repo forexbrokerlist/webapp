@@ -54,7 +54,7 @@ export const findAdWithFallback = actionClient
       name: t("default_ad.name"),
       description: t("default_ad.description"),
       buttonLabel: t("default_ad.button_label", { siteName: siteConfig.name }),
-      faviconUrl: "/favicon.png",
+      faviconUrl: "/assets/images/ForexLogo.png",
       bannerUrl: null,
       status: "Draft" as const,
       categoryId: null,

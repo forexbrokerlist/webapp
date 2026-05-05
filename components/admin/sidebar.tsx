@@ -58,7 +58,7 @@ export const Sidebar = () => {
         {
           title: "Dashboard",
           href: "/admin",
-          prefix: <Logo hideText />,
+          prefix: <img src="/assets/images/ForexLogo.png" alt="Logo" className="w-6 h-6 object-contain" />,
           suffix: (
             <Tooltip tooltip="Visit site">
               <Button

@@ -48,7 +48,7 @@ export default async function () {
   const { metadata, breadcrumbs, structuredData } = await getData()
   const { category: Algo, brokers: AlgoPartners } = await getAlgoPartners(5)
   const { category: Bridge, brokers: bridgePartners } = await getBridgePartners(6)
-  const { category: Liquidity, brokers: liquidityPartners } = await getLiquidityPartners(2)
+  const { category: Liquidity, brokers: liquidityPartners } = await getLiquidityPartners(4)
   const { category: PSP, brokers: PSPPartners } = await getPspPartners(5)
   const { category: Trusted, brokers: trustedPlatforms } = await getTrustedPlatforms(4)
   const { category: CRM, brokers: crmPartners } = await getCrmPlatforms(4)

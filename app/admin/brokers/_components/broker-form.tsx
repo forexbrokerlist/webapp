@@ -68,6 +68,8 @@ type ToolFormProps = ComponentProps<"form"> & {
 }
 
 export function ToolForm({ className, title, broker, ...props }: ToolFormProps) {
+  console.log("🔧 ToolForm component loaded", { brokerId: broker?.id, hasReviews: !!broker?.reviews?.length });
+
   const router = useRouter()
   const queryClient = useQueryClient()
   const { data: categories = [] } = useQuery(orpc.categories.lookup.queryOptions())
@@ -228,8 +230,8 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
         ...review,
         reviewer_name: review.reviewer_name || undefined,
         reviewer_location: review.reviewer_location || undefined,
-        rating: review.rating || undefined,
-        description: review.description || undefined,
+        review_rat: review.review_rat || undefined,
+        review_description: review.review_description || undefined,
       })) ?? [],
       // platformIntegrations: broker?.platformIntegrations ?? [],
       // keyFeatures: broker?.keyFeatures ?? [],
@@ -239,6 +241,9 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
   const mutation = useMutation(
     orpc.brokers.upsert.mutationOptions({
       onSuccess: data => {
+        // console.log("✅ Broker upsert success:", data);
+
+
         if (data.status !== originalStatus.current) {
           toast.success(<ToolStatusChange broker={data} />)
           originalStatus.current = data.status
@@ -251,10 +256,12 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       },
 
       onError: error => {
+        console.error("❌ Broker upsert error:", error);
         toast.error(error.message)
       },
 
       onSettled: () => {
+        console.log("🏁 Mutation settled");
         setIsStatusPending(false)
       },
     }),
@@ -286,6 +293,9 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
 
   // Handle form submission
   const handleSubmit = form.handleSubmit((data, event) => {
+    // console.log("🚀 Broker Form Submission Data:", data);
+    // console.log("📝 Reviews in submission:", data.reviews);
+
     const submitter = (event?.nativeEvent as SubmitEvent)?.submitter
     const isStatusChange = submitter?.getAttribute("name") !== "submit"
 
@@ -293,7 +303,11 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       setIsStatusPending(true)
     }
 
+    // console.log("🔄 Calling mutation.mutate with data...");
     mutation.mutate(data)
+  }, (errors) => {
+    console.error("❌ Form validation errors:", errors);
+    // console.log("📝 Review field errors:", errors.reviews);
   })
 
   // Handle status change
@@ -2213,25 +2227,23 @@ function ReviewsField({ control, register }: { control: any, register: any }) {
 
             <div>
               <div>
-                <FieldLabel htmlFor={`reviews.${index}.rating`}>Rating (1-5)</FieldLabel>
+                <FieldLabel htmlFor={`reviews.${index}.review_rat`}>Rating</FieldLabel>
                 <Input
-                  {...register(`reviews.${index}.rating`)}
-                  type="number"
-                  min="1"
-                  max="5"
-                  onChange={(e) => {
-                    const value = e.target.value ? parseInt(e.target.value) : ''
-                    const event = { target: { value } }
-                    register(`reviews.${index}.rating`).onChange(event)
-                  }}
+                  {...register(`reviews.${index}.review_rat`)}
+                  type="text"
+                  placeholder="Enter rating (e.g., 4, 5, 3)"
+                  // onChange={(e) => {
+                  //   // console.log(`📝 Review rat changed for index ${index}:`, e.target.value);
+                  //   form.setValue(`reviews.${index}.review_rat`, e.target.value);
+                  // }}
                 />
               </div>
             </div>
 
             <div>
-              <FieldLabel htmlFor={`reviews.${index}.description`}>Review Description</FieldLabel>
+              <FieldLabel htmlFor={`reviews.${index}.review_description`}>Review Description</FieldLabel>
               <TextArea
-                {...register(`reviews.${index}.description`)}
+                {...register(`reviews.${index}.review_description`)}
                 placeholder="Enter review description..."
                 rows={3}
               />
@@ -2245,8 +2257,8 @@ function ReviewsField({ control, register }: { control: any, register: any }) {
           onClick={() => append({
             reviewer_name: "",
             reviewer_location: "",
-            rating: null,
-            description: "",
+            review_rat: "",
+            review_description: "",
           })}
           className="w-full"
         >

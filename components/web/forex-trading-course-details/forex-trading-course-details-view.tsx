@@ -44,6 +44,29 @@ const ForexImage = '/assets/images/FBL Logo.png';
 
 export default function ForexCrmDetailsView({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
 
+    // Build table of contents items dynamically based on content availability
+    const tableOfContentsItems = [];
+
+    // Always include these sections as they are core course information
+    tableOfContentsItems.push("Trading Course Details");
+    tableOfContentsItems.push("Course Modules");
+    tableOfContentsItems.push("Trading Specifications");
+    tableOfContentsItems.push("Topics & Skills");
+    tableOfContentsItems.push("Trading Course Review");
+
+    // Add User Review only if there are reviews
+    if (broker?.reviews && broker.reviews.length > 0) {
+        tableOfContentsItems.push("User Review");
+    }
+
+    // Add Compare Trading Courses (always show for now, but could be made conditional)
+    tableOfContentsItems.push("Compare Trading Courses");
+
+    // Add FAQ only if there are FAQs
+    if (broker?.faqs && broker.faqs.length > 0) {
+        tableOfContentsItems.push("FAQ");
+    }
+
     return (
 
         <div>
@@ -58,28 +81,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
 
                             broker={broker}
 
-                            items={[
-
-                                "Trading Course Details",
-
-                                "Course Modules",
-
-                                "Trading Specifications",
-                                "Topics & Skills",
-
-
-
-
-
-                                "Trading Course Review",
-
-                                "User Review",
-
-                                "Compare Trading Courses",
-
-                                "FAQ"
-
-                            ]}
+                            items={tableOfContentsItems}
 
                         />
 
@@ -89,7 +91,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
 
                         <TradingDetails broker={broker} sectionTitle={"Trading Course Details"} brokerDetails={[
 
-                            { label: "Provider Type", value: broker.provider_type &&broker.provider_type.length>0?broker.provider_type.join(","): "-" },
+                            { label: "Provider Type", value: broker.provider_type && broker.provider_type.length > 0 ? broker.provider_type.join(",") : "-" },
 
                             { label: "Skill Levels", value: broker.skill_level && broker.skill_level.length > 0 ? String(broker.skill_level).replace(/,/g, ', ') : "-" },
 
@@ -103,7 +105,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
 
                         ]} additionalDetails={[
 
-                            { label: "Pricing Model", value: broker.pricingModel&&broker.pricingModel.length>0 ? broker.pricingModel.join("/") : "-" },
+                            { label: "Pricing Model", value: broker.pricingModel && broker.pricingModel.length > 0 ? broker.pricingModel.join("/") : "-" },
 
                             { label: "HQ", value: broker.headquarters || "-" },
 
@@ -123,7 +125,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
                             sectionId='trading-course-details'
                         />
 
-                      
+
 
                         <TradingSpecifications broker={broker} showTradingHours={false} showAccountFunding={false} showTradingSpreads={false} showStarRatings={false} showFeatures={true} platformSectionId="platform-&-features" showSkills={true} />
 
@@ -139,7 +141,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
 
                         />
 
-                        <UserReview />
+                        <UserReview broker={broker} />
 
                         <CompareBrokers broker={broker} trustedBrokers={trustedBrokers} />
 

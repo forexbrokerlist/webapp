@@ -13,7 +13,7 @@ interface Solution {
     id: string;
     name: string;
     title: string;
-    logo: string;
+    logoUrl: string;
     // socialProof: string | null;
     slug: string;
 }
@@ -147,7 +147,7 @@ export default function CrmBackOffice({ solutions, title, description, category 
                                 <div className="relative z-10">
                                     <div className='flex items-center gap-5 pb-12 max-laptop:pb-6'>
                                         <div className='w-[70px] max-laptop:w-14 max-laptop:h-14 h-[70px] shrink-0 drop-shadow-[0_0_11.575px_rgba(0,0,0,0.05)] rounded-full flex items-center justify-center bg-white overflow-hidden'>
-                                            <Favicon src={solution.logo} title={solution.name} size={30} contained className="max-w-12" />
+                                            <Favicon src={solution.logoUrl} title={solution.name} size={30} contained className="max-w-12" />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <h3 className={`text-2xl max-laptop:text-xl font-bold font-monda text-white truncate`}>

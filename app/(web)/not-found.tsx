@@ -8,7 +8,7 @@ export default async function NotFound() {
   const t = await getTranslations("pages.not_found")
 
   return (
-    <Intro alignment="center">
+    <Intro alignment="center" className="mt-20">
       <IntroTitle>{t("title")}</IntroTitle>
       <IntroDescription className="max-w-lg">{t("description")}</IntroDescription>
 

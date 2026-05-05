@@ -16,24 +16,45 @@ const ForexImage = '/assets/images/FBL Logo.png';
 export default function ForexTradingPlatformsView({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
     const leftSideDetails = [
         { label: "Headquarters", value: broker.headquarters || "-" },
-        { label: "Established", value: broker.year_established||"-"},
+        { label: "Established", value: broker.year_established || "-" },
         { label: "Company", value: broker.company_name || "-" },
-        { label: "Platform Type", value:broker.platform_type&&broker.platform_type.length>0&&broker.platform_type.join("/") || "-"  },
+        { label: "Platform Type", value: broker.platform_type && broker.platform_type.length > 0 && broker.platform_type.join("/") || "-" },
         { label: "Best For", value: broker.bestFor && broker.bestFor.length > 0 ? broker.bestFor.map((val: any) => val === "RetailBrokers" ? "Brokers" : val).join(" / ") : "-" },
-                { value: broker.clients_count || '-', label: `Clients ${new Date().getFullYear()}` },
-      
+        { value: broker.clients_count || '-', label: `Clients ${new Date().getFullYear()}` },
+
     ];
 
     const rightSideDetails = [
-        { label: "Trading Platform", value: broker.trading_platforms|| "-" },
-        { label: "Charting Tools", value: broker.charting_tools&&broker.charting_tools.length>0&&broker.charting_tools.join("/") || "-"   },
-        { label: "Deployment", value: broker.deployment_type&&broker.deployment_type.length>0&&broker.deployment_type.join(",") || "-"  },
-        { label: "Prop Firm Tools", value: broker.prop_firm_support&&broker.prop_firm_support.length>0&&broker.prop_firm_support.join(",")  ||'-' },
-        { label: "MT5 Backend", value: broker.mt5_backend ? "Yes" : "No",isPositive:broker.mt5_backend },
-        {label:"CRM Integrations",value: broker.crm_integrations|| "-" },
-        {label:"Liquidity Connect",value: broker.liquidity_connect|| "-" },
-        {label:"KYC & Compliance",value: broker.kyc_compliance|| "-" }
+        { label: "Trading Platform", value: broker.trading_platforms || "-" },
+        { label: "Charting Tools", value: broker.charting_tools && broker.charting_tools.length > 0 && broker.charting_tools.join("/") || "-" },
+        { label: "Deployment", value: broker.deployment_type && broker.deployment_type.length > 0 && broker.deployment_type.join(",") || "-" },
+        { label: "Prop Firm Tools", value: broker.prop_firm_support && broker.prop_firm_support.length > 0 && broker.prop_firm_support.join(",") || '-' },
+        { label: "MT5 Backend", value: broker.mt5_backend ? "Yes" : "No", isPositive: broker.mt5_backend },
+        { label: "CRM Integrations", value: broker.crm_integrations || "-" },
+        { label: "Liquidity Connect", value: broker.liquidity_connect || "-" },
+        { label: "KYC & Compliance", value: broker.kyc_compliance || "-" }
     ];
+
+    // Build table of contents items dynamically based on content availability
+    const tableOfContentsItems = [];
+
+    // Always include these sections as they are core trading platform information
+    tableOfContentsItems.push("Platform Details");
+    tableOfContentsItems.push("Trading Specifications");
+    tableOfContentsItems.push("Platform Review");
+
+    // Add User Review only if there are reviews
+    if (broker?.reviews && broker.reviews.length > 0) {
+        tableOfContentsItems.push("User Review");
+    }
+
+    // Always include Compare Trading Platforms
+    tableOfContentsItems.push("Compare Trading Platforms");
+
+    // Add FAQ only if there are FAQs
+    if (broker?.faqs && broker.faqs.length > 0) {
+        tableOfContentsItems.push("FAQ");
+    }
 
     return (
         <div>
@@ -42,19 +63,12 @@ export default function ForexTradingPlatformsView({ broker, randomBrokers = [], 
                     <div>
                         <TableOfContents
                             broker={broker}
-                            items={[
-                                "Platform Details",
-                                "Trading Specifications",
-                                "Platform Review",
-                                "User Review",
-                                "Compare Trading Platforms",
-                                "FAQ"
-                            ]}
+                            items={tableOfContentsItems}
                         />
                     </div>
                     <div className='grid grid-cols-1 gap-5'>
-                        <TradingDetails 
-                            broker={broker} 
+                        <TradingDetails
+                            broker={broker}
                             leftHeader="Provider Details"
                             rightHeader="Platform & Technical Specs"
                             leftSideDetails={leftSideDetails}
@@ -62,18 +76,18 @@ export default function ForexTradingPlatformsView({ broker, randomBrokers = [], 
                             tradingDetailsLabel="PLATFORM DETAILS"
                             tradingDetailsId="platform-details"
                         />
-                        
-                        <TradingSpecifications 
+
+                        <TradingSpecifications
                             bridgeTitle="Best Suited For"
-                            broker={broker} 
-                            showTradingHours={false} 
+                            broker={broker}
+                            showTradingHours={false}
                             showAccountFunding={true}
-                            accountFundingHeading='Pricing & Deployment' 
+                            accountFundingHeading='Pricing & Deployment'
                             accountFundingDetails={[
                                 { label: "White Label Price", value: broker.white_label_price || "-" },
                                 { label: "Server License", value: broker.server_license || "-" },
 
-                                { label: "Hosting Included", value: broker.hosting_included?"Yes" : "No" ,isPositive:broker.hosting_included },
+                                { label: "Hosting Included", value: broker.hosting_included ? "Yes" : "No", isPositive: broker.hosting_included },
                                 { label: "Setup Time", value: broker.setup_time || "-" },
                                 { label: "Yearly Commitment", value: broker.yearly_commitment ? "Required" : "Not Required", isPositive: broker.yearly_commitment },
                                 { label: "Demo Available", value: broker.demo_account ? "Yes" : "No", isPositive: broker.demo_account },
@@ -84,11 +98,11 @@ export default function ForexTradingPlatformsView({ broker, randomBrokers = [], 
                                 { label: "Charting Tools", value: broker.charting_tools?.join(" / ") || "-" },
                                 { label: "Yearly Commitment", value: broker.yearly_commitment ? "Yes" : "No", isPositive: !broker.yearly_commitment },
                             ]}
-                            showTradingSpreads={false} 
-                            showStarRatings={false} 
-                            showFeatures={true} 
+                            showTradingSpreads={false}
+                            showStarRatings={false}
+                            showFeatures={true}
                             showBestSuitedFor={true}
-                            platformSectionId="trading-specifications" 
+                            platformSectionId="trading-specifications"
                         />
 
                         <BrokerReview
@@ -96,7 +110,7 @@ export default function ForexTradingPlatformsView({ broker, randomBrokers = [], 
                             reviewTitle={`${broker?.broker_name || '-'} Review ${new Date().getFullYear()} — Trading Platform for Forex Brokers`}
                             sectionId="platform-review"
                         />
-                        <UserReview />
+                        <UserReview broker={broker} />
                         <CompareBrokers broker={broker} trustedBrokers={trustedBrokers} sectionId="compare-trading-platforms" />
                         <FaqSection broker={broker} />
                     </div>

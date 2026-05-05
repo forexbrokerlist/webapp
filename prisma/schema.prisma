@@ -360,8 +360,8 @@ model Review {
   reviewer_name     String?  @db.VarChar(100)
   reviewer_location     String?  @db.VarChar(100)
 
- 
- 
+  review_rat         String? 
+  review_description    String?  @db.Text
   rating            Int?
   description       String?  @db.Text
    createdAt         DateTime @default(now())
