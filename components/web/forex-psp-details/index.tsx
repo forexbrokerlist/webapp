@@ -3,7 +3,7 @@ import ForexPSPDetailsView from './forex-psp-details-view'
 import BrokerDetailsHero from '../broker-details/broker-details-hero'
 
 export default async function ForexPSPDetails({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
-    console.log("Crm broker", broker)
+  
     return (
         <div>
             {/* <ForexCrmDetailsHero broker={broker} /> */}

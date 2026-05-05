@@ -6,7 +6,7 @@ import ForexAlgoProviderDetailView from './forex-algo-provide-detail-view'
 // import ForexTradingCourseDetailsView from './forex-trading-course-details-view'
 
 export default function ForexAlgoProviderDetails({ broker,randomBrokers,trustedBrokers }: { broker: any,randomBrokers:any[],trustedBrokers:any[] }) {
-    console.log("broker",broker)
+   
     return (
        <div>
        <BrokerDetailsHero broker={broker} showCrmPara={true} showClients={true} heroFeatures={[

@@ -3,9 +3,7 @@ import Link from 'next/link';
 import { getPresignedUrlFromFull } from '~/lib/media';
 
 export default async function SuggestedBroker({ brokers, suggestionTitle = "Suggested Broker" }: { brokers?: any[], suggestionTitle?: string }) {
-    console.log('SuggestedBroker component - brokers received:', brokers);
-    console.log('SuggestedBroker component - brokers length:', brokers?.length);
-    console.log('SuggestedBroker component - suggestionTitle:', suggestionTitle);
+ 
 
     if (!brokers || brokers.length === 0) return null;
 
@@ -30,7 +28,7 @@ export default async function SuggestedBroker({ brokers, suggestionTitle = "Sugg
                 {
                     processedBrokers.map((broker, index) => {
                         const rawCategorySlug = broker.categories?.[0]?.slug;
-                        const categorySlug = rawCategorySlug === 'trusted-trading-platforms' || rawCategorySlug === 'forex-brokers' ? 'broker' : (rawCategorySlug || 'broker');
+                        const categorySlug = rawCategorySlug === 'trusted-trading-platforms' || rawCategorySlug === 'forex-brokers' ? 'forex-broker' : (rawCategorySlug || 'broker');
                         return (
                             <Link target='_blank' href={`/${categorySlug}/${broker.slug}`} key={index} className='block border mb-4 p-3 rounded-xl border-border-light180 border-solid hover:border-primary transition-colors'>
                                 <div className='pb-3'>

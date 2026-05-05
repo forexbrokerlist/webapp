@@ -3,7 +3,7 @@ import BrokerDetailsHero from '../broker-details/broker-details-hero'
 import ForexTradingPlatformsView from './forex-trading-platforms-view'
 
 export default async function ForexTradingPlatformsDetails({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
-    console.log("Trading Platform broker", broker)
+  
     return (
         <div>
             <BrokerDetailsHero broker={broker} heroFeatures={[

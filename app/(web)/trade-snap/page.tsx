@@ -66,7 +66,7 @@ function Dashboard() {
 
   const lastCapture1 = useRef(Date.now());
   const lastCapture2 = useRef(Date.now());
-  console.log("capturedImagess", capturedImage)
+
 
   // Handle authentication redirect removed to allow guest access
 
@@ -194,12 +194,9 @@ function Dashboard() {
 
   const analyzeImage = async () => {
     try {
-      console.log("analyzeImage called");
-      console.log("capturedImage exists:", !!capturedImage);
-      console.log("isAnalyzing:", isAnalyzing);
-
+     
       if (!capturedImage) {
-        console.log("capturedImage", capturedImage)
+    
         setError('No image captured');
         return;
       }

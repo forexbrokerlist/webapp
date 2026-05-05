@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/common/dialog'
 import { searchBrokersAction } from '~/app/(web)/forex-broker/[slug]/actions';
 import { X } from 'lucide-react';
+import Link from 'next/link';
 
 const StarIcon = ({ fillPercentage }: { fillPercentage: number }) => (
     <div className="relative inline-block w-4 h-4 shrink-0">
@@ -100,7 +101,10 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
 
     const initialBrokers = [
         {
+            id: broker.id,
             name: broker.broker_name,
+            slug: broker.slug,
+            typeSlug: broker.type?.slug,
             logoUrl: broker.logoUrl,
             isViewing: true,
             stats: [
@@ -131,26 +135,45 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
             if (searchTerm) {
                 setIsSearching(true);
                 try {
-                    const results = await searchBrokersAction(searchTerm);
-                    setDisplayBrokers(results.filter((b: any) => b.id !== broker.id));
+                    const results = await searchBrokersAction(searchTerm, 'broker');
+                    const currentSelectedIds = slots.filter(s => s !== null).map(s => s.id);
+                    setDisplayBrokers(results.filter((b: any) => !currentSelectedIds.includes(b.id) && b.id !== broker.id));
                 } catch (error) {
                     console.error("Search failed:", error);
                 } finally {
                     setIsSearching(false);
                 }
             } else {
-                setDisplayBrokers(filteredTrustedBrokers.slice(0, 18));
+                if (trustedBrokers.length > 0) {
+                    const currentSelectedIds = slots.filter(s => s !== null).map(s => s.id);
+                    setDisplayBrokers(trustedBrokers.filter(tb => !currentSelectedIds.includes(tb.id)).slice(0, 18));
+                } else {
+                    // If no trusted brokers, fetch some initial results
+                    setIsSearching(true);
+                    try {
+                        const results = await searchBrokersAction("", 'broker');
+                        const currentSelectedIds = slots.filter(s => s !== null).map(s => s.id);
+                        setDisplayBrokers(results.filter((b: any) => !currentSelectedIds.includes(b.id)));
+                    } catch (error) {
+                        console.error("Initial fetch failed:", error);
+                    } finally {
+                        setIsSearching(false);
+                    }
+                }
             }
         }, 300);
 
         return () => clearTimeout(delayDebounceFn);
-    }, [searchTerm, trustedBrokers]);
+    }, [searchTerm, trustedBrokers, slots]);
 
     const handleSelectBroker = (broker: any) => {
         if (activeSlot === null) return;
         const newSlots = [...slots];
         newSlots[activeSlot] = {
+            id: broker.id,
             name: broker.name,
+            slug: broker.slug,
+            typeSlug: broker.typeSlug,
             isViewing: false,
             logoUrl: broker.logoUrl,
             stats: broker.stats
@@ -172,6 +195,26 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
 
         setSlots(newSlots);
     }
+
+    const getBrokerUrl = (slug: string, typeSlug: string) => {
+        if (!slug) return "#";
+        switch (typeSlug) {
+            case 'crm':
+                return `/forex-crm-providers/${slug}`;
+            case 'liquidity':
+                return `/liquidity-providers/${slug}`;
+            case 'forexbridge':
+                return `/forex-bridge-providers/${slug}`;
+            case 'educationplatforms':
+                return `/forex-trading-courses/${slug}`;
+            case 'psp':
+                return `/forex-psp-partners/${slug}`;
+            case 'botprovider':
+                return `/algo-trading/${slug}`;
+            default:
+                return `/forex-broker/${slug}`;
+        }
+    };
 
     return (
         <div id='compare-broker' className='rounded-xl scroll-mt-20 border border-border-light180 border-solid bg-white overflow-hidden'>
@@ -199,7 +242,13 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                                                 <img src={broker.logoUrl} alt={broker.name} className="max-w-[24px] max-h-[24px] object-contain" />
                                             )}
                                         </div>
-                                        <h4 className="text-[16px] font-bold text-black100">{broker.name}</h4>
+                                        {broker.isViewing ? (
+                                            <h4 className="text-[16px] font-bold text-black100">{broker.name}</h4>
+                                        ) : (
+                                            <Link href={getBrokerUrl(broker.slug, broker.typeSlug)} target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline transition-colors">
+                                                <h4 className="text-[16px] font-bold text-black100">{broker.name}</h4>
+                                            </Link>
+                                        )}
                                     </div>
 
                                     {!broker.isViewing && (
