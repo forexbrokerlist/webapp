@@ -226,7 +226,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
             </div>
             <div className='px-4 pb-4'>
                 <div className='border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl px-4 pb-4 pt-10 mt-4'>
-                    <div className='grid grid-cols-3 gap-5 items-start'>
+                    <div className='grid grid-cols-3 max-tab:grid-cols-2 max-mobile:grid-cols-1 gap-5 items-start'>
                         {slots.map((broker, idx) => (
                             broker ? (
                                 <div key={idx} className={`relative rounded-xl border p-4 ${broker.isViewing ? 'bg-[#F5F8EA] border-[#A8DD15]' : 'bg-white border-border-light300'}`}>

@@ -7,7 +7,7 @@ import AlgoPricingSection from '../forex-algo-provider-details/algo-pricing-sect
 
 const RoundIcon = '/assets/images/round.svg';
 
-export default function TradingSpecifications({ broker, showTradingHours = true, showAccountFunding = true, accountFundingHeading="Account Funding", accountFundingDetails, tradingSpreadsHeading="Trading Costs & Spreads", tradingSpreadsDetails, showTradingSpreads = true,showStarRatings = true, showFeatures = false, platformSectionId = "platform-&-features",showSkills=false,bridgeTitle,showBestSuitedFor=false,showPricingSection=false}: { broker: any, showTradingHours?: boolean, showAccountFunding?: boolean, accountFundingHeading?: string, accountFundingDetails?: any[], tradingSpreadsHeading?: string, tradingSpreadsDetails?: any[], showTradingSpreads?: boolean,showStarRatings?: boolean, showFeatures?: boolean, platformSectionId?: string,showSkills?:boolean,bridgeTitle?:string,showBestSuitedFor?:boolean,showAccountFounding?:string,showPricingSection?:boolean}) {
+export default function TradingSpecifications({ broker, showTradingHours = true, showAccountFunding = true, accountFundingHeading = "Account Funding", accountFundingDetails, tradingSpreadsHeading = "Trading Costs & Spreads", tradingSpreadsDetails, showTradingSpreads = true, showStarRatings = true, showFeatures = false, platformSectionId = "platform-&-features", showSkills = false, bridgeTitle, showBestSuitedFor = false, showPricingSection = false }: { broker: any, showTradingHours?: boolean, showAccountFunding?: boolean, accountFundingHeading?: string, accountFundingDetails?: any[], tradingSpreadsHeading?: string, tradingSpreadsDetails?: any[], showTradingSpreads?: boolean, showStarRatings?: boolean, showFeatures?: boolean, platformSectionId?: string, showSkills?: boolean, bridgeTitle?: string, showBestSuitedFor?: boolean, showAccountFounding?: string, showPricingSection?: boolean }) {
     const tradingHoursRaw = broker.trading_hours;
     let tradingHours: { label: string, value: string }[] = [];
 
@@ -68,10 +68,10 @@ export default function TradingSpecifications({ broker, showTradingHours = true,
                 </h3>
             </div>
             <div className='px-4 pb-4'>
-                <div className='grid grid-cols-2 gap-5'>
+                <div className='grid grid-cols-2 max-tab:grid-cols-1 gap-5'>
 
                     {/* Trading Hours */}
-                    {showTradingHours && <div className='col-span-2 border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
+                    {showTradingHours && <div className='col-span-2 max-mobile:col-span-1 border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
                         <div className='flex items-center gap-2 pb-3'>
                             <img src={RoundIcon} alt="RoundIcon" className='block' />
                             <span className='block text-base font-medium text-black'>
@@ -79,10 +79,10 @@ export default function TradingSpecifications({ broker, showTradingHours = true,
                             </span>
                         </div>
                         <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
-                        <div className='pt-2 grid grid-cols-[1fr_1px_1fr] gap-6'>
+                        <div className='pt-2 grid grid-cols-[1fr_1px_1fr] max-mobile:grid-cols-1 max-mobile:gap-0 gap-6'>
                             <div>
                                 {col1.map((detail: any, index: number) => (
-                                    <div key={index} className='flex justify-between items-center py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>
+                                    <div key={index} className='flex justify-between items-center py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid max-mobile:border-b max-mobile:last:border-b'>
                                         <div className='flex items-center gap-2'>
                                             <span className='text-[15px] font-medium text-black700'>{detail.label}</span>
                                         </div>
@@ -90,7 +90,7 @@ export default function TradingSpecifications({ broker, showTradingHours = true,
                                     </div>
                                 ))}
                             </div>
-                            <div className='bg-border-light300 my-2'></div>
+                            <div className='bg-border-light300 my-2 max-mobile:hidden'></div>
                             <div>
                                 {col2.map((detail: any, index: number) => (
                                     <div key={index} className='flex justify-between items-center py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>
@@ -172,16 +172,16 @@ export default function TradingSpecifications({ broker, showTradingHours = true,
             </div>
 
             <div id={platformSectionId} className='px-4'>
-           {showSkills&&       <div id="topics-skills">
-                                            <TopicsSkillsSection broker={broker} />
-                                        </div>
-            }    {!showSkills && !showBestSuitedFor && !showPricingSection && <PlatformFeatures bridgeTitle={bridgeTitle} broker={broker} showStarRatings={showStarRatings} showFeatures={showFeatures} />}
-            {!showSkills&&showBestSuitedFor&&broker?.best_suited_for.length>0&&
-            <BestSuitedFor bridgeTitle={bridgeTitle} broker={broker} showStarRatings={showStarRatings} showFeatures={showFeatures} />
-            }
-            {!showSkills&&!showBestSuitedFor&&showPricingSection &&
-            <AlgoPricingSection  broker={broker}   />
-            }
+                {showSkills && <div id="topics-skills">
+                    <TopicsSkillsSection broker={broker} />
+                </div>
+                }    {!showSkills && !showBestSuitedFor && !showPricingSection && <PlatformFeatures bridgeTitle={bridgeTitle} broker={broker} showStarRatings={showStarRatings} showFeatures={showFeatures} />}
+                {!showSkills && showBestSuitedFor && broker?.best_suited_for.length > 0 &&
+                    <BestSuitedFor bridgeTitle={bridgeTitle} broker={broker} showStarRatings={showStarRatings} showFeatures={showFeatures} />
+                }
+                {!showSkills && !showBestSuitedFor && showPricingSection &&
+                    <AlgoPricingSection broker={broker} />
+                }
                 <div className='pt-4'>
                     <ProsCons broker={broker} />
                 </div>
