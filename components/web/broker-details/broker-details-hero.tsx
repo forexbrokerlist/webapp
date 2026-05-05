@@ -51,7 +51,7 @@ const FramImage = '/assets/images/laptop-fram.png';
 const Profilegroup = '/assets/images/profilegroup.svg';
 
 
-export default async function BrokerDetailsHero({ broker, heroFeatures, showVerified = false, showDemo = false, showCrmPara = false, showBridgePara = false, showTrialAvailable=false,showBeginnerFriendly=false,showClients=false }: { broker: any, heroFeatures?: { value: string, label: string }[], showVerified?: boolean, showDemo?: boolean, showCrmPara?: boolean, showBridgePara?: boolean, showTrialAvailable?: boolean,showBeginnerFriendly?:boolean,showClients?:boolean }) {
+export default async function BrokerDetailsHero({ broker, heroFeatures, showVerified = false, showDemo = false, showCrmPara = false, showBridgePara = false, showTrialAvailable = false, showBeginnerFriendly = false, showClients = false }: { broker: any, heroFeatures?: { value: string, label: string }[], showVerified?: boolean, showDemo?: boolean, showCrmPara?: boolean, showBridgePara?: boolean, showTrialAvailable?: boolean, showBeginnerFriendly?: boolean, showClients?: boolean }) {
     const defaultHeroFeatures = [
         { value: broker.minimum_deposit || 'N/A', label: 'Min Deposit' },
         { value: broker.minimum_raw_spreads || 'N/A', label: 'Raw Spread' },
@@ -65,67 +65,67 @@ export default async function BrokerDetailsHero({ broker, heroFeatures, showVeri
 
     return (
         <div className='pt-100'>
-            <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 py-8 mb-10'>
+            <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 py-8 max-mobile:pt-0 mb-10'>
 
                 {/* Main banner container */}
                 <div className="relative w-full  isolate">
 
-                    <div className="absolute inset-y-0 left-[2%] right-[2%] md:left-[1.5%] md:right-[1.5%] bg-white transform -skew-x-[7.5deg] border border-solid border-border-light500 rounded-[16px] z-[-1] overflow-hidden  pointer-events-none">
+                    <div className="absolute inset-y-0 left-[2%] right-[2%] md:left-[1.5%] md:right-[1.5%] bg-white transform -skew-x-[7.5deg] max-tab:skew-x-0 border border-solid border-border-light500 rounded-[16px] z-[-1] overflow-hidden  pointer-events-none">
 
                     </div>
 
-                    <div className='grid grid-cols-[1fr_40%] items-center gap-10 py-5 px-[90px]'>
+                    <div className='grid grid-cols-[1fr_40%] max-tab:grid-cols-1 items-center gap-10 max-tab:gap-8 py-5 px-[90px] max-tab:px-5 max-mobile:px-4 max-tab:py-8'>
                         <div>
-                            <div className='grid grid-cols-[65px_1fr] gap-3 pb-6'>
-                                <div className='w-[65px] h-[65px] rounded-full flex items-center justify-center border border-solid border-primary'>
+                            <div className='flex max-mobile:flex-col gap-4 pb-6 max-mobile:items-center max-mobile:text-center'>
+                                <div className='w-[65px] h-[65px] shrink-0 rounded-full flex items-center justify-center border border-solid border-primary'>
                                     <img src={(await getPresignedUrlFromFull(broker.logoUrl)) ?? undefined} alt="logo" className='max-w-[45px] bg-white block object-contain' />
                                 </div>
-                                <div >
-                                    <div className='flex items-center gap-3'>
-                                    <h2 className='text-4xl text-primary font-semibold'>
-                                        {broker?.broker_name?.replace(/\s*\([^)]*\)/g, '')}
-                                    </h2>
-                                    {showVerified && broker?.isSponsor && (
-                                        <Badge variant="info" size="md" className="rounded-full px-3">Verified</Badge>
-                                    )}
-                                    {showDemo && broker?.demoAccount && (
-                                        <Badge variant="success" size="md" className="rounded-full px-3">Free Demo</Badge>
-                                    )}
-                                    {showTrialAvailable && broker?.free_trial_available && (
-                                        <Badge variant="success" size="md" className="rounded-full px-3">Free Trial</Badge>
-                                    )}
-                                    {
-                                       showBeginnerFriendly && broker?.beginner_friendly && <Badge variant="beginner" size="md" className="rounded-full px-3">Beginner Friendly</Badge>
-                                    }
+                                <div>
+                                    <div className='flex items-center gap-3 max-mobile:flex-wrap max-mobile:justify-center'>
+                                        <h2 className='text-4xl max-tab:text-3xl max-mobile:text-2xl text-primary font-semibold'>
+                                            {broker?.broker_name?.replace(/\s*\([^)]*\)/g, '')}
+                                        </h2>
+                                        {showVerified && broker?.isSponsor && (
+                                            <Badge variant="info" size="md" className="rounded-full px-3">Verified</Badge>
+                                        )}
+                                        {showDemo && broker?.demoAccount && (
+                                            <Badge variant="success" size="md" className="rounded-full px-3">Free Demo</Badge>
+                                        )}
+                                        {showTrialAvailable && broker?.free_trial_available && (
+                                            <Badge variant="success" size="md" className="rounded-full px-3">Free Trial</Badge>
+                                        )}
+                                        {
+                                            showBeginnerFriendly && broker?.beginner_friendly && <Badge variant="beginner" size="md" className="rounded-full px-3">Beginner Friendly</Badge>
+                                        }
                                     </div>
-                                   {
-                                        (showCrmPara || showBridgePara)?<p className='text-base font-medium text-black100 flex items-center'>
-                                      {broker?.company_name && `by ${broker.company_name}`} {!broker?.company_name && broker?.subtitle} <span className='mx-2 opacity-50'>·</span> Founded {broker?.year_established ? Math.floor(broker.year_established) : '-'} <span className='mx-2 opacity-50'>·</span> {!showClients ? (broker?.headquarters || '-') : `${broker?.clients_count || '0'} clients`}
-                                    </p>:
-                                   <p className='text-base font-medium text-black100'>
-                                        {broker.subtitle || "750,000+ traders worldwide. 0.0 pip spreads, 99.5% fill rate"}
-                                    </p> } 
+                                    {
+                                        (showCrmPara || showBridgePara) ? <p className='text-base max-mobile:text-sm font-medium text-black100 flex items-center max-mobile:justify-center flex-wrap'>
+                                            {broker?.company_name && `by ${broker.company_name}`} {!broker?.company_name && broker?.subtitle} <span className='mx-2 opacity-50'>·</span> Founded {broker?.year_established ? Math.floor(broker.year_established) : '-'} <span className='mx-2 opacity-50'>·</span> {!showClients ? (broker?.headquarters || '-') : `${broker?.clients_count || '0'} clients`}
+                                        </p> :
+                                            <p className='text-base max-mobile:text-sm font-medium text-black100'>
+                                                {broker.subtitle || "750,000+ traders worldwide. 0.0 pip spreads, 99.5% fill rate"}
+                                            </p>}
                                 </div>
                             </div>
-                            <p className='text-base font-medium text-black700 mb-5'>
+                            <p className='text-base max-mobile:text-sm font-medium text-black700 mb-5 max-mobile:text-center'>
                                 {broker.description || "FP Markets stands out as a solid, no-nonsense Forex and CFD broker that, over the years, has evolved into one of the more reliable names in the industry, with its raw spreads, lightning-fast execution, and a well-optimized MT4 experience."}
                             </p>
-                            <div className='grid grid-cols-4 gap-0 pb-6'>
+                            <div className='grid grid-cols-4 max-tab:grid-cols-2 max-tab:gap-y-6 gap-0 pb-6'>
                                 {(heroFeatures && heroFeatures.length > 0) ? heroFeatures.map((feature, index) => (
-                                    <div key={index} className='px-6 py-1.5 first:pl-0 last:pr-0 last:border-none border-solid border-r border-border-light300'>
-                                        <h3 className='text-[15px] text-black100 font-semibold leading-none mb-2.5'>{feature.value}</h3>
+                                    <div key={index} className='px-6 max-tab:px-4 py-1.5 first:pl-0 last:pr-0 max-tab:[&:nth-child(odd)]:pl-0 max-tab:[&:nth-child(even)]:pr-0 max-tab:[&:nth-child(2)]:border-none last:border-none border-solid border-r border-border-light300 max-mobile:text-center'>
+                                        <h3 className='text-[15px] max-mobile:text-[14px] text-black100 font-semibold leading-none mb-2.5'>{feature.value}</h3>
                                         <p className='text-[12px] text-black700 font-medium leading-none'>{feature.label}</p>
                                     </div>
                                 )) : defaultHeroFeatures.map((feature, index) => (
-                                    <div key={index} className='px-6 py-1.5 first:pl-0 last:pr-0 last:border-none border-solid border-r border-border-light300'>
-                                        <h3 className='text-[15px] text-black100 font-semibold leading-none mb-2.5'>{feature.value}</h3>
+                                    <div key={index} className='px-6 max-tab:px-4 py-1.5 first:pl-0 last:pr-0 max-tab:[&:nth-child(odd)]:pl-0 max-tab:[&:nth-child(even)]:pr-0 max-tab:[&:nth-child(2)]:border-none last:border-none border-solid border-r border-border-light300 max-mobile:text-center'>
+                                        <h3 className='text-[15px] max-mobile:text-[14px] text-black100 font-semibold leading-none mb-2.5'>{feature.value}</h3>
                                         <p className='text-[12px] text-black700 font-medium leading-none'>{feature.label}</p>
                                     </div>
                                 ))}
                             </div>
-                            <div className='flex items-center gap-3 pb-6 border-b border-solid border-border-light300'>
-                                {absoluteUrl && <Link href={absoluteUrl} target='_blank' >
-                                    <button className='py-2.5 px-5 w-[200px] justify-center text-base font-medium text-black100 border-none bg-primary rounded-full cursor-pointer flex items-center gap-2'>
+                            <div className='flex items-center flex-wrap gap-3 pb-6 border-b border-solid border-border-light300 max-mobile:justify-center'>
+                                {absoluteUrl && <Link href={absoluteUrl} target='_blank' className='max-mobile:w-full max-mobile:max-w-[300px]'>
+                                    <button className='py-2.5 px-5 w-[200px] max-mobile:w-full justify-center text-base font-medium text-black100 border-none bg-primary rounded-full cursor-pointer flex items-center gap-2'>
 
                                         Visit Website
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -166,29 +166,31 @@ export default async function BrokerDetailsHero({ broker, heroFeatures, showVeri
                                 </div> */}
                                 <BrokerBookmarkButton brokerId={broker.id} />
                             </div>
-                            {broker.overall_rating && <div className='pt-6 flex items-center gap-2'>
+                            {broker.overall_rating && <div className='pt-6 flex items-center gap-2 max-mobile:justify-center'>
                                 {/* <img src={Profilegroup} alt='Profilegroup' className='block' />
                                 <p className='text-base font-medium text-black700'>
                                     Trusted by <span className='text-primary'> 70K+ </span> investors & traders with a  <span className='text-primary'> 4.8 out of 5 </span> rating
                                 </p> */}
-                                <div className='flex items-center gap-1 border border-[#1212120D]/95 bg-[#F0F2EC66]  rounded-full  px-4 py-1'>
-                                    {[...Array(5)].map((_, i) => {
-                                        const rating = parseFloat(broker.overall_rating || '0');
-                                        const fillPercentage = Math.min(100, Math.max(0, (rating - i) * 100));
-                                        return (
-                                            <StarIcon
-                                                key={i}
-                                                fillPercentage={fillPercentage}
-                                            />
-                                        );
-                                    })}
-                                    <p className='text-base font-medium text-black700'>
+                                <div className='flex items-center flex-wrap gap-1 border border-[#1212120D]/95 bg-[#F0F2EC66] rounded-full max-mobile:rounded-2xl px-4 py-1 max-mobile:py-2 max-mobile:justify-center'>
+                                    <div className="flex items-center gap-1">
+                                        {[...Array(5)].map((_, i) => {
+                                            const rating = parseFloat(broker.overall_rating || '0');
+                                            const fillPercentage = Math.min(100, Math.max(0, (rating - i) * 100));
+                                            return (
+                                                <StarIcon
+                                                    key={i}
+                                                    fillPercentage={fillPercentage}
+                                                />
+                                            );
+                                        })}
+                                    </div>
+                                    <p className='text-base max-mobile:text-sm font-medium text-black700 max-mobile:text-center'>
                                         Trusted with a  <span className='text-primary'> {broker.overall_rating}/5 </span> customer rating
                                     </p>
                                 </div>
                             </div>}
                         </div>
-                        <div className="relative z-10 w-full flex items-center justify-center">
+                        <div className="relative z-10 w-full flex items-center justify-center max-tab:px-10 max-mobile:px-0">
                             {/* The transparent laptop frame image on top */}
                             <img src={FramImage} alt='Laptop Frame' className="relative z-20 w-full object-contain pointer-events-none" />
 
@@ -197,7 +199,7 @@ export default async function BrokerDetailsHero({ broker, heroFeatures, showVeri
                                 <img
                                     src={(await getPresignedUrlFromFull(broker.screenshotUrl || broker.bannerUrl)) ?? ''}
                                     alt="Broker Screenshot"
-                                    className="absolute z-[999] w-[75.5%] h-[76%] top-[5%] mt-[14px] left-[12.2%] object-top"
+                                    className="absolute z-[999] w-[75.5%] h-[76%] top-[5%] mt-[14px] max-tab:mt-[1.5%] max-mobile:mt-[3%] left-[12.2%] object-top"
                                 />
                             )}
                         </div>
