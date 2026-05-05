@@ -27,7 +27,7 @@ export const getCategoryWithBrokers = async (slug: string, limit?: number) => {
  */
 export const getTrustedPlatforms = async (limit: number = 7) => {
   const category = await getCategoryWithBrokers(
-    "trusted-trading-platforms",
+    "forex-brokers",
     limit,
   );
   const brokers = await Promise.all(
