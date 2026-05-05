@@ -18,7 +18,13 @@ const BrokerList = ({ children, brokers, categorySlug, ...props }: BrokerListPro
   return (
     <Grid {...props}>
       {brokers.map((broker, order) => (
-        <BrokerCard key={broker.id} broker={broker} categorySlug={categorySlug} style={{ order }} />
+        <BrokerCard
+          key={broker.id}
+          broker={broker}
+          categorySlug={categorySlug}
+          logoUrl={broker.logoUrl || undefined}
+          style={{ order }}
+        />
       ))}
 
       {brokers.length ? children : <EmptyList>{t("tools.no_tools")}</EmptyList>}

@@ -8,6 +8,7 @@ import { BrokerList, type BrokerListProps } from "~/components/web/tools/broker-
 import { ToolListing, type ToolListingProps } from "~/components/web/tools/tool-listing"
 import { adsConfig } from "~/config/ads"
 import { createGraph, generateItemList } from "~/lib/structured-data"
+import { getPresignedUrlFromFull } from "~/lib/media"
 import { searchBrokers } from "~/server/web/tools/queries"
 import { type ToolFilterParams, toolFilterParamsCache } from "~/server/web/tools/schema"
 import { ToolTier } from "~/.generated/prisma/client"
@@ -35,6 +36,14 @@ const ToolQuery = async ({
   const parsedParams = toolFilterParamsCache.parse(await searchParams)
   const params = { ...parsedParams, ...overrideParams }
   const { brokers, total, page, perPage } = await searchBrokers(params, where)
+
+  // Process logo URLs for brokers
+  const brokersWithLogos = await Promise.all(
+    brokers.map(async (broker) => ({
+      ...broker,
+      logoUrl: (await getPresignedUrlFromFull(broker.logoUrl || "")) || null,
+    }))
+  )
 
   // Map brokers to match the ToolMany structure expected by ToolList
   const mappedTools = brokers.map((broker) => ({
@@ -68,7 +77,7 @@ const ToolQuery = async ({
     <ToolListing pagination={{ total, perPage, page, ...pagination }} {...props}>
       <StructuredData data={structuredData} />
 
-      <BrokerList brokers={brokers} {...list}>
+      <BrokerList brokers={brokersWithLogos} {...list}>
         {ad &&
           Array.from({ length: adsConfig.adsPerPage }, (_, index) => {
             const order = Math.ceil((perPage / adsConfig.adsPerPage) * index + 1)

@@ -95,7 +95,7 @@ export const getBridgePartners = async (limit: number = 6) => {
 /**
  * Fetches liquidity partners.
  */
-export const getLiquidityPartners = async (limit: number = 2) => {
+export const getLiquidityPartners = async (limit: number = 4) => {
   const category = await getCategoryWithBrokers("liquidity-providers", limit);
   const brokers = await Promise.all(
     (category?.brokers || []).map(async (broker) => ({

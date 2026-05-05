@@ -73,6 +73,7 @@ export default function CategoriesCard({
     tradingPartners,
     allBrokers
 }: CategoriesCardProps) {
+    console.log('Liquidity Partners:', liquidityPartners);
     return (
         <>
             <section className='pb-100 max-mobile:pb-16'>
@@ -86,15 +87,15 @@ export default function CategoriesCard({
                                 <p className='text-base text-black700 mb-5 font-medium max-mobile:text-sm'>
                                     {AlgoCategory?.description || 'A curated collection of the best retail Traders and Technically Skilled Traders'}
                                 </p>
-                               <Link href={`/categories/${AlgoCategory?.slug || 'algo-trading'}`}>
-                                <Button variant='primary' size='md' className='flex items-center gap-2'>
-                                    
+                                <Link href={`/categories/${AlgoCategory?.slug || 'algo-trading'}`}>
+                                    <Button variant='primary' size='md' className='flex items-center gap-2'>
+
                                         View Item
                                         <div>
                                             <MoveRight className='w-4 h-4' />
                                         </div>
-                                </Button>
-                                    </Link>
+                                    </Button>
+                                </Link>
 
                             </div>
                             <div className='flex justify-center'>
@@ -205,15 +206,15 @@ export default function CategoriesCard({
                                 }
                             </div>
                             <div className='mt-auto flex items-center justify-center pt-4'>
-                                    <Link href={`/categories/${bridgeCategory?.slug || 'bridge-and-plug-in-partners'}`}>
-                               
-                                <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                <Link href={`/categories/${bridgeCategory?.slug || 'bridge-and-plug-in-partners'}`}>
+
+                                    <Button variant='primary' size='md' className='flex items-center gap-2'>
                                         View Item
                                         <div>
                                             <MoveRight className='w-4 h-4' />
                                         </div>
-                                </Button>
-                                    </Link>
+                                    </Button>
+                                </Link>
 
                             </div>
                         </div>
@@ -317,15 +318,15 @@ export default function CategoriesCard({
                                     </p>
                                 </div>
                                 <div className='shrink-0'>
-                                        <Link href="/brokers">
-                                   
-                                    <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                    <Link href="/brokers">
+
+                                        <Button variant='primary' size='md' className='flex items-center gap-2'>
                                             View Item
                                             <div>
                                                 <MoveRight className='w-4 h-4' />
                                             </div>
-                                    </Button>
-                                        </Link>
+                                        </Button>
+                                    </Link>
 
                                 </div>
                             </div>
@@ -362,15 +363,15 @@ export default function CategoriesCard({
                                 </div>
                             </div>
                             <div className='p-[30px] max-mobile:p-6 pt-4 flex justify-center'>
-                                    <Link href={`/categories/${liquidityCategory?.slug || 'liquidity-providers'}`}>
-                                
-                                <Button variant='primary' size='md' className='flex items-center gap-2 z-20'>
+                                <Link href={`/categories/${liquidityCategory?.slug || 'liquidity-providers'}`}>
+
+                                    <Button variant='primary' size='md' className='flex items-center gap-2 z-20'>
                                         View Item
                                         <div>
                                             <MoveRight className='w-4 h-4' />
                                         </div>
-                                </Button>
-                                    </Link>
+                                    </Button>
+                                </Link>
 
                             </div>
                         </div>
@@ -419,15 +420,15 @@ export default function CategoriesCard({
                                 }
                             </div>
                             <div className='mt-auto flex items-center justify-center'>
-                                    <Link href={`/categories/${trustedCategory?.slug || 'trusted-trading-platforms'}`}>
+                                <Link href={`/categories/${trustedCategory?.slug || 'trusted-trading-platforms'}`}>
 
-                                <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                    <Button variant='primary' size='md' className='flex items-center gap-2'>
                                         View Item
                                         <div>
                                             <MoveRight className='w-4 h-4' />
                                         </div>
-                                </Button>
-                                    </Link>
+                                    </Button>
+                                </Link>
 
                             </div>
                         </div>
@@ -440,15 +441,15 @@ export default function CategoriesCard({
                                     <p className='text-base text-black700 mb-5 font-medium max-mobile:text-sm'>
                                         {tradingCategory?.description || 'A curated collection of the best connect with trusted trading platform partners.'}
                                     </p>
-                                        <Link href={`/categories/${tradingCategory?.slug || 'forex-trading-platform'}`}>
+                                    <Link href={`/categories/${tradingCategory?.slug || 'forex-trading-platform'}`}>
 
-                                    <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                        <Button variant='primary' size='md' className='flex items-center gap-2'>
                                             View Item
                                             <div>
                                                 <MoveRight className='w-4 h-4' />
                                             </div>
-                                    </Button>
-                                        </Link>
+                                        </Button>
+                                    </Link>
 
                                 </div>
                                 <div className='max-tab:order-1 flex justify-center'>

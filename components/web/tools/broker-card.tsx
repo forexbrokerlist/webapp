@@ -11,10 +11,12 @@ import { Stack } from "~/components/common/stack";
 import { Favicon } from "~/components/web/ui/favicon";
 import { VerifiedBadge } from "~/components/web/verified-badge";
 import type { Brokers } from "~/.generated/prisma/client";
+import Image from "next/image";
 
 type BrokerCardProps = ComponentProps<typeof Card> & {
   broker: Brokers;
   categorySlug?: string;
+  logoUrl?: string;
 };
 
 // Category-specific routing mapping
@@ -38,10 +40,11 @@ const getBrokerRedirectUrl = (broker: Brokers, categorySlug?: string): string =>
 export const BrokerCard = ({
   broker,
   categorySlug,
+  logoUrl,
   className,
   ...props
 }: BrokerCardProps) => {
-  // Try to use a clean URL for the favicon fetch
+  // Try to use a clean URL for favicon fetch
   let domain = "forex.com";
   const targetUrl = broker.broker_website || broker.url;
   try {
@@ -63,7 +66,8 @@ export const BrokerCard = ({
       {...props}
     >
       <CardHeader wrap={false} className="pr-8 mb-1">
-        <Favicon src={`https://www.google.com/s2/favicons?domain=${domain}&sz=128`} title={broker.broker_name || "Broker"} contained />
+        <Favicon src={logoUrl} size={24} className=" object-contain   w-12 h-12" contained />
+
 
         <H4 as="h3" className="truncate">
           <Link href={getBrokerRoute(broker.slug || '', categorySlug, (broker as any).categories)}>

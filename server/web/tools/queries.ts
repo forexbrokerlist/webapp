@@ -270,9 +270,9 @@ export const findBrokerBySlug = async (slug: string) => {
       courseModules: {
         orderBy: { order: "asc" },
       },
-      reviews:{
-        orderBy:{createdAt:"desc"}
-      }
+      reviews: {
+        orderBy: { createdAt: "desc" },
+      },
     },
   });
 };
@@ -320,7 +320,6 @@ export const findRandomBrokers = async (
   });
 };
 
-
 export const findRandomCourses = async (
   take: number = 3,
   excludeSlug?: string,
@@ -335,7 +334,6 @@ export const findRandomCourses = async (
     type: { slug: "educationplatforms" },
     isSponsor: true,
     ...(excludeSlug && { slug: { not: excludeSlug } }),
-
   };
 
   const itemCount = await db.brokers.count({ where: whereClause });
@@ -748,7 +746,7 @@ export const findCrmProvidersForComparison = async (take: number = 20) => {
           ? "badge-dark"
           : "badge-danger",
       },
-         {
+      {
         label: "KYC/AML automation",
         value: broker.features?.some((f) => {
           const lowerF = f.toLowerCase();
@@ -763,7 +761,7 @@ export const findCrmProvidersForComparison = async (take: number = 20) => {
           ? "badge-dark"
           : "badge-danger",
       },
-         {
+      {
         label: "Client Portal",
         value: broker.features?.some((f) => {
           const lowerF = f.toLowerCase();
@@ -800,10 +798,13 @@ export const findCrmProvidersForComparison = async (take: number = 20) => {
       },
       {
         label: "Best For",
-        value:broker.bestFor&& broker.bestFor.length>0 ? broker.bestFor?.join(', ') : '-',
+        value:
+          broker.bestFor && broker.bestFor.length > 0
+            ? broker.bestFor?.join(", ")
+            : "-",
         type: "text",
       },
-      
+
       {
         label: "Overall rating",
         value: broker.overall_rating || "0",
@@ -813,7 +814,9 @@ export const findCrmProvidersForComparison = async (take: number = 20) => {
   }));
 };
 
-export const findForexEducationProvidersForComparison = async (take: number = 20) => {
+export const findForexEducationProvidersForComparison = async (
+  take: number = 20,
+) => {
   const whereClause: Prisma.BrokersWhereInput = {
     status: ToolStatus.Published,
     type: { slug: "educationplatforms" },
@@ -902,7 +905,10 @@ export const findForexEducationProvidersForComparison = async (take: number = 20
       },
       {
         label: "Pricing model",
-        value: broker.pricingModel&&broker.pricingModel.length>0 ? broker.pricingModel.join("/") : "-",
+        value:
+          broker.pricingModel && broker.pricingModel.length > 0
+            ? broker.pricingModel.join("/")
+            : "-",
         type: "text",
       },
       {
@@ -923,7 +929,6 @@ export const findForexEducationProvidersForComparison = async (take: number = 20
     ],
   }));
 };
-
 
 export const findBridgeProvidersForComparison = async (take: number = 20) => {
   const whereClause: Prisma.BrokersWhereInput = {
@@ -993,7 +998,11 @@ export const findBridgeProvidersForComparison = async (take: number = 20) => {
       },
       {
         label: "Pricing model",
-        value:broker.pricingModel && broker.pricingModel?.length>0 && broker.pricingModel.join('/') || "-",
+        value:
+          (broker.pricingModel &&
+            broker.pricingModel?.length > 0 &&
+            broker.pricingModel.join("/")) ||
+          "-",
         type: "text",
       },
       {
@@ -1010,7 +1019,9 @@ export const findBridgeProvidersForComparison = async (take: number = 20) => {
   }));
 };
 
-export const findLiquidityProvidersForComparison = async (take: number = 20) => {
+export const findLiquidityProvidersForComparison = async (
+  take: number = 20,
+) => {
   const whereClause: Prisma.BrokersWhereInput = {
     status: ToolStatus.Published,
     type: { slug: "liquidity" },
@@ -1054,11 +1065,12 @@ export const findLiquidityProvidersForComparison = async (take: number = 20) => 
       },
       {
         label: "Asset classes",
-        value: broker.asset_classes && broker.asset_classes.length > 0 
-          ? (broker.asset_classes.length > 2 
+        value:
+          broker.asset_classes && broker.asset_classes.length > 0
+            ? broker.asset_classes.length > 2
               ? `${broker.asset_classes.slice(0, 2).join(", ")}, +${broker.asset_classes.length - 2} others`
-              : broker.asset_classes.join(", "))
-          : "-",
+              : broker.asset_classes.join(", ")
+            : "-",
         type: "text",
       },
       {
@@ -1068,18 +1080,19 @@ export const findLiquidityProvidersForComparison = async (take: number = 20) => 
       },
       {
         label: "Target clients",
-        value: broker.target_clients && broker.target_clients.length > 0 
-          ? (() => {
-              const mapped = broker.target_clients.map(t => {
-                if (t === "Hedge Funds") return "Funds";
-                if (t === "Prop Trading Firms") return "Prop Firms";
-                return t;
-              });
-              return mapped.length > 3 
-                ? `${mapped.slice(0, 3).join(", ")}, +${mapped.length - 3} others`
-                : mapped.join(", ");
-            })()
-          : "-",
+        value:
+          broker.target_clients && broker.target_clients.length > 0
+            ? (() => {
+                const mapped = broker.target_clients.map((t) => {
+                  if (t === "Hedge Funds") return "Funds";
+                  if (t === "Prop Trading Firms") return "Prop Firms";
+                  return t;
+                });
+                return mapped.length > 3
+                  ? `${mapped.slice(0, 3).join(", ")}, +${mapped.length - 3} others`
+                  : mapped.join(", ");
+              })()
+            : "-",
         type: "text",
       },
       {
@@ -1094,7 +1107,11 @@ export const findLiquidityProvidersForComparison = async (take: number = 20) => 
       },
       {
         label: "Pricing model",
-        value:broker.pricingModel && broker.pricingModel?.length>0 && broker.pricingModel.join('/') || "-",
+        value:
+          (broker.pricingModel &&
+            broker.pricingModel?.length > 0 &&
+            broker.pricingModel.join("/")) ||
+          "-",
         type: "text",
       },
       {
@@ -1116,13 +1133,12 @@ export const findLiquidityProvidersForComparison = async (take: number = 20) => 
   }));
 };
 
-
 export const findPSPPartnersForComparison = async (take: number = 20) => {
   const whereClause: Prisma.BrokersWhereInput = {
     status: ToolStatus.Published,
     type: { slug: "psp" },
   };
-  
+
   const rawBrokers = await db.brokers.findMany({
     where: whereClause,
     select: {
@@ -1142,8 +1158,8 @@ export const findPSPPartnersForComparison = async (take: number = 20) => {
       mass_payout: true,
       overall_rating: true,
       type: {
-        select: { slug: true }
-      }
+        select: { slug: true },
+      },
     },
     take,
   });
@@ -1162,11 +1178,12 @@ export const findPSPPartnersForComparison = async (take: number = 20) => {
       },
       {
         label: "Target clients",
-        value: broker.target_clients && broker.target_clients.length > 0 
-          ? (broker.target_clients.length > 3 
+        value:
+          broker.target_clients && broker.target_clients.length > 0
+            ? broker.target_clients.length > 3
               ? `${broker.target_clients.slice(0, 3).join(", ")}, +${broker.target_clients.length - 3} others`
-              : broker.target_clients.join(", "))
-          : "-",
+              : broker.target_clients.join(", ")
+            : "-",
         type: "text",
       },
       {
@@ -1191,9 +1208,10 @@ export const findPSPPartnersForComparison = async (take: number = 20) => {
       },
       {
         label: "Integration",
-        value: broker.integration_type && broker.integration_type.length > 0 
-          ? broker.integration_type.join(", ")
-          : "-",
+        value:
+          broker.integration_type && broker.integration_type.length > 0
+            ? broker.integration_type.join(", ")
+            : "-",
         type: "text",
       },
       {
@@ -1224,7 +1242,7 @@ export const findAlgoProvidersForComparison = async (take: number = 20) => {
     status: ToolStatus.Published,
     type: { slug: "botprovider" },
   };
-  
+
   const rawBrokers = await db.brokers.findMany({
     where: whereClause,
     select: {
@@ -1248,8 +1266,8 @@ export const findAlgoProvidersForComparison = async (take: number = 20) => {
       nfa_fifo: true,
       overall_rating: true,
       type: {
-        select: { slug: true }
-      }
+        select: { slug: true },
+      },
     },
     take,
   });
@@ -1268,15 +1286,22 @@ export const findAlgoProvidersForComparison = async (take: number = 20) => {
       },
       {
         label: "Strategy",
-        value: broker.strategy_type && broker.strategy_type.length > 0
-          ? broker.strategy_type.map(s => s.replace(/\s*\(.*?\)/g, "")).join(", ")
-          : "-",
+        value:
+          broker.strategy_type && broker.strategy_type.length > 0
+            ? broker.strategy_type
+                .map((s) => s.replace(/\s*\(.*?\)/g, ""))
+                .join(", ")
+            : "-",
         type: "text",
       },
       {
         label: "Automation level",
         value: broker.automation_level || "-",
-        type: broker.automation_level?.toLowerCase().includes("fully") ? "badge-success" : broker.automation_level ? "badge-warning" : "text",
+        type: broker.automation_level?.toLowerCase().includes("fully")
+          ? "badge-success"
+          : broker.automation_level
+            ? "badge-warning"
+            : "text",
       },
       {
         label: "Compatible platforms",
@@ -1300,11 +1325,17 @@ export const findAlgoProvidersForComparison = async (take: number = 20) => {
       {
         label: "Verified performance",
         value: broker.verified_performance || "No",
-        type: broker.verified_performance && broker.verified_performance !== "No" ? "badge-success" : "badge-danger",
+        type:
+          broker.verified_performance && broker.verified_performance !== "No"
+            ? "badge-success"
+            : "badge-danger",
       },
       {
         label: "Pricing model",
-        value: broker.pricingModel && broker.pricingModel.length > 0 ? broker.pricingModel.join("/") : "-",
+        value:
+          broker.pricingModel && broker.pricingModel.length > 0
+            ? broker.pricingModel.join("/")
+            : "-",
         type: "text",
       },
       {
@@ -1314,12 +1345,23 @@ export const findAlgoProvidersForComparison = async (take: number = 20) => {
       },
       {
         label: "Free trial",
-        value: broker.free_trial_available ? "Yes" : broker.demoAccount ? "Demo only" : "No",
-        type: broker.free_trial_available ? "badge-dark" : broker.demoAccount ? "badge-warning" : "badge-danger",
+        value: broker.free_trial_available
+          ? "Yes"
+          : broker.demoAccount
+            ? "Demo only"
+            : "No",
+        type: broker.free_trial_available
+          ? "badge-dark"
+          : broker.demoAccount
+            ? "badge-warning"
+            : "badge-danger",
       },
       {
         label: "Best for",
-        value: broker.bestFor && broker.bestFor.length > 0 ? broker.bestFor.join(" + ") : "-",
+        value:
+          broker.bestFor && broker.bestFor.length > 0
+            ? broker.bestFor.join(" + ")
+            : "-",
         type: "text",
       },
       {
@@ -1345,7 +1387,6 @@ export const findAlgoProvidersForComparison = async (take: number = 20) => {
     ],
   }));
 };
-
 
 export const findTradingPlatformsForComparison = async (take: number = 20) => {
   const whereClause: Prisma.BrokersWhereInput = {
@@ -1395,7 +1436,10 @@ export const findTradingPlatformsForComparison = async (take: number = 20) => {
       },
       {
         label: "Best for",
-        value:broker.bestFor&& broker.bestFor.length>0 ? broker.bestFor?.join(', ') : '-',
+        value:
+          broker.bestFor && broker.bestFor.length > 0
+            ? broker.bestFor?.join(", ")
+            : "-",
         type: "text",
       },
       {
@@ -1461,4 +1505,3 @@ export const findTradingPlatformsForComparison = async (take: number = 20) => {
     ],
   }));
 };
- 
