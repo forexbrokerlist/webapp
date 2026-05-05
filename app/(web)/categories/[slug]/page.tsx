@@ -95,7 +95,7 @@ export default async function (props: Props) {
       <CommonBanner
         image={BrokersImage}
         description={category?.description ?? ''}
-        highlightedText={`${category.label} —`} 
+        highlightedText={`${category.label} —`}
         title={`Discover, Compare & Choose The Best ${(category.name === "Forex Brokers" || category.name === "Top Rated Forex Brokers") ? "Trading " : ""}Platforms`} />
       <div className=" pb-100 max-mobile:py-16">
         <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
@@ -108,8 +108,8 @@ export default async function (props: Props) {
 
           <Suspense fallback={<ToolListingSkeleton />}>
             <ToolQuery
-            searchParams={props.searchParams}
-              where={{ categories: { some: { slug: category.slug } } }}
+              searchParams={props.searchParams}
+              where={{ categories: { some: { slug: category.slug === 'trusted-trading-platforms' ? 'forex-brokers' : category.slug } } }}
               search={{ placeholder }}
               ad="Tools"
               list={{ categorySlug: category.slug }}

@@ -142,7 +142,10 @@ export const AdsPicker = ({ className, ads, type, adDetails, ...props }: AdsCale
 
   return (
     <div className={cx("flex flex-col w-full border divide-y rounded-md", className)} {...props}>
-      <div className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none">
+      <div className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar "  style={{
+    scrollbarWidth: 'thin',           // Firefox
+    scrollbarColor: '#D1D5DB #F3F4F6' // Firefox: thumb track
+  }}>
         {spots.map(adSpot => (
           <AdsCalendar
             key={adSpot.type}
@@ -151,7 +154,7 @@ export const AdsPicker = ({ className, ads, type, adDetails, ...props }: AdsCale
             price={price}
             selections={selections}
             updateSelection={updateSelection}
-            className="group shrink-0 flex-1 min-w-76 snap-center border-l -ml-px"
+            className="group shrink-0 w-80 snap-center border-l -ml-px"
           >
             {type === adSpot.type && (
               <div className="absolute inset-px border-2 border-primary/50 rounded-sm pointer-events-none" />
@@ -243,6 +246,6 @@ export const AdsPicker = ({ className, ads, type, adDetails, ...props }: AdsCale
         setIsOpen={setIsLoginDialogOpen}
         description={t("login_required_description", { fallback: "You need to be logged in to purchase ads." })}
       />
-    </div>
+    </div >
   )
 }
