@@ -701,7 +701,7 @@ model FAQ {
   postId String?
   post   Post?   @relation(fields: [postId], references: [id])
   brokerId Int?
-  broker   Brokers? @relation(fields: [brokerId], references: [id])
+  broker   Brokers? @relation(fields: [brokerId], references: [id], onDelete: Cascade)
   @@index([order])
   @@index([isActive])
   @@index([postId])
@@ -724,7 +724,7 @@ model BrokerSubscription {
   id String @id @default(cuid())
 
   brokerId Int
-  broker   Brokers @relation(fields: [brokerId], references: [id])
+  broker   Brokers @relation(fields: [brokerId], references: [id], onDelete: Cascade)
 
   planId String
   plan   Plan   @relation(fields: [planId], references: [id])
@@ -773,7 +773,7 @@ model BrokerClaim {
   id String @id @default(cuid())
 
   brokerId Int
-  broker   Brokers @relation(fields: [brokerId], references: [id])
+  broker   Brokers @relation(fields: [brokerId], references: [id], onDelete: Cascade)
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
