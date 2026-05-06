@@ -68,7 +68,7 @@ type ToolFormProps = ComponentProps<"form"> & {
 }
 
 export function ToolForm({ className, title, broker, ...props }: ToolFormProps) {
-  console.log("🔧 ToolForm component loaded", { brokerId: broker?.id, hasReviews: !!broker?.reviews?.length });
+ 
 
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -241,7 +241,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
   const mutation = useMutation(
     orpc.brokers.upsert.mutationOptions({
       onSuccess: data => {
-        // console.log("✅ Broker upsert success:", data);
+       
 
 
         if (data.status !== originalStatus.current) {
@@ -261,7 +261,6 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       },
 
       onSettled: () => {
-        console.log("🏁 Mutation settled");
         setIsStatusPending(false)
       },
     }),
@@ -293,8 +292,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
 
   // Handle form submission
   const handleSubmit = form.handleSubmit((data, event) => {
-    // console.log("🚀 Broker Form Submission Data:", data);
-    // console.log("📝 Reviews in submission:", data.reviews);
+   
 
     const submitter = (event?.nativeEvent as SubmitEvent)?.submitter
     const isStatusChange = submitter?.getAttribute("name") !== "submit"
@@ -303,11 +301,11 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       setIsStatusPending(true)
     }
 
-    // console.log("🔄 Calling mutation.mutate with data...");
+    
     mutation.mutate(data)
   }, (errors) => {
     console.error("❌ Form validation errors:", errors);
-    // console.log("📝 Review field errors:", errors.reviews);
+   
   })
 
   // Handle status change

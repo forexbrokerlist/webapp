@@ -14,7 +14,7 @@ const StarIcon = ({ filled }: { filled: boolean }) => (
     </svg>
 );
 
-export default function PlatformFeatures({ broker, showStarRatings = true, showFeatures = false,bridgeTitle }: { broker: any, showStarRatings?: Boolean, showFeatures?: Boolean,bridgeTitle?:string  }) {
+export default function PlatformFeatures({ broker, showStarRatings = true, showFeatures = false, bridgeTitle }: { broker: any, showStarRatings?: Boolean, showFeatures?: Boolean, bridgeTitle?: string }) {
     const platformsRaw = broker.trading_platforms || "";
     const platforms = platformsRaw ? platformsRaw.split(',').map((p: string) => p.trim()) : ["MetaTrader 4", "MetaTrader 5"];
     const features = broker.features || [];
@@ -63,7 +63,7 @@ export default function PlatformFeatures({ broker, showStarRatings = true, showF
                     </div>
 
                     {/* Key Features Card */}
-                    {features.length>0&&<div className='p-4 rounded-xl border border-border-light300 bg-[#f0f1ec4d]'>
+                    {features.length > 0 && <div className='p-4 rounded-xl border border-border-light300 bg-[#f0f1ec4d]'>
                         <div className='flex items-center gap-2 pb-3'>
                             <img src={RoundIcon} alt="RoundIcon" className='block' />
                             <span className='block text-base font-medium text-black'>
@@ -106,7 +106,7 @@ export default function PlatformFeatures({ broker, showStarRatings = true, showF
                                     </div>
                                 </div>
 
-                                {showStarRatings && <div className='pt-2 grid grid-cols-[1fr_1px_1fr] gap-6'>
+                                {showStarRatings && <div className='pt-2 max-mobile:grid-cols-1 grid grid-cols-[1fr_1px_1fr] gap-6'>
                                     <div>
                                         {ratingsCol1.map((item, index) => (
                                             <div key={index} className='flex justify-between items-center py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>
@@ -119,7 +119,7 @@ export default function PlatformFeatures({ broker, showStarRatings = true, showF
                                             </div>
                                         ))}
                                     </div>
-                                    <div className='bg-border-light300 my-2'></div>
+                                    <div className='bg-border-light300 my-2 max-mobile:hidden'></div>
                                     <div>
                                         {ratingsCol2.map((item, index) => (
                                             <div key={index} className='flex justify-between items-center py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>

@@ -5,8 +5,8 @@ const RoundIcon = '/assets/images/round.svg';
 
 export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", brokerDetails, additionalDetails, learnSection = false, sectionId = "crm-details" }: { broker: any, sectionTitle?: String, brokerDetails?: any[], additionalDetails?: any[], learnSection?: boolean, sectionId?: string }) {
     const brokerDetailsList = brokerDetails || [
-        { label: "Deployment Type", value: broker.deployment_type&&broker.deployment_type>0&&broker.deployment_type.join(',') || "-" },
-        { label: "Pricing Model", value: broker.pricingModel&&broker.pricingModel.length>0 ? broker.pricingModel.join("/") : "-" },
+        { label: "Deployment Type", value: broker.deployment_type && broker.deployment_type > 0 && broker.deployment_type.join(',') || "-" },
+        { label: "Pricing Model", value: broker.pricingModel && broker.pricingModel.length > 0 ? broker.pricingModel.join("/") : "-" },
         { label: "Starting Price", value: broker.starting_price || "-" },
         { label: "Free Demo", value: broker.demoAccount ? "Yes" : "No", isPositive: broker.demoAccount },
         { label: "Free Trial", value: broker.trialAccount ? "Yes" : "No", isPositive: broker.trialAccount },
@@ -45,7 +45,7 @@ export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", b
                     </div>
                     <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
 
-                    <div className='pt-2 grid grid-cols-[1fr_1px_1fr] gap-6'>
+                    <div className='pt-2 grid grid-cols-[1fr_1px_1fr] gap-6 max-mobile:grid-cols-1'>
                         <div>
                             {brokerDetailsList.map((detail, index) => (
                                 <div key={index} className='flex justify-between items-center py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>
@@ -62,7 +62,7 @@ export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", b
                                 </div>
                             ))}
                         </div>
-                        <div className='bg-border-light300 my-2'></div>
+                        <div className='bg-border-light300 my-2 max-mobile:hidden'></div>
                         <div>
                             {additionalDetailsList.map((detail, index) => (
                                 <div key={index} className='flex justify-between items-center py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>
@@ -87,7 +87,7 @@ export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", b
                     </div>
                 </div>
 
-                {learnSection && broker.outcomes.length>0 && <div className='border   border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4 mt-6'>
+                {learnSection && broker.outcomes.length > 0 && <div className='border   border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4 mt-6'>
                     <div className='flex items-center gap-2 pb-3'>
                         <img src={RoundIcon} alt="RoundIcon" className='block' />
                         <span className='block text-base font-medium text-black'>
@@ -96,7 +96,7 @@ export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", b
                     </div>
                     <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
 
-                    <div className='pt-2 grid grid-cols-[1fr_1px_1fr] gap-6'>
+                    <div className='pt-2 grid grid-cols-[1fr_1px_1fr] gap-6 max-mobile:grid-cols-1'>
                         <div>
                             {learnSectionLeft.map((detail: any, index: any) => (
                                 <div key={index} className='flex items-start gap-3 py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>
@@ -108,7 +108,7 @@ export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", b
                                 </div>
                             ))}
                         </div>
-                        <div className='bg-border-light300 my-2'></div>
+                        <div className='bg-border-light300 my-2 max-mobile:hidden'></div>
                         <div>
                             {learnSectionRight.map((detail: any, index: any) => (
                                 <div key={index} className='flex items-start gap-3 py-2.5 last:pb-0 border-b border-border-light300 last:border-0 border-solid'>
@@ -125,7 +125,7 @@ export default function TradingDetails({ broker, sectionTitle = "CRM DETAILS", b
 
 
                 {broker.courseModules && broker.courseModules.length > 0 && (
-                    <CourseModulesSection courseModules={broker.courseModules}/>
+                    <CourseModulesSection courseModules={broker.courseModules} />
                 )}
 
             </div>

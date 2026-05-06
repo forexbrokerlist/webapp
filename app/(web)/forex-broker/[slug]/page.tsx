@@ -108,7 +108,6 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 
 export default async function (props: Props) {
   const { broker, randomBrokers, trustedBrokers, metadata, structuredData } = await getData(props)
-  console.log(broker)
   const headerList = await headers()
 
   return (

@@ -73,7 +73,7 @@ export default function CategoriesCard({
     tradingPartners,
     allBrokers
 }: CategoriesCardProps) {
-    console.log('Liquidity Partners:', liquidityPartners);
+ 
     return (
         <>
             <section className='pb-100 max-mobile:pb-16'>

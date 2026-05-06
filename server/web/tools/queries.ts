@@ -610,8 +610,10 @@ export const findBrokersForComparison = async (take: number = 20) => {
     where: whereClause,
     select: {
       id: true,
+      slug: true,
       broker_name: true,
       logoUrl: true,
+      type: true,
       minimum_deposit: true,
       minimum_raw_spreads: true,
       maxLeverage: true,
@@ -627,8 +629,10 @@ export const findBrokersForComparison = async (take: number = 20) => {
 
   return rawBrokers.map((broker) => ({
     id: broker.id,
+    slug: broker.slug,
     name: broker.broker_name || "Unknown Broker",
     logoUrl: broker.logoUrl,
+    typeSlug: broker.type?.slug,
     stats: [
       {
         label: "Min Deposit",

@@ -8,7 +8,7 @@ export default function ProsCons({ broker }: { broker: any }) {
     const cons = broker.cons ? broker.cons.split(/[;]/).map((c: string) => c.trim()).filter(Boolean) : [];
 
     return (
-        <div className='grid grid-cols-2 gap-4 pb-4'>
+        <div className='grid grid-cols-2 gap-4 pb-4 max-mobile:grid-cols-1'>
             <div className='p-4 rounded-xl border border-[#08a97526] bg-[#08a9750d]'>
                 <div className='flex items-center gap-2 pb-3'>
                     <img src={RoundIcon} alt="RoundIcon" className='block' />
