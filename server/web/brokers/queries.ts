@@ -251,3 +251,28 @@ export const getAllPartners = async (limit: number = 40) => {
   );
   return formattedBrokers;
 };
+
+/**
+ * Fetches premium brokers of type 'broker'.
+ */
+export const getPremiumBrokers = async (limit: number = 10) => {
+  const brokers = await db.brokers.findMany({
+    where: {
+      status: ToolStatus.Published,
+      isPremiumBroker: true,
+      type: { slug: "broker" },
+    },
+    orderBy: { order: "asc" },
+    take: limit,
+  });
+
+  return Promise.all(
+    brokers.map(async (broker) => ({
+      name: broker.broker_name || "",
+      description: broker.subtitle || broker.description || "",
+      logoUrl: await getBrokerLogo(broker),
+      slug: broker.slug || "",
+    }))
+  );
+};
+

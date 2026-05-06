@@ -422,6 +422,7 @@ model Brokers {
   order                              Int        @default(0)
   isSponsor                          Boolean    @default(false)
   isMainSponsor                      Boolean    @default(false)
+  isPremiumBroker                    Boolean    @default(false)
   bookmarks                          Bookmark[]
   typeId                            String?
   type                              Type?      @relation(fields: [typeId], references: [id])

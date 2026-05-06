@@ -214,6 +214,17 @@ const columns: ColumnDef<BrokerRow>[] = [
       ),
   },
   {
+    accessorKey: "isPremiumBroker",
+    enableSorting: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Premium" />,
+    cell: ({ row }) =>
+      row.original.isPremiumBroker ? (
+        <Badge variant="warning">Yes</Badge>
+      ) : (
+        <Note>—</Note>
+      ),
+  },
+  {
     accessorKey: "isMainSponsor",
     enableSorting: false,
     header: ({ column }) => <DataTableColumnHeader column={column} title="Main Sponsor" />,
