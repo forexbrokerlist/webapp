@@ -347,7 +347,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [] }: { broker
                             </svg>
                         </div>
                     </DialogHeader>
-                    <div className="grid grid-cols-3 gap-2 overflow-y-auto px-6 pb-4 items-start min-h-[220px]">
+                    <div className="grid grid-cols-3 max-tab:grid-cols-2 max-mobile:grid-cols-1 gap-2 overflow-y-auto px-6 pb-4 max-mobile:px-4 items-start min-h-[220px]">
                         {isSearching ? (
                             <div className="py-10 text-center col-span-full">
                                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
