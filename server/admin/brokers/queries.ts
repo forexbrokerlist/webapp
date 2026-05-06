@@ -235,6 +235,7 @@ export const findBrokerById = async (id: number) => {
 
       typeId: true,
       isSponsor: true,
+      isPremiumBroker: true,
       isMainSponsor: true,
       categories: { select: { id: true, name: true } },
       subcategories: { select: { id: true, name: true } },

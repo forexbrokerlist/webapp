@@ -36,7 +36,8 @@ import {
   getPspPartners,
   getTradingPlatformPartners,
   getAlgoPartners,
-  getForexEducationPartners
+  getForexEducationPartners,
+  getPremiumBrokers
 } from "~/server/web/brokers/queries"
 
 const namespace = "pages.blog"
@@ -158,6 +159,7 @@ export default async function (props: any) {
 
   const { brokers: AlgoPartners, category: AlgoCategory } = await getAlgoPartners(3)
   const { brokers: ForexPartners, category: ForexCategory } = await getForexEducationPartners(3)
+  const premiumBrokers = await getPremiumBrokers(10)
   // const ForexCategory = await db.category.findUnique({
   //   where: { slug: "forex-education-and-training" },
   // })
@@ -257,7 +259,7 @@ export default async function (props: any) {
         title={AlgoCategory?.label || AlgoCategory?.name || "Algo Trading & Forex Bot Provider"}
         description={AlgoCategory?.description || "Discover automated forex trading bots and algorithmic strategy providers built for passive income, consistent execution, and hands-free trading."}
       />
-      <ForexBrokers />
+      <ForexBrokers brokers={premiumBrokers} />
 
       <BlogSection posts={posts} />
       <FAQ />

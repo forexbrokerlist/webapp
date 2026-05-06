@@ -3,6 +3,8 @@ import { MoveRight } from 'lucide-react'
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '~/components/common/button';
+import Link from 'next/link';
+
 const ForexBropkerImage = '/assets/images/forex-broker.svg';
 
 const BROKERS_LIST = [
@@ -24,7 +26,7 @@ const BROKERS_LIST = [
     }
 ];
 
-export default function ForexBrokers() {
+export default function ForexBrokers({ brokers }: any) {
     return (
         <div className='pt-100 overflow-hidden max-mobile:pt-16'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
@@ -66,12 +68,14 @@ export default function ForexBrokers() {
                         className='max-mobile:pt-4'
                         transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
                     >
+                      <Link href="brokers">
                         <Button variant='primary' size='md' className='flex items-center gap-2'>
                             View More
                             <div>
                                 <MoveRight />
                             </div>
                         </Button>
+                        </Link>
                     </motion.div>
                 </div>
                 <div className='grid grid-cols-[535px_1fr] max-tab:grid-cols-1 max-tab:gap-10 gap-20'>
@@ -84,7 +88,7 @@ export default function ForexBrokers() {
                             visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
                         }}
                     >
-                        {BROKERS_LIST.map((broker, index) => (
+                        {(brokers && brokers.length > 0 ? brokers : BROKERS_LIST).map((broker: any, index: number) => (
                             <motion.div
                                 key={index}
                                 className='py-6 first:pt-0 max-mobile:py-4 last:pb-0'
