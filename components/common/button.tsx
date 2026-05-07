@@ -15,11 +15,11 @@ const buttonVariants = cva({
     variant: {
       fancy: "scheme-dark bg-primary text-primary-foreground hover:opacity-90",
       primary: "bg-black100 max-mobile:text-sm max-mobile:leading-6  border border-solid border-black100 hover:bg-primary hover:border-primary hover:text-black100 text-white rounded-full text-base font-medium",
-      
+
       secondary:
         "bg-primary text-black100 text-lg rounded-full hover:bg-black100 hover:text-white",
       soft: "scheme-light bg-muted text-secondary-foreground hover:bg-border/50 hover:text-foreground hover:outline-none",
-      normal:"border border-border-light800 outline-transparent ease-out cursor-pointer hover:outline-border/50 inline-flex transition-all duration-300 items-center justify-center font-medium text-[0.8125rem]/tight text-start rounded-md overflow-clip hover:z-10 hover:border-transparent disabled:opacity-60 disabled:cursor-not-allowed scheme-light border-border! bg-background text-secondary-foreground hover:bg-card hover:border-ring! px-5 gap-2.5 max-mobile:px-6 max-mobile:py-2.5 py-2.5",
+      normal: "border border-border-light800 outline-transparent ease-out cursor-pointer hover:outline-border/50 inline-flex transition-all duration-300 items-center justify-center font-medium text-[0.8125rem]/tight text-start rounded-md overflow-clip hover:z-10 hover:border-transparent disabled:opacity-60 disabled:cursor-not-allowed scheme-light border-border! bg-background text-secondary-foreground hover:bg-card hover:border-ring! px-5 gap-2.5 max-mobile:px-6 max-mobile:py-2.5 py-2.5",
       ghost:
         "scheme-light text-secondary-foreground hover:bg-muted hover:text-foreground hover:outline-none",
       destructive:
@@ -103,7 +103,7 @@ const Button = ({
             <Slot.Root className={buttonAffixVariants()}>{prefix}</Slot.Root>
 
             {Children.count(child) > 0 && (
-              <Slot.Root className="flex-1 truncate only:text-center has-[div]:contents">
+              <Slot.Root className=" truncate only:text-center has-[div]:contents">
                 {isValidElement(child) ? child : <span>{child}</span>}
               </Slot.Root>
             )}

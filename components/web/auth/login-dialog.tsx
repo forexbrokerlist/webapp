@@ -25,18 +25,23 @@ export const LoginDialog = ({ description, isOpen, setIsOpen }: LoginDialogProps
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-xs">
-        <DialogHeader>
-          <DialogTitle>{t("forms.sign_in.title")}</DialogTitle>
+    <>
+     
 
-          <DialogDescription>
-            <p>{description || t("forms.sign_in.description")}</p>
-          </DialogDescription>
-        </DialogHeader>
 
-        <Login />
-      </DialogContent>
-    </Dialog>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="max-w-xs">
+          <DialogHeader>
+            <DialogTitle>{t("forms.sign_in.title")}</DialogTitle>
+
+            <DialogDescription>
+              <p>{description || t("forms.sign_in.description")}</p>
+            </DialogDescription>
+          </DialogHeader>
+
+          <Login />
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

@@ -33,7 +33,7 @@ export const LoginButton = ({ provider, ...props }: LoginButtonProps) => {
   }
 
   return (
-    <Button size="lg" variant="secondary" onClick={handleSignIn} isPending={isPending} {...props}>
+    <Button size="lg" variant="normal" className="rounded-full w-full flex justify-center text-base" onClick={handleSignIn} isPending={isPending} {...props}>
       {t("forms.sign_in.continue_with", { provider: capitalCase(provider) })}
     </Button>
   )
