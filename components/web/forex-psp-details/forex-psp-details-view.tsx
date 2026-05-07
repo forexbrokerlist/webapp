@@ -44,8 +44,8 @@ export default function ForexPSPDetailsView({ broker, randomBrokers = [], truste
     return (
         <div>
             <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 '>
-                <div className='grid grid-cols-[216px_1fr_380px] gap-5'>
-                    <div>
+                <div className='grid grid-cols-[216px_1fr_380px] max-laptop:grid-cols-[200px_1fr_300px] max-tab:grid-cols-1 gap-5'>
+                    <div className='max-tab:hidden'>
                         <TableOfContents
                             broker={broker}
                             items={tableOfContentsItems}
