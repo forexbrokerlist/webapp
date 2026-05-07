@@ -59,8 +59,8 @@ export const BrokerCard = ({
   return (
     <Card
       isRevealed
-      className={`items-stretch select-none transition-all rounded-xl duration-300 ${broker.isSponsor
-        ? "bg-white border border-solid border-border-light300"
+      className={`items-stretch select-none transition-all !border-[#A8DD15] rounded-xl relative card-green-shadow duration-300 ${broker.isSponsor
+        ? "bg-white border border-solid border-[#A8DD15]"
         : "hover:border-primary/20"
         } ${className || ""}`}
       {...props}
