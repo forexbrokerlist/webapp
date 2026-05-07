@@ -709,6 +709,7 @@ export const findCrmProvidersForComparison = async (take: number = 20) => {
     select: {
       id: true,
       broker_name: true,
+      slug: true,
       logoUrl: true,
       trading_platforms: true,
       features: true,
@@ -718,6 +719,9 @@ export const findCrmProvidersForComparison = async (take: number = 20) => {
       starting_price: true,
       bestFor: true,
       overall_rating: true,
+      type: {
+        select: { slug: true },
+      },
     },
     take,
   });
@@ -725,6 +729,8 @@ export const findCrmProvidersForComparison = async (take: number = 20) => {
   return rawBrokers.map((broker) => ({
     id: broker.id,
     name: broker.broker_name || "Unknown CRM",
+    slug: broker.slug,
+    typeSlug: broker.type?.slug,
     logoUrl: broker.logoUrl,
     stats: [
       {
@@ -831,6 +837,7 @@ export const findForexEducationProvidersForComparison = async (
     select: {
       id: true,
       broker_name: true,
+      slug: true,
       logoUrl: true,
       skill_level: true,
       learning_format: true,
@@ -843,6 +850,9 @@ export const findForexEducationProvidersForComparison = async (
       languages_supported: true,
       headquarters: true,
       overall_rating: true,
+      type: {
+        select: { slug: true },
+      },
     },
     take,
   });
@@ -850,6 +860,8 @@ export const findForexEducationProvidersForComparison = async (
   return rawBrokers.map((broker) => ({
     id: broker.id,
     name: broker.broker_name || "Unknown Provider",
+    slug: broker.slug,
+    typeSlug: broker.type?.slug,
     logoUrl: broker.logoUrl,
     stats: [
       {
@@ -945,6 +957,7 @@ export const findBridgeProvidersForComparison = async (take: number = 20) => {
     select: {
       id: true,
       broker_name: true,
+      slug: true,
       logoUrl: true,
       solution_type: true,
       trading_platforms: true,
@@ -956,6 +969,9 @@ export const findBridgeProvidersForComparison = async (take: number = 20) => {
       pricingModel: true,
       setup_time: true,
       overall_rating: true,
+      type: {
+        select: { slug: true },
+      },
     },
     take,
   });
@@ -963,6 +979,8 @@ export const findBridgeProvidersForComparison = async (take: number = 20) => {
   return rawBrokers.map((broker) => ({
     id: broker.id,
     name: broker.broker_name || "Unknown Provider",
+    slug: broker.slug,
+    typeSlug: broker.type?.slug,
     logoUrl: broker.logoUrl,
     stats: [
       {
@@ -1036,6 +1054,7 @@ export const findLiquidityProvidersForComparison = async (
     select: {
       id: true,
       broker_name: true,
+      slug: true,
       logoUrl: true,
       solution_type: true,
       latency: true,
@@ -1048,6 +1067,9 @@ export const findLiquidityProvidersForComparison = async (
       demoAccount: true,
       regulators: true,
       overall_rating: true,
+      type: {
+        select: { slug: true },
+      },
     },
     take,
   });
@@ -1055,6 +1077,8 @@ export const findLiquidityProvidersForComparison = async (
   return rawBrokers.map((broker) => ({
     id: broker.id,
     name: broker.broker_name || "Unknown Provider",
+    slug: broker.slug,
+    typeSlug: broker.type?.slug,
     logoUrl: broker.logoUrl,
     stats: [
       {
