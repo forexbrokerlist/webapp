@@ -151,7 +151,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
 
                     <div>
 
-                        <div className='p-5 sticky top-[100px] z-[99] mb-5 rounded-xl border-[0.5px] border-[#A8DD15] bg-[#FFFFFE] shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]'>
+                        <div className='p-5 sticky top-[100px] max-tab:relative max-tab:top-0 z-[99] mb-5 rounded-xl border-[0.5px] border-[#A8DD15] bg-[#FFFFFE] shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]'>
 
                             <div className='flex items-center gap-3 pb-2'>
 
