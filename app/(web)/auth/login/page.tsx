@@ -40,7 +40,12 @@ export default async function () {
   return (
     <>
       <div >
-        <div className="max-w-[450px] max-mobile:max-w-[calc(100%-40px)]  mx-auto bg-white rounded-2xl login-top overflow-hidden relative" >
+       <div
+  className="max-w-[450px] max-mobile:max-w-[calc(100%-40px)] mx-auto bg-white rounded-2xl overflow-hidden relative
+  before:content-[''] before:absolute before:left-1/2 before:-translate-x-1/2
+  before:-top-[10px] before:w-[80%] before:h-[20px]
+  before:rounded-[442px] before:bg-[#a8dd15] before:blur-[56.8px]"
+>
           <div className="pt-16">
             <img src={AuthLineImage} alt="AuthLineImage" className="w-full h-full object-cover object-center" />
           </div>
