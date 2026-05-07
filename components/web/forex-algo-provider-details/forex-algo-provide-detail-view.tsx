@@ -16,7 +16,7 @@ const ForexImage = '/assets/images/FBL Logo.png';
 export default function ForexAlgoProviderDetailView({ broker, randomBrokers = [], trustedBrokers = [] }: { broker: any, randomBrokers?: any[], trustedBrokers?: any[] }) {
     const leftSideDetails = [
         { label: "Bot Type", value: broker.bot_type || "-" },
-        { label: "Strategy Type", value: broker.strategy_type&&broker.strategy_type.length>0&&broker.strategy_type || "-" },
+        { label: "Strategy Type", value: broker.strategy_type && broker.strategy_type.length > 0 && broker.strategy_type || "-" },
         { label: "Automation", value: broker.automation_level || "-" },
         { label: "Founded", value: broker.year_established || "-" },
         { label: "Win Rate", value: broker.win_rate || "-" },
@@ -118,7 +118,7 @@ export default function ForexAlgoProviderDetailView({ broker, randomBrokers = []
                         <FaqSection broker={broker} />
                     </div>
                     <div>
-                        <div className='p-5 sticky top-[100px] z-[99] mb-5 rounded-xl border-[0.5px] border-[#A8DD15] bg-[#FFFFFE] shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]'>
+                        <div className='p-5 sticky top-[100px] max-tab:relative max-tab:top-0 z-[99] mb-5 rounded-xl border-[0.5px] border-[#A8DD15] bg-[#FFFFFE] shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]'>
                             <div className='flex items-center gap-3 pb-2'>
                                 <div className='w-14 flex items-center justify-center h-14 rounded-md  bg-[rgba(255,255,255,0.14)] shadow-[inset_0_0_15px_0_rgba(168,221,21,0.20)]'>
                                     <img src={"/assets/images/ForexLogo.png"} className='max-w-12 h-auto block object-contain' />

@@ -65,7 +65,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
     <>
       <header
         className={cx(
-          "fixed top-0 left-0 w-full z-50 transition-all duration-300",
+          "fixed top-0 left-0 w-full z-[999] transition-all duration-300",
           isScrolled ? "py-3 bg-[rgba(255,255,255,0.85)] backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.04)] " : "py-5 max-mobile:py-3 bg-transparent",
           className
         )}

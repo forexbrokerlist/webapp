@@ -323,3 +323,17 @@
   background-color: #a8dd15;
   filter: blur(100px);
 }
+
+.login-top::before {
+  border-radius: 442px;
+  background: #a8dd15;
+  filter: blur(56.79999923706055px);
+  width: 80%;
+  height: 20px;
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -10px;
+  content: "";
+}
