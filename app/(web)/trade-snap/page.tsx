@@ -1,5 +1,5 @@
 'use client'
-import { AlertCircle, ArrowDownRight, ArrowUpRight, BarChart3, Camera, CameraIcon, Clock, Eye, Monitor, MonitorOff, Play, Square, TrendingDown, TrendingUp, Zap } from "lucide-react";
+import { AlertCircle, ArrowDownRight, ArrowUpRight, BarChart3, Camera, CameraIcon, Clock, Eye, Monitor, MonitorOff, Play, Slash, Smartphone, Square, TrendingDown, TrendingUp, Zap } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Dialog,
@@ -63,12 +63,21 @@ function Dashboard() {
   const [nextScreenshotEndTime2, setNextScreenshotEndTime2] = useState<number | null>(null);
   const [shouldAutoAnalyze1, setShouldAutoAnalyze1] = useState(false);
   const [shouldAutoAnalyze2, setShouldAutoAnalyze2] = useState(false);
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
 
   const lastCapture1 = useRef(Date.now());
   const lastCapture2 = useRef(Date.now());
 
 
   // Handle authentication redirect removed to allow guest access
+  useEffect(() => {
+    const checkIsDesktop = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    checkIsDesktop();
+    window.addEventListener('resize', checkIsDesktop);
+    return () => window.removeEventListener('resize', checkIsDesktop);
+  }, []);
 
   const startScreenShare = useCallback(async () => {
     try {
@@ -194,9 +203,9 @@ function Dashboard() {
 
   const analyzeImage = async () => {
     try {
-     
+
       if (!capturedImage) {
-    
+
         setError('No image captured');
         return;
       }
@@ -1067,550 +1076,614 @@ function Dashboard() {
 seconds. Capture your screen, analyze market movements, and gain powerful insights with single and 
 multi-timeframe views.'
         highlightedText="Trade Snap:" title="Real-Time Screen Sharing & Multi-Timeframe Analysis" />
-      <div className="max-w-[1200px] px-5 mx-auto">
+      <div className="max-w-[1200px] px-5 mx-auto max-mobile:pt-16 max-tab:hidden">
 
         <canvas ref={canvasRef} className="hidden" />
-        <div className="rounded-[100px] cursor-pointer bg-[#E9EBE0] p-1.5 grid  grid-cols-2 gap-0">
-          <button
-            className={`px-6 py-2.5 rounded-full font-semibold justify-center flex cursor-pointer items-center text-lg transition-all duration-200 ${activeTab === 'single'
-              ? 'bg-primary text-black100 shadow-sm'
-              : 'bg-transparent text-black100 hover:text-black100'
-              }`}
-            onClick={() => {
-              if ((isSharing || isSharing2) && activeTab !== 'single') {
-                setPendingTab('single');
-                setShowTabSwitchConfirm(true);
-                setAutoCaptureInterval1(null);
-                setAutoCaptureInterval2(null);
-                setAutoCaptureInterval(null);
-              } else {
-                setActiveTab('single');
-              }
-            }}
-          >
-            <div className="flex items-center gap-2">
-              <Monitor className="w-4 h-4" />
-              Single Timeframe
-            </div>
-          </button>
-          <button
-            className={`px-6 py-2.5 cursor-pointer rounded-full font-semibold text-lg transition-all duration-200 flex items-center justify-center ${activeTab === 'multi'
-              ? 'bg-primary text-black100 shadow-sm'
-              : 'bg-transparent text-gray-500 hover:text-black100'
-              }`}
-            onClick={() => {
-              if ((isSharing || isSharing2) && activeTab !== 'multi') {
-                setPendingTab('multi');
-                setShowTabSwitchConfirm(true);
-                setAutoCaptureInterval1(null);
-                setAutoCaptureInterval2(null);
-                setAutoCaptureInterval(null);
-              } else {
-                setActiveTab('multi');
-              }
-            }}
-          >
-            <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4" />
-              Multi Timeframe
-            </div>
-          </button>
-        </div>
-        <div className={`${activeTab === 'multi' ? 'w-12xl px-2' : 'container mx-auto px-4'} py-6`}>
-          <div className={`grid ${activeTab === 'multi' ? 'grid-cols-1' : 'grid-cols-1 xl:grid-cols-3'} gap-6`}>
-            {/* Left Column - Screen Preview */}
-            <div className={`${activeTab === 'multi' ? 'w-full' : (showSnapshot ? 'xl:col-span-2' : 'xl:col-span-3')} space-y-6`}>
-              {activeTab === 'single' ? (
-                <div className="rounded-2xl p-6 border border-border-light180 bg-white shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]">
-                  <div className={`flex items-center justify-between pb-6`}>
-                    <h2 className="text-xl font-semibold text-black100 flex items-center gap-2">
+        <div className="">
+          <div className="rounded-[100px] cursor-pointer bg-[#E9EBE0] p-1.5 grid  grid-cols-2 gap-0">
+            <button
+              className={`px-6 py-2.5 max-mobile:px-2 max-mobile:py-2 max-mobile:text-sm rounded-full font-semibold justify-center flex cursor-pointer items-center text-lg transition-all duration-200 ${activeTab === 'single'
+                ? 'bg-primary text-black100 shadow-sm'
+                : 'bg-transparent text-black100 hover:text-black100'
+                }`}
+              onClick={() => {
+                if ((isSharing || isSharing2) && activeTab !== 'single') {
+                  setPendingTab('single');
+                  setShowTabSwitchConfirm(true);
+                  setAutoCaptureInterval1(null);
+                  setAutoCaptureInterval2(null);
+                  setAutoCaptureInterval(null);
+                } else {
+                  setActiveTab('single');
+                }
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <Monitor className="w-4 h-4" />
+                Single Timeframe
+              </div>
+            </button>
+            <button
+              className={`px-6 py-2.5 max-mobile:px-2 max-mobile:py-2 max-mobile:text-sm cursor-pointer rounded-full font-semibold text-lg transition-all duration-200 flex items-center justify-center ${activeTab === 'multi'
+                ? 'bg-primary text-black100 shadow-sm'
+                : 'bg-transparent text-gray-500 hover:text-black100'
+                }`}
+              onClick={() => {
+                if ((isSharing || isSharing2) && activeTab !== 'multi') {
+                  setPendingTab('multi');
+                  setShowTabSwitchConfirm(true);
+                  setAutoCaptureInterval1(null);
+                  setAutoCaptureInterval2(null);
+                  setAutoCaptureInterval(null);
+                } else {
+                  setActiveTab('multi');
+                }
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4" />
+                Multi Timeframe
+              </div>
+            </button>
+          </div>
+          <div className={`${activeTab === 'multi' ? 'w-12xl px-2' : 'container mx-auto px-4 max-mobile:px-0 '} py-6`}>
+            <div className={`grid ${activeTab === 'multi' ? 'grid-cols-1' : 'grid-cols-1 xl:grid-cols-3'} gap-6`}>
+              {/* Left Column - Screen Preview */}
+              <div className={`${activeTab === 'multi' ? 'w-full' : (showSnapshot ? 'xl:col-span-2' : 'xl:col-span-3')} space-y-6`}>
+                {activeTab === 'single' ? (
+                  <div className="rounded-2xl p-6 max-mobile:p-3 border border-border-light180 bg-white shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]">
+                    <div className={`flex items-center justify-between pb-6`}>
+                      <h2 className="text-xl font-semibold text-black100 flex items-center gap-2">
+                        {isSharing ? (
+                          <>
+                            <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                              <path d="M5.33333 28C5.33333 26.5272 4.13943 25.3333 2.66667 25.3333M10.6667 28C10.6667 23.5817 7.08495 20 2.66667 20M16 28C16 20.6363 10.0305 14.6667 2.66667 14.6667" stroke="#FF5757" stroke-width="2" stroke-linecap="round" />
+                              <path d="M4 10.667C4.10387 8.17049 4.43872 6.6398 5.51827 5.56219C7.08325 4 9.60204 4 14.6396 4H18.6471C23.6845 4 26.2033 4 27.7684 5.56219C29.3333 7.12436 29.3333 9.63867 29.3333 14.6672V16.0007C29.3333 21.0292 29.3333 23.5436 27.7684 25.1057C26.3483 26.5232 24.1428 26.6545 19.9828 26.6667" stroke="#FF5757" stroke-width="2" stroke-linecap="round" />
+                            </svg>
+                            Live Screen Share
+                          </>
+                        ) : (
+                          <>
+                            <MonitorOff className="w-5 h-5 text-black100" />
+                            Screen Preview
+                          </>
+                        )}
+                      </h2>
+                      {isSharing && (
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2">
+                            <CameraIcon className="text-black100 opacity-70" />
+                            <label htmlFor="auto-capture-interval" className="text-black100 opacity-70 text-base">Auto Capture</label>
+                          </div>
+                          <select
+                            id="auto-capture-interval"
+                            className="rounded-md border-border outline-none text-sm px-2 py-1 bg-[rgba(240,241,236,0.5)] focus:ring-primary focus:border-primary"
+                            value={autoCaptureInterval ?? ''}
+                            onChange={e => setAutoCaptureInterval(e.target.value ? Number(e.target.value) : null)}
+                          >
+                            <option value="">Off</option>
+                            <option value="1">Every 1 min</option>
+                            <option value="5">Every 5 min</option>
+                            <option value="30">Every 30 min</option>
+                            <option value="60">Every 1 hour</option>
+                            <option value="90">Every 1.5 hour</option>
+                            <option value="120">Every 2 hour</option>
+                          </select>
+                        </div>
+                      )}
+                    </div>
+                    <div className="relative bg-[#101828]" style={{ width: '100%', aspectRatio: '16/9' }}>
+                      {isSharing && stream ? (
+                        <video
+                          ref={videoRef}
+                          autoPlay
+                          muted
+                          playsInline
+                          className="w-full h-full object-contain bg-black"
+                          onLoadedMetadata={() => {
+                            if (videoRef.current) videoRef.current.play().catch(console.error);
+                          }}
+                          onError={(e) => setError('Error displaying video stream')}
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="text-center max-mobile:px-4">
+                            <Monitor className="w-16 h-16 text-white mx-auto mb-4 max-mobile:w-8 max-mobile:h-8" />
+                            <h3 className="text-2xl max-mobile:text-base font-medium text-white max-mobile:mb-0 mb-3">
+                              {isSharing ? 'Loading screen share...' : 'No screen sharing active'}
+                            </h3>
+                            <p className="text-white500 text-lg font-medium max-mobile:text-sm">
+                              {isSharing ? 'Please wait while we load your screen' : 'Click "Start Sharing" to begin sharing your screen'}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex justify-center pt-4">
                       {isSharing ? (
-                        <>
-                          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <path d="M5.33333 28C5.33333 26.5272 4.13943 25.3333 2.66667 25.3333M10.6667 28C10.6667 23.5817 7.08495 20 2.66667 20M16 28C16 20.6363 10.0305 14.6667 2.66667 14.6667" stroke="#FF5757" stroke-width="2" stroke-linecap="round" />
-                            <path d="M4 10.667C4.10387 8.17049 4.43872 6.6398 5.51827 5.56219C7.08325 4 9.60204 4 14.6396 4H18.6471C23.6845 4 26.2033 4 27.7684 5.56219C29.3333 7.12436 29.3333 9.63867 29.3333 14.6672V16.0007C29.3333 21.0292 29.3333 23.5436 27.7684 25.1057C26.3483 26.5232 24.1428 26.6545 19.9828 26.6667" stroke="#FF5757" stroke-width="2" stroke-linecap="round" />
-                          </svg>
-                          Live Screen Share
-                        </>
+                        <div className="flex gap-4">
+                          <Button onClick={stopScreenShare} size="md" variant="secondary" className="flex items-center bg-[#FF5757] text-white justify-center gap-3 ">
+                            <div className="flex items-center">
+                              <Square className="w-5 h-5" />
+                            </div>
+                            Stop Sharing
+                          </Button>
+                          {autoCaptureInterval ? (
+                            <NextScreenshotTimer intervalMinutes={autoCaptureInterval} isActive={isSharing} endTime={nextScreenshotEndTime} />
+                          ) : (
+                            <Button onClick={handleScreenshot} size="md" variant="secondary" className="flex items-center  justify-center gap-3 ">
+                              <div className="flex items-center">
+                                <Camera className="w-5 h-5" />
+                              </div>
+                              Capture Screenshot
+                            </Button>
+                          )}
+                        </div>
                       ) : (
                         <>
-                          <MonitorOff className="w-5 h-5 text-black100" />
-                          Screen Preview
+                          <div className="w-full max-w-[400px]">
+                            <Button variant="secondary" size="lg" className="flex w-full items-center gap-2 justify-center" onClick={toggleScreenShare}>
+                              <div className="flex items-center justify-center">
+                                <Play className="w-5 h-5" />
+                              </div>
+                              Start Sharing
+                            </Button>
+                          </div>
                         </>
                       )}
-                    </h2>
-                    {isSharing && (
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-2">
-                          <CameraIcon className="text-black100 opacity-70" />
-                          <label htmlFor="auto-capture-interval" className="text-black100 opacity-70 text-base">Auto Capture</label>
-                        </div>
-                        <select
-                          id="auto-capture-interval"
-                          className="rounded-md border-border outline-none text-sm px-2 py-1 bg-[rgba(240,241,236,0.5)] focus:ring-primary focus:border-primary"
-                          value={autoCaptureInterval ?? ''}
-                          onChange={e => setAutoCaptureInterval(e.target.value ? Number(e.target.value) : null)}
-                        >
-                          <option value="">Off</option>
-                          <option value="1">Every 1 min</option>
-                          <option value="5">Every 5 min</option>
-                          <option value="30">Every 30 min</option>
-                          <option value="60">Every 1 hour</option>
-                          <option value="90">Every 1.5 hour</option>
-                          <option value="120">Every 2 hour</option>
-                        </select>
-                      </div>
-                    )}
-                  </div>
-                  <div className="relative bg-[#101828]" style={{ width: '100%', aspectRatio: '16/9' }}>
-                    {isSharing && stream ? (
-                      <video
-                        ref={videoRef}
-                        autoPlay
-                        muted
-                        playsInline
-                        className="w-full h-full object-contain bg-black"
-                        onLoadedMetadata={() => {
-                          if (videoRef.current) videoRef.current.play().catch(console.error);
-                        }}
-                        onError={(e) => setError('Error displaying video stream')}
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center">
-                          <Monitor className="w-16 h-16 text-white mx-auto mb-4" />
-                          <h3 className="text-2xl font-medium text-white mb-3">
-                            {isSharing ? 'Loading screen share...' : 'No screen sharing active'}
-                          </h3>
-                          <p className="text-white500 text-lg font-medium">
-                            {isSharing ? 'Please wait while we load your screen' : 'Click "Start Sharing" to begin sharing your screen'}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex justify-center pt-4">
-                    {isSharing ? (
-                      <div className="flex gap-4">
-                        <Button onClick={stopScreenShare} size="md" variant="secondary" className="flex items-center bg-[#FF5757] text-white justify-center gap-3 ">
-                          <div className="flex items-center">
-                            <Square className="w-5 h-5" />
-                          </div>
-                          Stop Sharing
-                        </Button>
-                        {autoCaptureInterval ? (
-                          <NextScreenshotTimer intervalMinutes={autoCaptureInterval} isActive={isSharing} endTime={nextScreenshotEndTime} />
-                        ) : (
-                          <Button onClick={handleScreenshot} size="md" variant="secondary" className="flex items-center  justify-center gap-3 ">
-                            <div className="flex items-center">
-                              <Camera className="w-5 h-5" />
-                            </div>
-                            Capture Screenshot
-                          </Button>
-                        )}
-                      </div>
-                    ) : (
-                      <>
-                        <div className="w-full max-w-[400px]">
-                          <Button variant="secondary" size="lg" className="flex w-full items-center gap-2 justify-center" onClick={toggleScreenShare}>
-                            <div className="flex items-center justify-center">
-                              <Play className="w-5 h-5" />
-                            </div>
-                            Start Sharing
-                          </Button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className="flex gap-3 flex-col">
-                  <div className="flex flex-col md:flex-row gap-6">
-                    {/* First Screen Share */}
-                    <div className=" flex-1 bg-card dark:bg-card border border-border rounded-2xl shadow-lg overflow-hidden backdrop-blur">
-                      <div className={`bg-muted/50 border-b border-border/40 px-6 py-4 flex justify-between items-center`}>
-                        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                          {isSharing ? (
-                            <><div className="w-3 h-3 bg-red-500 rounded-full animate-pulse dark:text-white"></div>Lower time frame Screen</>
-                          ) : (
-                            <><MonitorOff className="w-5 h-5 text-muted-foreground" />Lower time frame Screen</>
-                          )}
-                        </h2>
-                        {isSharing && (
-                          <div className="flex items-center gap-2">
-                            <label htmlFor="auto-capture-interval1" className="text-sm text-foreground font-medium mr-2">Auto Capture</label>
-                            <select
-                              id="auto-capture-interval1"
-                              className="rounded-md border-border text-sm px-2 py-1 bg-background focus:ring-primary focus:border-primary"
-                              value={autoCaptureInterval1 ?? ''}
-                              onChange={e => {
-                                const value = e.target.value ? Number(e.target.value) : null;
-                                setAutoCaptureInterval1(value);
-                                if (value) {
-                                  captureScreenshot1();
-                                }
-                              }}
-                            >
-                              <option value="">Off</option>
-                              <option value="1">Every 1 min</option>
-                              <option value="2">Every 2 min</option>
-                              <option value="5">Every 5 min</option>
-                              <option value="30">Every 30 min</option>
-                              <option value="60">Every 1 hour</option>
-                              <option value="90">Every 1.5 hour</option>
-                              <option value="120">Every 2 hour</option>
-                            </select>
-                          </div>
-                        )}
-                      </div>
-                      <div className="relative bg-gray-900" style={{ width: '100%', aspectRatio: '16/9' }}>
-                        {isSharing && stream ? (
-                          <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-contain bg-black" />
-                        ) : (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="text-center">
-                              <Monitor className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                              <h3 className="text-xl font-semibold text-muted-foreground mb-2">No screen sharing active</h3>
-                              <p className="text-muted-foreground">Click "Start Sharing" to begin sharing your screen</p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex justify-center gap-4 p-4">
-                        {isSharing ? (
-                          <button onClick={stopScreenShare} className="flex items-center justify-center gap-3 px-4 py-2 rounded-full font-semibold text-md transition-all duration-200 bg-[#FF5757] text-white hover:bg-red-200">
-                            <Square className="w-5 h-5" /> Stop Sharing
-                          </button>
-                        ) : (
-                          <button onClick={toggleScreenShare} className="flex items-center justify-center gap-3 px-4 py-2 rounded-full font-semibold text-md transition-all duration-200 bg-primary text-black100 hover:bg-primary/80">
-                            <Play className="w-5 h-5" /> Start Sharing
-                          </button>
-                        )}
-                        {isSharing && (
-                          autoCaptureInterval1 ? (
-                            <NextScreenshotTimer intervalMinutes={autoCaptureInterval1} isActive={isSharing} endTime={nextScreenshotEndTime1} />
-                          ) : (
-                            <button onClick={captureScreenshot1} disabled={isAnalyzing1} className={`ml-2 flex items-center justify-center gap-2 px-4 py-2 rounded-full font-semibold text-md transition-all duration-200 bg-primary text-black100 hover:bg-green-200 ${isAnalyzing1 ? 'cursor-not-allowed opacity-60 hover:scale-100' : 'cursor-pointer'}`}>
-                              <Camera className="w-5 h-5" /> Capture
-                            </button>
-                          )
-                        )}
-                      </div>
-                    </div>
-                    {/* Second Screen Share */}
-                    <div className=" flex-1 bg-card dark:bg-card border border-border rounded-2xl shadow-lg overflow-hidden backdrop-blur">
-                      <div className={`bg-muted/50 border-b border-border/40 px-6 py-4 flex justify-between items-center`}>
-                        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                          {isSharing2 ? (
-                            <><div className="w-3 h-3 bg-red-500 rounded-full animate-pulse dark:text-white"></div>Higher time frame Screen</>
-                          ) : (
-                            <><MonitorOff className="w-5 h-5 text-muted-foreground" />Higher time frame Screen</>
-                          )}
-                        </h2>
-                        {isSharing2 && (
-                          <div className="flex items-center gap-2">
-                            <label htmlFor="auto-capture-interval2" className="text-sm text-foreground font-medium mr-2">Auto Capture</label>
-                            <select
-                              id="auto-capture-interval2"
-                              className="rounded-md border-border text-sm px-2 py-1 bg-background focus:ring-primary focus:border-primary"
-                              value={autoCaptureInterval2 ?? ''}
-                              onChange={e => {
-                                const value = e.target.value ? Number(e.target.value) : null;
-                                setAutoCaptureInterval2(value);
-                                if (value) {
-                                  captureScreenshot2();
-                                }
-                              }}
-                            >
-                              <option value="">Off</option>
-                              <option value="1">Every 1 min</option>
-                              <option value="2">Every 2 min</option>
-                              <option value="5">Every 5 min</option>
-                              <option value="30">Every 30 min</option>
-                              <option value="60">Every 1 hour</option>
-                              <option value="90">Every 1.5 hour</option>
-                              <option value="120">Every 2 hour</option>
-                            </select>
-                          </div>
-                        )}
-                      </div>
-                      <div className="relative bg-gray-900" style={{ width: '100%', aspectRatio: '16/9' }}>
-                        {isSharing2 && stream2 ? (
-                          <video ref={videoRef2} autoPlay muted playsInline className="w-full h-full object-contain bg-black" />
-                        ) : (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="text-center">
-                              <Monitor className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                              <h3 className="text-xl font-semibold text-muted-foreground mb-2">No screen sharing active</h3>
-                              <p className="text-muted-foreground">Click "Start Sharing" to begin sharing your screen</p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex justify-center gap-4 p-4">
-                        {isSharing2 ? (
-                          <button onClick={stopScreenShare2} className="flex items-center justify-center gap-3 px-4 py-2 rounded-full font-semibold text-md transition-all duration-200 bg-[#FF5757] text-white hover:bg-red-200">
-                            <Square className="w-5 h-5" /> Stop Sharing
-                          </button>
-                        ) : (
-                          <button onClick={startScreenShare2} className="flex items-center justify-center gap-3 px-4 py-2 rounded-full font-semibold text-md transition-all duration-200 bg-primary text-black100 hover:bg-primary/80">
-                            <Play className="w-5 h-5" /> Start Sharing
-                          </button>
-                        )}
-                        {isSharing2 && (
-                          autoCaptureInterval2 ? (
-                            <NextScreenshotTimer intervalMinutes={autoCaptureInterval2} isActive={isSharing2} endTime={nextScreenshotEndTime2} />
-                          ) : (
-                            <button onClick={captureScreenshot2} disabled={isAnalyzing2} className={`ml-2 flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-md transition-all duration-200 bg-green-100 text-green-700 hover:bg-green-200 ${isAnalyzing2 ? 'cursor-not-allowed opacity-60 hover:scale-100' : 'cursor-pointer'}`}>
-                              <Camera className="w-5 h-5" /> Capture
-                            </button>
-                          )
-                        )}
-                      </div>
                     </div>
                   </div>
-                  {/* Multi Timeframe: Show two screenshot sections */}
-                  {activeTab === 'multi' && (
-
-
-                    isSharing && (showSnapshot1 || showSnapshot2) && (
-                      <div className="rounded-2xl p-5 border border-border-light180 bg-white shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]">
-                        <div className="flex items-center gap-4 justify-between pb-2">
+                ) : (
+                  <div className="flex gap-3 flex-col">
+                    <div className="flex flex-col md:flex-row gap-6">
+                      {/* First Screen Share */}
+                      <div className=" flex-1 bg-card dark:bg-card border border-border rounded-2xl shadow-lg overflow-hidden backdrop-blur">
+                        <div className={`bg-muted/50 border-b border-border/40 px-6 py-4 flex justify-between items-center`}>
                           <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                            <Camera className="w-5 h-5 text-green-600" />
-                            Latest Timeframe Snapshot
+                            {isSharing ? (
+                              <><div className="w-3 h-3 bg-red-500 rounded-full animate-pulse dark:text-white"></div>Lower time frame Screen</>
+                            ) : (
+                              <><MonitorOff className="w-5 h-5 text-muted-foreground" />Lower time frame Screen</>
+                            )}
                           </h2>
-                          <button
-                            onClick={analyzeImage1}
-                            disabled={isAnalyzing1 || !capturedImage1}
-                            className="flex items-center justify-center gap-2 px-4 py-2 rounded-full font-medium text-sm bg-primary text-black100  disabled:opacity-50 disabled:cursor-not-allowed "
-                          >
-                            {isAnalyzing1 ? 'Analyzing...' : 'Analyze'}
-                          </button>
+                          {isSharing && (
+                            <div className="flex items-center gap-2">
+                              <label htmlFor="auto-capture-interval1" className="text-sm text-foreground font-medium mr-2">Auto Capture</label>
+                              <select
+                                id="auto-capture-interval1"
+                                className="rounded-md border-border text-sm px-2 py-1 bg-background focus:ring-primary focus:border-primary"
+                                value={autoCaptureInterval1 ?? ''}
+                                onChange={e => {
+                                  const value = e.target.value ? Number(e.target.value) : null;
+                                  setAutoCaptureInterval1(value);
+                                  if (value) {
+                                    captureScreenshot1();
+                                  }
+                                }}
+                              >
+                                <option value="">Off</option>
+                                <option value="1">Every 1 min</option>
+                                <option value="2">Every 2 min</option>
+                                <option value="5">Every 5 min</option>
+                                <option value="30">Every 30 min</option>
+                                <option value="60">Every 1 hour</option>
+                                <option value="90">Every 1.5 hour</option>
+                                <option value="120">Every 2 hour</option>
+                              </select>
+                            </div>
+                          )}
                         </div>
-                        <div className="grid grid-cols-2">
-                          <div className="p-2">
-                            {capturedImage1 ? (
-                              <div className="relative" style={{ width: '100%', aspectRatio: '16/9' }}>
-                                <img
-                                  src={capturedImage1}
-                                  alt="Lower timeframe screenshot"
-                                  className="w-full h-full object-contain border border-gray-200 rounded-lg"
-                                />
+                        <div className="relative bg-gray-900" style={{ width: '100%', aspectRatio: '16/9' }}>
+                          {isSharing && stream ? (
+                            <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-contain bg-black" />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="text-center max-mobile:px-4">
+                                <Monitor className="w-16 h-16 text-muted-foreground mx-auto mb-4 max-mobile:w-8 max-mobile:h-8" />
+                                <h3 className="text-xl max-mobile:text-base font-medium text-muted-foreground max-mobile:mb-0 mb-2">No screen sharing active</h3>
+                                <p className="text-muted-foreground max-mobile:text-sm">Click "Start Sharing" to begin sharing your screen</p>
                               </div>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex justify-center gap-4 p-4">
+                          {isSharing ? (
+                            <button onClick={stopScreenShare} className="flex items-center justify-center gap-3 px-4 py-2 rounded-full font-semibold text-md transition-all duration-200 bg-[#FF5757] text-white hover:bg-red-200">
+                              <Square className="w-5 h-5" /> Stop Sharing
+                            </button>
+                          ) : (
+                            <button onClick={toggleScreenShare} className="flex items-center justify-center gap-3 px-4 py-2 rounded-full font-semibold text-md transition-all duration-200 bg-primary text-black100 hover:bg-primary/80">
+                              <Play className="w-5 h-5" /> Start Sharing
+                            </button>
+                          )}
+                          {isSharing && (
+                            autoCaptureInterval1 ? (
+                              <NextScreenshotTimer intervalMinutes={autoCaptureInterval1} isActive={isSharing} endTime={nextScreenshotEndTime1} />
                             ) : (
-                              <div className="flex items-center justify-center bg-gray-100 rounded-lg" style={{ aspectRatio: '16/9' }}>
-                                <p className="text-gray-400 text-center">
-                                  Click "Capture" to take a screenshot of lower time frame
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                          <div className="p-2">
-                            {capturedImage2 ? (
-                              <div className="relative" style={{ width: '100%', aspectRatio: '16/9' }}>
-                                <img
-                                  src={capturedImage2}
-                                  alt="Higher timeframe screenshot"
-                                  className="w-full h-full object-contain border border-gray-200 rounded-lg"
-                                />
-                              </div>
-                            ) : (
-                              <div className="flex items-center justify-center bg-gray-100 rounded-lg w-full" style={{ aspectRatio: '16/9' }}>
-                                <p className="text-gray-400 text-center">
-                                  Click "Capture" to take a screenshot  of higher time frame
-                                </p>
-                              </div>
-                            )}
-                          </div>
+                              <button onClick={captureScreenshot1} disabled={isAnalyzing1} className={`ml-2 flex items-center justify-center gap-2 px-4 py-2 rounded-full font-semibold text-md transition-all duration-200 bg-primary text-black100 hover:bg-green-200 ${isAnalyzing1 ? 'cursor-not-allowed opacity-60 hover:scale-100' : 'cursor-pointer'}`}>
+                                <Camera className="w-5 h-5" /> Capture
+                              </button>
+                            )
+                          )}
                         </div>
                       </div>
-                    )
+                      {/* Second Screen Share */}
+                      <div className=" flex-1 bg-card dark:bg-card border border-border rounded-2xl shadow-lg overflow-hidden backdrop-blur">
+                        <div className={`bg-muted/50 border-b border-border/40 px-6 py-4 flex justify-between items-center`}>
+                          <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                            {isSharing2 ? (
+                              <><div className="w-3 h-3 bg-red-500 rounded-full animate-pulse dark:text-white"></div>Higher time frame Screen</>
+                            ) : (
+                              <><MonitorOff className="w-5 h-5 text-muted-foreground" />Higher time frame Screen</>
+                            )}
+                          </h2>
+                          {isSharing2 && (
+                            <div className="flex items-center gap-2">
+                              <label htmlFor="auto-capture-interval2" className="text-sm text-foreground font-medium mr-2">Auto Capture</label>
+                              <select
+                                id="auto-capture-interval2"
+                                className="rounded-md border-border text-sm px-2 py-1 bg-background focus:ring-primary focus:border-primary"
+                                value={autoCaptureInterval2 ?? ''}
+                                onChange={e => {
+                                  const value = e.target.value ? Number(e.target.value) : null;
+                                  setAutoCaptureInterval2(value);
+                                  if (value) {
+                                    captureScreenshot2();
+                                  }
+                                }}
+                              >
+                                <option value="">Off</option>
+                                <option value="1">Every 1 min</option>
+                                <option value="2">Every 2 min</option>
+                                <option value="5">Every 5 min</option>
+                                <option value="30">Every 30 min</option>
+                                <option value="60">Every 1 hour</option>
+                                <option value="90">Every 1.5 hour</option>
+                                <option value="120">Every 2 hour</option>
+                              </select>
+                            </div>
+                          )}
+                        </div>
+                        <div className="relative bg-gray-900" style={{ width: '100%', aspectRatio: '16/9' }}>
+                          {isSharing2 && stream2 ? (
+                            <video ref={videoRef2} autoPlay muted playsInline className="w-full h-full object-contain bg-black" />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="text-center max-mobile:px-4">
+                                <Monitor className="w-16 h-16 text-muted-foreground mx-auto mb-4 max-mobile:w-8 max-mobile:h-8" />
+                                <h3 className="text-xl max-mobile:text-base font-medium text-muted-foreground max-mobile:mb-0 mb-2">No screen sharing active</h3>
+                                <p className="text-muted-foreground max-mobile:text-sm">Click "Start Sharing" to begin sharing your screen</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex justify-center gap-4 p-4">
+                          {isSharing2 ? (
+                            <button onClick={stopScreenShare2} className="flex items-center justify-center gap-3 px-4 py-2 rounded-full font-semibold text-md transition-all duration-200 bg-[#FF5757] text-white hover:bg-red-200">
+                              <Square className="w-5 h-5" /> Stop Sharing
+                            </button>
+                          ) : (
+                            <button onClick={startScreenShare2} className="flex items-center justify-center gap-3 px-4 py-2 rounded-full font-semibold text-md transition-all duration-200 bg-primary text-black100 hover:bg-primary/80">
+                              <Play className="w-5 h-5" /> Start Sharing
+                            </button>
+                          )}
+                          {isSharing2 && (
+                            autoCaptureInterval2 ? (
+                              <NextScreenshotTimer intervalMinutes={autoCaptureInterval2} isActive={isSharing2} endTime={nextScreenshotEndTime2} />
+                            ) : (
+                              <button onClick={captureScreenshot2} disabled={isAnalyzing2} className={`ml-2 flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-md transition-all duration-200 bg-green-100 text-green-700 hover:bg-green-200 ${isAnalyzing2 ? 'cursor-not-allowed opacity-60 hover:scale-100' : 'cursor-pointer'}`}>
+                                <Camera className="w-5 h-5" /> Capture
+                              </button>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    {/* Multi Timeframe: Show two screenshot sections */}
+                    {activeTab === 'multi' && (
 
 
-                  )}
+                      isSharing && (showSnapshot1 || showSnapshot2) && (
+                        <div className="rounded-2xl p-5 border border-border-light180 bg-white shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]">
+                          <div className="flex items-center gap-4 justify-between pb-2">
+                            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                              <Camera className="w-5 h-5 text-green-600" />
+                              Latest Timeframe Snapshot
+                            </h2>
+                            <button
+                              onClick={analyzeImage1}
+                              disabled={isAnalyzing1 || !capturedImage1}
+                              className="flex items-center justify-center gap-2 px-4 py-2 rounded-full font-medium text-sm bg-primary text-black100  disabled:opacity-50 disabled:cursor-not-allowed "
+                            >
+                              {isAnalyzing1 ? 'Analyzing...' : 'Analyze'}
+                            </button>
+                          </div>
+                          <div className="grid grid-cols-2">
+                            <div className="p-2">
+                              {capturedImage1 ? (
+                                <div className="relative" style={{ width: '100%', aspectRatio: '16/9' }}>
+                                  <img
+                                    src={capturedImage1}
+                                    alt="Lower timeframe screenshot"
+                                    className="w-full h-full object-contain border border-gray-200 rounded-lg"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="flex items-center justify-center bg-gray-100 rounded-lg" style={{ aspectRatio: '16/9' }}>
+                                  <p className="text-gray-400 text-center">
+                                    Click "Capture" to take a screenshot of lower time frame
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                            <div className="p-2">
+                              {capturedImage2 ? (
+                                <div className="relative" style={{ width: '100%', aspectRatio: '16/9' }}>
+                                  <img
+                                    src={capturedImage2}
+                                    alt="Higher timeframe screenshot"
+                                    className="w-full h-full object-contain border border-gray-200 rounded-lg"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="flex items-center justify-center bg-gray-100 rounded-lg w-full" style={{ aspectRatio: '16/9' }}>
+                                  <p className="text-gray-400 text-center">
+                                    Click "Capture" to take a screenshot  of higher time frame
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )
+
+
+                    )}
+                  </div>
+                )}
+              </div>
+
+
+              {activeTab === 'single' && isSharing && (
+
+                showSnapshot && (
+                  <div className="flex flex-col  gap-4">
+                    <div className="rounded-2xl border border-border-light180 bg-white shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]">
+                      <div className="p-3 flex items-center justify-between">
+                        <h2 className="text-xl font-semibold text-black100 flex items-center gap-2">
+                          <Camera className="w-5 h-5 text-black100" />
+                          Latest Snapshot
+                        </h2>
+                        <button
+                          onClick={analyzeImage}
+                          disabled={isAnalyzing || !capturedImage}
+                          className="flex items-center justify-center gap-2 px-4 py-2 rounded-full font-medium text-sm bg-primary text-black100  disabled:opacity-50 disabled:cursor-not-allowed "
+                        >
+                          {isAnalyzing ? 'Analyzing...' : 'Analyze'}
+                        </button>
+                      </div>
+                      <div className="">
+                        {capturedImage ? (
+                          <div className="relative" style={{ width: '100%', aspectRatio: '16/9' }}>
+                            <img
+                              src={capturedImage}
+                              alt="Captured screenshot"
+                              className="w-full h-full object-contain border rounded-b-2xl border-gray-200 "
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center bg-gray-100 rounded-lg" style={{ aspectRatio: '16/9' }}>
+                            <p className="text-gray-400 text-center">
+                              Click "Capture" to take a screenshot
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )
+
+
+
+
+              )}
+
+
+
+              {(showAnalysis || allAnalyses.length > 0) && (
+                <div className="flex flex-col h-[85vh] gap-6">
+                  <div className="flex-1 flex flex-col bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div className="bg-gray-100 px-6 py-4 border-b border-gray-100">
+                      <h2 className="text-xl font-semibold text-gray-900">Analysis Results</h2>
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-4">
+                      {isAnalyzing && (
+                        <div className="flex items-center justify-center py-8">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                        </div>
+                      )}
+
+                      {/* Analysis History */}
+                      {allAnalyses.length > 0 && (
+                        <div className="space-y-4">
+                          {allAnalyses.map((analysis, analysisIndex) => {
+                            // Extract the first trade's timestamp if available, or use current time as fallback
+                            const timestamp = analysis.timestamp || new Date().toISOString();
+                            const formattedDateTime = new Date(timestamp).toLocaleString('en-US', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: true
+                            });
+
+                            return (
+                              <div key={`history-${analysisIndex}`} className="space-y-2 mb-5">
+                                <div className="flex gap-1 items-center text-md font-medium text-gray-500 ">
+                                  <Clock className="w-4 h-4 mr-1" />
+                                  Analysis at {formattedDateTime}
+                                </div>
+                                {analysis.data.map((trade: any, tradeIndex: number) => (
+                                  <AnalysisResultItem key={`trade-${tradeIndex}`} trade={trade} index={tradeIndex} />
+                                ))}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                    </div>
+                  </div>
                 </div>
               )}
+
+            </div>
+          </div>
+          {isModalOpen && selectedAnalysis && (
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+              <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Analysis Details</DialogTitle>
+                  <DialogDescription>
+                    Detailed analysis of the selected trade
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+
+
+                  {selectedAnalysis.risk_reward && selectedAnalysis.risk_reward !== 'N/A' && (
+                    <div className="mb-3 p-2.5 bg-gray-50 rounded-md">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-medium text-gray-700">Risk/Reward</span>
+                        <span className="px-2 py-0.5 bg-white rounded text-xs font-semibold text-primary border border-primary/20">
+                          {selectedAnalysis.risk_reward}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedAnalysis?.rationale && (
+                    <div className="space-y-4">
+                      <h3 className="font-medium text-gray-900">Analysis</h3>
+                      <p className="text-gray-600 whitespace-pre-line">{selectedAnalysis.rationale}</p>
+                    </div>
+                  )}
+
+                  {selectedAnalysis.entry?.includes('(') && (
+                    <div className="bg-gray-100 px-4 py-2 text-xs border-t border-gray-100 rounded-b-xl italic text-gray-500 mt-2">
+                      {selectedAnalysis.entry.match(/\(([^)]+)\)/)?.[1]}
+                    </div>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
+          {showTabSwitchConfirm && (
+            <Dialog open={showTabSwitchConfirm} onOpenChange={setShowTabSwitchConfirm}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Are you sure?</DialogTitle>
+                  <DialogDescription>
+                    Switching tabs will stop all active screen sharing. Do you want to continue?
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex justify-end gap-2 mt-4">
+                  <button
+                    className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    onClick={() => {
+                      setShowTabSwitchConfirm(false);
+                      setPendingTab(null);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="px-4 py-2 rounded bg-primary text-white hover:bg-primary/80"
+                    onClick={() => {
+                      setShowTabSwitchConfirm(false);
+                      if (isSharing) stopScreenShare();
+                      if (isSharing2) stopScreenShare2();
+                      if (pendingTab) setActiveTab(pendingTab);
+                      setCapturedImage1(null)
+                      setCapturedImage2(null)
+                      setCapturedImage(null)
+                      setAutoCaptureInterval1(null)
+                      setAutoCaptureInterval2(null)
+                      setAutoCaptureInterval(null)
+                      setPendingTab(null);
+                    }}
+                  >
+                    Yes, Switch
+                  </button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
+        </div >
+      </div>
+      {/* Mobile / Tablet — Desktop-only notice */}
+      <div className="hidden max-tab:flex flex-col items-center justify-center px-5 pt-16 text-center">
+        <motion.div
+          className="relative w-full max-w-sm mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          {/* Glow background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-primary/10 to-blue-50 rounded-[32px] blur-2xl opacity-60 pointer-events-none" />
+
+          <div className="relative bg-white border border-blue-100 rounded-xl shadow-xl shadow-blue-100/40 p-8 flex flex-col items-center gap-5 overflow-hidden">
+            {/* Animated floating dots */}
+            <motion.div className="absolute top-4 left-4 w-2 h-2 rounded-full bg-primary/40"
+              animate={{ y: [0, -8, 0], opacity: [0.4, 1, 0.4] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} />
+            <motion.div className="absolute top-8 right-6 w-1.5 h-1.5 rounded-full bg-blue-400/50"
+              animate={{ y: [0, -6, 0], opacity: [0.3, 0.9, 0.3] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }} />
+            <motion.div className="absolute bottom-6 left-8 w-1.5 h-1.5 rounded-full bg-blue-300/40"
+              animate={{ y: [0, -5, 0], opacity: [0.3, 0.8, 0.3] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.8 }} />
+
+            {/* Pulsing monitor icon */}
+            <motion.div
+              className="w-20 h-20 rounded-full bg-[#A8DD15] flex items-center justify-center shadow-lg shadow-blue-300/50"
+              animate={{ scale: [1, 1.06, 1], boxShadow: ["0 10px 30px rgba(59,130,246,0.3)", "0 14px 40px rgba(59,130,246,0.55)", "0 10px 30px rgba(59,130,246,0.3)"] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <svg className="w-10 h-10 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <path d="M8 21h8M12 17v4" strokeLinecap="round" />
+              </svg>
+            </motion.div>
+
+            {/* Text */}
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold text-slate-800 leading-snug">
+                Desktop View Required
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed max-w-[260px] mx-auto">
+                This tool is optimized for a larger screen. Please open it on a <span className="font-semibold text-blue-600">desktop or laptop</span> for the best experience.
+              </p>
             </div>
 
+            {/* Animated divider */}
+            <motion.div
+              className="h-[2px] w-16 rounded-full bg-gradient-to-r from-blue-400 to-primary"
+              animate={{ width: ["40px", "80px", "40px"] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            />
 
-            {activeTab === 'single' && isSharing && (
-
-              showSnapshot && (
-                <div className="flex flex-col  gap-4">
-                  <div className="rounded-2xl border border-border-light180 bg-white shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]">
-                    <div className="p-3 flex items-center justify-between">
-                      <h2 className="text-xl font-semibold text-black100 flex items-center gap-2">
-                        <Camera className="w-5 h-5 text-black100" />
-                        Latest Snapshot
-                      </h2>
-                      <button
-                        onClick={analyzeImage}
-                        disabled={isAnalyzing || !capturedImage}
-                        className="flex items-center justify-center gap-2 px-4 py-2 rounded-full font-medium text-sm bg-primary text-black100  disabled:opacity-50 disabled:cursor-not-allowed "
-                      >
-                        {isAnalyzing ? 'Analyzing...' : 'Analyze'}
-                      </button>
-                    </div>
-                    <div className="">
-                      {capturedImage ? (
-                        <div className="relative" style={{ width: '100%', aspectRatio: '16/9' }}>
-                          <img
-                            src={capturedImage}
-                            alt="Captured screenshot"
-                            className="w-full h-full object-contain border rounded-b-2xl border-gray-200 "
-                          />
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center bg-gray-100 rounded-lg" style={{ aspectRatio: '16/9' }}>
-                          <p className="text-gray-400 text-center">
-                            Click "Capture" to take a screenshot
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )
-
-
-
-
-            )}
-
-
-
-            {(showAnalysis || allAnalyses.length > 0) && (
-              <div className="flex flex-col h-[85vh] gap-6">
-                <div className="flex-1 flex flex-col bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                  <div className="bg-gray-100 px-6 py-4 border-b border-gray-100">
-                    <h2 className="text-xl font-semibold text-gray-900">Analysis Results</h2>
-                  </div>
-                  <div className="flex-1 overflow-y-auto p-4">
-                    {isAnalyzing && (
-                      <div className="flex items-center justify-center py-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                      </div>
-                    )}
-
-                    {/* Analysis History */}
-                    {allAnalyses.length > 0 && (
-                      <div className="space-y-4">
-                        {allAnalyses.map((analysis, analysisIndex) => {
-                          // Extract the first trade's timestamp if available, or use current time as fallback
-                          const timestamp = analysis.timestamp || new Date().toISOString();
-                          const formattedDateTime = new Date(timestamp).toLocaleString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true
-                          });
-
-                          return (
-                            <div key={`history-${analysisIndex}`} className="space-y-2 mb-5">
-                              <div className="flex gap-1 items-center text-md font-medium text-gray-500 ">
-                                <Clock className="w-4 h-4 mr-1" />
-                                Analysis at {formattedDateTime}
-                              </div>
-                              {analysis.data.map((trade: any, tradeIndex: number) => (
-                                <AnalysisResultItem key={`trade-${tradeIndex}`} trade={trade} index={tradeIndex} />
-                              ))}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-
-                  </div>
-                </div>
-              </div>
-            )}
-
+            {/* Badge */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-full text-xs font-semibold text-blue-600 shadow-xs">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Open on Desktop to Continue
+            </div>
           </div>
-        </div>
-        {isModalOpen && selectedAnalysis && (
-          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Analysis Details</DialogTitle>
-                <DialogDescription>
-                  Detailed analysis of the selected trade
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-
-
-                {selectedAnalysis.risk_reward && selectedAnalysis.risk_reward !== 'N/A' && (
-                  <div className="mb-3 p-2.5 bg-gray-50 rounded-md">
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="font-medium text-gray-700">Risk/Reward</span>
-                      <span className="px-2 py-0.5 bg-white rounded text-xs font-semibold text-primary border border-primary/20">
-                        {selectedAnalysis.risk_reward}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {selectedAnalysis?.rationale && (
-                  <div className="space-y-4">
-                    <h3 className="font-medium text-gray-900">Analysis</h3>
-                    <p className="text-gray-600 whitespace-pre-line">{selectedAnalysis.rationale}</p>
-                  </div>
-                )}
-
-                {selectedAnalysis.entry?.includes('(') && (
-                  <div className="bg-gray-100 px-4 py-2 text-xs border-t border-gray-100 rounded-b-xl italic text-gray-500 mt-2">
-                    {selectedAnalysis.entry.match(/\(([^)]+)\)/)?.[1]}
-                  </div>
-                )}
-              </div>
-            </DialogContent>
-          </Dialog>
-        )}
-        {showTabSwitchConfirm && (
-          <Dialog open={showTabSwitchConfirm} onOpenChange={setShowTabSwitchConfirm}>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Are you sure?</DialogTitle>
-                <DialogDescription>
-                  Switching tabs will stop all active screen sharing. Do you want to continue?
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex justify-end gap-2 mt-4">
-                <button
-                  className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  onClick={() => {
-                    setShowTabSwitchConfirm(false);
-                    setPendingTab(null);
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="px-4 py-2 rounded bg-primary text-white hover:bg-primary/80"
-                  onClick={() => {
-                    setShowTabSwitchConfirm(false);
-                    if (isSharing) stopScreenShare();
-                    if (isSharing2) stopScreenShare2();
-                    if (pendingTab) setActiveTab(pendingTab);
-                    setCapturedImage1(null)
-                    setCapturedImage2(null)
-                    setCapturedImage(null)
-                    setAutoCaptureInterval1(null)
-                    setAutoCaptureInterval2(null)
-                    setAutoCaptureInterval(null)
-                    setPendingTab(null);
-                  }}
-                >
-                  Yes, Switch
-                </button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        )}
-      </div >
+        </motion.div>
+      </div>
     </>
   );
 }

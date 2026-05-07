@@ -366,52 +366,89 @@ export function FxGuruSidebar({ currentChatId, isOpen, onClose }: { currentChatI
     getFxGuruConversations().then(setChats)
   }, [])
 
-  return (
-    <>
-      <div className="bg-white rounded-xl border border-solid border-border-light300">
-        <div className="p-3 ">
-          <Button variant="secondary" className="py-2 text-base w-full" onClick={() => {
-            router.push('/fx-guru')
-            if (onClose) onClose()
-          }}>
-            <div className="flex items-center  gap-2">
-              <Plus className="h-4 w-4" />
-            </div>
-            New Chat
-          </Button>
-          <div className="flex items-center gap-3 my-3 px-2">
-            <div className="h-[1.5px] flex-1 bg-primary"></div>
-            <span className="text-sm font-medium text-black700 whitespace-nowrap">Search History</span>
-            <div className="h-[1.5px] flex-1 bg-primary"></div>
+  const sidebarContent = (
+    <div className="bg-white rounded-xl border border-solid border-border-light300 h-full flex flex-col">
+      <div className="p-3">
+        {/* Close button – mobile only */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="lg:hidden mb-3 ml-auto flex items-center justify-center w-8 h-8 rounded-full border border-border hover:bg-muted transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
+        <Button variant="secondary" className="py-2 text-base w-full" onClick={() => {
+          router.push('/fx-guru')
+          if (onClose) onClose()
+        }}>
+          <div className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
           </div>
-        </div>
-        <div className="flex-1 h-[calc(100%-110px)] overflow-y-auto p-3 pt-0 space-y-3">
-          {/* <div className="text-[11px] font-semibold text-muted-foreground mb-2 px-2 uppercase tracking-wider">Recent</div> */}
-          {chats.length === 0 ? (
-            <div className="text-xs text-center text-muted-foreground p-4">No past chats.</div>
-          ) : (
-            chats.map(chat => (
-              <button
-                key={chat.id}
-                onClick={() => {
-                  router.push(`/fx-guru/${chat.conversationId}`)
-                  if (onClose) onClose()
-                }}
-                className={`w-full cursor-pointer flex items-center justify-between gap-2 p-1 pl-3.5  bg-[#F0F1EC] rounded-full transition-colors ${currentChatId === chat.conversationId
-                  ? ""
-                  : ""
-                  }`}
-              >
-                {/* <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-60" /> */}
-                <span className="truncate line-clamp-1 text-black800 text-base">{chat.title || "New Chat"}</span>
-                <div className="w-9 min-w-9 min-h-9 h-9 flex cursor-pointer items-center justify-center bg-white rounded-full shadow-xs">
-                  <Trash className="text-[#FF5151] w-4 h-4" color="#FF5151" />
-                </div>
-              </button>
-            ))
-          )}
+          New Chat
+        </Button>
+        <div className="flex items-center gap-3 my-3 px-2">
+          <div className="h-[1.5px] flex-1 bg-primary"></div>
+          <span className="text-sm font-medium text-black700 whitespace-nowrap">Search History</span>
+          <div className="h-[1.5px] flex-1 bg-primary"></div>
         </div>
       </div>
+      <div className="flex-1 overflow-y-auto p-3 pt-0 space-y-3">
+        {chats.length === 0 ? (
+          <div className="text-xs text-center text-muted-foreground p-4">No past chats.</div>
+        ) : (
+          chats.map(chat => (
+            <button
+              key={chat.id}
+              onClick={() => {
+                router.push(`/fx-guru/${chat.conversationId}`)
+                if (onClose) onClose()
+              }}
+              className={`w-full cursor-pointer flex items-center justify-between gap-2 p-1 pl-3.5 bg-[#F0F1EC] rounded-full transition-colors ${currentChatId === chat.conversationId ? '' : ''}`}
+            >
+              <span className="truncate line-clamp-1 text-black800 text-base">{chat.title || "New Chat"}</span>
+              <div className="w-9 min-w-9 min-h-9 h-9 flex cursor-pointer items-center justify-center bg-white rounded-full shadow-xs">
+                <Trash className="text-[#FF5151] w-4 h-4" color="#FF5151" />
+              </div>
+            </button>
+          ))
+        )}
+      </div>
+    </div>
+  )
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <div className="hidden lg:block">
+        {sidebarContent}
+      </div>
+
+      {/* Mobile/Tablet slide-in drawer */}
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={onClose}
+            />
+            {/* Drawer */}
+            <motion.div
+              className="fixed top-0 left-0 h-full w-[300px] z-50 lg:hidden p-4"
+              initial={{ x: -320 }}
+              animate={{ x: 0 }}
+              exit={{ x: -320 }}
+              transition={{ type: "tween", duration: 0.3 }}
+            >
+              {sidebarContent}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   )
 }
@@ -573,22 +610,33 @@ export function FxGuruLanding() {
         highlightedText="FX Guru:" title="Your Ultimate Stock 
 Search & Market Intelligence 
 Platform" />
-      <div className="pb-100">
+      <div className="pb-100 max-tab:hidden">
         <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
-          <div className="grid grid-cols-[390px_1fr] gap-5">
-            <FxGuruSidebar />
+          {/* Mobile sidebar toggle */}
+          <div className="lg:hidden flex items-center gap-3 pt-16 mb-4">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-border-light300 rounded-full shadow-xs text-sm font-medium text-black700 hover:bg-muted transition-colors"
+            >
+              <Menu className="w-4 h-4" />
+              Chat History
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-[390px_1fr] gap-5">
+            <FxGuruSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
             <div className="">
 
-              <div className="bg-white rounded-xl border border-solid border-border-light300 px-4 py-[60px]">
+              <div className="bg-white rounded-xl border border-solid border-border-light300 px-4 sm:px-6 py-8 sm:py-[60px]">
                 <div className="max-w-[980px] mx-auto">
-                  <div className="pb-10">
+                  <div className="pb-6 sm:pb-10">
                     <div className="flex justify-center">
-                      <img src={FxguruIcon} alt="FxguruIcon" className="block" />
+                      <img src={FxguruIcon} alt="FxguruIcon" className="block w-12 sm:w-auto" />
                     </div>
-                    <h2 className="text-3xl text-black font-bold text-center mb-3">
+                    <h2 className="text-xl sm:text-3xl text-black font-bold text-center mb-2 sm:mb-3 mt-3 sm:mt-0">
                       Welcome to FXGuru
                     </h2>
-                    <p className="text-lg font-medium text-black700 max-w-[733px] mx-auto text-center">
+                    <p className="text-sm sm:text-lg font-medium text-black700 max-w-[733px] mx-auto text-center">
                       Your intelligent forex trading companion. Get instant market insights, chart
                       analysis,
                       and expert-level trading strategies powered by AI.
@@ -598,7 +646,7 @@ Platform" />
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
-                    className={`relative flex flex-col rounded-3xl border transition-all duration-300 bg-white shadow-xs
+                    className={`relative flex flex-col max-mobile:rounded-lg rounded-3xl border transition-all duration-300 bg-white shadow-xs
                   ${isDragging
                         ? "border-primary border-dashed bg-primary/5 scale-[1.01]"
                         : "border-primary"
@@ -606,7 +654,7 @@ Platform" />
                   focus-within:shadow-[0_0_20px_rgba(168,221,21,0.2)]`}
                   >
                     {/* Top Section: Icon + Textarea */}
-                    <div className="flex items-start gap-3 p-5 pb-2">
+                    <div className="flex items-start gap-3 p-5 max-mobile:p-3 pb-2">
                       <div className="shrink-0 mt-1">
                         <img src={AskIcon} alt="AskIcon" />
                       </div>
@@ -622,7 +670,7 @@ Platform" />
 
                     {/* Middle Section: Image Preview (if any) */}
                     {previewFile && (
-                      <div className="px-5 pb-3">
+                      <div className="px-5 max-mobile:px-3 pb-3">
                         <div className="relative w-fit group animate-in zoom-in duration-200">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={previewFile} alt="Preview" className="h-20 w-auto rounded-xl object-cover border-2 border-primary/20 shadow-sm" />
@@ -725,6 +773,68 @@ Platform" />
             </div>
           </div>
         </div>
+      </div>
+      {/* Mobile / Tablet — Desktop-only notice */}
+      <div className="hidden max-tab:flex flex-col items-center justify-center px-5 py-16 text-center">
+        <motion.div
+          className="relative w-full max-w-sm mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          {/* Glow background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-primary/10 to-blue-50 rounded-[32px] blur-2xl opacity-60 pointer-events-none" />
+
+          <div className="relative bg-white border border-blue-100 rounded-xl shadow-xl shadow-blue-100/40 p-8 flex flex-col items-center gap-5 overflow-hidden">
+            {/* Animated floating dots */}
+            <motion.div className="absolute top-4 left-4 w-2 h-2 rounded-full bg-primary/40"
+              animate={{ y: [0, -8, 0], opacity: [0.4, 1, 0.4] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} />
+            <motion.div className="absolute top-8 right-6 w-1.5 h-1.5 rounded-full bg-blue-400/50"
+              animate={{ y: [0, -6, 0], opacity: [0.3, 0.9, 0.3] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }} />
+            <motion.div className="absolute bottom-6 left-8 w-1.5 h-1.5 rounded-full bg-blue-300/40"
+              animate={{ y: [0, -5, 0], opacity: [0.3, 0.8, 0.3] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.8 }} />
+
+            {/* Pulsing monitor icon */}
+            <motion.div
+              className="w-20 h-20 rounded-full bg-[#A8DD15] flex items-center justify-center shadow-lg shadow-blue-300/50"
+              animate={{ scale: [1, 1.06, 1], boxShadow: ["0 10px 30px rgba(59,130,246,0.3)", "0 14px 40px rgba(59,130,246,0.55)", "0 10px 30px rgba(59,130,246,0.3)"] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <svg className="w-10 h-10 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <path d="M8 21h8M12 17v4" strokeLinecap="round" />
+              </svg>
+            </motion.div>
+
+            {/* Text */}
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold text-slate-800 leading-snug">
+                Desktop View Required
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed max-w-[260px] mx-auto">
+                This tool is optimized for a larger screen. Please open it on a <span className="font-semibold text-blue-600">desktop or laptop</span> for the best experience.
+              </p>
+            </div>
+
+            {/* Animated divider */}
+            <motion.div
+              className="h-[2px] w-16 rounded-full bg-gradient-to-r from-blue-400 to-primary"
+              animate={{ width: ["40px", "80px", "40px"] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            />
+
+            {/* Badge */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-full text-xs font-semibold text-blue-600 shadow-xs">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Open on Desktop to Continue
+            </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   )
@@ -979,14 +1089,24 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
   }
 
   return (
-    <div className="pt-100">
+    <div className="pt-100 max-mobile:pt-20">
       <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
-        <div className="grid grid-cols-[390px_1fr] gap-5 pb-8">
+        {/* Mobile sidebar toggle */}
+        <div className="lg:hidden flex items-center gap-3 mb-4">
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-border-light300 rounded-full shadow-xs text-sm font-medium text-black700 hover:bg-muted transition-colors"
+          >
+            <Menu className="w-4 h-4" />
+            Chat History
+          </button>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-[390px_1fr] gap-5 pb-8">
           <FxGuruSidebar currentChatId={chatId} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
           <AnimatePresence mode="wait">
             <motion.div
               key="chat-detail"
-              className="flex flex-1 flex-col w-full h-[calc(100dvh-132px)] overflow-auto bg-white rounded-xl border border-solid border-border-light300"
+              className="flex flex-1 flex-col w-full h-[calc(100dvh-132px)] max-mobile:h-[calc(100dvh-80px)] overflow-auto bg-white rounded-xl border border-solid border-border-light300"
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 40 }}
@@ -1028,7 +1148,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
-                  className={`relative flex flex-col rounded-[32px] border transition-all duration-300 bg-white shadow-xs 
+                  className={`relative flex max-mobile:rounded-lg flex-col rounded-[32px] border transition-all duration-300 bg-white shadow-xs 
                 ${isDragging
                       ? "border-primary border-dashed bg-primary/5 scale-[1.01]"
                       : "border-primary"
@@ -1036,7 +1156,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
                 focus-within:shadow-[0_0_20px_rgba(168,221,21,0.2)]`}
                 >
                   {/* Top Section: Icon + Textarea */}
-                  <div className="flex items-start gap-3 p-5 pb-2">
+                  <div className="flex items-start gap-3 p-5 max-mobile:p-3 pb-2">
                     <div className="shrink-0 mt-1">
                       {/* Black Smiley Icon */}
                       <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center relative overflow-hidden">
@@ -1056,7 +1176,7 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
 
                   {/* Middle Section: Image Preview (if any) */}
                   {previewFile && (
-                    <div className="px-5 pb-3">
+                    <div className="px-5 pb-3 max-mobile:px-3">
                       <div className="relative w-fit group animate-in zoom-in duration-200">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={previewFile} alt="Preview" className="h-20 w-auto rounded-xl object-cover border-2 border-primary/20 shadow-sm" />

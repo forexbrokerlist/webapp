@@ -132,6 +132,7 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
       logoUrl: broker?.logoUrl ?? "",
       typeId: broker?.typeId ?? undefined,
       isSponsor: broker?.isSponsor ?? false,
+      isPremiumBroker: broker?.isPremiumBroker ?? false,
       isMainSponsor: broker?.isMainSponsor ?? false,
       features: broker?.features ?? [],
       socialProof: broker?.socialProof ?? "",
@@ -431,6 +432,26 @@ export function ToolForm({ className, title, broker, ...props }: ToolFormProps) 
           render={({ field }) => (
             <Field>
               <FieldLabel htmlFor={field.name}>Sponsor</FieldLabel>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {field.value ? "Yes" : "No"}
+                </span>
+              </div>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="isPremiumBroker"
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Premium Broker</FieldLabel>
               <div className="flex items-center gap-3">
                 <Switch
                   id={field.name}
