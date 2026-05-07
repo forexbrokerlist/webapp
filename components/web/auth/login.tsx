@@ -10,10 +10,10 @@ export const Login = () => {
   const t = useTranslations()
 
   return (
-    <Stack direction="column" className="items-stretch w-full">
+    <div>
       <LoginForm />
 
-      <Note className="flex items-center justify-center gap-3 my-2 before:flex-1 before:border-t after:flex-1 after:border-t">
+      <Note className="flex items-center justify-center gap-3 my-2 before:content-[''] before:flex-1 before:border-t before:border-gray-200 after:content-[''] after:flex-1 after:border-t after:border-gray-200">
         {t("common.or")}
       </Note>
 
@@ -21,6 +21,6 @@ export const Login = () => {
         provider="google"
         suffix={<Image src={googleIcon} alt="Google" className="size-4" unoptimized />}
       />
-    </Stack>
+    </div>
   )
 }

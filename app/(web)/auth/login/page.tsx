@@ -8,7 +8,7 @@ import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import seoData from "~/config/seo.json"
 import { generateWebPage } from "~/lib/structured-data"
-
+const AuthLineImage = '/assets/images/auth-line.png';
 const namespace = "pages.auth.login"
 
 const getData = cache(async () => {
@@ -40,15 +40,24 @@ export default async function () {
   return (
     <>
       <div >
+        <div className="max-w-[450px] max-mobile:max-w-[calc(100%-40px)]  mx-auto bg-white rounded-2xl login-top overflow-hidden relative" >
+          <div className="pt-16">
+            <img src={AuthLineImage} alt="AuthLineImage" className="w-full h-full object-cover object-center" />
+          </div>
+          <div className="p-6">
+            <h2 className="text-2xl font-semibold text-black100 text-center mb-2">
+              {metadata.title}
+            </h2>
+            <p className="text-base mb-5 text-black700 max-w-[390px] mx-auto text-center">
+              {metadata.description}
+            </p>
+            <Suspense fallback={<LoaderIcon className="animate-spin mx-auto" />}>
+              <Login />
+            </Suspense>
+          </div>
+        </div>
         <div>
-          <Intro className="mb-4">
-            <IntroTitle size="h3">{metadata.title}</IntroTitle>
-            <IntroDescription className="md:text-sm">{metadata.description}</IntroDescription>
-          </Intro>
 
-          <Suspense fallback={<LoaderIcon className="animate-spin mx-auto" />}>
-            <Login />
-          </Suspense>
         </div>
       </div>
     </>
