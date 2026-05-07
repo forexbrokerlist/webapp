@@ -251,7 +251,7 @@ export function DeepScanChat() {
         highlightedText="Deep Scan –" title="AI-Powered Stock Research & Market Intelligence" />
 
 
-      <div className="pb-100">
+      <div className="pb-100 max-tab:hidden">
         <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
           <div className="grid grid-cols-[390px_1fr] gap-5">
             <div className="bg-white rounded-xl border border-solid border-border-light300">
@@ -583,9 +583,72 @@ export function DeepScanChat() {
         </div>
       </div>
 
+      {/* Mobile / Tablet — Desktop-only notice */}
+      <div className="hidden max-tab:flex flex-col items-center justify-center px-5 py-16 text-center">
+        <motion.div
+          className="relative w-full max-w-sm mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          {/* Glow background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-primary/10 to-blue-50 rounded-[32px] blur-2xl opacity-60 pointer-events-none" />
+
+          <div className="relative bg-white border border-blue-100 rounded-xl shadow-xl shadow-blue-100/40 p-8 flex flex-col items-center gap-5 overflow-hidden">
+            {/* Animated floating dots */}
+            <motion.div className="absolute top-4 left-4 w-2 h-2 rounded-full bg-primary/40"
+              animate={{ y: [0, -8, 0], opacity: [0.4, 1, 0.4] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} />
+            <motion.div className="absolute top-8 right-6 w-1.5 h-1.5 rounded-full bg-blue-400/50"
+              animate={{ y: [0, -6, 0], opacity: [0.3, 0.9, 0.3] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }} />
+            <motion.div className="absolute bottom-6 left-8 w-1.5 h-1.5 rounded-full bg-blue-300/40"
+              animate={{ y: [0, -5, 0], opacity: [0.3, 0.8, 0.3] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.8 }} />
+
+            {/* Pulsing monitor icon */}
+            <motion.div
+              className="w-20 h-20 rounded-full bg-[#A8DD15] flex items-center justify-center shadow-lg shadow-blue-300/50"
+              animate={{ scale: [1, 1.06, 1], boxShadow: ["0 10px 30px rgba(59,130,246,0.3)", "0 14px 40px rgba(59,130,246,0.55)", "0 10px 30px rgba(59,130,246,0.3)"] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <svg className="w-10 h-10 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <path d="M8 21h8M12 17v4" strokeLinecap="round" />
+              </svg>
+            </motion.div>
+
+            {/* Text */}
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold text-slate-800 leading-snug">
+                Desktop View Required
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed max-w-[260px] mx-auto">
+                This tool is optimized for a larger screen. Please open it on a <span className="font-semibold text-blue-600">desktop or laptop</span> for the best experience.
+              </p>
+            </div>
+
+            {/* Animated divider */}
+            <motion.div
+              className="h-[2px] w-16 rounded-full bg-gradient-to-r from-blue-400 to-primary"
+              animate={{ width: ["40px", "80px", "40px"] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            />
+
+            {/* Badge */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-full text-xs font-semibold text-blue-600 shadow-xs">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Open on Desktop to Continue
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
       {/* Delete Confirmation Dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="max-w-[400px] p-8 rounded-[32px] border-none shadow-2xl flex flex-col items-center text-center">
+        <DialogContent className="max-w-[400px] max-tab:hidden p-8 rounded-[32px] border-none shadow-2xl flex flex-col items-center text-center">
           <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center mb-6 shadow-lg shadow-blue-200 dark:shadow-none">
             <Trash2 className="w-8 h-8 text-white" />
           </div>

@@ -25,7 +25,7 @@ export function MultiTaskProgress({ tasks, onCancelTask, onClearTask, onClearAll
   if (!hasAnyTasks) return null
 
   return (
-    <div className="fixed bottom-4 right-4 w-96 max-h-96 bg-white dark:bg-card rounded-2xl shadow-lg border border-border overflow-hidden z-50">
+    <div className="fixed max-tab:hidden bottom-4 right-4 w-96 max-h-96 bg-white dark:bg-card rounded-2xl shadow-lg border border-border overflow-hidden z-50">
       <div className="p-4 border-b border-border bg-muted/50">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-sm">Active Deep Scans</h3>
@@ -63,15 +63,14 @@ export function MultiTaskProgress({ tasks, onCancelTask, onClearTask, onClearAll
                       <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                         {Model_List.find(m => m.Value === task.model)?.Name || "CORE"}
                       </span>
-                      <span className={`px-1.5 py-0.5 text-[8px] font-bold rounded-md uppercase tracking-wider ${
-                        task.status === 'running' 
-                          ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
-                          : task.status === 'completed'
+                      <span className={`px-1.5 py-0.5 text-[8px] font-bold rounded-md uppercase tracking-wider ${task.status === 'running'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                        : task.status === 'completed'
                           ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
                           : task.status === 'error'
-                          ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
-                          : 'bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400'
-                      }`}>
+                            ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+                            : 'bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400'
+                        }`}>
                         {task.status}
                       </span>
                     </div>
@@ -118,13 +117,12 @@ export function MultiTaskProgress({ tasks, onCancelTask, onClearTask, onClearAll
                           <div className="w-1 h-1 bg-gray-400 rounded-full" />
                         )}
                       </div>
-                      <span className={`text-xs truncate ${
-                        stage.status === 'completed' 
-                          ? 'text-green-600' 
-                          : stage.status === 'in_progress' 
-                          ? 'text-blue-600 font-medium' 
+                      <span className={`text-xs truncate ${stage.status === 'completed'
+                        ? 'text-green-600'
+                        : stage.status === 'in_progress'
+                          ? 'text-blue-600 font-medium'
                           : 'text-gray-400'
-                      }`}>
+                        }`}>
                         {stage.text}
                       </span>
                       {stage.progress !== undefined && (
