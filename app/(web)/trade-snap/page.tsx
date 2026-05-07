@@ -1076,38 +1076,13 @@ function Dashboard() {
 seconds. Capture your screen, analyze market movements, and gain powerful insights with single and 
 multi-timeframe views.'
         highlightedText="Trade Snap:" title="Real-Time Screen Sharing & Multi-Timeframe Analysis" />
+      <div className="max-w-[1200px] px-5 mx-auto max-mobile:pt-16 max-tab:hidden">
 
-      {isDesktop === false ? (
-        <div className="max-w-[1200px] px-5 mx-auto py-20">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="relative overflow-hidden border-2 border-dashed border-[#A8DD15] rounded-[32px] p-12 text-center flex flex-col items-center justify-center gap-6 bg-[#A8DD15]/5 shadow-sm min-h-[400px]"
-          >
-            <div className="relative w-20 h-20 rounded-full bg-white/40 text-[#A8DD15] mt-2 flex items-center justify-center border border-black/5">
-              <Smartphone className="w-10 h-10 text-[#A8DD15]" />
-              <Slash className="absolute w-12 h-12 text-[#A8DD15] rotate-12" />
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-xl font-bold text-[#A8DD15]">Desktop View Required</h3>
-              <p className="text-md px-4 text-black/70 max-w-md mx-auto leading-relaxed font-medium">
-                  This feature is only available in Desktop view Please open this Page in Desktop to use this tool.
-                </p>
-              </div>
-            <div className="flex gap-3">
-              <div className="w-2 h-2 rounded-full bg-black/20 animate-pulse"></div>
-              <div className="w-2 h-2 rounded-full bg-black/20 animate-pulse delay-75"></div>
-              <div className="w-2 h-2 rounded-full bg-black/20 animate-pulse delay-150"></div>
-            </div>
-          </motion.div>
-        </div>
-      ) : (
-        <div className="max-w-[1200px] px-5 mx-auto">
-
-          <canvas ref={canvasRef} className="hidden" />
+        <canvas ref={canvasRef} className="hidden" />
+        <div className="">
           <div className="rounded-[100px] cursor-pointer bg-[#E9EBE0] p-1.5 grid  grid-cols-2 gap-0">
             <button
-              className={`px-6 py-2.5 rounded-full font-semibold justify-center flex cursor-pointer items-center text-lg transition-all duration-200 ${activeTab === 'single'
+              className={`px-6 py-2.5 max-mobile:px-2 max-mobile:py-2 max-mobile:text-sm rounded-full font-semibold justify-center flex cursor-pointer items-center text-lg transition-all duration-200 ${activeTab === 'single'
                 ? 'bg-primary text-black100 shadow-sm'
                 : 'bg-transparent text-black100 hover:text-black100'
                 }`}
@@ -1129,7 +1104,7 @@ multi-timeframe views.'
               </div>
             </button>
             <button
-              className={`px-6 py-2.5 cursor-pointer rounded-full font-semibold text-lg transition-all duration-200 flex items-center justify-center ${activeTab === 'multi'
+              className={`px-6 py-2.5 max-mobile:px-2 max-mobile:py-2 max-mobile:text-sm cursor-pointer rounded-full font-semibold text-lg transition-all duration-200 flex items-center justify-center ${activeTab === 'multi'
                 ? 'bg-primary text-black100 shadow-sm'
                 : 'bg-transparent text-gray-500 hover:text-black100'
                 }`}
@@ -1151,12 +1126,12 @@ multi-timeframe views.'
               </div>
             </button>
           </div>
-          <div className={`${activeTab === 'multi' ? 'w-12xl px-2' : 'container mx-auto px-4'} py-6`}>
+          <div className={`${activeTab === 'multi' ? 'w-12xl px-2' : 'container mx-auto px-4 max-mobile:px-0 '} py-6`}>
             <div className={`grid ${activeTab === 'multi' ? 'grid-cols-1' : 'grid-cols-1 xl:grid-cols-3'} gap-6`}>
               {/* Left Column - Screen Preview */}
               <div className={`${activeTab === 'multi' ? 'w-full' : (showSnapshot ? 'xl:col-span-2' : 'xl:col-span-3')} space-y-6`}>
                 {activeTab === 'single' ? (
-                  <div className="rounded-2xl p-6 border border-border-light180 bg-white shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]">
+                  <div className="rounded-2xl p-6 max-mobile:p-3 border border-border-light180 bg-white shadow-[0_2px_20px_0_rgba(0,0,0,0.05)]">
                     <div className={`flex items-center justify-between pb-6`}>
                       <h2 className="text-xl font-semibold text-black100 flex items-center gap-2">
                         {isSharing ? (
@@ -1212,12 +1187,12 @@ multi-timeframe views.'
                         />
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-center">
-                            <Monitor className="w-16 h-16 text-white mx-auto mb-4" />
-                            <h3 className="text-2xl font-medium text-white mb-3">
+                          <div className="text-center max-mobile:px-4">
+                            <Monitor className="w-16 h-16 text-white mx-auto mb-4 max-mobile:w-8 max-mobile:h-8" />
+                            <h3 className="text-2xl max-mobile:text-base font-medium text-white max-mobile:mb-0 mb-3">
                               {isSharing ? 'Loading screen share...' : 'No screen sharing active'}
                             </h3>
-                            <p className="text-white500 text-lg font-medium">
+                            <p className="text-white500 text-lg font-medium max-mobile:text-sm">
                               {isSharing ? 'Please wait while we load your screen' : 'Click "Start Sharing" to begin sharing your screen'}
                             </p>
                           </div>
@@ -1303,10 +1278,10 @@ multi-timeframe views.'
                             <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-contain bg-black" />
                           ) : (
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="text-center">
-                                <Monitor className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                                <h3 className="text-xl font-semibold text-muted-foreground mb-2">No screen sharing active</h3>
-                                <p className="text-muted-foreground">Click "Start Sharing" to begin sharing your screen</p>
+                              <div className="text-center max-mobile:px-4">
+                                <Monitor className="w-16 h-16 text-muted-foreground mx-auto mb-4 max-mobile:w-8 max-mobile:h-8" />
+                                <h3 className="text-xl max-mobile:text-base font-medium text-muted-foreground max-mobile:mb-0 mb-2">No screen sharing active</h3>
+                                <p className="text-muted-foreground max-mobile:text-sm">Click "Start Sharing" to begin sharing your screen</p>
                               </div>
                             </div>
                           )}
@@ -1374,10 +1349,10 @@ multi-timeframe views.'
                             <video ref={videoRef2} autoPlay muted playsInline className="w-full h-full object-contain bg-black" />
                           ) : (
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="text-center">
-                                <Monitor className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                                <h3 className="text-xl font-semibold text-muted-foreground mb-2">No screen sharing active</h3>
-                                <p className="text-muted-foreground">Click "Start Sharing" to begin sharing your screen</p>
+                              <div className="text-center max-mobile:px-4">
+                                <Monitor className="w-16 h-16 text-muted-foreground mx-auto mb-4 max-mobile:w-8 max-mobile:h-8" />
+                                <h3 className="text-xl max-mobile:text-base font-medium text-muted-foreground max-mobile:mb-0 mb-2">No screen sharing active</h3>
+                                <p className="text-muted-foreground max-mobile:text-sm">Click "Start Sharing" to begin sharing your screen</p>
                               </div>
                             </div>
                           )}
@@ -1645,8 +1620,70 @@ multi-timeframe views.'
               </DialogContent>
             </Dialog>
           )}
-        </div>
-      )}
+        </div >
+      </div>
+      {/* Mobile / Tablet — Desktop-only notice */}
+      <div className="hidden max-tab:flex flex-col items-center justify-center px-5 pt-16 text-center">
+        <motion.div
+          className="relative w-full max-w-sm mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          {/* Glow background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-primary/10 to-blue-50 rounded-[32px] blur-2xl opacity-60 pointer-events-none" />
+
+          <div className="relative bg-white border border-blue-100 rounded-xl shadow-xl shadow-blue-100/40 p-8 flex flex-col items-center gap-5 overflow-hidden">
+            {/* Animated floating dots */}
+            <motion.div className="absolute top-4 left-4 w-2 h-2 rounded-full bg-primary/40"
+              animate={{ y: [0, -8, 0], opacity: [0.4, 1, 0.4] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} />
+            <motion.div className="absolute top-8 right-6 w-1.5 h-1.5 rounded-full bg-blue-400/50"
+              animate={{ y: [0, -6, 0], opacity: [0.3, 0.9, 0.3] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }} />
+            <motion.div className="absolute bottom-6 left-8 w-1.5 h-1.5 rounded-full bg-blue-300/40"
+              animate={{ y: [0, -5, 0], opacity: [0.3, 0.8, 0.3] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.8 }} />
+
+            {/* Pulsing monitor icon */}
+            <motion.div
+              className="w-20 h-20 rounded-full bg-[#A8DD15] flex items-center justify-center shadow-lg shadow-blue-300/50"
+              animate={{ scale: [1, 1.06, 1], boxShadow: ["0 10px 30px rgba(59,130,246,0.3)", "0 14px 40px rgba(59,130,246,0.55)", "0 10px 30px rgba(59,130,246,0.3)"] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <svg className="w-10 h-10 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <path d="M8 21h8M12 17v4" strokeLinecap="round" />
+              </svg>
+            </motion.div>
+
+            {/* Text */}
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold text-slate-800 leading-snug">
+                Desktop View Required
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed max-w-[260px] mx-auto">
+                This tool is optimized for a larger screen. Please open it on a <span className="font-semibold text-blue-600">desktop or laptop</span> for the best experience.
+              </p>
+            </div>
+
+            {/* Animated divider */}
+            <motion.div
+              className="h-[2px] w-16 rounded-full bg-gradient-to-r from-blue-400 to-primary"
+              animate={{ width: ["40px", "80px", "40px"] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            />
+
+            {/* Badge */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-full text-xs font-semibold text-blue-600 shadow-xs">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Open on Desktop to Continue
+            </div>
+          </div>
+        </motion.div>
+      </div>
     </>
   );
 }

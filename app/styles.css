@@ -308,3 +308,18 @@
   opacity: 0.9;
   filter: blur(106.0999984741211px);
 }
+.card-green-shadow {
+  overflow: hidden;
+}
+
+.card-green-shadow::before {
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  opacity: 0.7;
+  content: "";
+  background-color: #a8dd15;
+  filter: blur(100px);
+}
