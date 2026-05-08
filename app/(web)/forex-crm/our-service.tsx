@@ -44,35 +44,59 @@ export default function OurService() {
     }, []);
 
     return (
-        <div className='pt-[60px] pb-100'>
+        <div className='pt-[60px] pb-100 max-mobile:py-16'>
             <div className="max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4">
-                <div className='pb-[60px]'>
-                    <div className='flex justify-center pb-3'>
-                        <button className='bg-white border-none rounded-full py-2 px-4 text-base font-medium text-black700'>
+                <motion.div
+                    className='pb-[60px] max-mobile:pb-10'
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, staggerChildren: 0.2 }}
+                >
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                        className='flex justify-center pb-3'
+                    >
+                        <button className='bg-white border-none rounded-full py-2 px-4 text-base font-medium text-black700 shadow-sm'>
                             Our Services
                         </button>
-                    </div>
-                    <h2 className='text-[42px] max-mobile:text-3xl leading-normal text-black100 font-bold text-center'>
+                    </motion.div>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0.1 }}
+                        className='text-[42px] max-mobile:text-3xl leading-normal text-black100 font-bold text-center'
+                    >
                         Services Tailored For Forex Success
-                    </h2>
-                    <p className='text-lg max-mobile:text-base text-black700 font-medium max-w-[590px] whitespace-pre-line mx-auto text-center'>
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className='text-lg max-mobile:text-base text-black700 font-medium max-w-[590px] whitespace-pre-line mx-auto text-center'
+                    >
                         Unlock comprehensive solutions to enhance your forex brokerage with cutting edge
                         technology and expert support.
-                    </p>
-                </div>
-                <div className='grid grid-cols-[570px_1fr] gap-10 max-laptop:grid-cols-1'>
+                    </motion.p>
+                </motion.div>
+                <div className='grid grid-cols-[570px_1fr] min-h-[510px] max-h-[510px] max-tab:grid-cols-1 max-laptop:grid-cols-2 gap-10 '>
                     <div className='flex flex-col gap-4'>
                         {services.map((service, index) => (
                             <div
                                 key={index}
                                 onClick={() => setActiveIndex(index)}
-                                className={`p-6 rounded-xl border bg-[#F4F4F4] border-solid border-border-light300 transition-all duration-300 cursor-pointer ${activeIndex === index
+                                className={`p-6 max-laptop:p-5 rounded-xl border bg-[#F4F4F4] border-solid border-border-light300 transition-all duration-300 cursor-pointer ${activeIndex === index
                                     ? ' border-primary shadow-[0_0_20.8px_0_rgba(0,0,0,0.04)]'
                                     : ' '
                                     }`}
                             >
                                 <div className='flex items-center justify-between'>
-                                    <h3 className={`text-xl font-semibold ${activeIndex === index ? 'text-black100' : 'text-black100'}`}>
+                                    <h3 className={`text-xl max-laptop:text-lg font-semibold ${activeIndex === index ? 'text-black100' : 'text-black100'}`}>
                                         {service.title}
                                     </h3>
                                     <motion.div
@@ -100,7 +124,7 @@ export default function OurService() {
                             </div>
                         ))}
                     </div>
-                    <div className="bg-[#F4F4F4] shadow-[0_0_20px_0_rgba(0,0,0,0.04)] rounded-xl flex items-center justify-center p-10 overflow-hidden relative min-h-[500px]">
+                    <div className="bg-[#F4F4F4] shadow-[0_0_20px_0_rgba(0,0,0,0.04)] rounded-xl flex items-center justify-center p-10 max-mobile:p-4 max-mobile:min-h-[280px] overflow-hidden relative min-h-[500px]">
                         <AnimatePresence mode="wait">
                             <motion.img
                                 key={activeIndex}
@@ -110,7 +134,7 @@ export default function OurService() {
                                 animate={{ opacity: 1, x: 0, scale: 1 }}
                                 exit={{ opacity: 0, x: -20, scale: 0.95 }}
                                 transition={{ duration: 0.5, ease: "easeOut" }}
-                                className="block max-w-[747px] h-auto object-contain"
+                                className="block max-w-[747px] max-laptop:max-w-[90%] max-mobile:max-w-[95%] h-auto object-contain"
                             />
                         </AnimatePresence>
                     </div>

@@ -65,7 +65,7 @@ export default async function Page() {
             <OurService />
             <ForexBusiness />
             <CoreProduct />
-            <OurIntegration 
+            <OurIntegration
                 tradingPlatforms={tradingPlatforms}
                 bridgeProviders={bridgeProviders}
                 liquidityProviders={liquidityProviders}

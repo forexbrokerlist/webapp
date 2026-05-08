@@ -10,16 +10,17 @@ import { Button } from "~/components/common/button"
 import { Input } from "~/components/common/input"
 import { TextArea } from "~/components/common/textarea"
 import { Field, FieldError, FieldLabel } from "~/components/common/field"
-import { 
-    Select, 
-    SelectContent, 
-    SelectItem, 
-    SelectTrigger, 
-    SelectValue 
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
 } from "~/components/common/select"
 import { submitCrmEnquiry } from "~/server/web/actions/crm-enquiry"
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { motion, Variants } from 'framer-motion'
+import Arrow from '~/components/common/icons/arrow'
 
 const crmEnquirySchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
@@ -83,64 +84,105 @@ export default function CrmEnquiry() {
         }
     }, [selectedCountry, phoneNumber, form]);
 
-    return (
-        <div className='py-100 bg-[#F4F4F4] overflow-hidden relative'>
-            <div className="absolute inset-0 opacity-10 pointer-events-none" 
-                 style={{ backgroundImage: 'radial-gradient(#A8DD15 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
-            </div>
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.2
+            }
+        }
+    };
 
+    const itemVariants: Variants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.5,
+                ease: "easeOut"
+            }
+        }
+    };
+
+    const formVariants: Variants = {
+        hidden: { opacity: 0, x: 20 },
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: {
+                duration: 0.6,
+                ease: "easeOut",
+                delay: 0.4
+            }
+        }
+    };
+
+    return (
+        <div id="crm-enquiry-section" className='pb-100 max-mobile:py-16 max-mobile:pt-0 overflow-hidden relative'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4 relative z-10'>
-                <div className='grid grid-cols-[1fr_600px] gap-20 items-center max-laptop:grid-cols-1 max-laptop:gap-12'>
-                    <div>
-                        <div className='pb-3'>
-                            <button className='bg-white border-none rounded-full py-2 px-4 text-sm font-medium text-black700 shadow-sm'>
+                <div className='grid grid-cols-[1fr_600px] max-tab:grid-cols-1 gap-10'>
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                    >
+                        <motion.div variants={itemVariants} className='pb-3'>
+                            <button className='bg-white border-none rounded-full py-2 px-4 text-base font-medium text-black700'>
                                 Contact Us
                             </button>
-                        </div>
-                        <h2 className='text-[54px] max-mobile:text-3xl leading-[1.1] text-black100 font-bold mb-6'>
-                            Let's Build Something <br />
-                            Smarter Together
-                        </h2>
-                        <p className='text-xl max-mobile:text-lg text-black700 font-medium max-w-[600px] mb-10'>
-                            Discover how our solutions can streamline your workflow, boost performance, and help your business grow faster. Fill out the form and our team will get in touch shortly.
-                        </p>
-
-                        <div className='flex flex-col gap-5'>
-                            {features.map((feature, i) => (
-                                <div key={i} className='flex items-center gap-3'>
-                                    <div className='w-6 h-6 flex items-center justify-center'>
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="#A8DD15" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                        </svg>
-                                    </div>
-                                    <span className='text-lg font-semibold text-black100'>{feature}</span>
-                                </div>
+                        </motion.div>
+                        <motion.h2 variants={itemVariants} className='text-[42px] max-mobile:text-3xl leading-normal text-black100 font-bold max-w-[596px]'>
+                            Let’s Build Something Smarter Together
+                        </motion.h2>
+                        <motion.p variants={itemVariants} className='text-lg max-mobile:text-base text-black700 font-medium max-w-[641px] whitespace-pre-line '>
+                            Discover how our solutions can streamline your workflow, boost performance, and help your business grow faster. Fill out the form
+                            and our team will get in touch shortly.
+                        </motion.p>
+                        <div className='pt-10 grid grid-cols-1 gap-6'>
+                            {[
+                                "Custom solutions tailored to your business",
+                                "Fast integration and smooth onboarding",
+                                "Real-time analytics & performance tracking",
+                                "Secure, scalable, and modern technology"
+                            ].map((feature, index) => (
+                                <motion.div
+                                    key={index}
+                                    variants={itemVariants}
+                                    className='grid grid-cols-[26px_1fr] gap-2.5'
+                                >
+                                    <Arrow />
+                                    <span className='text-lg max-mobile:text-base font-medium text-black700'>
+                                        {feature}
+                                    </span>
+                                </motion.div>
                             ))}
                         </div>
-                    </div>
-
-                    <motion.div 
-                        initial={{ opacity: 0, x: 50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
+                    </motion.div>
+                    <motion.div
+                        variants={formVariants}
+                        initial="hidden"
+                        whileInView="visible"
                         viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                        className='bg-white p-10 rounded-[32px] shadow-[0_10px_50px_rgba(0,0,0,0.05)] max-mobile:p-6'
                     >
-                        <Form {...form}>
-                            <form onSubmit={handleSubmitWithAction} className='flex flex-col gap-6'>
+                        <div className='bg-white rounded-xl p-6 max-mobile:p-4'>
+                            <form onSubmit={handleSubmitWithAction} className='grid grid-cols-1 gap-5'>
                                 <Controller
                                     control={form.control}
                                     name="name"
                                     render={({ field, fieldState }) => (
                                         <Field data-invalid={fieldState.invalid}>
-                                            <FieldLabel htmlFor={field.name} className="text-black100 font-bold mb-2 block text-base">
+                                            <FieldLabel htmlFor={field.name} className="text-black100 font-medium block text-base">
                                                 Name
                                             </FieldLabel>
-                                            <Input 
-                                                id={field.name} 
-                                                placeholder="John Doe" 
-                                                className="bg-white border-border-light300 h-14 rounded-xl px-5" 
-                                                {...field} 
+                                            <Input
+                                                id={field.name}
+                                                placeholder="John Doe"
+                                                className="bg-white placeholder:text-base text-base border-border-light180 h-[50px] rounded-full px-5"
+                                                {...field}
                                             />
                                             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                                         </Field>
@@ -148,18 +190,18 @@ export default function CrmEnquiry() {
                                 />
 
                                 <Field data-invalid={!!form.formState.errors.phone}>
-                                    <FieldLabel className="text-black100 font-bold mb-2 block text-base">
+                                    <FieldLabel className="text-black100 font-medium block text-base">
                                         Phone Number
                                     </FieldLabel>
                                     <div className="grid grid-cols-[120px_1fr] gap-3 h-14">
-                                        <Select 
-                                            value={selectedCountry.code} 
+                                        <Select
+                                            value={selectedCountry.code}
                                             onValueChange={(val) => {
                                                 const country = countries.find(c => c.code === val);
                                                 if (country) setSelectedCountry(country);
                                             }}
                                         >
-                                            <SelectTrigger className="flex items-center gap-2 px-3 border border-border-light300 rounded-xl h-full bg-white w-full focus:ring-0">
+                                            <SelectTrigger className="flex items-center gap-2 px-3 border border-border-light180 rounded-full h-[50px] bg-white w-full focus:ring-0">
                                                 <div className="flex items-center gap-2 overflow-hidden">
                                                     <img src={`https://flagcdn.com/w20/${selectedCountry.flag}.png`} alt={selectedCountry.name} className="w-5 shrink-0" />
                                                     <span className="text-black700 font-medium truncate">{selectedCountry.code}</span>
@@ -176,9 +218,9 @@ export default function CrmEnquiry() {
                                                 ))}
                                             </SelectContent>
                                         </Select>
-                                        <Input 
-                                            placeholder="Enter mobile number" 
-                                            className="bg-white border-border-light300 h-full rounded-xl px-5" 
+                                        <Input
+                                            placeholder="Enter mobile number"
+                                            className="bg-white placeholder:text-base text-base border-border-light180 h-[50px] rounded-full px-5"
                                             value={phoneNumber}
                                             onChange={(e) => setPhoneNumber(e.target.value)}
                                         />
@@ -191,15 +233,15 @@ export default function CrmEnquiry() {
                                     name="email"
                                     render={({ field, fieldState }) => (
                                         <Field data-invalid={fieldState.invalid}>
-                                            <FieldLabel htmlFor={field.name} className="text-black100 font-bold mb-2 block text-base">
+                                            <FieldLabel htmlFor={field.name} className="text-black100 font-medium block text-base">
                                                 Email
                                             </FieldLabel>
-                                            <Input 
-                                                id={field.name} 
-                                                type="email" 
-                                                placeholder="John Doe@gmai.com" 
-                                                className="bg-white border-border-light300 h-14 rounded-xl px-5" 
-                                                {...field} 
+                                            <Input
+                                                id={field.name}
+                                                type="email"
+                                                placeholder="John Doe@gmai.com"
+                                                className="bg-white placeholder:text-base text-base border-border-light180 h-[50px] rounded-full px-5"
+                                                {...field}
                                             />
                                             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                                         </Field>
@@ -211,14 +253,14 @@ export default function CrmEnquiry() {
                                     name="message"
                                     render={({ field, fieldState }) => (
                                         <Field data-invalid={fieldState.invalid}>
-                                            <FieldLabel htmlFor={field.name} className="text-black100 font-bold mb-2 block text-base">
+                                            <FieldLabel htmlFor={field.name} className="text-black100 font-medium block text-base">
                                                 Message
                                             </FieldLabel>
-                                            <TextArea 
-                                                id={field.name} 
-                                                placeholder="Your message" 
-                                                className="bg-white border-border-light300 rounded-xl px-5 py-4 min-h-[120px]" 
-                                                {...field} 
+                                            <TextArea
+                                                id={field.name}
+                                                placeholder="Your message"
+                                                className="bg-white placeholder:text-base text-base border-border-light180 rounded-2xl px-5 py-4 min-h-[120px]"
+                                                {...field}
                                             />
                                             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                                         </Field>
@@ -226,10 +268,10 @@ export default function CrmEnquiry() {
                                 />
 
                                 <div className='pt-2'>
-                                    <Button 
-                                        type="submit" 
-                                        variant="primary" 
-                                        className="w-full h-14 rounded-xl bg-black100 hover:bg-black font-bold text-white flex items-center justify-center gap-2 group"
+                                    <Button
+                                        type="submit"
+                                        variant="primary"
+                                        className="w-full group"
                                         isPending={action.isPending}
                                     >
                                         Send
@@ -242,11 +284,11 @@ export default function CrmEnquiry() {
                                     </Button>
                                 </div>
 
-                                <p className='text-center text-black700 font-medium text-sm'>
-                                    By continuing i accept the <Link href="/privacy" className='underline decoration-black100 text-black100'>Privacy Policy</Link>
+                                <p className='text-center text-black100 text-base font-normal'>
+                                    By continuing i accept the <Link href="/privacy" className='underline decoration-black100 text-black700 font-medium'>Privacy Policy</Link>
                                 </p>
                             </form>
-                        </Form>
+                        </div>
                     </motion.div>
                 </div>
             </div>

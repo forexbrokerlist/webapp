@@ -56,7 +56,7 @@ export default function OurIntegration({
     const [activeTab, setActiveTab] = useState(integrationTabs[0].id);
 
     return (
-        <div className='py-100'>
+        <div className='py-100 max-mobile:py-16'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
                 <div className='pb-[40px]'>
                     <div className='flex justify-center pb-3'>
@@ -72,12 +72,12 @@ export default function OurIntegration({
                     </p>
                 </div>
 
-                <div className='flex gap-3 pb-[50px] justify-center items-center flex-wrap relative'>
+                <div style={{ scrollbarWidth: "none" }} className='flex gap-3 max-mobile:pb-10 max-mobile:justify-start pb-[50px] justify-center items-center overflow-auto relative'>
                     {integrationTabs.map((tab) => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`relative py-3 px-6 min-w-[190px] rounded-lg text-base font-medium cursor-pointer transition-colors duration-300 z-10 ${activeTab === tab.id ? 'text-black100' : 'text-black700 bg-white border border-solid border-border-light300'
+                            className={`relative py-3 px-6 min-w-[190px] max-mobile:min-w-[190px] whitespace-nowrap rounded-lg text-base font-medium cursor-pointer transition-colors duration-300 z-10 ${activeTab === tab.id ? 'text-black100' : 'text-black700 bg-white border border-solid border-border-light300'
                                 }`}
                         >
                             {activeTab === tab.id && (
@@ -92,7 +92,7 @@ export default function OurIntegration({
                     ))}
                 </div>
 
-                <div className='max-w-[1280px] mx-auto w-full min-h-[400px]'>
+                <div className='max-w-[1280px] mx-auto w-full '>
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={activeTab}
@@ -100,7 +100,7 @@ export default function OurIntegration({
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.4, ease: "easeOut" }}
-                            className='flex items-center flex-wrap gap-3 justify-center'
+                            className='flex items-center max-mobile:grid max-mobile:grid-cols-2 flex-wrap gap-3 justify-center'
                         >
                             {integrationTabs.find(t => t.id === activeTab)?.partners.map((partner, index) => (
                                 <motion.div
@@ -108,12 +108,12 @@ export default function OurIntegration({
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ duration: 0.3, delay: index * 0.05 }}
-                                    className='max-w-[300px] w-[300px] h-[120px] flex items-center justify-center rounded-lg min-w-[300px] bg-white border border-solid border-primary  hover:shadow-md transition-shadow'
+                                    className='max-w-[300px] w-[300px] max-mobile:w-full max-mobile:p-3 max-mobile:max-w-full max-mobile:min-w-full max-mobile:h-full h-[120px] flex items-center justify-center rounded-lg min-w-[300px] bg-white border border-solid border-primary  hover:shadow-md transition-shadow'
                                 >
-                                    <img 
-                                        src={partner.logoUrl || BrokreIcon} 
-                                        alt={partner.broker_name || "Integration Logo"} 
-                                        className='max-w-[180px] max-h-[60px] block object-contain  transition-all duration-300' 
+                                    <img
+                                        src={partner.logoUrl || BrokreIcon}
+                                        alt={partner.broker_name || "Integration Logo"}
+                                        className='max-w-[180px] max-mobile:max-w-[90%] max-mobile:max-h-auto max-h-[60px] block object-contain  transition-all duration-300'
                                     />
                                 </motion.div>
                             ))}
