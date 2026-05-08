@@ -28,11 +28,11 @@ export default function AlgoPricingSection({ broker, sectionId = "pricing" }: Al
             
             </div>
             <div className='px-4 pb-4'>
-                <div className='grid grid-cols-2 gap-5'>
+                <div className='grid grid-cols-2 max-mobile:grid-cols-1 gap-5'>
                     {/* Gold Plan */}
                     {(goldPrice || goldStatements.length > 0) && (
                         <div className='border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
-                            <div className='flex items-center justify-between pb-3'>
+                            <div className='flex items-center justify-between flex-wrap gap-2 pb-3'>
                                 <div className='flex items-center gap-2'>
                                     <img src={RoundIcon} alt="RoundIcon" className='block' />
                                     <span className='block text-base font-medium text-black'>
@@ -44,7 +44,7 @@ export default function AlgoPricingSection({ broker, sectionId = "pricing" }: Al
                                 </span>
                             </div>
                             <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
-                            <div className='pt-4 pb-2 flex items-center gap-2'>
+                            <div className='pt-4 pb-2 flex items-center flex-wrap gap-2'>
                                 <p className='text-2xl font-bold text-black100'>
                                     {goldPrice || '-'}
                                 </p>
@@ -66,14 +66,14 @@ export default function AlgoPricingSection({ broker, sectionId = "pricing" }: Al
                     {/* Diamond Plan */}
                     {(diamondPrice || diamondStatements.length > 0) && (
                         <div className='border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl p-4'>
-                            <div className='flex items-center  gap-2 pb-3'>
+                            <div className='flex items-center flex-wrap gap-2 pb-3'>
                                 <img src={RoundIcon} alt="RoundIcon" className='block' />
                                 <span className='block text-base font-medium text-black'>
                                     Diamond Plan
                                 </span>
                             </div>
                             <div className='w-full h-[1px] bg-[linear-gradient(170deg,rgba(168,221,21,0.80)_0%,rgba(251,251,250,0.80)_60%)]'></div>
-                            <div className='pt-4 pb-2 flex items-center gap-2'>
+                            <div className='pt-4 pb-2 flex items-center flex-wrap gap-2'>
                                 <p className='text-2xl font-bold text-black100'>
                                     {diamondPrice || '-'}
                                 </p>
