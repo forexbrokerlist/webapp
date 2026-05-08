@@ -33,7 +33,10 @@ const navLinkAffixVariants = cva({
 })
 
 const isItemActive = (href: LinkProps["href"] | undefined, pathname: string, exact = false) => {
-  if (href && href !== "/" && typeof href === "string") {
+  if (href && typeof href === "string") {
+    if (href === "/") {
+      return pathname === "/"
+    }
     return exact ? pathname === href : pathname.startsWith(href)
   }
 
@@ -85,6 +88,7 @@ const NavLink = ({
     <Comp
       href={href!}
       className={cx(navLinkVariants({ isActive, isPadded, className }))}
+      data-active={isActive ? "true" : undefined}
       {...props}
     >
       <Slottable child={children} asChild={asChild}>
