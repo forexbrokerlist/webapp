@@ -84,7 +84,7 @@ export default function OurService() {
                         technology and expert support.
                     </motion.p>
                 </motion.div>
-                <div className='grid grid-cols-[570px_1fr] max-tab:grid-cols-1 max-laptop:grid-cols-2 gap-10 '>
+                <div className='grid grid-cols-[570px_1fr] min-h-[510px] max-h-[510px] max-tab:grid-cols-1 max-laptop:grid-cols-2 gap-10 '>
                     <div className='flex flex-col gap-4'>
                         {services.map((service, index) => (
                             <div

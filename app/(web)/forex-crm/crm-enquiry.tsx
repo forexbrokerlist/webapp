@@ -121,7 +121,7 @@ export default function CrmEnquiry() {
     };
 
     return (
-        <div className='pb-100 max-mobile:py-16 max-mobile:pt-0 overflow-hidden relative'>
+        <div id="crm-enquiry-section" className='pb-100 max-mobile:py-16 max-mobile:pt-0 overflow-hidden relative'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4 relative z-10'>
                 <div className='grid grid-cols-[1fr_600px] max-tab:grid-cols-1 gap-10'>
                     <motion.div

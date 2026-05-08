@@ -2,6 +2,7 @@
 import React from 'react'
 import { Button } from '~/components/common/button';
 import { motion, Variants } from 'framer-motion';
+import Link from 'next/link';
 
 const TextImage = '/assets/images/text-img.png';
 
@@ -63,6 +64,7 @@ export default function ForexBusiness() {
                                 integration to help your brokerage thrive in the competitive market.
                             </motion.p>
                             <motion.div variants={itemVariants}>
+                           <Link href="#crm-enquiry-section">
                                 <Button size="md" variant="primary" className="px-5 gap-2.5 group relative z-[9]">
                                     Contact Us
                                     <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
@@ -72,6 +74,7 @@ export default function ForexBusiness() {
                                         </svg>
                                     </div>
                                 </Button>
+                                </Link>
                             </motion.div>
                         </motion.div>
                         <motion.div variants={imageVariants}>
