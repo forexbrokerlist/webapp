@@ -667,7 +667,7 @@ export default function CompareBrokers({ broker, trustedBrokers = [], sectionId 
             </div>
             <div className='px-4 pb-4'>
                 <div className='border border-border-light300 border-solid bg-[#f0f1ec4d] rounded-xl px-4 pb-4 pt-10 mt-4'>
-                    <div className='grid grid-cols-3 gap-5 items-stretch'>
+                    <div className='grid grid-cols-3 max-tab:grid-cols-2 max-mobile:grid-cols-1 gap-5 items-stretch'>
                         {slots.map((broker, idx) => (
                             broker ? (
                                 <div key={idx} className={`relative rounded-xl border p-4 ${broker.isViewing ? 'bg-[#F5F8EA] border-[#A8DD15]' : 'bg-white border-border-light300'}`}>
@@ -847,11 +847,11 @@ export default function CompareBrokers({ broker, trustedBrokers = [], sectionId 
             }}>
                 <DialogContent className="max-w-6xl max-h-[85vh] overflow-hidden flex flex-col p-0 border-none shadow-2xl">
                     <DialogHeader className="p-6 pb-4 bg-white sticky top-0 z-10">
-                        <DialogTitle className="text-xl font-bold text-black100">Select {isEducation ? 'Trading Course' : isBridge ? 'Bridge Provider' : isLiquidity ? 'Liquidity Provider' : isPSP ? 'PSP Partner' : isAlgo ? 'Algo Bot Provider' : isTrading ? 'Trading Platform' :'CRM Software'} to Compare</DialogTitle>
+                        <DialogTitle className="text-xl font-bold text-black100">Select {isEducation ? 'Trading Course' : isBridge ? 'Bridge Provider' : isLiquidity ? 'Liquidity Provider' : isPSP ? 'PSP Partner' : isAlgo ? 'Algo Bot Provider' : isTrading ? 'Trading Platform' : 'CRM Software'} to Compare</DialogTitle>
                         <div className="mt-4 relative">
                             <input
                                 type="text"
-                                placeholder={`Search ${isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : isPSP ? 'PSP partners' : isAlgo ? 'algo bot providers' :isTrading ? 'Trading Platform': 'CRM software'}...`}
+                                placeholder={`Search ${isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : isPSP ? 'PSP partners' : isAlgo ? 'algo bot providers' : isTrading ? 'Trading Platform' : 'CRM software'}...`}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-border-light300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
@@ -861,11 +861,11 @@ export default function CompareBrokers({ broker, trustedBrokers = [], sectionId 
                             </svg>
                         </div>
                     </DialogHeader>
-                    <div className="grid grid-cols-3 gap-2  overflow-y-auto px-6 pb-4 items-start min-h-[220px]">
+                    <div className="grid grid-cols-3 max-tab:grid-cols-2 max-mobile:grid-cols-1 gap-2 mt-4 overflow-y-auto px-6 pb-4 items-start min-h-[220px]">
                         {isSearching ? (
                             <div className="py-10 text-center col-span-full">
                                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                                <p className="text-black600 font-medium">Searching {isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : isPSP ? 'PSP partners' : isAlgo ? 'algo bot providers':isTrading ? 'Trading Platform' : 'CRM software'}...</p>
+                                <p className="text-black600 font-medium">Searching {isEducation ? 'trading courses' : isBridge ? 'bridge providers' : isLiquidity ? 'liquidity providers' : isPSP ? 'PSP partners' : isAlgo ? 'algo bot providers' : isTrading ? 'Trading Platform' : 'CRM software'}...</p>
                             </div>
                         ) : displayBrokers.length > 0 ? (
                             displayBrokers.map((tb: any, i: number) => (
