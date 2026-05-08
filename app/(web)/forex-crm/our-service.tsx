@@ -84,8 +84,8 @@ export default function OurService() {
                         technology and expert support.
                     </motion.p>
                 </motion.div>
-                <div className='grid grid-cols-[570px_1fr] min-h-[510px] max-h-[510px] max-tab:grid-cols-1 max-laptop:grid-cols-2 gap-10 '>
-                    <div className='flex flex-col gap-4'>
+                <div className='grid grid-cols-[570px_1fr]  max-tab:grid-cols-1 max-laptop:grid-cols-2 gap-10 '>
+                    <div className='flex flex-col gap-4 max-mobile:min-h-[520px]'>
                         {services.map((service, index) => (
                             <div
                                 key={index}
@@ -124,7 +124,7 @@ export default function OurService() {
                             </div>
                         ))}
                     </div>
-                    <div className="bg-[#F4F4F4] shadow-[0_0_20px_0_rgba(0,0,0,0.04)] rounded-xl flex items-center justify-center p-10 max-mobile:p-4 max-mobile:min-h-[280px] overflow-hidden relative min-h-[500px]">
+                    <div className="bg-[#F4F4F4] shadow-[0_0_20px_0_rgba(0,0,0,0.04)] rounded-xl flex items-center justify-center p-10 max-mobile:p-4 min-h-[530px] max-h-[530px] max-mobile:max-h-[280px] max-mobile:min-h-[280px]  overflow-hidden relative ">
                         <AnimatePresence mode="wait">
                             <motion.img
                                 key={activeIndex}
