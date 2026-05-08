@@ -117,6 +117,11 @@ export const Sidebar = () => {
           prefix: <MessageSquareIcon />,
         },
         {
+          title: "CRM Enquiries",
+          href: "/admin/crm-enquiries",
+          prefix: <MailIcon />,
+        },
+        {
           title: "Reports",
           href: "/admin/reports",
           prefix: <TriangleAlertIcon />,

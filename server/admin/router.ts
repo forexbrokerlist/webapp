@@ -13,6 +13,7 @@ import { newsletterRouter } from "~/server/admin/newsletter/router";
 import { contactsRouter } from "~/server/admin/contacts/router";
 import { typesRouter } from "~/server/admin/types/router";
 import { paymentRouter } from "~/server/admin/payments/router";
+import { crmEnquiryRouter } from "~/server/admin/crm-enquiries/router";
 
 // -----------------------------------------------------------------------------
 // Health-check procedure to verify oRPC infrastructure
@@ -39,6 +40,7 @@ export const adminRouter = {
   posts: postRouter,
   newsletter: newsletterRouter,
   contacts: contactsRouter,
+  crmEnquiries: crmEnquiryRouter,
   payments: paymentRouter,
 };
 

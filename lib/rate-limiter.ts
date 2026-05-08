@@ -29,6 +29,7 @@ const limiters = {
   newsletter: createLimiter("newsletter"),
   claim: createLimiter("claim"),
   contact: createLimiter("contact"),
+  crm_enquiry: createLimiter("crm_enquiry"),
 }
 
 /**

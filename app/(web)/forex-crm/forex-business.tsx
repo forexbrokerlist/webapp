@@ -10,18 +10,18 @@ export default function ForexBusiness() {
                         <div>
                             <div className=' pb-3'>
                                 <button className='bg-white border-none rounded-full py-2 px-4 text-base font-medium text-black700'>
-                                    About GENXEL
+                                    About Forex CRM
                                 </button>
                             </div>
                             <h2 className='text-[42px] max-mobile:text-3xl leading-normal text-black100 max-w-[596px] font-bold'>
                                 Building Your Forex Business from the Ground Up
                             </h2>
                             <p className='text-lg max-mobile:text-base mb-4 text-black700 font-medium max-w-[694px] whitespace-pre-line'>
-                                GENXEL is a global forex technology provider, offering everything you need to establish and grow a successful forex brokerage. From company formation to licensing, and beyond, we are your trusted partner in creating world-class forex brokerage solutions. With extensive experience in forex technology, GENXEL provides seamless access to retail forex trading markets and
+                                Forex CRM is a global forex technology provider, offering everything you need to establish and grow a successful forex brokerage. From company formation to licensing, and beyond, we are your trusted partner in creating world-class forex brokerage solutions. With extensive experience in forex technology, Forex CRM provides seamless access to retail forex trading markets and
                                 cutting-edge tools.
                             </p>
                             <p className='text-lg max-mobile:text-base mb-4 text-black700 font-medium max-w-[694px] whitespace-pre-line'>
-                                At GENXEL, we deliver comprehensive forex technology solutions including company formation, broker licensing, web development, trader’s room setup, MT4/ MT5 White Label, and CRM
+                                At Forex CRM, we deliver comprehensive forex technology solutions including company formation, broker licensing, web development, trader’s room setup, MT4/ MT5 White Label, and CRM
                                 integration to help your brokerage thrive in the competitive market.
                             </p>
                             <Button size="md" variant="primary" className="px-5 gap-2.5 group relative z-[9]">

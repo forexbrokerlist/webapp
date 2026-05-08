@@ -8,27 +8,27 @@ const services = [
     {
         title: "Forex Broker Setup",
         description: "End-to-end forex broker setup service to launch your brokerage swiftly.",
-        image: '/assets/images/crm.png'
+        image: '/assets/images/ForexBrokerSetup.png'
     },
     {
         title: "MT4/MT5 Setup & Training",
         description: "Professional platform configuration and comprehensive training for your team to master trading tools.",
-        image: '/assets/images/crm.png'
+        image: '/assets/images/CRMMT4.png'
     },
     {
         title: "RMS",
         description: "Advanced Risk Management Systems to monitor exposure and protect your brokerage from market volatility.",
-        image: '/assets/images/crm.png'
+        image: '/assets/images/CrmRms.png'
     },
     {
         title: "Liquidity Provider's Setup",
         description: "Direct connection to top-tier liquidity providers ensuring tight spreads and deep market depth.",
-        image: '/assets/images/crm.png'
+        image: '/assets/images/CrmLiquidity.png'
     },
     {
         title: "AI/ML Services",
         description: "Cutting-edge artificial intelligence and machine learning solutions for predictive market analysis.",
-        image: '/assets/images/crm.png'
+        image: '/assets/images/CrmAI.png'
     }
 ];
 
