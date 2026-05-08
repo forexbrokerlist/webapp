@@ -5,58 +5,54 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const BrokreIcon = '/assets/images/brokree1.svg';
 
-const integrationTabs = [
-    {
-        id: 'platform',
-        title: "Trading Platform",
-        logos: [
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-        ]
-    },
-    {
-        id: 'bridge',
-        title: "Bridge & Plugin",
-        logos: [
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-        ]
-    },
-    {
-        id: 'psp',
-        title: "PSP",
-        logos: [
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-        ]
-    },
-    {
-        id: 'liquidity',
-        title: "Liquidity Provider",
-        logos: [
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-            '/assets/images/brokree1.svg',
-        ]
-    }
-];
+interface IntegrationPartner {
+    broker_name: string | null;
+    logoUrl: string | null;
+}
 
-export default function OurIntegration() {
+interface OurIntegrationProps {
+    tradingPlatforms: IntegrationPartner[];
+    bridgeProviders: IntegrationPartner[];
+    liquidityProviders: IntegrationPartner[];
+    pspPartners: IntegrationPartner[];
+    algoProviders: IntegrationPartner[];
+}
+
+export default function OurIntegration({
+    tradingPlatforms,
+    bridgeProviders,
+    liquidityProviders,
+    pspPartners,
+    algoProviders
+}: OurIntegrationProps) {
+    const integrationTabs = [
+        {
+            id: 'platform',
+            title: "Trading Platform",
+            partners: tradingPlatforms
+        },
+        {
+            id: 'bridge',
+            title: "Bridge & Plugin",
+            partners: bridgeProviders
+        },
+        {
+            id: 'psp',
+            title: "PSP",
+            partners: pspPartners
+        },
+        {
+            id: 'liquidity',
+            title: "Liquidity Provider",
+            partners: liquidityProviders
+        },
+        {
+            id: 'algo',
+            title: "Algo Bot",
+            partners: algoProviders
+        }
+    ];
+
     const [activeTab, setActiveTab] = useState(integrationTabs[0].id);
 
     return (
@@ -106,7 +102,7 @@ export default function OurIntegration() {
                             transition={{ duration: 0.4, ease: "easeOut" }}
                             className='flex items-center flex-wrap gap-3 justify-center'
                         >
-                            {integrationTabs.find(t => t.id === activeTab)?.logos.map((logo, index) => (
+                            {integrationTabs.find(t => t.id === activeTab)?.partners.map((partner, index) => (
                                 <motion.div
                                     key={`${activeTab}-${index}`}
                                     initial={{ opacity: 0, scale: 0.8 }}
@@ -114,7 +110,11 @@ export default function OurIntegration() {
                                     transition={{ duration: 0.3, delay: index * 0.05 }}
                                     className='max-w-[300px] w-[300px] h-[120px] flex items-center justify-center rounded-lg min-w-[300px] bg-white border border-solid border-primary  hover:shadow-md transition-shadow'
                                 >
-                                    <img src={logo} alt="Integration Logo" className='max-w-[180px] max-h-[60px] block object-contain grayscale hover:grayscale-0 transition-all duration-300' />
+                                    <img 
+                                        src={partner.logoUrl || BrokreIcon} 
+                                        alt={partner.broker_name || "Integration Logo"} 
+                                        className='max-w-[180px] max-h-[60px] block object-contain  transition-all duration-300' 
+                                    />
                                 </motion.div>
                             ))}
                         </motion.div>
@@ -124,4 +124,3 @@ export default function OurIntegration() {
         </div>
     );
 }
-

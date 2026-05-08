@@ -121,9 +121,12 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <NavLink href="/about" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.about")}</NavLink>
-              <NavLink href="/contact" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.contact_us")}</NavLink>
+              {/* <NavLink href="/about" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.about")}</NavLink> */}
+              <NavLink href="/forex-crm" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.forex_crm")}</NavLink>
               {adsConfig.enabled && <NavLink href="/advertise" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.advertise")}</NavLink>}
+
+              <NavLink href="/contact" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.contact_us")}</NavLink>
+              
             </nav>
 
             <Stack size="sm" wrap={false} className="justify-end gap-3 max-lg:grow">
@@ -198,6 +201,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
                     { href: "/brokers", label: t("navigation.tools") },
                     { href: "/about", label: t("navigation.about") },
                     { href: "/contact", label: t("navigation.contact_us") },
+                    { href: "/forex-crm", label: t("navigation.forex_crm") },
                     ...(adsConfig.enabled ? [{ href: "/advertise", label: t("navigation.advertise") }] : []),
                   ].map(({ href, label }, i) => (
                     <motion.div

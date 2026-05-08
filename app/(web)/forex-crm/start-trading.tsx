@@ -8,10 +8,10 @@ export default function StartTrading() {
                 <div className="bg-[url('/assets/images/black-primary.png')] bg-no-repeat p-[80px] bg-cover  rounded-3xl">
                     <div className='max-w-[678px] mx-auto'>
                         <h2 className='text-[42px] max-mobile:text-3xl leading-normal text-white font-bold max-w-[472px] mx-auto text-center'>
-                            Start Trading Smarter With GENXEL
+                            Start Trading Smarter With Forex CRM 
                         </h2>
                         <p className='text-lg max-mobile:text-base text-white opacity-70  font-medium max-w-[590px] whitespace-pre-line mx-auto text-center'>
-                            Ready to elevate your forex trading or brokerage operations? whether you’re looking to automate your trades, secure a broker license, or streamline client management, GENXEL has the tools and expertise to help
+                            Ready to elevate your forex trading or brokerage operations? whether you’re looking to automate your trades, secure a broker license, or streamline client management, Forex CRM has the tools and expertise to help
                             you succeed. don’t wait unlock your trading potential today.
                         </p>
                         <div className='flex items-center gap-3 justify-center pt-6'>
