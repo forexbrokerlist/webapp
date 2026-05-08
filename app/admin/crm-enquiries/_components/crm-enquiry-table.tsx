@@ -128,7 +128,7 @@ export function CRMEnquiryTable() {
     orpc.crmEnquiries.list.queryOptions({
       input: {
         page: params.page,
-        limit: params.perPage,
+        perPage: params.perPage,
         search: params.search || undefined,
       },
       placeholderData: keepPreviousData,
