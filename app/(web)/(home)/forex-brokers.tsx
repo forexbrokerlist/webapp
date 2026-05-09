@@ -26,11 +26,40 @@ const BROKERS_LIST = [
     }
 ];
 
+const BROKERS_MARQUEE = [
+    { name: "Exness", logo: "/assets/images/fynxt.svg" },
+    { name: "IC Markets", logo: "/assets/images/lmax.svg" },
+    { name: "Blueberry Markets", logo: "/assets/images/veo.svg" },
+    { name: "Pepperstone", logo: "/assets/images/wan.svg" },
+    { name: "Olymp Trade", logo: "/assets/images/lunar.svg" },
+    { name: "XM", logo: "/assets/images/sol.svg" },
+    { name: "OctaFX", logo: "/assets/images/elevenlabs.svg" },
+    { name: "HYCM", logo: "/assets/images/kling.svg" },
+];
+
+const BrokerCard = ({ name, logo, slug }: { name: string, logo: string, slug?: string }) => (
+    <Link href={slug ? `/forex-broker/${slug}` : "#"} className="block mx-3">
+        <div className='w-[240px] group shrink-0 border border-[#E4E4E4] bg-white shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] rounded-xl overflow-hidden cursor-pointer hover:border-primary transition-all duration-300'>
+            <div className='bg-[#1A1A1A] group-hover:bg-primary py-2 transition-all duration-300 px-4 flex items-center justify-center h-[36px]'>
+                <span className='text-white group-hover:text-black100 transition-all duration-300 text-sm font-bold tracking-widest uppercase opacity-90 truncate font-monda'>{name}</span>
+            </div>
+            <div className='h-[90px] flex items-center justify-center p-6 bg-white'>
+                <img
+                    src={logo}
+                    alt={name}
+                    className='max-h-[50px] max-w-[140px] object-contain transition-all duration-300'
+                />
+            </div>
+        </div>
+    </Link>
+)
+
+
 export default function ForexBrokers({ brokers }: any) {
     return (
         <div className='pt-100 overflow-hidden max-mobile:pt-16'>
-            <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
-                <div className='flex items-center max-mobile:block justify-between pb-12 max-mobile:pb-8'>
+            <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-0'>
+                <div className='flex items-center max-mobile:block justify-between pb-12 max-mobile:pb-8 max-mobile:px-4'>
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
@@ -68,58 +97,60 @@ export default function ForexBrokers({ brokers }: any) {
                         className='max-mobile:pt-4'
                         transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
                     >
-                      <Link href="brokers">
-                        <Button variant='primary' size='md' className='flex items-center gap-2'>
-                            View More
-                            <div>
-                                <MoveRight />
-                            </div>
-                        </Button>
+                        <Link href="brokers">
+                            <Button variant='primary' size='md' className='flex items-center gap-2'>
+                                View More
+                                <div>
+                                    <MoveRight />
+                                </div>
+                            </Button>
                         </Link>
                     </motion.div>
                 </div>
-                <div className='grid grid-cols-[535px_1fr] max-tab:grid-cols-1 max-tab:gap-10 gap-20'>
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, amount: 0.2 }}
-                        variants={{
-                            hidden: { opacity: 0 },
-                            visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
-                        }}
-                    >
-                        {(brokers && brokers.length > 0 ? brokers : BROKERS_LIST).map((broker: any, index: number) => (
+                <div className='grid grid-cols-7 max-mobile:px-4 max-tab:grid-cols-3 max-mobile:flex max-mobile:overflow-auto gap-3' style={{ scrollbarWidth: 'none' }}>
+                    {(brokers && brokers.length > 0 ? brokers : BROKERS_LIST).map((broker: any, index: number) => (
+                        <Link href={broker.slug ? `/forex-broker/${broker.slug}` : "#"} key={index}>
                             <motion.div
-                                key={index}
-                                className='py-6 first:pt-0 max-mobile:py-4 last:pb-0'
+                                className='border h-full cursor-pointer hover:border-primary transition-all duration-300 max-mobile:w-[280px] max-mobile:min-w-[280px] max-mobile:max-w-[280px] border-[#E4E4E4] bg-white shadow-[0_0_32.4px_0_rgba(26,26,26,0.05)] rounded-xl p-5'
                                 variants={{
                                     hidden: { opacity: 0, x: -30 },
                                     visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
                                 }}
+                                whileHover={{ y: -5 }}
                             >
-                                <h3 className='text-black mb-1 text-xl font-semibold'>
+                                <h3 className='text-black mb-1 text-lg font-semibold'>
                                     {broker.name}
                                 </h3>
-                                <p className='text-base text-black700 font-medium whitespace-pre-line'>
+                                <p className='text-sm text-black700 font-medium whitespace-pre-line'>
                                     {broker.description}
                                 </p>
                             </motion.div>
-                        ))}
-                    </motion.div>
+                        </Link>
+                    ))}
+                </div>
+
+
+            </div>
+            <div className='relative max-mobile:mt-10 w-full mt-[70px] overflow-hidden'>
+                <div
+                    className='w-full'
+                    style={{
+                        maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+                        WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
+                    }}
+                >
                     <motion.div
-                        className='flex items-center'
-                        initial={{ opacity: 0, scale: 0.95, x: 30 }}
-                        whileInView={{ opacity: 1, scale: 1, x: 0 }}
-                        viewport={{ once: true, amount: 0.2 }}
-                        transition={{ type: "spring", stiffness: 200, damping: 25, delay: 0.2 }}
+                        className='flex w-max py-4 max-mobile:py-0'
+                        animate={{ x: [0, "-50%"] }}
+                        transition={{
+                            duration: 30,
+                            repeat: Infinity,
+                            ease: "linear"
+                        }}
                     >
-                        <motion.img
-                            src={ForexBropkerImage}
-                            alt="ForexBropkerImage"
-                            className='block max-w-[850px] ml-auto max-laptop:max-w-full '
-                            animate={{ y: [0, -15, 0] }}
-                            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                        />
+                        {[...(brokers || []), ...(brokers || [])].map((broker: any, index: number) => (
+                            <BrokerCard key={index} name={broker.name} logo={broker.logoUrl} slug={broker.slug} />
+                        ))}
                     </motion.div>
                 </div>
             </div>
