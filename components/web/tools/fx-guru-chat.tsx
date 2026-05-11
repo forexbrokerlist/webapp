@@ -135,31 +135,23 @@ function MessageBubble({ message, onViewReport }: {
   onViewReport?: (full: any, short: any) => void
 }) {
   return (
-    <div className={`flex gap-3 w-full ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
-      {/* {message.sender === "assistant" && (
-        <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
-          <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">AI</AvatarFallback>
-        </Avatar>
-      )} */}
-
-      <div className={`p-4 rounded-2xl shadow-xs text-sm max-w-[85%] ${message.sender === "user"
+    <div className={`flex gap-2 sm:gap-3 w-full ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
+      <div className={`p-3 sm:p-4 rounded-2xl shadow-sm text-sm w-full max-w-[92%] sm:max-w-[85%] ${message.sender === "user"
         ? "bg-gradient-to-b from-[#FFF] to-[rgba(168,221,21,0.30)] text-black100 rounded-tr-sm"
-        : "bg-card border border-border rounded-tl-sm"
+        : "bg-card border border-border rounded-tl-sm shadow-xs"
         }`}>
         {message.image_url && message.sender === "user" && (
-          <div className="mb-2">
-
-            <img src={message.image_url} alt="Uploaded" className="rounded-lg max-h-48 object-cover border border-primary-foreground/20" />
+          <div className="mb-3">
+            <img src={message.image_url} alt="Uploaded" className="rounded-lg max-h-48 sm:max-h-64 w-full object-cover border border-primary-foreground/20" />
           </div>
         )}
 
-        <div className={message.sender === "assistant" ? "prose prose-sm max-w-none dark:prose-invert [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-indigo-600 dark:[&_h2]:text-indigo-400 [&_h2]:mb-4 [&_h2]:pb-2 [&_h2]:border-b [&_h2]:border-border [&_p]:text-base [&_p]:leading-relaxed [&_strong]:font-semibold [&_strong]:text-foreground" : ""}>
+        <div className={message.sender === "assistant" ? "prose prose-sm max-w-none dark:prose-invert [&_h2]:text-base sm:[&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-indigo-600 dark:[&_h2]:text-indigo-400 [&_h2]:mb-3 sm:[&_h2]:mb-4 [&_h2]:pb-2 [&_h2]:border-b [&_h2]:border-border [&_p]:text-sm sm:[&_p]:text-base [&_p]:leading-relaxed [&_strong]:font-semibold [&_strong]:text-foreground" : ""}>
           {message.sender === "assistant" ? (
-            <div className="space-y-2">
+            <div className="space-y-3 sm:space-y-4">
               {message.image_url && (
-                <div className="mb-2">
-
-                  <img src={message.image_url} alt="AI Response" className="rounded-lg max-h-64 object-cover border" />
+                <div className="mb-3">
+                  <img src={message.image_url} alt="AI Response" className="rounded-lg max-h-64 sm:max-h-80 w-full object-cover border" />
                 </div>
               )}
 
@@ -168,75 +160,75 @@ function MessageBubble({ message, onViewReport }: {
                   const isRichSection = !!section.type;
 
                   return (
-                    <div key={idx} className={`rounded-xl border shadow-xs overflow-hidden transition-all duration-300 ${isRichSection ? "bg-card dark:border-indigo-500/10 dark:shadow-[0_0_20px_-12px_rgba(99,102,241,0.3)]" : "p-4 bg-muted/40"}`}>
+                    <div key={idx} className={`rounded-xl border shadow-xs overflow-hidden transition-all duration-300 ${isRichSection ? "bg-card dark:border-indigo-500/10 dark:shadow-[0_0_20px_-12px_rgba(99,102,241,0.3)]" : "p-3 sm:p-4 bg-muted/40"}`}>
                       {isRichSection ? (
                         <>
-                          <div className={`px-4 py-2.5 border-b flex items-center gap-2 bg-linear-to-r shadow-xs/5 relative overflow-hidden ${section.type === 'trend' ? "from-indigo-600/20 to-transparent dark:from-indigo-500/15" :
+                          <div className={`px-3 sm:px-4 py-2 sm:py-2.5 border-b flex items-center gap-2 bg-linear-to-r shadow-xs/5 relative overflow-hidden ${section.type === 'trend' ? "from-indigo-600/20 to-transparent dark:from-indigo-500/15" :
                             section.type === 'structure' ? "from-emerald-600/20 to-transparent dark:from-emerald-500/15" :
                               section.type === 'zones' ? "from-amber-600/20 to-transparent dark:from-amber-500/15" :
                                 "from-blue-600/20 to-transparent dark:from-blue-500/15"
                             }`}>
                             <div className="absolute inset-0 bg-linear-to-b from-white/5 to-transparent pointer-events-none" />
-                            {section.type === 'trend' && <TrendingUp className="h-4 w-4 text-indigo-600 dark:text-indigo-400 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]" />}
-                            {section.type === 'structure' && <Layers className="h-4 w-4 text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" />}
-                            {section.type === 'zones' && <Zap className="h-4 w-4 text-amber-600 dark:text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" />}
-                            {section.type === 'levels' && <Shield className="h-4 w-4 text-blue-600 dark:text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />}
-                            <div className="text-[11px] font-bold uppercase tracking-widest text-foreground/90 dark:text-foreground/80">{section.title}</div>
+                            {section.type === 'trend' && <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-indigo-600 dark:text-indigo-400 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]" />}
+                            {section.type === 'structure' && <Layers className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" />}
+                            {section.type === 'zones' && <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-600 dark:text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" />}
+                            {section.type === 'levels' && <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600 dark:text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />}
+                            <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-foreground/90 dark:text-foreground/80">{section.title}</div>
                           </div>
 
-                          <div className="p-4">
+                          <div className="p-3 sm:p-4">
                             {section.type === 'trend' && (
-                              <div className="space-y-3">
-                                <div className="flex gap-2 items-center">
-                                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tight shadow-sm ${section.content.trend_type?.toLowerCase().includes('up') ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border dark:border-emerald-500/30' :
+                              <div className="space-y-2 sm:space-y-3">
+                                <div className="flex gap-2 items-center flex-wrap">
+                                  <span className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-tight shadow-sm ${section.content.trend_type?.toLowerCase().includes('up') ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border dark:border-emerald-500/30' :
                                     section.content.trend_type?.toLowerCase().includes('down') ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300 dark:border dark:border-red-500/30' :
                                       'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
                                     }`}>
                                     {section.content.trend_type}
                                   </span>
-                                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tight shadow-sm bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 dark:border dark:border-indigo-500/30">
+                                  <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-tight shadow-sm bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 dark:border dark:border-indigo-500/30">
                                     {section.content.trend_strength}
                                   </span>
                                 </div>
-                                <p className="text-sm leading-relaxed text-muted-foreground italic">
+                                <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground italic">
                                   "{section.content.description}"
                                 </p>
                               </div>
                             )}
 
                             {section.type === 'structure' && (
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                  <div className="text-[10px] font-semibold text-muted-foreground uppercase">State</div>
-                                  <div className="text-sm font-medium">{section.content.structure_state}</div>
+                              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                                <div className="space-y-0.5 sm:space-y-1">
+                                  <div className="text-[9px] sm:text-[10px] font-semibold text-muted-foreground uppercase">State</div>
+                                  <div className="text-xs sm:text-sm font-medium line-clamp-1">{section.content.structure_state}</div>
                                 </div>
-                                <div className="space-y-1">
-                                  <div className="text-[10px] font-semibold text-muted-foreground uppercase">Pattern</div>
-                                  <div className="text-sm font-medium">{section.content.swing_sequence?.higher_high_lower_high_pattern}</div>
+                                <div className="space-y-0.5 sm:space-y-1">
+                                  <div className="text-[9px] sm:text-[10px] font-semibold text-muted-foreground uppercase">Pattern</div>
+                                  <div className="text-xs sm:text-sm font-medium line-clamp-1">{section.content.swing_sequence?.higher_high_lower_high_pattern}</div>
                                 </div>
-                                <div className="space-y-1">
-                                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Recent High</div>
-                                  <div className="text-sm font-bold text-red-600 dark:text-red-400 drop-shadow-[0_0_4px_rgba(220,38,38,0.3)]">{section.content.swing_sequence?.recent_swing_high}</div>
+                                <div className="space-y-0.5 sm:space-y-1">
+                                  <div className="text-[9px] sm:text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Recent High</div>
+                                  <div className="text-xs sm:text-sm font-bold text-red-600 dark:text-red-400 drop-shadow-[0_0_4px_rgba(220,38,38,0.3)]">{section.content.swing_sequence?.recent_swing_high}</div>
                                 </div>
-                                <div className="space-y-1">
-                                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Recent Low</div>
-                                  <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_4px_rgba(16,185,129,0.3)]">{section.content.swing_sequence?.recent_swing_low}</div>
+                                <div className="space-y-0.5 sm:space-y-1">
+                                  <div className="text-[9px] sm:text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Recent Low</div>
+                                  <div className="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_4px_rgba(16,185,129,0.3)]">{section.content.swing_sequence?.recent_swing_low}</div>
                                 </div>
                               </div>
                             )}
 
                             {section.type === 'zones' && (
-                              <div className="space-y-4">
+                              <div className="space-y-3 sm:space-y-4">
                                 {section.content.supply_zones?.length > 0 && (
                                   <div>
-                                    <div className="text-[10px] font-semibold text-red-600 uppercase mb-2 flex items-center gap-1">
-                                      <Target className="h-3 w-3" /> Supply Zones
+                                    <div className="text-[9px] sm:text-[10px] font-semibold text-red-600 uppercase mb-2 flex items-center gap-1">
+                                      <Target className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> Supply Zones
                                     </div>
                                     <div className="space-y-2">
                                       {section.content.supply_zones.map((zone: any, i: number) => (
-                                        <div key={i} className="bg-red-50/50 dark:bg-red-500/5 p-3 rounded-xl border border-red-100 dark:border-red-500/20 transition-colors hover:bg-red-50 dark:hover:bg-red-500/10">
-                                          <div className="text-sm font-bold text-red-700 dark:text-red-400 tracking-tight">{zone.zone_location}</div>
-                                          <div className="text-[11px] text-red-600/80 dark:text-red-300/60 mt-1 leading-relaxed">{zone.rejection_evidence}</div>
+                                        <div key={i} className="bg-red-50/50 dark:bg-red-500/5 p-2.5 sm:p-3 rounded-xl border border-red-100 dark:border-red-500/20 transition-colors hover:bg-red-50 dark:hover:bg-red-500/10">
+                                          <div className="text-xs sm:text-sm font-bold text-red-700 dark:text-red-400 tracking-tight">{zone.zone_location}</div>
+                                          <div className="text-[10px] sm:text-[11px] text-red-600/80 dark:text-red-300/60 mt-1 leading-relaxed">{zone.rejection_evidence}</div>
                                         </div>
                                       ))}
                                     </div>
@@ -244,14 +236,14 @@ function MessageBubble({ message, onViewReport }: {
                                 )}
                                 {section.content.demand_zones?.length > 0 && (
                                   <div>
-                                    <div className="text-[10px] font-semibold text-emerald-600 uppercase mb-2 flex items-center gap-1">
-                                      <Activity className="h-3 w-3" /> Demand Zones
+                                    <div className="text-[9px] sm:text-[10px] font-semibold text-emerald-600 uppercase mb-2 flex items-center gap-1">
+                                      <Activity className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> Demand Zones
                                     </div>
                                     <div className="space-y-2">
                                       {section.content.demand_zones.map((zone: any, i: number) => (
-                                        <div key={i} className="bg-emerald-50/50 dark:bg-emerald-500/5 p-3 rounded-xl border border-emerald-100 dark:border-emerald-500/20 transition-colors hover:bg-emerald-50 dark:hover:bg-emerald-500/10">
-                                          <div className="text-sm font-bold text-emerald-700 dark:text-emerald-400 tracking-tight">{zone.zone_location}</div>
-                                          <div className="text-[11px] text-emerald-600/80 dark:text-emerald-300/60 mt-1 leading-relaxed">{zone.acceptance_evidence}</div>
+                                        <div key={i} className="bg-emerald-50/50 dark:bg-emerald-500/5 p-2.5 sm:p-3 rounded-xl border border-emerald-100 dark:border-emerald-500/20 transition-colors hover:bg-emerald-50 dark:hover:bg-emerald-500/10">
+                                          <div className="text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-400 tracking-tight">{zone.zone_location}</div>
+                                          <div className="text-[10px] sm:text-[11px] text-emerald-600/80 dark:text-emerald-300/60 mt-1 leading-relaxed">{zone.acceptance_evidence}</div>
                                         </div>
                                       ))}
                                     </div>
@@ -261,22 +253,22 @@ function MessageBubble({ message, onViewReport }: {
                             )}
 
                             {section.type === 'levels' && (
-                              <div className="space-y-4">
+                              <div className="space-y-3 sm:space-y-4">
                                 <div>
-                                  <div className="text-[10px] font-semibold text-muted-foreground uppercase mb-2">Resistance Levels</div>
-                                  <div className="flex flex-wrap gap-2">
+                                  <div className="text-[9px] sm:text-[10px] font-semibold text-muted-foreground uppercase mb-2">Resistance Levels</div>
+                                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                     {section.content.resistance_levels?.map((lvl: any, i: number) => (
-                                      <div key={i} className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-mono border border-border shadow-xs">
+                                      <div key={i} className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs font-mono border border-border shadow-xs">
                                         {lvl.level_description}
                                       </div>
                                     )) || "None"}
                                   </div>
                                 </div>
                                 <div>
-                                  <div className="text-[10px] font-semibold text-muted-foreground uppercase mb-3 tracking-widest">Support Levels</div>
-                                  <div className="flex flex-wrap gap-2.5">
+                                  <div className="text-[9px] sm:text-[10px] font-semibold text-muted-foreground uppercase mb-2.5 sm:mb-3 tracking-widest">Support Levels</div>
+                                  <div className="flex flex-wrap gap-1.5 sm:gap-2.5">
                                     {section.content.support_levels?.map((lvl: any, i: number) => (
-                                      <div key={i} className="bg-white/50 dark:bg-slate-800/80 px-3 py-1.5 rounded-lg text-xs font-mono font-bold border border-border shadow-xs dark:text-emerald-400 text-emerald-700 hover:scale-105 transition-transform">
+                                      <div key={i} className="bg-white/50 dark:bg-slate-800/80 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-mono font-bold border border-border shadow-xs dark:text-emerald-400 text-emerald-700 hover:scale-105 transition-transform">
                                         {lvl.level_description}
                                       </div>
                                     )) || "None"}
@@ -288,16 +280,16 @@ function MessageBubble({ message, onViewReport }: {
                         </>
                       ) : (
                         <>
-                          <div className="text-sm font-semibold text-indigo-600 mb-2">{section.title}</div>
+                          <div className="text-xs sm:text-sm font-semibold text-indigo-600 mb-2">{section.title}</div>
                           {typeof section.content === "string" ? (
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>{section.content}</ReactMarkdown>
                           ) : (
-                            <div className="space-y-2 text-sm">
+                            <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
                               {Object.entries(section.content).map(([key, value]: any, i) => (
                                 <div key={i}>
-                                  <span className="font-medium">{key}: </span>
+                                  <span className="font-medium capitalize">{key.replace(/_/g, ' ')}: </span>
                                   {Array.isArray(value) ? (
-                                    <ul className="list-disc ml-5">{value.map((v: any, j: number) => <li key={j}>{v}</li>)}</ul>
+                                    <ul className="list-disc ml-4 sm:ml-5">{value.map((v: any, j: number) => <li key={j}>{v}</li>)}</ul>
                                   ) : (
                                     <span>{value}</span>
                                   )}
@@ -313,43 +305,35 @@ function MessageBubble({ message, onViewReport }: {
               ) : typeof message.content === "string" ? (
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
               ) : (
-                <pre className="text-xs bg-muted p-2 rounded overflow-x-auto">{JSON.stringify(message.content, null, 2)}</pre>
+                <pre className="text-[10px] sm:text-xs bg-muted p-2 rounded overflow-x-auto">{JSON.stringify(message.content, null, 2)}</pre>
               )}
             </div>
           ) : (
-            <div className="text-base leading-relaxed whitespace-pre-wrap font-medium">
+            <div className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap font-medium">
               {message.content}
             </div>
           )}
         </div>
 
-        <div className="flex justify-between items-center mt-2.5">
+        <div className="flex justify-between items-center mt-3 sm:mt-4">
           {message.sender === "assistant" && message.full_report && onViewReport ? (
             <Button
               variant="secondary"
               size="sm"
               onClick={() => onViewReport(message.full_report!, message.short_response!)}
-              className="h-7 text-xs px-3 rounded-full bg-background border shadow-xs text-black100 transition-all"
+              className="h-7 sm:h-8 text-[10px] sm:text-xs px-2.5 sm:px-4 rounded-full bg-background border shadow-xs text-black100 transition-all hover:bg-muted active:scale-95"
             >
-              <FileText className="h-3 w-3 mr-1.5" />
-              View Full Report
+              <FileText className="h-3 w-3 mr-1 sm:mr-1.5" />
+              Full Report
             </Button>
           ) : (
             <span />
           )}
-          <div className={`text-[10px] opacity-70 ${message.sender === "user" ? "text-black100" : "text-black100"}`}>
+          <div className={`text-[9px] sm:text-[10px] font-medium opacity-60 ${message.sender === "user" ? "text-black100" : "text-black100"}`}>
             {message.timestamp}
           </div>
         </div>
       </div>
-
-      {/* {message.sender === "user" && (
-        <Avatar className="h-8 w-8 shadow-xs shrink-0 mt-1">
-          <AvatarFallback className="bg-muted text-muted-foreground">
-            <User className="h-4 w-4" />
-          </AvatarFallback>
-        </Avatar>
-      )} */}
     </div>
   )
 }
@@ -367,50 +351,65 @@ export function FxGuruSidebar({ currentChatId, isOpen, onClose }: { currentChatI
   }, [])
 
   const sidebarContent = (
-    <div className="bg-white rounded-xl border border-solid border-border-light300 h-full flex flex-col">
-      <div className="p-3">
+    <div className="bg-white rounded-2xl border border-solid border-border-light300 h-full flex flex-col shadow-sm">
+      <div className="p-4">
         {/* Close button – mobile only */}
         {onClose && (
-          <button
-            onClick={onClose}
-            className="lg:hidden mb-3 ml-auto flex items-center justify-center w-8 h-8 rounded-full border border-border hover:bg-muted transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        )}
-        <Button variant="secondary" className="py-2 text-base w-full" onClick={() => {
-          router.push('/fx-guru')
-          if (onClose) onClose()
-        }}>
-          <div className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
+          <div className="flex justify-end mb-4 lg:hidden">
+            <button
+              onClick={onClose}
+              className="flex items-center justify-center w-9 h-9 rounded-full border border-border hover:bg-muted transition-all active:scale-90"
+            >
+              <X className="w-5 h-5 text-black/60" />
+            </button>
           </div>
-          New Chat
+        )}
+        <Button
+          variant="primary"
+          className="w-full "
+          onClick={() => {
+            router.push('/fx-guru')
+            if (onClose) onClose()
+          }}
+        >
+          <div>
+            <Plus className="h-5 w-5" />
+          </div>
+          <span>New Chat</span>
         </Button>
-        <div className="flex items-center gap-3 my-3 px-2">
-          <div className="h-[1.5px] flex-1 bg-primary"></div>
-          <span className="text-sm font-medium text-black700 whitespace-nowrap">Search History</span>
-          <div className="h-[1.5px] flex-1 bg-primary"></div>
+        <div className="flex items-center gap-3 my-5 px-1">
+          <div className="h-[1px] flex-1 bg-border"></div>
+          <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap">History</span>
+          <div className="h-[1px] flex-1 bg-border"></div>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto p-3 pt-0 space-y-3">
+      <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-2.5">
         {chats.length === 0 ? (
-          <div className="text-xs text-center text-muted-foreground p-4">No past chats.</div>
+          <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
+            <MessageSquare className="w-8 h-8 text-muted-foreground/30 mb-2" />
+            <p className="text-xs text-muted-foreground font-medium">No past chats yet.</p>
+          </div>
         ) : (
           chats.map(chat => (
-            <button
+            <div
               key={chat.id}
-              onClick={() => {
-                router.push(`/fx-guru/${chat.conversationId}`)
-                if (onClose) onClose()
-              }}
-              className={`w-full cursor-pointer flex items-center justify-between gap-2 p-1 pl-3.5 bg-[#F0F1EC] rounded-full transition-colors ${currentChatId === chat.conversationId ? '' : ''}`}
+              className={`group w-full flex items-center justify-between gap-2 p-1 pl-4 bg-muted/30 hover:bg-muted/60 border border-transparent hover:border-border rounded-full transition-all duration-200 ${currentChatId === chat.conversationId ? 'bg-primary/10 border-primary/20' : ''}`}
             >
-              <span className="truncate line-clamp-1 text-black800 text-base">{chat.title || "New Chat"}</span>
-              <div className="w-9 min-w-9 min-h-9 h-9 flex cursor-pointer items-center justify-center bg-white rounded-full shadow-xs">
-                <Trash className="text-[#FF5151] w-4 h-4" color="#FF5151" />
-              </div>
-            </button>
+              <button
+                onClick={() => {
+                  router.push(`/fx-guru/${chat.conversationId}`)
+                  if (onClose) onClose()
+                }}
+                className="flex-1 text-left truncate py-2"
+              >
+                <span className={`truncate line-clamp-1 text-sm font-semibold ${currentChatId === chat.conversationId ? 'text-black' : 'text-black700'}`}>
+                  {chat.title || "Untitled Chat"}
+                </span>
+              </button>
+              <button className="w-8 h-8 flex shrink-0 items-center justify-center bg-white rounded-full shadow-xs hover:bg-red-50 transition-colors group-hover:opacity-100 opacity-0 lg:opacity-0 focus:opacity-100">
+                <Trash className="text-red-500 w-3.5 h-3.5" />
+              </button>
+            </div>
           ))
         )}
       </div>
@@ -610,10 +609,9 @@ export function FxGuruLanding() {
         highlightedText="FX Guru:" title="Your Ultimate Stock 
 Search & Market Intelligence 
 Platform" />
-      <div className="pb-100 max-tab:hidden">
+      <div className="pb-100 ">
         <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
-          {/* Mobile sidebar toggle */}
-          <div className="lg:hidden flex items-center gap-3 pt-16 mb-4">
+          <div className="lg:hidden flex items-center gap-3 pt-6 sm:pt-10 mb-4">
             <button
               onClick={() => setIsSidebarOpen(true)}
               className="flex items-center gap-2 px-4 py-2 bg-white border border-border-light300 rounded-full shadow-xs text-sm font-medium text-black700 hover:bg-muted transition-colors"
@@ -623,20 +621,20 @@ Platform" />
             </button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[390px_1fr] gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[390px_1fr] gap-5">
             <FxGuruSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-            <div className="">
+            <div className="w-full">
 
-              <div className="bg-white rounded-xl border border-solid border-border-light300 px-4 sm:px-6 py-8 sm:py-[60px]">
+              <div className="bg-white rounded-xl border border-solid border-border-light300 px-4 sm:px-8 py-10 sm:py-[60px]">
                 <div className="max-w-[980px] mx-auto">
-                  <div className="pb-6 sm:pb-10">
-                    <div className="flex justify-center">
-                      <img src={FxguruIcon} alt="FxguruIcon" className="block w-12 sm:w-auto" />
+                  <div className="pb-8 sm:pb-12">
+                    <div className="flex justify-center mb-6">
+                      <img src={FxguruIcon} alt="FxguruIcon" className="w-14 sm:w-20 md:w-auto h-auto" />
                     </div>
-                    <h2 className="text-xl sm:text-3xl text-black font-bold text-center mb-2 sm:mb-3 mt-3 sm:mt-0">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl text-black font-bold text-center mb-4 leading-tight">
                       Welcome to FXGuru
                     </h2>
-                    <p className="text-sm sm:text-lg font-medium text-black700 max-w-[733px] mx-auto text-center">
+                    <p className="text-sm sm:text-base md:text-lg font-medium text-black700 max-w-[733px] mx-auto text-center leading-relaxed">
                       Your intelligent forex trading companion. Get instant market insights, chart
                       analysis,
                       and expert-level trading strategies powered by AI.
@@ -654,29 +652,29 @@ Platform" />
                   focus-within:shadow-[0_0_20px_rgba(168,221,21,0.2)]`}
                   >
                     {/* Top Section: Icon + Textarea */}
-                    <div className="flex items-start gap-3 p-5 max-mobile:p-3 pb-2">
-                      <div className="shrink-0 mt-1">
-                        <img src={AskIcon} alt="AskIcon" />
+                    <div className="flex items-start gap-3 p-4 sm:p-5 pb-2">
+                      <div className="shrink-0 mt-1.5">
+                        <img src={AskIcon} alt="AskIcon" className="w-5 h-5 sm:w-6 sm:h-6" />
                       </div>
                       <textarea
                         placeholder={selectedFile ? "File uploaded. Submit to continue." : "Ask anything about forex trading, chart and strategies.."}
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         disabled={isLoading || !!selectedFile}
-                        className="flex-1 bg-transparent border-none outline-none text-base text-black800 placeholder:text-black/40 focus:ring-0 disabled:opacity-50 min-h-[50px] resize-none"
+                        className="flex-1 bg-transparent border-none outline-none text-sm sm:text-base text-black800 placeholder:text-black/40 focus:ring-0 disabled:opacity-50 min-h-[60px] sm:min-h-[80px] resize-none py-1"
                         onKeyDown={handleKeyPress}
                       />
                     </div>
 
                     {/* Middle Section: Image Preview (if any) */}
                     {previewFile && (
-                      <div className="px-5 max-mobile:px-3 pb-3">
+                      <div className="px-4 sm:px-5 pb-3">
                         <div className="relative w-fit group animate-in zoom-in duration-200">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={previewFile} alt="Preview" className="h-20 w-auto rounded-xl object-cover border-2 border-primary/20 shadow-sm" />
+                          <img src={previewFile} alt="Preview" className="h-20 sm:h-24 w-auto rounded-xl object-cover border-2 border-primary/20 shadow-sm" />
                           <button
                             onClick={clearFile}
-                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors"
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 shadow-md hover:bg-red-600 transition-colors"
                           >
                             <X className="w-3 h-3" />
                           </button>
@@ -685,12 +683,17 @@ Platform" />
                     )}
 
                     {/* Bottom Section: Upload + Send */}
-                    <div className="flex items-center justify-between p-4 pt-0">
-                      <div className="flex items-center justify-center" onClick={() => fileInputRef.current?.click()}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
-                          <path d="M14.0007 2.33203C20.4439 2.33203 25.6673 7.55537 25.6673 13.9987C25.6673 20.4421 20.4439 25.6653 14.0007 25.6653C7.55733 25.6653 2.33398 20.4421 2.33398 13.9987M10.3945 2.90005C9.21732 3.28226 8.12223 3.84655 7.14244 4.55968M4.56165 7.14045C3.84839 8.12042 3.28402 9.21574 2.9018 10.3931" stroke="#121212" stroke-opacity="0.7" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M14.0007 9.33203V18.6653M18.6673 13.9987H9.33398" stroke="#121212" stroke-opacity="0.7" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
+                    <div className="flex items-center justify-between p-3 sm:p-4">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          className="flex items-center justify-center p-2 rounded-full hover:bg-muted transition-colors cursor-pointer"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 28 28" fill="none" className="sm:w-7 sm:h-7">
+                            <path d="M14.0007 2.33203C20.4439 2.33203 25.6673 7.55537 25.6673 13.9987C25.6673 20.4421 20.4439 25.6653 14.0007 25.6653C7.55733 25.6653 2.33398 20.4421 2.33398 13.9987M10.3945 2.90005C9.21732 3.28226 8.12223 3.84655 7.14244 4.55968M4.56165 7.14045C3.84839 8.12042 3.28402 9.21574 2.9018 10.3931" stroke="#121212" stroke-opacity="0.7" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M14.0007 9.33203V18.6653M18.6673 13.9987H9.33398" stroke="#121212" stroke-opacity="0.7" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        </button>
                       </div>
                       <input
                         type="file"
@@ -701,15 +704,15 @@ Platform" />
                       />
 
                       <Button
-                        className="bg-primary  text-black font-medium rounded-full cursor-pointer px-5 py-2 h-auto flex items-center gap-2 shadow-xs transition-transform active:scale-95 disabled:opacity-50"
+                        className="bg-primary text-black font-semibold rounded-full cursor-pointer px-4 sm:px-6 py-2 sm:py-2.5 h-auto flex items-center gap-2 shadow-xs transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 text-sm sm:text-base"
                         onClick={handleSend}
                         disabled={isLoading || (!inputValue.trim() && !selectedFile)}
                       >
                         {isLoading ? (
-                          <Loader2 className="size-5 animate-spin" />
+                          <Loader2 className="size-4 sm:size-5 animate-spin" />
                         ) : (
                           <>
-                            <Sparkles className="size-4" />
+                            <Sparkles className="size-3.5 sm:size-4" />
                             <span>Ask Guru</span>
                           </>
                         )}
@@ -774,68 +777,7 @@ Platform" />
           </div>
         </div>
       </div>
-      {/* Mobile / Tablet — Desktop-only notice */}
-      <div className="hidden max-tab:flex flex-col items-center justify-center px-5 py-16 text-center">
-        <motion.div
-          className="relative w-full max-w-sm mx-auto"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-          {/* Glow background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-primary/10 to-blue-50 rounded-[32px] blur-2xl opacity-60 pointer-events-none" />
 
-          <div className="relative bg-white border border-blue-100 rounded-xl shadow-xl shadow-blue-100/40 p-8 flex flex-col items-center gap-5 overflow-hidden">
-            {/* Animated floating dots */}
-            <motion.div className="absolute top-4 left-4 w-2 h-2 rounded-full bg-primary/40"
-              animate={{ y: [0, -8, 0], opacity: [0.4, 1, 0.4] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} />
-            <motion.div className="absolute top-8 right-6 w-1.5 h-1.5 rounded-full bg-blue-400/50"
-              animate={{ y: [0, -6, 0], opacity: [0.3, 0.9, 0.3] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }} />
-            <motion.div className="absolute bottom-6 left-8 w-1.5 h-1.5 rounded-full bg-blue-300/40"
-              animate={{ y: [0, -5, 0], opacity: [0.3, 0.8, 0.3] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.8 }} />
-
-            {/* Pulsing monitor icon */}
-            <motion.div
-              className="w-20 h-20 rounded-full bg-[#A8DD15] flex items-center justify-center shadow-lg shadow-blue-300/50"
-              animate={{ scale: [1, 1.06, 1], boxShadow: ["0 10px 30px rgba(59,130,246,0.3)", "0 14px 40px rgba(59,130,246,0.55)", "0 10px 30px rgba(59,130,246,0.3)"] }}
-              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <svg className="w-10 h-10 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
-                <rect x="2" y="3" width="20" height="14" rx="2" />
-                <path d="M8 21h8M12 17v4" strokeLinecap="round" />
-              </svg>
-            </motion.div>
-
-            {/* Text */}
-            <div className="space-y-2">
-              <h3 className="text-xl font-bold text-slate-800 leading-snug">
-                Desktop View Required
-              </h3>
-              <p className="text-sm text-slate-500 leading-relaxed max-w-[260px] mx-auto">
-                This tool is optimized for a larger screen. Please open it on a <span className="font-semibold text-blue-600">desktop or laptop</span> for the best experience.
-              </p>
-            </div>
-
-            {/* Animated divider */}
-            <motion.div
-              className="h-[2px] w-16 rounded-full bg-gradient-to-r from-blue-400 to-primary"
-              animate={{ width: ["40px", "80px", "40px"] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            />
-
-            {/* Badge */}
-            <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-full text-xs font-semibold text-blue-600 shadow-xs">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              Open on Desktop to Continue
-            </div>
-          </div>
-        </motion.div>
-      </div>
     </div>
   )
 }
@@ -1089,24 +1031,24 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
   }
 
   return (
-    <div className="pt-100 max-mobile:pt-20">
-      <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
+    <div className="pt-24 sm:pt-32 pb-8">
+      <div className="max-w-[1640px] px-4 sm:px-10 lg:px-16 mx-auto relative">
         {/* Mobile sidebar toggle */}
-        <div className="lg:hidden flex items-center gap-3 mb-4">
+        <div className="lg:hidden flex items-center gap-3 mb-6">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-border-light300 rounded-full shadow-xs text-sm font-medium text-black700 hover:bg-muted transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-border-light300 rounded-full shadow-sm text-sm font-semibold text-black700 hover:bg-muted transition-all active:scale-95"
           >
             <Menu className="w-4 h-4" />
             Chat History
           </button>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-[390px_1fr] gap-5 pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[390px_1fr] gap-6">
           <FxGuruSidebar currentChatId={chatId} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
           <AnimatePresence mode="wait">
             <motion.div
               key="chat-detail"
-              className="flex flex-1 flex-col w-full h-[calc(100dvh-132px)] max-mobile:h-[calc(100dvh-80px)] overflow-auto bg-white rounded-xl border border-solid border-border-light300"
+              className="flex flex-1 flex-col w-full h-[calc(100dvh-180px)] sm:h-[calc(100dvh-220px)] lg:h-[calc(100dvh-132px)] overflow-hidden bg-white rounded-2xl border border-solid border-border-light300 shadow-sm"
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 40 }}
@@ -1143,24 +1085,24 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
                 <div ref={messagesEndRef} />
               </div>
 
-              <div className="sticky bottom-0 p-4 ">
+              <div className="sticky bottom-0 p-3 sm:p-5 bg-linear-to-t from-white via-white to-transparent">
                 <div
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
-                  className={`relative flex max-mobile:rounded-lg flex-col rounded-[32px] border transition-all duration-300 bg-white shadow-xs 
+                  className={`relative flex flex-col rounded-2xl sm:rounded-[32px] border transition-all duration-300 bg-white shadow-md 
                 ${isDragging
                       ? "border-primary border-dashed bg-primary/5 scale-[1.01]"
                       : "border-primary"
                     } 
-                focus-within:shadow-[0_0_20px_rgba(168,221,21,0.2)]`}
+                focus-within:shadow-[0_0_25px_rgba(168,221,21,0.25)]`}
                 >
                   {/* Top Section: Icon + Textarea */}
-                  <div className="flex items-start gap-3 p-5 max-mobile:p-3 pb-2">
-                    <div className="shrink-0 mt-1">
+                  <div className="flex items-start gap-2.5 sm:gap-4 p-4 sm:p-6 pb-2">
+                    <div className="shrink-0 mt-1.5">
                       {/* Black Smiley Icon */}
-                      <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center relative overflow-hidden">
-                        <div className="w-3 h-1.5 border-b-2 border-white rounded-full mt-[-2px]"></div>
+                      <div className="w-6 h-6 sm:w-7 sm:h-7 bg-black rounded-full flex items-center justify-center relative overflow-hidden shadow-sm">
+                        <div className="w-3 sm:w-4 h-1.5 sm:h-2 border-b-2 border-white rounded-full mt-[-2px]"></div>
                         <div className="absolute -bottom-1 -left-1 w-2.5 h-2.5 bg-black rotate-45"></div>
                       </div>
                     </div>
@@ -1169,20 +1111,20 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
                       disabled={isLoading || !!selectedFile}
-                      className="flex-1 bg-transparent border-none outline-none text-base text-black800 placeholder:text-black/40 focus:ring-0 disabled:opacity-50 min-h-[50px] resize-none"
+                      className="flex-1 bg-transparent border-none outline-none text-sm sm:text-base text-black800 placeholder:text-black/45 focus:ring-0 disabled:opacity-50 min-h-[50px] sm:min-h-[70px] resize-none py-1"
                       onKeyDown={handleKeyPress}
                     />
                   </div>
 
                   {/* Middle Section: Image Preview (if any) */}
                   {previewFile && (
-                    <div className="px-5 pb-3 max-mobile:px-3">
+                    <div className="px-4 sm:px-6 pb-3">
                       <div className="relative w-fit group animate-in zoom-in duration-200">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={previewFile} alt="Preview" className="h-20 w-auto rounded-xl object-cover border-2 border-primary/20 shadow-sm" />
+                        <img src={previewFile} alt="Preview" className="h-20 sm:h-24 w-auto rounded-xl object-cover border-2 border-primary/20 shadow-sm" />
                         <button
                           onClick={clearFile}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors"
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 shadow-md hover:bg-red-600 transition-colors"
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -1191,12 +1133,12 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
                   )}
 
                   {/* Bottom Section: Upload + Send */}
-                  <div className="flex items-center justify-between p-5 pt-0">
+                  <div className="flex items-center justify-between p-3 sm:p-5 pt-0">
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-10 h-10 rounded-full border border-border-light300 flex items-center justify-center text-black/60 hover:bg-muted transition-colors"
+                      className="w-9 h-9 sm:w-11 sm:h-11 rounded-full border border-border-light300 flex items-center justify-center text-black/60 hover:bg-muted hover:text-black transition-all active:scale-90"
                     >
-                      <Plus className="w-6 h-6" />
+                      <Plus className="w-5 h-5 sm:w-6 sm:h-6" />
                     </button>
                     <input
                       type="file"
@@ -1207,15 +1149,15 @@ export function FxGuruChat({ chatId }: { chatId: string }) {
                     />
 
                     <Button
-                      className="bg-primary hover:bg-primary/90 text-black font-semibold rounded-full px-6 py-2.5 h-auto flex items-center gap-2 shadow-xs transition-transform active:scale-95 disabled:opacity-50"
+                      className="bg-primary hover:bg-primary/90 text-black font-bold rounded-full px-5 sm:px-8 py-2 sm:py-3 h-auto flex items-center gap-2 shadow-sm transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 text-sm sm:text-base"
                       onClick={handleSend}
                       disabled={isLoading || (!inputValue.trim() && !selectedFile)}
                     >
                       {isLoading ? (
-                        <Loader2 className="size-5 animate-spin" />
+                        <Loader2 className="size-4 sm:size-5 animate-spin" />
                       ) : (
                         <>
-                          <Sparkles className="size-4" />
+                          <Sparkles className="size-3.5 sm:size-4" />
                           <span>Ask Guru</span>
                         </>
                       )}
