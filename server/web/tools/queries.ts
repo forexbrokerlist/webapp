@@ -184,6 +184,11 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     compatiblePlatform,
     targetClient,
     hqRegion,
+    // Liquidity Provider specific filters
+    regulation,
+    assetClass,
+    executionType,
+    providerType,
   } = search;
   const skip = (page - 1) * perPage;
   const take = perPage;
@@ -504,6 +509,96 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     console.log("🔍 DEBUG: Brokers after HQ region filter:", brokers.length);
   }
 
+  // Filter brokers in memory for regulation
+  if (regulation) {
+    const selectedRegulations = regulation
+      .split(",")
+      .map((r) => r.trim())
+      .filter((r) => r !== "All");
+    console.log("🔍 DEBUG: Filtering for regulation:", regulation);
+    brokers = brokers.filter((broker) => {
+      if (selectedRegulations.length === 0) return true;
+
+      const brokerRegulations = broker.regulators
+        ? broker.regulators.split(",").map((r) => r.trim())
+        : [];
+      return selectedRegulations.some((selectedReg) =>
+        brokerRegulations.some(
+          (reg) => reg.toLowerCase() === selectedReg.toLowerCase(),
+        ),
+      );
+    });
+    console.log("🔍 DEBUG: Brokers after regulation filter:", brokers.length);
+  }
+
+  // Filter brokers in memory for asset class
+  if (assetClass) {
+    const selectedAssetClasses = assetClass
+      .split(",")
+      .map((a) => a.trim())
+      .filter((a) => a !== "All");
+    console.log("🔍 DEBUG: Filtering for asset class:", assetClass);
+    brokers = brokers.filter((broker) => {
+      if (selectedAssetClasses.length === 0) return true;
+
+      const brokerAssetClasses = broker.asset_classes || [];
+      return selectedAssetClasses.some((selectedAsset) =>
+        brokerAssetClasses.some(
+          (asset) => asset.toLowerCase() === selectedAsset.toLowerCase(),
+        ),
+      );
+    });
+    console.log("🔍 DEBUG: Brokers after asset class filter:", brokers.length);
+  }
+
+  // Filter brokers in memory for execution type
+  if (executionType) {
+    const selectedExecutionTypes = executionType
+      .split(",")
+      .map((e) => e.trim())
+      .filter((e) => e !== "All");
+    console.log("🔍 DEBUG: Filtering for execution type:", executionType);
+    brokers = brokers.filter((broker) => {
+      if (selectedExecutionTypes.length === 0) return true;
+
+      const brokerExecutionTypes = broker.execution_types
+        ? broker.execution_types.split(",").map((e) => e.trim())
+        : [];
+      return selectedExecutionTypes.some((selectedExec) =>
+        brokerExecutionTypes.some(
+          (exec) => exec.toLowerCase() === selectedExec.toLowerCase(),
+        ),
+      );
+    });
+    console.log(
+      "🔍 DEBUG: Brokers after execution type filter:",
+      brokers.length,
+    );
+  }
+
+  // Filter brokers in memory for provider type
+  if (providerType) {
+    const selectedProviderTypes = providerType
+      .split(",")
+      .map((p) => p.trim())
+      .filter((p) => p !== "All");
+    console.log("🔍 DEBUG: Filtering for provider type:", providerType);
+    brokers = brokers.filter((broker) => {
+      if (selectedProviderTypes.length === 0) return true;
+
+      const brokerProviderTypes = broker.provider_type || [];
+      return selectedProviderTypes.some((selectedProv) =>
+        brokerProviderTypes.some(
+          (prov) => prov.toLowerCase() === selectedProv.toLowerCase(),
+        ),
+      );
+    });
+    console.log(
+      "🔍 DEBUG: Brokers after provider type filter:",
+      brokers.length,
+    );
+  }
+
   // Apply pagination after filtering
   const hasFilters = !!(
     regulators ||
@@ -517,7 +612,11 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     solutionType ||
     compatiblePlatform ||
     targetClient ||
-    hqRegion
+    hqRegion ||
+    regulation ||
+    assetClass ||
+    executionType ||
+    providerType
   );
   const total = hasFilters ? brokers.length : totalCount;
   const paginatedBrokers = brokers.slice(skip, skip + take);

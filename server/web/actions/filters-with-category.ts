@@ -72,11 +72,14 @@ export const findFilterOptionsWithCategory = actionClient
     const isForexEducation = category === "forex-trading-courses";
     const isBridgeOrPlugin =
       category === "forex-bridge-providers" || category === "plugin-providers";
+    const isLiquidityPartner = category === "liquidity-providers";
     console.log(
       "🔍 isForexEducation:",
       isForexEducation,
       "🔍 isBridgeOrPlugin:",
       isBridgeOrPlugin,
+      "🔍 isLiquidityPartner:",
+      isLiquidityPartner,
       "for category:",
       category,
     );
@@ -196,6 +199,53 @@ export const findFilterOptionsWithCategory = actionClient
               count: 0, // TODO: Update when bridge/plugin data is available
             }),
           ),
+        },
+      ];
+    } else if (isLiquidityPartner) {
+      // Liquidity Partner filters
+      filterOptions = [
+        {
+          type: "regulators",
+          options: [
+
+            { slug: "fca", name: "FCA", count: 0 },
+            { slug: "asic", name: "ASIC", count: 0 },
+            { slug: "mas", name: "MAS", count: 0 },
+            { slug: "cysec", name: "CySEC", count: 0 },
+            { slug: "cftc", name: "CFTC", count: 0 },
+            { slug: "fsa", name: "FSA", count: 0 },
+          ],
+        },
+        {
+          type: "assetClass",
+          options: [
+            { slug: "spot_fx", name: "Spot FX ", count: 0 },
+            { slug: "crypto", name: "Crypto ", count: 0 },
+            { slug: "indices", name: "Indices ", count: 0 },
+            { slug: "commodities", name: "Commodities ", count: 0 },
+            { slug: "ndfs", name: "NDFs", count: 0 },
+            { slug: "equities", name: "Equities", count: 0 },
+          ],
+        },
+        {
+          type: "executionType",
+          options: [
+            { slug: "no_last_look", name: "No Last Look ", count: 0 },
+            { slug: "ecn_stp", name: "ECN/STP ", count: 0 },
+            { slug: "prime_of_prime", name: "Prime of Prime ", count: 0 },
+            { slug: "a_book", name: "A-Book ", count: 0 },
+            { slug: "dma", name: "DMA ", count: 0 },
+          ],
+        },
+        {
+          type: "providerType",
+          options: [
+            { slug: "fx_exchange", name: "FX Exchange good", count: 0 },
+            { slug: "prime_broker", name: "Prime Broker good", count: 0 },
+            { slug: "crypto_lp", name: "Crypto LP good", count: 0 },
+            { slug: "white_label", name: "White Label ", count: 0 },
+            { slug: "retail_lp", name: "Retail LP optional", count: 0 },
+          ],
         },
       ];
     } else {

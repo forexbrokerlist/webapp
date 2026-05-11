@@ -29,6 +29,11 @@ export const toolFilterParams = {
   compatiblePlatform: parseAsString.withDefault(""),
   targetClient: parseAsString.withDefault(""),
   hqRegion: parseAsString.withDefault(""),
+  // Liquidity Partner specific fields
+  regulation: parseAsString.withDefault(""),
+  assetClass: parseAsString.withDefault(""),
+  executionType: parseAsString.withDefault(""),
+  providerType: parseAsString.withDefault(""),
 };
 
 export const toolFilterParamsCache = createSearchParamsCache(toolFilterParams);

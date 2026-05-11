@@ -20,9 +20,14 @@ interface FilterTagsProps {
   compatiblePlatform?: string
   targetClient?: string
   hqRegion?: string
+  // Liquidity Partner fields
+  regulation?: string
+  assetClass?: string
+  executionType?: string
+  providerType?: string
 }
 
-export const FilterTags = ({ category, regulators, platforms, rating, features, skillLevel, learningFormat, pricing, educationFeatures, locationLanguage, solutionType, compatiblePlatform, targetClient, hqRegion }: FilterTagsProps) => {
+export const FilterTags = ({ category, regulators, platforms, rating, features, skillLevel, learningFormat, pricing, educationFeatures, locationLanguage, solutionType, compatiblePlatform, targetClient, hqRegion, regulation, assetClass, executionType, providerType }: FilterTagsProps) => {
   const { filters, updateFilters } = useFilters<ToolFilterSchema>()
 
   const removeFilter = (filterType: string, value: string) => {
@@ -72,6 +77,22 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
       const currentRegions = filters.hqRegion ? filters.hqRegion.split(",") : []
       const newRegions = currentRegions.filter(r => r !== value)
       updateFilters({ hqRegion: newRegions.join(",") })
+    } else if (filterType === 'regulation') {
+      const currentRegulation = filters.regulation ? filters.regulation.split(",") : []
+      const newRegulation = currentRegulation.filter(r => r !== value)
+      updateFilters({ regulation: newRegulation.join(",") })
+    } else if (filterType === 'assetClass') {
+      const currentAssetClass = filters.assetClass ? filters.assetClass.split(",") : []
+      const newAssetClass = currentAssetClass.filter(a => a !== value)
+      updateFilters({ assetClass: newAssetClass.join(",") })
+    } else if (filterType === 'executionType') {
+      const currentExecutionType = filters.executionType ? filters.executionType.split(",") : []
+      const newExecutionType = currentExecutionType.filter(e => e !== value)
+      updateFilters({ executionType: newExecutionType.join(",") })
+    } else if (filterType === 'providerType') {
+      const currentProviderType = filters.providerType ? filters.providerType.split(",") : []
+      const newProviderType = currentProviderType.filter(p => p !== value)
+      updateFilters({ providerType: newProviderType.join(",") })
     }
   }
 
@@ -92,11 +113,16 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
       compatiblePlatform: "",
       targetClient: "",
       hqRegion: "",
+      // Liquidity Partner fields
+      regulation: "",
+      assetClass: "",
+      executionType: "",
+      providerType: "",
       q: ""
     })
   }
 
-  const hasActiveFilters = !!(category || regulators || platforms || rating || features || skillLevel || learningFormat || pricing || educationFeatures || locationLanguage || solutionType || compatiblePlatform || targetClient || hqRegion)
+  const hasActiveFilters = !!(category || regulators || platforms || rating || features || skillLevel || learningFormat || pricing || educationFeatures || locationLanguage || solutionType || compatiblePlatform || targetClient || hqRegion || regulation || assetClass || executionType || providerType)
 
   return (
     <div className="flex flex-wrap items-center gap-2 px-6 py-3 border-b border-[#E5E7E0]">
@@ -275,6 +301,58 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
           <button
             type="button"
             onClick={() => removeFilter('hqRegion', region.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {regulation && regulation.split(",").map((reg, index) => (
+        <span key={reg} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {reg.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('regulation', reg.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {assetClass && assetClass.split(",").map((asset, index) => (
+        <span key={asset} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {asset.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('assetClass', asset.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {executionType && executionType.split(",").map((execution, index) => (
+        <span key={execution} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {execution.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('executionType', execution.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {providerType && providerType.split(",").map((provider, index) => (
+        <span key={provider} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {provider.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('providerType', provider.trim())}
             className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
           >
             <X size={12} />

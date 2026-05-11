@@ -51,6 +51,11 @@ export const ToolSearch = ({ placeholder, category, ...props }: ToolSearchProps)
         compatiblePlatform={filters.compatiblePlatform}
         targetClient={filters.targetClient}
         hqRegion={filters.hqRegion}
+        // Liquidity Provider filters
+        regulation={filters.regulation}
+        assetClass={filters.assetClass}
+        executionType={filters.executionType}
+        providerType={filters.providerType}
       />
     </Stack>
   )
