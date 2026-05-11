@@ -228,6 +228,8 @@ export default async function (props: any) {
         title={crmCategory?.label || crmCategory?.name || "Forex CRM & Back Office Software for Brokers"}
         description={crmCategory?.description || "Compare forex CRM platforms and back office software providers designed to help brokers streamline operations, onboarding, and reporting."}
       /> */}
+        <ForexBrokers brokers={premiumBrokers} />
+
         <ForexEducation
           partners={ForexPartners}
           category={ForexCategory}
@@ -260,7 +262,6 @@ export default async function (props: any) {
           title={AlgoCategory?.label || AlgoCategory?.name || "Algo Trading & Forex Bot Provider"}
           description={AlgoCategory?.description || "Discover automated forex trading bots and algorithmic strategy providers built for passive income, consistent execution, and hands-free trading."}
         />
-        <ForexBrokers brokers={premiumBrokers} />
 
         <BlogSection posts={posts} />
         <FAQ />

@@ -163,7 +163,17 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
   cacheTag("brokers");
   cacheLife("infinite");
 
-  const { q, category, sort, page, perPage } = search;
+  const {
+    q,
+    category,
+    sort,
+    page,
+    perPage,
+    regulators,
+    platforms,
+    rating,
+    features,
+  } = search;
   const skip = (page - 1) * perPage;
   const take = perPage;
   let [sortBy, sortOrder] = sort.split(".");
@@ -192,6 +202,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     ...safeWhere,
     status: ToolStatus.Published,
     ...(category && { categories: { some: { slug: category } } }),
+    ...(rating && { overall_rating: { startsWith: rating } }),
   };
 
   if (q) {
@@ -204,7 +215,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     ];
   }
 
-  const [brokers, total] = await Promise.all([
+  const [allBrokers, totalCount] = await Promise.all([
     db.brokers.findMany({
       where: whereQuery,
       orderBy: sortBy
@@ -216,15 +227,93 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
             { broker_name: "asc" },
           ],
       include: { categories: true },
-      take,
-      skip,
     }),
     db.brokers.count({
       where: whereQuery,
     }),
   ]);
 
-  return { brokers, total, page, perPage };
+  // Filter brokers in memory for regulators
+  let brokers = allBrokers;
+  if (regulators) {
+    console.log("🔍 DEBUG: Filtering for regulators:", regulators);
+    console.log("🔍 DEBUG: Total brokers before filter:", allBrokers.length);
+
+    const selectedRegulators = regulators.split(",").map((r) => r.trim());
+
+    brokers = allBrokers.filter((broker) => {
+      const regulatorList =
+        broker.regulators?.split(",").map((r) => r.trim()) || [];
+      const hasMatch = selectedRegulators.some((selectedReg) =>
+        regulatorList.some(
+          (reg) => reg.toLowerCase() === selectedReg.toLowerCase(),
+        ),
+      );
+
+      if (broker.regulators?.includes("ASIC")) {
+        console.log("🔍 DEBUG: ASIC Broker found:", {
+          broker_name: broker.broker_name,
+          regulators: broker.regulators,
+          regulatorList,
+          selectedRegulators,
+          hasMatch,
+          searchingFor: regulators,
+        });
+      }
+
+      return hasMatch;
+    });
+
+    console.log("🔍 DEBUG: Brokers after regulator filter:", brokers.length);
+  }
+
+  // Filter brokers in memory for platforms
+  if (platforms) {
+    const selectedPlatforms = platforms.split(",").map((p) => p.trim());
+    console.log("🔍 DEBUG: Filtering for platforms:", platforms);
+    brokers = brokers.filter((broker) => {
+      const platformList =
+        broker.trading_platforms?.split(",").map((p) => p.trim()) || [];
+      const hasMatch = selectedPlatforms.some((selectedPlatform) =>
+        platformList.some(
+          (platform) =>
+            platform.toLowerCase() === selectedPlatform.toLowerCase(),
+        ),
+      );
+      return hasMatch;
+    });
+    console.log("🔍 DEBUG: Brokers after platform filter:", brokers.length);
+  }
+
+  // Filter brokers in memory for features
+  if (features) {
+    const selectedFeatures = features.split(",").map((f) => f.trim());
+    console.log("🔍 DEBUG: Filtering for features:", features);
+    brokers = brokers.filter((broker) => {
+      return selectedFeatures.every((selectedFeature) => {
+        switch (selectedFeature) {
+          case "Islamic Account":
+            return broker.islamicAccount === true;
+          case "Copy Trading":
+            return broker.copyTrading === true;
+          case "Demo Account":
+            return broker.demoAccount === true;
+          case "India Available":
+            return broker.availableInIndia === true;
+          default:
+            return false;
+        }
+      });
+    });
+    console.log("🔍 DEBUG: Brokers after features filter:", brokers.length);
+  }
+
+  // Apply pagination after filtering
+  const total =
+    regulators || platforms || features ? brokers.length : totalCount;
+  const paginatedBrokers = brokers.slice(skip, skip + take);
+
+  return { brokers: paginatedBrokers, total, page, perPage };
 };
 
 export const findBrokers = async ({

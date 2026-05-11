@@ -2,12 +2,14 @@
 
 import { useTranslations } from "next-intl"
 import type { ComponentProps } from "react"
-import type { Stack } from "~/components/common/stack"
+import { Stack } from "~/components/common/stack"
+import { BrokerFilterModal } from "~/components/web/filters/broker-filter-modal"
 import { Filters } from "~/components/web/filters/filters"
 import { Sort } from "~/components/web/filters/sort"
-import { ToolFilters } from "~/components/web/tools/tool-filters"
 import { useFilters } from "~/contexts/filter-context"
 import type { ToolFilterSchema } from "~/server/web/tools/schema"
+import { X } from "lucide-react"
+import { FilterTags } from "~/components/web/filters/temp-filter-tags"
 
 export type ToolSearchProps = ComponentProps<typeof Stack> & {
   placeholder?: string
@@ -15,7 +17,7 @@ export type ToolSearchProps = ComponentProps<typeof Stack> & {
 
 export const ToolSearch = ({ placeholder, ...props }: ToolSearchProps) => {
   const t = useTranslations("tools.filters")
-  const { enableSort, enableFilters } = useFilters<ToolFilterSchema>()
+  const { enableSort, enableFilters, filters } = useFilters<ToolFilterSchema>()
 
   const sortOptions = [
     { value: "publishedAt.desc", label: t("sort_latest") },
@@ -24,9 +26,20 @@ export const ToolSearch = ({ placeholder, ...props }: ToolSearchProps) => {
   ]
 
   return (
-    <Filters placeholder={placeholder || t("search_placeholder")} {...props}>
-      {enableFilters && <ToolFilters />}
-      {enableSort && <Sort options={sortOptions} />}
-    </Filters>
+    <Stack {...props}>
+      <Filters placeholder={placeholder || t("search_placeholder")}>
+        {enableFilters && <BrokerFilterModal />}
+        {enableSort && <Sort options={sortOptions} />}
+      </Filters>
+
+      {/* Selected Filter Tags - Positioned below search bar */}
+      <FilterTags
+        category={filters.category}
+        regulators={filters.regulators}
+        platforms={filters.platforms}
+        rating={filters.rating}
+        features={filters.features}
+      />
+    </Stack>
   )
 }

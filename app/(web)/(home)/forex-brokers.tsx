@@ -57,7 +57,7 @@ const BrokerCard = ({ name, logo, slug }: { name: string, logo: string, slug?: s
 
 export default function ForexBrokers({ brokers }: any) {
     return (
-        <div className='pt-100 overflow-hidden max-mobile:pt-16'>
+        <div className='pt-100 pb-100 overflow-hidden max-mobile:pt-16'>
             <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-0'>
                 <div className='flex items-center max-mobile:block justify-between pb-12 max-mobile:pb-8 max-mobile:px-4'>
                     <motion.div

@@ -29,20 +29,8 @@ export const Filters = ({ children, className, placeholder, ...props }: FiltersP
           value={filters.q || ""}
           onChange={e => updateFilters({ q: e.target.value })}
           placeholder={isLoading ? t("loading") : placeholder}
-          className={cx("w-full truncate pl-10", !isDefault && "pr-12 sm:pr-20")}
+          className="w-full truncate pl-10"
         />
-
-        {!isDefault && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="absolute right-2 inset-y-2"
-            onClick={() => updateFilters(null)}
-            prefix={<XIcon />}
-          >
-            <span className="max-md:sr-only">{t("reset")}</span>
-          </Button>
-        )}
       </div>
 
       {children}
