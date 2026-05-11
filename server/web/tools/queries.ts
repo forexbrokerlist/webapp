@@ -179,6 +179,11 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     pricing,
     educationFeatures,
     locationLanguage,
+    // Bridge & Plugin specific filters
+    solutionType,
+    compatiblePlatform,
+    targetClient,
+    hqRegion,
   } = search;
   const skip = (page - 1) * perPage;
   const take = perPage;
@@ -416,6 +421,89 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     );
   }
 
+  // Filter brokers in memory for solution type
+  if (solutionType && solutionType !== "All") {
+    console.log("🔍 DEBUG: Filtering for solution type:", solutionType);
+    brokers = brokers.filter((broker) => {
+      return broker.solution_type === solutionType;
+    });
+    console.log(
+      "🔍 DEBUG: Brokers after solution type filter:",
+      brokers.length,
+    );
+  }
+
+  // Filter brokers in memory for compatible platform
+  if (compatiblePlatform) {
+    const selectedPlatforms = compatiblePlatform
+      .split(",")
+      .map((p) => p.trim())
+      .filter((p) => p !== "All");
+    console.log(
+      "🔍 DEBUG: Filtering for compatible platforms:",
+      compatiblePlatform,
+    );
+    brokers = brokers.filter((broker) => {
+      if (selectedPlatforms.length === 0) return true;
+
+      // Check if broker supports any of the selected platforms
+      return selectedPlatforms.some((selectedPlatform) => {
+        const brokerPlatforms =
+          broker.trading_platforms?.split(",").map((p) => p.trim()) || [];
+        return brokerPlatforms.some(
+          (platform) =>
+            platform.toLowerCase() === selectedPlatform.toLowerCase(),
+        );
+      });
+    });
+    console.log(
+      "🔍 DEBUG: Brokers after compatible platform filter:",
+      brokers.length,
+    );
+  }
+
+  // Filter brokers in memory for target client
+  if (targetClient) {
+    const selectedClients = targetClient
+      .split(",")
+      .map((c) => c.trim())
+      .filter((c) => c !== "All");
+    console.log("🔍 DEBUG: Filtering for target client:", targetClient);
+    brokers = brokers.filter((broker) => {
+      if (selectedClients.length === 0) return true;
+
+      const targetClients = broker.target_clients || [];
+      return selectedClients.some((selectedClient) =>
+        targetClients.some(
+          (client) => client.toLowerCase() === selectedClient.toLowerCase(),
+        ),
+      );
+    });
+    console.log(
+      "🔍 DEBUG: Brokers after target client filter:",
+      brokers.length,
+    );
+  }
+
+  // Filter brokers in memory for HQ region
+  if (hqRegion) {
+    const selectedRegions = hqRegion
+      .split(",")
+      .map((r) => r.trim())
+      .filter((r) => r !== "All");
+    console.log("🔍 DEBUG: Filtering for HQ region:", hqRegion);
+    brokers = brokers.filter((broker) => {
+      if (selectedRegions.length === 0) return true;
+
+      const headquarters = broker.headquarters || "";
+      return selectedRegions.some((selectedRegion) => {
+        const lowerSelected = selectedRegion.toLowerCase();
+        return headquarters.toLowerCase().includes(lowerSelected);
+      });
+    });
+    console.log("🔍 DEBUG: Brokers after HQ region filter:", brokers.length);
+  }
+
   // Apply pagination after filtering
   const hasFilters = !!(
     regulators ||
@@ -425,7 +513,11 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     learningFormat ||
     pricing ||
     educationFeatures ||
-    locationLanguage
+    locationLanguage ||
+    solutionType ||
+    compatiblePlatform ||
+    targetClient ||
+    hqRegion
   );
   const total = hasFilters ? brokers.length : totalCount;
   const paginatedBrokers = brokers.slice(skip, skip + take);

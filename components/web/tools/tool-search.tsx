@@ -46,6 +46,11 @@ export const ToolSearch = ({ placeholder, category, ...props }: ToolSearchProps)
         pricing={filters.pricing}
         educationFeatures={filters.educationFeatures}
         locationLanguage={filters.locationLanguage}
+        // Bridge & Plugin filters
+        solutionType={filters.solutionType}
+        compatiblePlatform={filters.compatiblePlatform}
+        targetClient={filters.targetClient}
+        hqRegion={filters.hqRegion}
       />
     </Stack>
   )
