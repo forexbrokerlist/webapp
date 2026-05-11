@@ -10,9 +10,19 @@ interface FilterTagsProps {
   platforms?: string
   rating?: string
   features?: string
+  skillLevel?: string
+  learningFormat?: string
+  pricing?: string
+  educationFeatures?: string
+  locationLanguage?: string
+  // Bridge & Plugin fields
+  solutionType?: string
+  compatiblePlatform?: string
+  targetClient?: string
+  hqRegion?: string
 }
 
-export const FilterTags = ({ category, regulators, platforms, rating, features }: FilterTagsProps) => {
+export const FilterTags = ({ category, regulators, platforms, rating, features, skillLevel, learningFormat, pricing, educationFeatures, locationLanguage, solutionType, compatiblePlatform, targetClient, hqRegion }: FilterTagsProps) => {
   const { filters, updateFilters } = useFilters<ToolFilterSchema>()
 
   const removeFilter = (filterType: string, value: string) => {
@@ -32,6 +42,36 @@ export const FilterTags = ({ category, regulators, platforms, rating, features }
       const currentFeatures = filters.features ? filters.features.split(",") : []
       const newFeatures = currentFeatures.filter(f => f !== value)
       updateFilters({ features: newFeatures.join(",") })
+    } else if (filterType === 'skillLevel') {
+      updateFilters({ skillLevel: filters.skillLevel === value ? "" : value })
+    } else if (filterType === 'learningFormat') {
+      const currentFormats = filters.learningFormat ? filters.learningFormat.split(",") : []
+      const newFormats = currentFormats.filter(f => f !== value)
+      updateFilters({ learningFormat: newFormats.join(",") })
+    } else if (filterType === 'pricing') {
+      updateFilters({ pricing: filters.pricing === value ? "" : value })
+    } else if (filterType === 'educationFeatures') {
+      const currentEduFeatures = filters.educationFeatures ? filters.educationFeatures.split(",") : []
+      const newEduFeatures = currentEduFeatures.filter(f => f !== value)
+      updateFilters({ educationFeatures: newEduFeatures.join(",") })
+    } else if (filterType === 'locationLanguage') {
+      const currentLocations = filters.locationLanguage ? filters.locationLanguage.split(",") : []
+      const newLocations = currentLocations.filter(l => l !== value)
+      updateFilters({ locationLanguage: newLocations.join(",") })
+    } else if (filterType === 'solutionType') {
+      updateFilters({ solutionType: filters.solutionType === value ? "" : value })
+    } else if (filterType === 'compatiblePlatform') {
+      const currentPlatforms = filters.compatiblePlatform ? filters.compatiblePlatform.split(",") : []
+      const newPlatforms = currentPlatforms.filter(p => p !== value)
+      updateFilters({ compatiblePlatform: newPlatforms.join(",") })
+    } else if (filterType === 'targetClient') {
+      const currentClients = filters.targetClient ? filters.targetClient.split(",") : []
+      const newClients = currentClients.filter(c => c !== value)
+      updateFilters({ targetClient: newClients.join(",") })
+    } else if (filterType === 'hqRegion') {
+      const currentRegions = filters.hqRegion ? filters.hqRegion.split(",") : []
+      const newRegions = currentRegions.filter(r => r !== value)
+      updateFilters({ hqRegion: newRegions.join(",") })
     }
   }
 
@@ -42,11 +82,21 @@ export const FilterTags = ({ category, regulators, platforms, rating, features }
       platforms: "",
       rating: "",
       features: "",
+      skillLevel: "",
+      learningFormat: "",
+      pricing: "",
+      educationFeatures: "",
+      locationLanguage: "",
+      // Bridge & Plugin fields
+      solutionType: "",
+      compatiblePlatform: "",
+      targetClient: "",
+      hqRegion: "",
       q: ""
     })
   }
 
-  const hasActiveFilters = !!(category || regulators || platforms || rating || features)
+  const hasActiveFilters = !!(category || regulators || platforms || rating || features || skillLevel || learningFormat || pricing || educationFeatures || locationLanguage || solutionType || compatiblePlatform || targetClient || hqRegion)
 
   return (
     <div className="flex flex-wrap items-center gap-2 px-6 py-3 border-b border-[#E5E7E0]">
@@ -108,6 +158,123 @@ export const FilterTags = ({ category, regulators, platforms, rating, features }
           <button
             type="button"
             onClick={() => removeFilter('features', feature.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {skillLevel && (
+        <span className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {skillLevel}
+          <button
+            type="button"
+            onClick={() => removeFilter('skillLevel', skillLevel)}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      )}
+
+      {learningFormat && learningFormat.split(",").map((format, index) => (
+        <span key={format} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {format.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('learningFormat', format.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {pricing && (
+        <span className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {pricing}
+          <button
+            type="button"
+            onClick={() => removeFilter('pricing', pricing)}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      )}
+
+      {educationFeatures && educationFeatures.split(",").map((feature: string, index: number) => (
+        <span key={feature} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {feature.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('educationFeatures', feature.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {locationLanguage && locationLanguage.split(",").map((location, index) => (
+        <span key={location} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {location.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('locationLanguage', location.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {solutionType && (
+        <span className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {solutionType}
+          <button
+            type="button"
+            onClick={() => removeFilter('solutionType', solutionType)}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      )}
+
+      {compatiblePlatform && compatiblePlatform.split(",").map((platform, index) => (
+        <span key={platform} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {platform.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('compatiblePlatform', platform.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {targetClient && targetClient.split(",").map((client, index) => (
+        <span key={client} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {client.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('targetClient', client.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {hqRegion && hqRegion.split(",").map((region, index) => (
+        <span key={region} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {region.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('hqRegion', region.trim())}
             className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
           >
             <X size={12} />

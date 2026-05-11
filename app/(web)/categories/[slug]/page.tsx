@@ -114,6 +114,7 @@ export default async function (props: Props) {
               options={{ enableFilters: true }}
               ad="Tools"
               list={{ categorySlug: category.slug }}
+              categorySlug={category.slug}
             />
           </Suspense>
 

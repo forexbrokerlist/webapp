@@ -4,104 +4,39 @@ import { ChevronDown, ChevronUp, SlidersHorizontal, X } from "lucide-react"
 import { useAction } from "next-safe-action/hooks"
 import { useEffect, useState } from "react"
 import { useFilters } from "~/contexts/filter-context"
-import { findFilterOptions } from "~/server/web/actions/filters"
+import { findFilterOptionsWithCategory } from "~/server/web/actions/filters-with-category"
 import type { ToolFilterSchema } from "~/server/web/tools/schema"
 
-interface FilterTagsProps {
+
+interface BrokerFilterModalProps {
   category?: string
-  regulators?: string
-  platforms?: string
-  rating?: string
 }
 
-const FilterTags = ({ category, regulators, platforms, rating }: FilterTagsProps) => {
-  const { filters, updateFilters } = useFilters<ToolFilterSchema>()
-
-  const removeFilter = (filterType: string, value: string) => {
-    if (filterType === 'category') {
-      updateFilters({ category: filters.category === value ? "" : value })
-    } else if (filterType === 'regulators') {
-      const currentRegulators = filters.regulators ? filters.regulators.split(",") : []
-      const newRegulators = currentRegulators.filter(r => r !== value)
-      updateFilters({ regulators: newRegulators.join(",") })
-    } else if (filterType === 'platforms') {
-      const currentPlatforms = filters.platforms ? filters.platforms.split(",") : []
-      const newPlatforms = currentPlatforms.filter(p => p !== value)
-      updateFilters({ platforms: newPlatforms.join(",") })
-    } else if (filterType === 'rating') {
-      updateFilters({ rating: filters.rating === value ? "" : value })
-    }
-  }
-
-  return (
-    <div className="flex flex-wrap gap-2 px-6 py-3 border-b border-[#E5E7E0]">
-      {category && (
-        <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#A8DD15]/20 text-[#5a7a0a] rounded-full text-xs font-medium">
-          {category}
-          <button
-            type="button"
-            onClick={() => removeFilter('category', category)}
-            className="ml-1 text-[#5a7a0a] hover:text-[#4a5a0a] transition-colors"
-          >
-            <X size={12} />
-          </button>
-        </span>
-      )}
-
-      {regulators && regulators.split(",").map((reg, index) => (
-        <span key={reg} className="inline-flex items-center gap-1 px-3 py-1 bg-[#A8DD15]/20 text-[#5a7a0a] rounded-full text-xs font-medium">
-          {reg.trim()}
-          <button
-            type="button"
-            onClick={() => removeFilter('regulators', reg.trim())}
-            className="ml-1 text-[#5a7a0a] hover:text-[#4a5a0a] transition-colors"
-          >
-            <X size={12} />
-          </button>
-        </span>
-      ))}
-
-      {platforms && platforms.split(",").map((platform, index) => (
-        <span key={platform} className="inline-flex items-center gap-1 px-3 py-1 bg-[#A8DD15]/20 text-[#5a7a0a] rounded-full text-xs font-medium">
-          {platform.trim()}
-          <button
-            type="button"
-            onClick={() => removeFilter('platforms', platform.trim())}
-            className="ml-1 text-[#5a7a0a] hover:text-[#4a5a0a] transition-colors"
-          >
-            <X size={12} />
-          </button>
-        </span>
-      ))}
-
-      {rating && (
-        <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#A8DD15]/20 text-[#5a7a0a] rounded-full text-xs font-medium">
-          {rating} Stars & Up
-          <button
-            type="button"
-            onClick={() => removeFilter('rating', rating)}
-            className="ml-1 text-[#5a7a0a] hover:text-[#4a5a0a] transition-colors"
-          >
-            <X size={12} />
-          </button>
-        </span>
-      )}
-    </div>
-  )
-}
-
-export const BrokerFilterModal = () => {
+export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [localCategory, setLocalCategory] = useState<string>("")
   const [localRegulators, setLocalRegulators] = useState<string[]>([])
   const [localPlatforms, setLocalPlatforms] = useState<string[]>([])
   const [localRating, setLocalRating] = useState<string>("")
   const [localFeatures, setLocalFeatures] = useState<string[]>([])
+  // Forex education state
+  const [localSkillLevel, setLocalSkillLevel] = useState<string>("")
+  const [localLearningFormat, setLocalLearningFormat] = useState<string[]>([])
+  const [localPricing, setLocalPricing] = useState<string>("")
+  const [localEducationFeatures, setLocalEducationFeatures] = useState<string[]>([])
+  const [localLocationLanguage, setLocalLocationLanguage] = useState<string[]>([])
+  // Bridge & Plugin state
+  const [localSolutionType, setLocalSolutionType] = useState<string>("")
+  const [localCompatiblePlatform, setLocalCompatiblePlatform] = useState<string[]>([])
+  const [localTargetClient, setLocalTargetClient] = useState<string[]>([])
+  const [localHqRegion, setLocalHqRegion] = useState<string[]>([])
   const [expandedSections, setExpandedSections] = useState<string[]>(["category", "features"])
   const { filters, updateFilters } = useFilters<ToolFilterSchema>()
-  const { result, execute } = useAction(findFilterOptions)
+  const { result, execute } = useAction(findFilterOptionsWithCategory)
 
-  useEffect(execute, [execute])
+  useEffect(() => {
+    execute({ category })
+  }, [execute, category])
 
   // Sync local state when opening modal
   useEffect(() => {
@@ -111,8 +46,19 @@ export const BrokerFilterModal = () => {
       setLocalPlatforms(filters.platforms ? filters.platforms.split(",") : [])
       setLocalRating(filters.rating || "")
       setLocalFeatures(filters.features ? filters.features.split(",") : [])
+      // Sync forex education filters
+      setLocalSkillLevel(filters.skillLevel || "")
+      setLocalLearningFormat(filters.learningFormat ? filters.learningFormat.split(",") : [])
+      setLocalPricing(filters.pricing || "")
+      setLocalEducationFeatures(filters.educationFeatures ? filters.educationFeatures.split(",") : [])
+      setLocalLocationLanguage(filters.locationLanguage ? filters.locationLanguage.split(",") : [])
+      // Sync bridge & plugin filters
+      setLocalSolutionType(filters.solutionType || "")
+      setLocalCompatiblePlatform(filters.compatiblePlatform ? filters.compatiblePlatform.split(",") : [])
+      setLocalTargetClient(filters.targetClient ? filters.targetClient.split(",") : [])
+      setLocalHqRegion(filters.hqRegion ? filters.hqRegion.split(",") : [])
     }
-  }, [isOpen, filters.category, filters.regulators, filters.platforms, filters.rating, filters.features])
+  }, [isOpen, filters.category, filters.regulators, filters.platforms, filters.rating, filters.features, filters.skillLevel, filters.learningFormat, filters.pricing, filters.educationFeatures, filters.locationLanguage, filters.solutionType, filters.compatiblePlatform, filters.targetClient, filters.hqRegion])
 
   // Lock body scroll when open
   useEffect(() => {
@@ -138,7 +84,18 @@ export const BrokerFilterModal = () => {
       regulators: localRegulators.join(","),
       platforms: localPlatforms.join(","),
       rating: localRating,
-      features: localFeatures.join(",")
+      features: localFeatures.join(","),
+      // Apply forex education filters
+      skillLevel: localSkillLevel,
+      learningFormat: localLearningFormat.join(","),
+      pricing: localPricing,
+      educationFeatures: localEducationFeatures.join(","),
+      locationLanguage: localLocationLanguage.join(","),
+      // Apply bridge & plugin filters
+      solutionType: localSolutionType,
+      compatiblePlatform: localCompatiblePlatform.join(","),
+      targetClient: localTargetClient.join(","),
+      hqRegion: localHqRegion.join(",")
     })
     setIsOpen(false)
   }
@@ -149,12 +106,32 @@ export const BrokerFilterModal = () => {
     setLocalPlatforms([])
     setLocalRating("")
     setLocalFeatures([])
+    // Clear forex education filters
+    setLocalSkillLevel("")
+    setLocalLearningFormat([])
+    setLocalPricing("")
+    setLocalEducationFeatures([])
+    setLocalLocationLanguage([])
+    // Clear bridge & plugin filters
+    setLocalSolutionType("")
+    setLocalCompatiblePlatform([])
+    setLocalTargetClient([])
+    setLocalHqRegion([])
     updateFilters({
       category: "",
       regulators: "",
       platforms: "",
       rating: "",
-      features: ""
+      features: "",
+      skillLevel: "",
+      learningFormat: "",
+      pricing: "",
+      educationFeatures: "",
+      locationLanguage: "",
+      solutionType: "",
+      compatiblePlatform: "",
+      targetClient: "",
+      hqRegion: ""
     })
     setIsOpen(false)
   }
@@ -164,7 +141,16 @@ export const BrokerFilterModal = () => {
     (filters.regulators ? filters.regulators.split(",").length : 0) +
     (filters.platforms ? filters.platforms.split(",").length : 0) +
     (filters.rating ? 1 : 0) +
-    (filters.features ? filters.features.split(",").length : 0)
+    (filters.features ? filters.features.split(",").length : 0) +
+    (filters.skillLevel ? 1 : 0) +
+    (filters.learningFormat ? filters.learningFormat.split(",").length : 0) +
+    (filters.pricing ? 1 : 0) +
+    (filters.educationFeatures ? filters.educationFeatures.split(",").length : 0) +
+    (filters.locationLanguage ? filters.locationLanguage.split(",").length : 0) +
+    (filters.solutionType ? 1 : 0) +
+    (filters.compatiblePlatform ? filters.compatiblePlatform.split(",").length : 0) +
+    (filters.targetClient ? filters.targetClient.split(",").length : 0) +
+    (filters.hqRegion ? filters.hqRegion.split(",").length : 0)
 
   const removeFilter = (filterType: string, value: string) => {
     if (filterType === 'category') {
@@ -187,7 +173,17 @@ export const BrokerFilterModal = () => {
       category: "CATEGORY",
       regulators: "REGULATORS",
       platforms: "PLATFORMS",
-      rating: "RATING"
+      rating: "RATING",
+      features: "FEATURES",
+      skillLevel: "SKILL LEVEL",
+      learningFormat: "LEARNING FORMAT",
+      pricing: "PRICING",
+      educationFeatures: "EDUCATION FEATURES",
+      locationLanguage: "LOCATION/LANGUAGE",
+      solutionType: "SOLUTION TYPE",
+      compatiblePlatform: "COMPATIBLE PLATFORM",
+      targetClient: "TARGET CLIENT",
+      hqRegion: "HQ / REGION"
     }
     return labels[type] ?? type.replace(/_/g, " ").toUpperCase()
   }
@@ -457,6 +453,318 @@ export const BrokerFilterModal = () => {
                             />
                             <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
                               {feature}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "skillLevel" && (
+                      <>
+                        {/* "All Skill Levels" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localSkillLevel === ""}
+                            onChange={() => setLocalSkillLevel("")}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Skill Levels
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localSkillLevel === slug}
+                              onChange={() =>
+                                setLocalSkillLevel(prev => (prev === slug ? "" : slug))
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "learningFormat" && (
+                      <>
+                        {/* "All Formats" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localLearningFormat.length === 0}
+                            onChange={() => setLocalLearningFormat([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Formats
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localLearningFormat.includes(slug)}
+                              onChange={() =>
+                                setLocalLearningFormat(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(f => f !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "pricing" && (
+                      <>
+                        {/* "All Pricing" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localPricing === ""}
+                            onChange={() => setLocalPricing("")}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Pricing
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localPricing === slug}
+                              onChange={() =>
+                                setLocalPricing(prev => (prev === slug ? "" : slug))
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "educationFeatures" && (
+                      <>
+                        {/* "All Education Features" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localEducationFeatures.length === 0}
+                            onChange={() => setLocalEducationFeatures([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Education Features
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localEducationFeatures.includes(slug)}
+                              onChange={() =>
+                                setLocalEducationFeatures(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(f => f !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "locationLanguage" && (
+                      <>
+                        {/* "All Locations/Languages" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localLocationLanguage.length === 0}
+                            onChange={() => setLocalLocationLanguage([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Locations/Languages
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localLocationLanguage.includes(slug)}
+                              onChange={() =>
+                                setLocalLocationLanguage(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(l => l !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "solutionType" && (
+                      <>
+                        {/* "All Solution Types" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localSolutionType === ""}
+                            onChange={() => setLocalSolutionType("")}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Solution Types
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localSolutionType === slug}
+                              onChange={() =>
+                                setLocalSolutionType(prev => (prev === slug ? "" : slug))
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "compatiblePlatform" && (
+                      <>
+                        {/* "All Platforms" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localCompatiblePlatform.length === 0}
+                            onChange={() => setLocalCompatiblePlatform([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Platforms
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localCompatiblePlatform.includes(slug)}
+                              onChange={() =>
+                                setLocalCompatiblePlatform(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(p => p !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "targetClient" && (
+                      <>
+                        {/* "All Target Clients" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localTargetClient.length === 0}
+                            onChange={() => setLocalTargetClient([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Target Clients
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localTargetClient.includes(slug)}
+                              onChange={() =>
+                                setLocalTargetClient(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(c => c !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "hqRegion" && (
+                      <>
+                        {/* "All Regions" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localHqRegion.length === 0}
+                            onChange={() => setLocalHqRegion([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Regions
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localHqRegion.includes(slug)}
+                              onChange={() =>
+                                setLocalHqRegion(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(r => r !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
                             </span>
                           </label>
                         ))}

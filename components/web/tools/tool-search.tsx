@@ -13,9 +13,11 @@ import { FilterTags } from "~/components/web/filters/temp-filter-tags"
 
 export type ToolSearchProps = ComponentProps<typeof Stack> & {
   placeholder?: string
+  category?: string
 }
 
-export const ToolSearch = ({ placeholder, ...props }: ToolSearchProps) => {
+export const ToolSearch = ({ placeholder, category, ...props }: ToolSearchProps) => {
+  console.log("🔍 ToolSearch received category:", category)
   const t = useTranslations("tools.filters")
   const { enableSort, enableFilters, filters } = useFilters<ToolFilterSchema>()
 
@@ -28,7 +30,7 @@ export const ToolSearch = ({ placeholder, ...props }: ToolSearchProps) => {
   return (
     <Stack {...props}>
       <Filters placeholder={placeholder || t("search_placeholder")}>
-        {enableFilters && <BrokerFilterModal />}
+        {enableFilters && <BrokerFilterModal category={category} />}
         {enableSort && <Sort options={sortOptions} />}
       </Filters>
 
@@ -39,6 +41,11 @@ export const ToolSearch = ({ placeholder, ...props }: ToolSearchProps) => {
         platforms={filters.platforms}
         rating={filters.rating}
         features={filters.features}
+        skillLevel={filters.skillLevel}
+        learningFormat={filters.learningFormat}
+        pricing={filters.pricing}
+        educationFeatures={filters.educationFeatures}
+        locationLanguage={filters.locationLanguage}
       />
     </Stack>
   )

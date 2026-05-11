@@ -18,6 +18,17 @@ export const toolFilterParams = {
   platforms: parseAsString.withDefault(""),
   rating: parseAsString.withDefault(""),
   features: parseAsString.withDefault(""),
+  // Forex Education specific fields
+  skillLevel: parseAsString.withDefault(""),
+  learningFormat: parseAsString.withDefault(""),
+  pricing: parseAsString.withDefault(""),
+  educationFeatures: parseAsString.withDefault(""),
+  locationLanguage: parseAsString.withDefault(""),
+  // Bridge & Plugin specific fields
+  solutionType: parseAsString.withDefault(""),
+  compatiblePlatform: parseAsString.withDefault(""),
+  targetClient: parseAsString.withDefault(""),
+  hqRegion: parseAsString.withDefault(""),
 };
 
 export const toolFilterParamsCache = createSearchParamsCache(toolFilterParams);

@@ -173,6 +173,12 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     platforms,
     rating,
     features,
+    // Forex education specific filters
+    skillLevel,
+    learningFormat,
+    pricing,
+    educationFeatures,
+    locationLanguage,
   } = search;
   const skip = (page - 1) * perPage;
   const take = perPage;
@@ -308,9 +314,120 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     console.log("🔍 DEBUG: Brokers after features filter:", brokers.length);
   }
 
+  // Filter brokers in memory for skill level
+  if (skillLevel) {
+    console.log("🔍 DEBUG: Filtering for skill level:", skillLevel);
+    brokers = brokers.filter((broker) => {
+      const skillLevels = broker.skill_level || [];
+      return skillLevels.includes(skillLevel);
+    });
+    console.log("🔍 DEBUG: Brokers after skill level filter:", brokers.length);
+  }
+
+  // Filter brokers in memory for learning format
+  if (learningFormat) {
+    const selectedFormats = learningFormat.split(",").map((f) => f.trim());
+    console.log("🔍 DEBUG: Filtering for learning format:", learningFormat);
+    brokers = brokers.filter((broker) => {
+      const formats = broker.learning_format || [];
+      return selectedFormats.some((selectedFormat) =>
+        formats.some(
+          (format) => format.toLowerCase() === selectedFormat.toLowerCase(),
+        ),
+      );
+    });
+    console.log(
+      "🔍 DEBUG: Brokers after learning format filter:",
+      brokers.length,
+    );
+  }
+
+  // Filter brokers in memory for pricing
+  if (pricing) {
+    console.log("🔍 DEBUG: Filtering for pricing:", pricing);
+    brokers = brokers.filter((broker) => {
+      const pricingModels = broker.pricingModel || [];
+      return pricingModels.some((model) =>
+        model.toLowerCase().includes(pricing.toLowerCase()),
+      );
+    });
+    console.log("🔍 DEBUG: Brokers after pricing filter:", brokers.length);
+  }
+
+  // Filter brokers in memory for education features
+  if (educationFeatures) {
+    const selectedFeatures = educationFeatures.split(",").map((f) => f.trim());
+    console.log(
+      "🔍 DEBUG: Filtering for education features:",
+      educationFeatures,
+    );
+    brokers = brokers.filter((broker) => {
+      return selectedFeatures.every((selectedFeature) => {
+        switch (selectedFeature) {
+          case "Certificate":
+            return broker.certificate_available === true;
+          case "Community":
+            return broker.community_access === true;
+          case "1-on-1 Mentor":
+            return broker.mentorship_available === true;
+          case "MT4/MT5 training":
+            return (
+              broker.trading_platforms?.toLowerCase().includes("mt4") ||
+              broker.trading_platforms?.toLowerCase().includes("mt5")
+            );
+          default:
+            return false;
+        }
+      });
+    });
+    console.log(
+      "🔍 DEBUG: Brokers after education features filter:",
+      brokers.length,
+    );
+  }
+
+  // Filter brokers in memory for location/language
+  if (locationLanguage) {
+    const selectedLocations = locationLanguage.split(",").map((l) => l.trim());
+    console.log("🔍 DEBUG: Filtering for location/language:", locationLanguage);
+    brokers = brokers.filter((broker) => {
+      const languages = broker.languages_supported || [];
+      const headquarters = broker.headquarters || "";
+
+      return selectedLocations.some((selectedLocation) => {
+        const lowerSelected = selectedLocation.toLowerCase();
+
+        // Check if language matches
+        const languageMatch = languages.some(
+          (lang) => lang.toLowerCase() === lowerSelected,
+        );
+
+        // Check if location matches (for things like UK, UAE, USA)
+        const locationMatch = headquarters
+          .toLowerCase()
+          .includes(lowerSelected);
+
+        return languageMatch || locationMatch;
+      });
+    });
+    console.log(
+      "🔍 DEBUG: Brokers after location/language filter:",
+      brokers.length,
+    );
+  }
+
   // Apply pagination after filtering
-  const total =
-    regulators || platforms || features ? brokers.length : totalCount;
+  const hasFilters = !!(
+    regulators ||
+    platforms ||
+    features ||
+    skillLevel ||
+    learningFormat ||
+    pricing ||
+    educationFeatures ||
+    locationLanguage
+  );
+  const total = hasFilters ? brokers.length : totalCount;
   const paginatedBrokers = brokers.slice(skip, skip + take);
 
   return { brokers: paginatedBrokers, total, page, perPage };
