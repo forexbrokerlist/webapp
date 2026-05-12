@@ -234,7 +234,6 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     ...safeWhere,
     status: ToolStatus.Published,
     ...(category && { categories: { some: { slug: category } } }),
-    ...(rating && { overall_rating: { startsWith: rating } }),
   };
 
   if (q) {
@@ -297,6 +296,18 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
 
   }
 
+  // Filter brokers in memory for rating
+  if (rating) {
+    const minRating = parseFloat(rating);
+    if (!isNaN(minRating)) {
+      brokers = brokers.filter((broker) => {
+        if (!broker.overall_rating) return false;
+        const brokerRating = parseFloat(broker.overall_rating);
+        return !isNaN(brokerRating) && brokerRating >= minRating;
+      });
+    }
+  }
+
   // Filter brokers in memory for platforms
   if (platforms) {
     const selectedPlatforms = platforms.split(",").map((p) => p.trim());
@@ -305,10 +316,13 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       const platformList =
         broker.trading_platforms?.split(",").map((p) => p.trim()) || [];
       const hasMatch = selectedPlatforms.some((selectedPlatform) =>
-        platformList.some(
-          (platform) =>
-            platform.toLowerCase() === selectedPlatform.toLowerCase(),
-        ),
+        platformList.some((platform) => {
+          const lowerP = platform.toLowerCase();
+          const lowerPlat = selectedPlatform.toLowerCase();
+          if (lowerPlat === "mt4" && (lowerP === "mt4" || lowerP === "metatrader4" || lowerP === "metatrader 4")) return true;
+          if (lowerPlat === "mt5" && (lowerP === "mt5" || lowerP === "metatrader5" || lowerP === "metatrader 5")) return true;
+          return lowerP === lowerPlat;
+        }),
       );
       return hasMatch;
     });
@@ -438,12 +452,20 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
   }
 
   // Filter brokers in memory for solution type
-  if (solutionType && solutionType !== "All") {
-    console.log("🔍 DEBUG: Filtering for solution type:", solutionType);
+  if (solutionType) {
+    const selectedTypes = solutionType
+      .split(",")
+      .map((t) => t.trim())
+      .filter((t) => t !== "All");
+
     brokers = brokers.filter((broker) => {
-      return broker.solution_type === solutionType;
+      if (selectedTypes.length === 0) return true;
+      return selectedTypes.some(
+        (selected) =>
+          broker.solution_type?.toLowerCase().replace(/_/g, " ") ===
+          selected.toLowerCase().replace(/_/g, " "),
+      );
     });
-  
   }
 
   // Filter brokers in memory for compatible platform
@@ -460,10 +482,13 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       return selectedPlatforms.some((selectedPlatform) => {
         const brokerPlatforms =
           broker.trading_platforms?.split(",").map((p) => p.trim()) || [];
-        return brokerPlatforms.some(
-          (platform) =>
-            platform.toLowerCase() === selectedPlatform.toLowerCase(),
-        );
+        return brokerPlatforms.some((platform) => {
+          const lowerP = platform.toLowerCase();
+          const lowerPlat = selectedPlatform.toLowerCase();
+          if (lowerPlat === "mt4" && (lowerP === "mt4" || lowerP === "metatrader4" || lowerP === "metatrader 4")) return true;
+          if (lowerPlat === "mt5" && (lowerP === "mt5" || lowerP === "metatrader5" || lowerP === "metatrader 5")) return true;
+          return lowerP === lowerPlat;
+        });
       });
     });
   
@@ -542,9 +567,20 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
 
       const brokerAssetClasses = broker.asset_classes || [];
       return selectedAssetClasses.some((selectedAsset) =>
-        brokerAssetClasses.some(
-          (asset) => asset.toLowerCase() === selectedAsset.toLowerCase(),
-        ),
+        brokerAssetClasses.some((asset) => {
+          const normalizedAsset = asset.toLowerCase().replace(/_/g, " ");
+          const normalizedSelected = selectedAsset
+            .toLowerCase()
+            .replace(/_/g, " ");
+
+          // Handle NDFs alias
+          if (normalizedSelected === "ndfs" && normalizedAsset === "fx ndfs")
+            return true;
+          if (normalizedSelected === "fx ndfs" && normalizedAsset === "ndfs")
+            return true;
+
+          return normalizedAsset === normalizedSelected;
+        }),
       );
     });
    
@@ -561,18 +597,30 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       if (selectedExecutionTypes.length === 0) return true;
 
       const brokerExecutionTypes = broker.execution_types
-        ? broker.execution_types.split(",").map((e) => e.trim())
+        ? broker.execution_types
+            .split(/,|\//)
+            .map((e) => e.trim())
+            .filter((e) => e !== "")
         : [];
       return selectedExecutionTypes.some((selectedExec) =>
-        brokerExecutionTypes.some(
-          (exec) => exec.toLowerCase() === selectedExec.toLowerCase(),
-        ),
+        brokerExecutionTypes.some((exec) => {
+          const normalizedExec = exec.toLowerCase().replace(/_/g, " ");
+          const normalizedSelected = selectedExec
+            .toLowerCase()
+            .replace(/_/g, " ");
+
+          // Also handle potential slash or space in selected values (e.g., "ecn_stp" -> "ecn stp")
+          const selectedParts = normalizedSelected.split(/[\/\s]/);
+          if (selectedParts.length > 1) {
+            return selectedParts.some(
+              (part) => part.trim() !== "" && part.trim() === normalizedExec,
+            );
+          }
+
+          return normalizedExec === normalizedSelected;
+        }),
       );
     });
-    console.log(
-      "🔍 DEBUG: Brokers after execution type filter:",
-      brokers.length,
-    );
   }
 
   // Filter brokers in memory for provider type
@@ -588,7 +636,9 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       const brokerProviderTypes = broker.provider_type || [];
       return selectedProviderTypes.some((selectedProv) =>
         brokerProviderTypes.some(
-          (prov) => prov.toLowerCase() === selectedProv.toLowerCase(),
+          (prov) =>
+            prov.toLowerCase().replace(/_/g, " ") ===
+            selectedProv.toLowerCase().replace(/_/g, " "),
         ),
       );
     });

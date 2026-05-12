@@ -45,7 +45,45 @@ interface FilterTagsProps {
 
 // Helper function to map filter slugs to display names
 const getFilterDisplayName = (slug: string, filterType: string): string => {
+  if (!slug) return slug;
+  
   switch (filterType) {
+    case 'regulators':
+    case 'regulation':
+      const regMap: Record<string, string> = {
+        'fca': 'FCA',
+        'asic': 'ASIC',
+        'mas': 'MAS',
+        'cysec': 'CySEC',
+        'cftc': 'CFTC',
+        'fsa': 'FSA',
+        'scb': 'SCB',
+        'vfsc': 'VFSC',
+        'fsc': 'FSC'
+      }
+      return regMap[slug.toLowerCase()] || slug.toUpperCase()
+
+    case 'assetClass':
+      const assetMap: Record<string, string> = {
+        'spot_fx': 'Spot FX',
+        'crypto': 'Crypto',
+        'indices': 'Indices',
+        'commodities': 'Commodities',
+        'ndfs': 'NDFs',
+        'equities': 'Equities'
+      }
+      return assetMap[slug.toLowerCase()] || slug.replace(/_/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+
+    case 'executionType':
+      const execMap: Record<string, string> = {
+        'no_last_look': 'No Last Look',
+        'ecn_stp': 'ECN/STP',
+        'prime_of_prime': 'Prime of Prime',
+        'a_book': 'A-Book',
+        'dma': 'DMA'
+      }
+      return execMap[slug.toLowerCase()] || slug.replace(/_/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+
     case 'paymentType':
       const paymentTypeMap: Record<string, string> = {
         'crypto_gateway': 'Crypto gateway',
@@ -89,7 +127,8 @@ const getFilterDisplayName = (slug: string, filterType: string): string => {
       return featureMap[slug] || slug
 
     default:
-      return slug
+      // Default formatting: Capitalize and replace underscores
+      return slug.replace(/_/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
   }
 }
 
@@ -130,7 +169,9 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
       const newLocations = currentLocations.filter(l => l !== value)
       updateFilters({ locationLanguage: newLocations.join(",") })
     } else if (filterType === 'solutionType') {
-      updateFilters({ solutionType: filters.solutionType === value ? "" : value })
+      const currentTypes = filters.solutionType ? filters.solutionType.split(",") : []
+      const newTypes = currentTypes.filter(t => t !== value)
+      updateFilters({ solutionType: newTypes.join(",") })
     } else if (filterType === 'compatiblePlatform') {
       const currentPlatforms = filters.compatiblePlatform ? filters.compatiblePlatform.split(",") : []
       const newPlatforms = currentPlatforms.filter(p => p !== value)
@@ -275,7 +316,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {regulators && regulators.split(",").map((reg, index) => (
         <span key={reg} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3]  rounded-full text-sm text-[#1A1A1A] font-medium">
-          {reg.trim()}
+          {getFilterDisplayName(reg.trim(), 'regulators')}
           <button
             type="button"
             onClick={() => removeFilter('regulators', reg.trim())}
@@ -288,7 +329,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {platforms && platforms.split(",").map((platform, index) => (
         <span key={platform} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {platform.trim()}
+          {getFilterDisplayName(platform.trim(), 'platforms')}
           <button
             type="button"
             onClick={() => removeFilter('platforms', platform.trim())}
@@ -314,7 +355,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {features && features.split(",").map((feature, index) => (
         <span key={feature} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {feature.trim()}
+          {getFilterDisplayName(feature.trim(), 'features')}
           <button
             type="button"
             onClick={() => removeFilter('features', feature.trim())}
@@ -327,7 +368,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {skillLevel && (
         <span className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {skillLevel}
+          {getFilterDisplayName(skillLevel, 'skillLevel')}
           <button
             type="button"
             onClick={() => removeFilter('skillLevel', skillLevel)}
@@ -340,7 +381,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {learningFormat && learningFormat.split(",").map((format, index) => (
         <span key={format} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {format.trim()}
+          {getFilterDisplayName(format.trim(), 'learningFormat')}
           <button
             type="button"
             onClick={() => removeFilter('learningFormat', format.trim())}
@@ -353,7 +394,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {pricing && (
         <span className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {pricing}
+          {getFilterDisplayName(pricing, 'pricing')}
           <button
             type="button"
             onClick={() => removeFilter('pricing', pricing)}
@@ -366,7 +407,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {educationFeatures && educationFeatures.split(",").map((feature: string, index: number) => (
         <span key={feature} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {feature.trim()}
+          {getFilterDisplayName(feature.trim(), 'educationFeatures')}
           <button
             type="button"
             onClick={() => removeFilter('educationFeatures', feature.trim())}
@@ -379,7 +420,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {locationLanguage && locationLanguage.split(",").map((location, index) => (
         <span key={location} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {location.trim()}
+          {getFilterDisplayName(location.trim(), 'locationLanguage')}
           <button
             type="button"
             onClick={() => removeFilter('locationLanguage', location.trim())}
@@ -390,22 +431,22 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
         </span>
       ))}
 
-      {solutionType && (
-        <span className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {solutionType}
+      {solutionType && solutionType.split(",").map((type, index) => (
+        <span key={type} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {getFilterDisplayName(type.trim(), 'solutionType')}
           <button
             type="button"
-            onClick={() => removeFilter('solutionType', solutionType)}
+            onClick={() => removeFilter('solutionType', type.trim())}
             className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
           >
             <X size={12} />
           </button>
         </span>
-      )}
+      ))}
 
       {compatiblePlatform && compatiblePlatform.split(",").map((platform, index) => (
         <span key={platform} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {platform.trim()}
+          {getFilterDisplayName(platform.trim(), 'compatiblePlatform')}
           <button
             type="button"
             onClick={() => removeFilter('compatiblePlatform', platform.trim())}
@@ -418,7 +459,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {targetClient && targetClient.split(",").map((client, index) => (
         <span key={client} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {client.trim()}
+          {getFilterDisplayName(client.trim(), 'targetClient')}
           <button
             type="button"
             onClick={() => removeFilter('targetClient', client.trim())}
@@ -431,7 +472,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {hqRegion && hqRegion.split(",").map((region, index) => (
         <span key={region} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {region.trim()}
+          {getFilterDisplayName(region.trim(), 'hqRegion')}
           <button
             type="button"
             onClick={() => removeFilter('hqRegion', region.trim())}
@@ -444,7 +485,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {regulation && regulation.split(",").map((reg, index) => (
         <span key={reg} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {reg.trim()}
+          {getFilterDisplayName(reg.trim(), 'regulation')}
           <button
             type="button"
             onClick={() => removeFilter('regulation', reg.trim())}
@@ -457,7 +498,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {assetClass && assetClass.split(",").map((asset, index) => (
         <span key={asset} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {asset.trim()}
+          {getFilterDisplayName(asset.trim(), 'assetClass')}
           <button
             type="button"
             onClick={() => removeFilter('assetClass', asset.trim())}
@@ -470,7 +511,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {executionType && executionType.split(",").map((execution, index) => (
         <span key={execution} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {execution.trim()}
+          {getFilterDisplayName(execution.trim(), 'executionType')}
           <button
             type="button"
             onClick={() => removeFilter('executionType', execution.trim())}
@@ -483,7 +524,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {providerType && providerType.split(",").map((provider, index) => (
         <span key={provider} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {provider.trim()}
+          {getFilterDisplayName(provider.trim(), 'providerType')}
           <button
             type="button"
             onClick={() => removeFilter('providerType', provider.trim())}
@@ -548,7 +589,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {platformType && platformType.split(",").map((platform, index) => (
         <span key={platform} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {platform.trim()}
+          {getFilterDisplayName(platform.trim(), 'platformType')}
           <button
             type="button"
             onClick={() => removeFilter('platformType', platform.trim())}
@@ -561,7 +602,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {propFirm && propFirm.split(",").map((firm, index) => (
         <span key={firm} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {firm.trim()}
+          {getFilterDisplayName(firm.trim(), 'propFirm')}
           <button
             type="button"
             onClick={() => removeFilter('propFirm', firm.trim())}
@@ -574,7 +615,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {deployment && deployment.split(",").map((deploy, index) => (
         <span key={deploy} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {deploy.trim()}
+          {getFilterDisplayName(deploy.trim(), 'deployment')}
           <button
             type="button"
             onClick={() => removeFilter('deployment', deploy.trim())}
@@ -587,7 +628,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {bestFor && bestFor.split(",").map((best, index) => (
         <span key={best} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {best.trim()}
+          {getFilterDisplayName(best.trim(), 'bestFor')}
           <button
             type="button"
             onClick={() => removeFilter('bestFor', best.trim())}
@@ -600,7 +641,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {platformFeatures && platformFeatures.split(",").map((feature, index) => (
         <span key={feature} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {feature.trim()}
+          {getFilterDisplayName(feature.trim(), 'platformFeatures')}
           <button
             type="button"
             onClick={() => removeFilter('platformFeatures', feature.trim())}
@@ -613,7 +654,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {botStrategyType && botStrategyType.split(",").map((type, index) => (
         <span key={type} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {type.trim()}
+          {getFilterDisplayName(type.trim(), 'botStrategyType')}
           <button
             type="button"
             onClick={() => removeFilter('botStrategyType', type.trim())}
@@ -626,7 +667,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {automationLevel && automationLevel.split(",").map((level, index) => (
         <span key={level} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {level.trim()}
+          {getFilterDisplayName(level.trim(), 'automationLevel')}
           <button
             type="button"
             onClick={() => removeFilter('automationLevel', level.trim())}
@@ -639,7 +680,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {pricingModel && pricingModel.split(",").map((model, index) => (
         <span key={model} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {model.trim()}
+          {getFilterDisplayName(model.trim(), 'pricingModel')}
           <button
             type="button"
             onClick={() => removeFilter('pricingModel', model.trim())}
@@ -652,7 +693,7 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
 
       {algoFeatures && algoFeatures.split(",").map((feature, index) => (
         <span key={feature} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
-          {feature.trim()}
+          {getFilterDisplayName(feature.trim(), 'algoFeatures')}
           <button
             type="button"
             onClick={() => removeFilter('algoFeatures', feature.trim())}

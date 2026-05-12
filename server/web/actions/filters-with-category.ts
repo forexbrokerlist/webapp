@@ -54,7 +54,13 @@ export const findFilterOptionsWithCategory = actionClient
     // Extract unique platforms
     const allPlatforms = brokers
       .flatMap((b) => b.trading_platforms?.split(",") || [])
-      .map((p) => p.trim())
+      .map((p) => {
+        const trimmed = p.trim();
+        const lower = trimmed.toLowerCase();
+        if (lower === "metatrader4" || lower === "metatrader 4") return "MT4";
+        if (lower === "metatrader5" || lower === "metatrader 5") return "MT5";
+        return trimmed;
+      })
       .filter(Boolean);
 
     const uniquePlatforms = Array.from(new Set(allPlatforms))
@@ -140,7 +146,7 @@ export const findFilterOptionsWithCategory = actionClient
         {
           type: "solutionType",
           options: [
-            "All",
+           
             "Liquidity Bridge",
             "Risk Engine",
             "Execution Bridge",
@@ -155,7 +161,7 @@ export const findFilterOptionsWithCategory = actionClient
         {
           type: "compatiblePlatform",
           options: [
-            "All",
+       
             "MT4",
             "MT5",
             "cTrader",
@@ -170,7 +176,7 @@ export const findFilterOptionsWithCategory = actionClient
         {
           type: "targetClient",
           options: [
-            "All",
+        
             "Retail brokers",
             "Institutional",
             "Prime brokers",
@@ -450,8 +456,16 @@ export const findFilterOptionsWithCategory = actionClient
           options: uniquePlatforms.map((plat) => ({
             slug: plat,
             name: plat,
-            count: brokers.filter((b) => b.trading_platforms?.includes(plat))
-              .length,
+            count: brokers.filter((b) => {
+              const platformList = b.trading_platforms?.split(",").map((p) => p.trim()) || [];
+              return platformList.some((p) => {
+                const lowerP = p.toLowerCase();
+                const lowerPlat = plat.toLowerCase();
+                if (lowerPlat === "mt4" && (lowerP === "mt4" || lowerP === "metatrader4" || lowerP === "metatrader 4")) return true;
+                if (lowerPlat === "mt5" && (lowerP === "mt5" || lowerP === "metatrader5" || lowerP === "metatrader 5")) return true;
+                return lowerP === lowerPlat;
+              });
+            }).length,
           })),
         },
         {

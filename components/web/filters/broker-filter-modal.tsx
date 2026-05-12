@@ -26,7 +26,7 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
   const [localEducationFeatures, setLocalEducationFeatures] = useState<string[]>([])
   const [localLocationLanguage, setLocalLocationLanguage] = useState<string[]>([])
   // Bridge & Plugin state
-  const [localSolutionType, setLocalSolutionType] = useState<string>("")
+  const [localSolutionType, setLocalSolutionType] = useState<string[]>([])
   const [localCompatiblePlatform, setLocalCompatiblePlatform] = useState<string[]>([])
   const [localTargetClient, setLocalTargetClient] = useState<string[]>([])
   const [localHqRegion, setLocalHqRegion] = useState<string[]>([])
@@ -74,7 +74,7 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       setLocalEducationFeatures(filters.educationFeatures ? filters.educationFeatures.split(",") : [])
       setLocalLocationLanguage(filters.locationLanguage ? filters.locationLanguage.split(",") : [])
       // Sync bridge & plugin filters
-      setLocalSolutionType(filters.solutionType || "")
+      setLocalSolutionType(filters.solutionType ? filters.solutionType.split(",") : [])
       setLocalCompatiblePlatform(filters.compatiblePlatform ? filters.compatiblePlatform.split(",") : [])
       setLocalTargetClient(filters.targetClient ? filters.targetClient.split(",") : [])
       setLocalHqRegion(filters.hqRegion ? filters.hqRegion.split(",") : [])
@@ -134,7 +134,7 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       educationFeatures: localEducationFeatures.join(","),
       locationLanguage: localLocationLanguage.join(","),
       // Apply bridge & plugin filters
-      solutionType: localSolutionType,
+      solutionType: localSolutionType.join(","),
       compatiblePlatform: localCompatiblePlatform.join(","),
       targetClient: localTargetClient.join(","),
       hqRegion: localHqRegion.join(","),
@@ -176,7 +176,7 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
     setLocalEducationFeatures([])
     setLocalLocationLanguage([])
     // Clear bridge & plugin filters
-    setLocalSolutionType("")
+    setLocalSolutionType([])
     setLocalCompatiblePlatform([])
     setLocalTargetClient([])
     setLocalHqRegion([])
@@ -248,7 +248,7 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
     (filters.pricing ? 1 : 0) +
     (filters.educationFeatures ? filters.educationFeatures.split(",").length : 0) +
     (filters.locationLanguage ? filters.locationLanguage.split(",").length : 0) +
-    (filters.solutionType ? 1 : 0) +
+    (filters.solutionType ? filters.solutionType.split(",").length : 0) +
     (filters.compatiblePlatform ? filters.compatiblePlatform.split(",").length : 0) +
     (filters.targetClient ? filters.targetClient.split(",").length : 0) +
     (filters.hqRegion ? filters.hqRegion.split(",").length : 0) +
@@ -323,9 +323,9 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       targetClient: "TARGET CLIENT",
       hqRegion: "HQ / REGION",
       regulation: "REGULATION",
-      assetClass: "ASSETCLASS",
-      executionType: "EXECUTIONTYPE",
-      providerType: "PROVIDERTYPE",
+      assetClass: "ASSET CLASS",
+      executionType: "EXECUTION TYPE",
+      providerType: "PROVIDER TYPE",
       paymentType: "PAYMENT TYPE",
       settlementCurrency: "SETTLEMENT CURRENCY",
       integrationType: "INTEGRATION TYPE",
@@ -787,12 +787,13 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
                     )}
                     {type === "solutionType" && (
                       <>
+
                         {/* "All Solution Types" option */}
                         <label className="flex items-center gap-2.5 cursor-pointer group">
                           <input
                             type="checkbox"
-                            checked={localSolutionType === ""}
-                            onChange={() => setLocalSolutionType("")}
+                            checked={localSolutionType.length === 0}
+                            onChange={() => setLocalSolutionType([])}
                             className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
                           />
                           <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
@@ -804,9 +805,13 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
                           <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
                             <input
                               type="checkbox"
-                              checked={localSolutionType === slug}
+                              checked={localSolutionType.includes(slug)}
                               onChange={() =>
-                                setLocalSolutionType(prev => (prev === slug ? "" : slug))
+                                setLocalSolutionType(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(s => s !== slug)
+                                    : [...prev, slug]
+                                )
                               }
                               className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
                             />
