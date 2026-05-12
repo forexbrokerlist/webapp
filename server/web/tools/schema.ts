@@ -3,18 +3,56 @@ import {
   type inferParserType,
   parseAsInteger,
   parseAsString,
-} from "nuqs/server"
-import { adsConfig } from "~/config/ads"
+} from "nuqs/server";
+import { adsConfig } from "~/config/ads";
 
 export const toolFilterParams = {
   q: parseAsString.withDefault(""),
   sort: parseAsString.withDefault(""),
   page: parseAsInteger.withDefault(1),
-  perPage: parseAsInteger.withDefault(36 - (adsConfig.enabled ? adsConfig.adsPerPage : 0)),
+  perPage: parseAsInteger.withDefault(
+    36 - (adsConfig.enabled ? adsConfig.adsPerPage : 0),
+  ),
   category: parseAsString.withDefault(""),
-}
+  regulators: parseAsString.withDefault(""),
+  platforms: parseAsString.withDefault(""),
+  rating: parseAsString.withDefault(""),
+  features: parseAsString.withDefault(""),
+  // Forex Education specific fields
+  skillLevel: parseAsString.withDefault(""),
+  learningFormat: parseAsString.withDefault(""),
+  pricing: parseAsString.withDefault(""),
+  educationFeatures: parseAsString.withDefault(""),
+  locationLanguage: parseAsString.withDefault(""),
+  // Bridge & Plugin specific fields
+  solutionType: parseAsString.withDefault(""),
+  compatiblePlatform: parseAsString.withDefault(""),
+  targetClient: parseAsString.withDefault(""),
+  hqRegion: parseAsString.withDefault(""),
+  // Liquidity Partner specific fields
+  regulation: parseAsString.withDefault(""),
+  assetClass: parseAsString.withDefault(""),
+  executionType: parseAsString.withDefault(""),
+  providerType: parseAsString.withDefault(""),
+  // PSP Partner specific fields
+  paymentType: parseAsString.withDefault(""),
+  settlementCurrency: parseAsString.withDefault(""),
+  integrationType: parseAsString.withDefault(""),
+  pspFeatures: parseAsString.withDefault(""),
+  // Trading Platform specific fields
+  platformType: parseAsString.withDefault(""),
+  propFirm: parseAsString.withDefault(""),
+  deployment: parseAsString.withDefault(""),
+  bestFor: parseAsString.withDefault(""),
+  platformFeatures: parseAsString.withDefault(""),
+  // Algo Trading specific fields
+  botStrategyType: parseAsString.withDefault(""),
+  automationLevel: parseAsString.withDefault(""),
+  pricingModel: parseAsString.withDefault(""),
+  algoFeatures: parseAsString.withDefault(""),
+};
 
-export const toolFilterParamsCache = createSearchParamsCache(toolFilterParams)
+export const toolFilterParamsCache = createSearchParamsCache(toolFilterParams);
 
-export type ToolFilterSchema = typeof toolFilterParams
-export type ToolFilterParams = inferParserType<typeof toolFilterParams>
+export type ToolFilterSchema = typeof toolFilterParams;
+export type ToolFilterParams = inferParserType<typeof toolFilterParams>;

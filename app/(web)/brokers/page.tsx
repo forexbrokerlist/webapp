@@ -76,7 +76,7 @@ Trading Platforms" />
                 searchParams={props.searchParams}
                 search={{ placeholder }}
                 overrideParams={{ category: "forex-brokers" }}
-                options={{ enableFilters: false }}
+                options={{ enableFilters: true}}
                 ad="Tools"
               />
             </Suspense>
