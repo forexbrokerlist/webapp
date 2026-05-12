@@ -31,7 +31,7 @@ export const ToolSearch = ({ placeholder, category, ...props }: ToolSearchProps)
     <Stack {...props}>
       <Filters placeholder={placeholder || t("search_placeholder")}>
         {enableFilters && <BrokerFilterModal category={category} />}
-        {enableSort && <Sort options={sortOptions} />}
+        {/* {enableSort && <Sort options={sortOptions} />} */}
       </Filters>
 
       {/* Selected Filter Tags - Positioned below search bar */}
