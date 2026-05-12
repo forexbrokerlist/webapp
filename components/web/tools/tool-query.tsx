@@ -21,6 +21,7 @@ type ToolQueryProps = Omit<ToolListingProps, "list" | "pagination"> & {
   pagination?: Partial<Omit<PaginationProps, "total" | "pageSize">>
   ad?: AdType
   name?: string
+  categorySlug?: string
 }
 
 const ToolQuery = async ({
@@ -31,8 +32,10 @@ const ToolQuery = async ({
   pagination,
   ad,
   name,
+  categorySlug,
   ...props
 }: ToolQueryProps) => {
+  console.log("🔍 ToolQuery received categorySlug:", categorySlug)
   const parsedParams = toolFilterParamsCache.parse(await searchParams)
   const params = { ...parsedParams, ...overrideParams }
   const { brokers, total, page, perPage } = await searchBrokers(params, where)
@@ -73,8 +76,15 @@ const ToolQuery = async ({
   // Generate structured data for the tool list
   const structuredData = createGraph([generateItemList(items, name)])
 
+  const searchProps = {
+    ...props.search,
+    category: categorySlug,
+  }
+
+  console.log("🔍 ToolQuery constructed searchProps:", searchProps)
+
   return (
-    <ToolListing pagination={{ total, perPage, page, ...pagination }} {...props}>
+    <ToolListing pagination={{ total, perPage, page, ...pagination }} search={searchProps} options={props.options}>
       <StructuredData data={structuredData} />
 
       <BrokerList brokers={brokersWithLogos} {...list}>

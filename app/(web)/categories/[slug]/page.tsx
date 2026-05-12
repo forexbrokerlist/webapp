@@ -111,8 +111,10 @@ export default async function (props: Props) {
               searchParams={props.searchParams}
               where={{ categories: { some: { slug: category.slug === 'trusted-trading-platforms' ? 'forex-brokers' : category.slug } } }}
               search={{ placeholder }}
+              options={{ enableFilters: true }}
               ad="Tools"
               list={{ categorySlug: category.slug }}
+              categorySlug={category.slug}
             />
           </Suspense>
 

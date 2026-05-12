@@ -1,6 +1,5 @@
 "use server";
 
-import { z } from "zod";
 import type { ReactNode } from "react";
 import { actionClient } from "~/lib/safe-actions";
 import { findCategories } from "~/server/web/categories/queries";
@@ -19,8 +18,6 @@ type FilterOptions = Array<{
 }>;
 
 export const findFilterOptions = actionClient.action(async () => {
-  // For now, we'll determine category from filters or use a default
-  // TODO: Pass category as parameter when calling this action
   const [categories, brokers] = await Promise.all([
     findCategories({ all: true }),
     db.brokers.findMany({
@@ -64,17 +61,13 @@ export const findFilterOptions = actionClient.action(async () => {
     )
     .sort();
 
-  // Determine which filters to show based on category context
-  // For now, we'll check if we have forex-education category in the categories list
-  // TODO: This should be passed as a parameter from the component
-  const isForexEducation = categories.some(
-    (cat) => cat.slug === "forex-education",
-  );
+  // Check if we're in forex education category
+  const isForexEducation = categories.some(cat => cat.slug === "forex-education");
 
   let filterOptions: FilterOptions = [];
 
   if (isForexEducation) {
-    // Forex Education filters only
+    // Return only forex education filters
     filterOptions = [
       {
         type: "skillLevel",
@@ -88,7 +81,7 @@ export const findFilterOptions = actionClient.action(async () => {
         type: "learningFormat",
         options: [
           "Video",
-          "Live sessions",
+          "Live sessions", 
           "Self-paced",
           "Mentorship",
           "Webinar",
@@ -131,7 +124,7 @@ export const findFilterOptions = actionClient.action(async () => {
       },
     ];
   } else {
-    // Broker-related filters (default behavior)
+    // Return regular broker filters
     filterOptions = [
       {
         type: "regulators",

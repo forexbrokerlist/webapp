@@ -16,6 +16,8 @@ type ToolListingProps = PropsWithChildren & {
 }
 
 const ToolListing = ({ children, pagination, options, search }: ToolListingProps) => {
+  console.log("🔍 ToolListing received search props:", search)
+  console.log("🔍 ToolListing received options:", options)
   return (
     <FiltersProvider schema={toolFilterParams} {...options}>
       <div className="space-y-5 pb-10" id="tools">
