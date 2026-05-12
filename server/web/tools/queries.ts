@@ -200,6 +200,11 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     deployment,
     bestFor,
     platformFeatures,
+    // Algo Trading specific filters
+    botStrategyType,
+    automationLevel,
+    pricingModel,
+    algoFeatures,
   } = search;
   const skip = (page - 1) * perPage;
   const take = perPage;
@@ -919,6 +924,100 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     });
   }
 
+  // Filter brokers in memory for bot strategy type
+  if (botStrategyType) {
+    const selectedTypes = botStrategyType
+      .split(",")
+      .map((t) => t.trim())
+      .filter((t) => t !== "All");
+
+    brokers = brokers.filter((broker) => {
+      if (selectedTypes.length === 0) return true;
+
+      const brokerBotType = broker.bot_type || "";
+      const brokerStrategyTypes = broker.strategy_type || [];
+
+      return selectedTypes.some((selected) => {
+        const matchesBotType = brokerBotType.toLowerCase().includes(selected.toLowerCase());
+        const matchesStrategy = brokerStrategyTypes.some(
+          (type: string) => type.toLowerCase().includes(selected.toLowerCase()),
+        );
+        return matchesBotType || matchesStrategy;
+      });
+    });
+  }
+
+  // Filter brokers in memory for automation level
+  if (automationLevel) {
+    const selectedLevels = automationLevel
+      .split(",")
+      .map((l) => l.trim())
+      .filter((l) => l !== "All");
+
+    brokers = brokers.filter((broker) => {
+      if (selectedLevels.length === 0) return true;
+
+      const level = broker.automation_level || "";
+      return selectedLevels.some((selected) =>
+        level.toLowerCase().includes(selected.toLowerCase()),
+      );
+    });
+  }
+
+  // Filter brokers in memory for algo pricing model
+  if (pricingModel) {
+    const selectedModels = pricingModel
+      .split(",")
+      .map((m) => m.trim())
+      .filter((m) => m !== "All");
+
+    brokers = brokers.filter((broker) => {
+      if (selectedModels.length === 0) return true;
+
+      const brokerPricingModels = broker.pricingModel || [];
+      return selectedModels.some((selected) =>
+        brokerPricingModels.some(
+          (model: string) => model.toLowerCase().includes(selected.toLowerCase()),
+        ),
+      );
+    });
+  }
+
+  // Filter brokers in memory for algo features
+  if (algoFeatures) {
+    const selectedFeatures = algoFeatures
+      .split(",")
+      .map((f) => f.trim())
+      .filter((f) => f !== "All");
+
+    brokers = brokers.filter((broker) => {
+      if (selectedFeatures.length === 0) return true;
+
+      return selectedFeatures.some((selectedFeat) => {
+        switch (selectedFeat) {
+          case "Myfxbook verified":
+            return !!broker.verified_performance && broker.verified_performance.toLowerCase().includes("myfxbook");
+          case "Beginner friendly":
+            return broker.beginner_friendly === true || (broker.features && broker.features.some(f => f.toLowerCase().includes("beginner")));
+          case "NFA / FIFO compatible":
+            return broker.nfa_fifo === true;
+          case "Prop firm compatible":
+            return broker.prop_firm_support && broker.prop_firm_support.length > 0;
+          case "Discord community":
+            const gold = broker.gold_plan_statements || [];
+            const diamond = broker.diamond_plan_statements || [];
+            return (
+              broker.community_access === true ||
+              gold.some((s: string) => s.toLowerCase().includes("discord")) ||
+              diamond.some((s: string) => s.toLowerCase().includes("discord"))
+            );
+          default:
+            return false;
+        }
+      });
+    });
+  }
+
   // Apply pagination after filtering
   const hasFilters = !!(
     regulators ||
@@ -945,7 +1044,11 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     propFirm ||
     deployment ||
     bestFor ||
-    platformFeatures
+    platformFeatures ||
+    botStrategyType ||
+    automationLevel ||
+    pricingModel ||
+    algoFeatures
   );
   const total = hasFilters ? brokers.length : totalCount;
   const paginatedBrokers = brokers.slice(skip, skip + take);

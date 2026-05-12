@@ -46,6 +46,11 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
   const [localDeployment, setLocalDeployment] = useState<string[]>([])
   const [localBestFor, setLocalBestFor] = useState<string[]>([])
   const [localPlatformFeatures, setLocalPlatformFeatures] = useState<string[]>([])
+  // Algo Trading state
+  const [localBotStrategyType, setLocalBotStrategyType] = useState<string[]>([])
+  const [localAutomationLevel, setLocalAutomationLevel] = useState<string[]>([])
+  const [localPricingModel, setLocalPricingModel] = useState<string[]>([])
+  const [localAlgoFeatures, setLocalAlgoFeatures] = useState<string[]>([])
   const [expandedSections, setExpandedSections] = useState<string[]>(["category", "features"])
   const { filters, updateFilters } = useFilters<ToolFilterSchema>()
   const { result, execute } = useAction(findFilterOptionsWithCategory)
@@ -89,8 +94,13 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       setLocalDeployment(filters.deployment ? filters.deployment.split(",") : [])
       setLocalBestFor(filters.bestFor ? filters.bestFor.split(",") : [])
       setLocalPlatformFeatures(filters.platformFeatures ? filters.platformFeatures.split(",") : [])
+      // Sync algo trading filters
+      setLocalBotStrategyType(filters.botStrategyType ? filters.botStrategyType.split(",") : [])
+      setLocalAutomationLevel(filters.automationLevel ? filters.automationLevel.split(",") : [])
+      setLocalPricingModel(filters.pricingModel ? filters.pricingModel.split(",") : [])
+      setLocalAlgoFeatures(filters.algoFeatures ? filters.algoFeatures.split(",") : [])
     }
-  }, [isOpen, filters.category, filters.regulators, filters.platforms, filters.rating, filters.features, filters.skillLevel, filters.learningFormat, filters.pricing, filters.educationFeatures, filters.locationLanguage, filters.solutionType, filters.compatiblePlatform, filters.targetClient, filters.hqRegion, filters.regulation, filters.assetClass, filters.executionType, filters.providerType, filters.paymentType, filters.settlementCurrency, filters.integrationType, filters.pspFeatures, filters.platformType, filters.propFirm, filters.deployment, filters.bestFor, filters.platformFeatures])
+  }, [isOpen, filters.category, filters.regulators, filters.platforms, filters.rating, filters.features, filters.skillLevel, filters.learningFormat, filters.pricing, filters.educationFeatures, filters.locationLanguage, filters.solutionType, filters.compatiblePlatform, filters.targetClient, filters.hqRegion, filters.regulation, filters.assetClass, filters.executionType, filters.providerType, filters.paymentType, filters.settlementCurrency, filters.integrationType, filters.pspFeatures, filters.platformType, filters.propFirm, filters.deployment, filters.bestFor, filters.platformFeatures, filters.botStrategyType, filters.automationLevel, filters.pricingModel, filters.algoFeatures])
 
   // Lock body scroll when open
   useEffect(() => {
@@ -143,7 +153,12 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       propFirm: localPropFirm.join(","),
       deployment: localDeployment.join(","),
       bestFor: localBestFor.join(","),
-      platformFeatures: localPlatformFeatures.join(",")
+      platformFeatures: localPlatformFeatures.join(","),
+      // Apply algo trading filters
+      botStrategyType: localBotStrategyType.join(","),
+      automationLevel: localAutomationLevel.join(","),
+      pricingModel: localPricingModel.join(","),
+      algoFeatures: localAlgoFeatures.join(",")
     })
     setIsOpen(false)
   }
@@ -181,6 +196,11 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
     setLocalDeployment([])
     setLocalBestFor([])
     setLocalPlatformFeatures([])
+    // Clear algo trading filters
+    setLocalBotStrategyType([])
+    setLocalAutomationLevel([])
+    setLocalPricingModel([])
+    setLocalAlgoFeatures([])
     updateFilters({
       category: "",
       regulators: "",
@@ -208,7 +228,11 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       propFirm: "",
       deployment: "",
       bestFor: "",
-      platformFeatures: ""
+      platformFeatures: "",
+      botStrategyType: "",
+      automationLevel: "",
+      pricingModel: "",
+      algoFeatures: ""
     })
     setIsOpen(false)
   }
@@ -240,7 +264,11 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
     (filters.propFirm ? filters.propFirm.split(",").length : 0) +
     (filters.deployment ? filters.deployment.split(",").length : 0) +
     (filters.bestFor ? filters.bestFor.split(",").length : 0) +
-    (filters.platformFeatures ? filters.platformFeatures.split(",").length : 0)
+    (filters.platformFeatures ? filters.platformFeatures.split(",").length : 0) +
+    (filters.botStrategyType ? filters.botStrategyType.split(",").length : 0) +
+    (filters.automationLevel ? filters.automationLevel.split(",").length : 0) +
+    (filters.pricingModel ? filters.pricingModel.split(",").length : 0) +
+    (filters.algoFeatures ? filters.algoFeatures.split(",").length : 0)
 
   const removeFilter = (filterType: string, value: string) => {
     if (filterType === 'category') {
@@ -306,7 +334,11 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       propFirm: "PROP FIRM",
       deployment: "DEPLOYMENT",
       bestFor: "BEST FOR",
-      platformFeatures: "PLATFORM FEATURES"
+      platformFeatures: "PLATFORM FEATURES",
+      botStrategyType: "BOT / STRATEGY TYPE",
+      automationLevel: "AUTOMATION LEVEL",
+      pricingModel: "PRICING MODEL",
+      algoFeatures: "FEATURES"
     }
     return labels[type] ?? type.replace(/_/g, " ").toUpperCase()
   }
@@ -1349,6 +1381,146 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
                                 setLocalPlatformFeatures(prev =>
                                   prev.includes(slug)
                                     ? prev.filter(f => f !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "botStrategyType" && (
+                      <>
+                        {/* "All Bot Strategy Types" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localBotStrategyType.length === 0}
+                            onChange={() => setLocalBotStrategyType([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Bot Strategy Types
+                          </span>
+                        </label>
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localBotStrategyType.includes(slug)}
+                              onChange={() =>
+                                setLocalBotStrategyType(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(p => p !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "automationLevel" && (
+                      <>
+                        {/* "All Automation Levels" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localAutomationLevel.length === 0}
+                            onChange={() => setLocalAutomationLevel([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Automation Levels
+                          </span>
+                        </label>
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localAutomationLevel.includes(slug)}
+                              onChange={() =>
+                                setLocalAutomationLevel(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(p => p !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "pricingModel" && (
+                      <>
+                        {/* "All Pricing Models" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localPricingModel.length === 0}
+                            onChange={() => setLocalPricingModel([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Pricing Models
+                          </span>
+                        </label>
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localPricingModel.includes(slug)}
+                              onChange={() =>
+                                setLocalPricingModel(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(p => p !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "algoFeatures" && (
+                      <>
+                        {/* "All Features" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localAlgoFeatures.length === 0}
+                            onChange={() => setLocalAlgoFeatures([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Features
+                          </span>
+                        </label>
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localAlgoFeatures.includes(slug)}
+                              onChange={() =>
+                                setLocalAlgoFeatures(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(p => p !== slug)
                                     : [...prev, slug]
                                 )
                               }

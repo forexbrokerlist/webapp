@@ -45,6 +45,11 @@ export const toolFilterParams = {
   deployment: parseAsString.withDefault(""),
   bestFor: parseAsString.withDefault(""),
   platformFeatures: parseAsString.withDefault(""),
+  // Algo Trading specific fields
+  botStrategyType: parseAsString.withDefault(""),
+  automationLevel: parseAsString.withDefault(""),
+  pricingModel: parseAsString.withDefault(""),
+  algoFeatures: parseAsString.withDefault(""),
 };
 
 export const toolFilterParamsCache = createSearchParamsCache(toolFilterParams);

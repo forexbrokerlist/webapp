@@ -72,6 +72,7 @@ export const findFilterOptionsWithCategory = actionClient
     const isLiquidityPartner = category === "liquidity-providers";
     const isPspPartner = category === "forex-psp-partners";
     const isTradingPlatform = category === "forex-trading-platform";
+    const isAlgoTrading = category === "algo-trading";
     
 
     let filterOptions: FilterOptions = [];
@@ -366,6 +367,64 @@ export const findFilterOptionsWithCategory = actionClient
             slug: feature,
             name: feature,
             count: 0, // TODO: Update when trading platform data is available
+          })),
+        },
+      ];
+    } else if (isAlgoTrading) {
+      // Algo Trading filters
+      filterOptions = [
+        {
+          type: "botStrategyType",
+          options: [
+            "Scalping EA",
+            "Grid Bot",
+            "AI / Machine Learning",
+            "Signal Service",
+            "EA Marketplace",
+          ].map((type) => ({
+            slug: type,
+            name: type,
+            count: 0,
+          })),
+        },
+        {
+          type: "compatiblePlatform",
+          options: ["MT4", "MT5", "cTrader", "API / Custom"].map((platform) => ({
+            slug: platform,
+            name: platform,
+            count: 0,
+          })),
+        },
+        {
+          type: "automationLevel",
+          options: ["Fully automated", "Semi-automated", "Signal only"].map(
+            (level) => ({
+              slug: level,
+              name: level,
+              count: 0,
+            }),
+          ),
+        },
+        {
+          type: "pricingModel",
+          options: ["One-time", "Subscription", "Free trial"].map((model) => ({
+            slug: model,
+            name: model,
+            count: 0,
+          })),
+        },
+        {
+          type: "algoFeatures",
+          options: [
+            "Myfxbook verified",
+            "Beginner friendly",
+            "NFA / FIFO compatible",
+            "Prop firm compatible",
+            "Discord community",
+          ].map((feature) => ({
+            slug: feature,
+            name: feature,
+            count: 0,
           })),
         },
       ];

@@ -36,6 +36,11 @@ interface FilterTagsProps {
   deployment?: string
   bestFor?: string
   platformFeatures?: string
+  // Algo Trading fields
+  botStrategyType?: string
+  automationLevel?: string
+  pricingModel?: string
+  algoFeatures?: string
 }
 
 // Helper function to map filter slugs to display names
@@ -88,7 +93,7 @@ const getFilterDisplayName = (slug: string, filterType: string): string => {
   }
 }
 
-export const FilterTags = ({ category, regulators, platforms, rating, features, skillLevel, learningFormat, pricing, educationFeatures, locationLanguage, solutionType, compatiblePlatform, targetClient, hqRegion, regulation, assetClass, executionType, providerType, paymentType, settlementCurrency, integrationType, pspFeatures, platformType, propFirm, deployment, bestFor, platformFeatures }: FilterTagsProps) => {
+export const FilterTags = ({ category, regulators, platforms, rating, features, skillLevel, learningFormat, pricing, educationFeatures, locationLanguage, solutionType, compatiblePlatform, targetClient, hqRegion, regulation, assetClass, executionType, providerType, paymentType, settlementCurrency, integrationType, pspFeatures, platformType, propFirm, deployment, bestFor, platformFeatures, botStrategyType, automationLevel, pricingModel, algoFeatures }: FilterTagsProps) => {
   const { filters, updateFilters } = useFilters<ToolFilterSchema>()
 
   const removeFilter = (filterType: string, value: string) => {
@@ -190,6 +195,22 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
       const currentPlatformFeatures = filters.platformFeatures ? filters.platformFeatures.split(",") : []
       const newPlatformFeatures = currentPlatformFeatures.filter(f => f !== value)
       updateFilters({ platformFeatures: newPlatformFeatures.join(",") })
+    } else if (filterType === 'botStrategyType') {
+      const currentBotStrategyType = filters.botStrategyType ? filters.botStrategyType.split(",") : []
+      const newBotStrategyType = currentBotStrategyType.filter(t => t !== value)
+      updateFilters({ botStrategyType: newBotStrategyType.join(",") })
+    } else if (filterType === 'automationLevel') {
+      const currentAutomationLevel = filters.automationLevel ? filters.automationLevel.split(",") : []
+      const newAutomationLevel = currentAutomationLevel.filter(l => l !== value)
+      updateFilters({ automationLevel: newAutomationLevel.join(",") })
+    } else if (filterType === 'pricingModel') {
+      const currentPricingModel = filters.pricingModel ? filters.pricingModel.split(",") : []
+      const newPricingModel = currentPricingModel.filter(m => m !== value)
+      updateFilters({ pricingModel: newPricingModel.join(",") })
+    } else if (filterType === 'algoFeatures') {
+      const currentAlgoFeatures = filters.algoFeatures ? filters.algoFeatures.split(",") : []
+      const newAlgoFeatures = currentAlgoFeatures.filter(f => f !== value)
+      updateFilters({ algoFeatures: newAlgoFeatures.join(",") })
     }
   }
 
@@ -226,11 +247,16 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
       deployment: "",
       bestFor: "",
       platformFeatures: "",
+      // Algo Trading fields
+      botStrategyType: "",
+      automationLevel: "",
+      pricingModel: "",
+      algoFeatures: "",
       q: ""
     })
   }
 
-  const hasActiveFilters = !!(category || regulators || platforms || rating || features || skillLevel || learningFormat || pricing || educationFeatures || locationLanguage || solutionType || compatiblePlatform || targetClient || hqRegion || regulation || assetClass || executionType || providerType || paymentType || settlementCurrency || integrationType || pspFeatures || platformType || propFirm || deployment || bestFor || platformFeatures)
+  const hasActiveFilters = !!(category || regulators || platforms || rating || features || skillLevel || learningFormat || pricing || educationFeatures || locationLanguage || solutionType || compatiblePlatform || targetClient || hqRegion || regulation || assetClass || executionType || providerType || paymentType || settlementCurrency || integrationType || pspFeatures || platformType || propFirm || deployment || bestFor || platformFeatures || botStrategyType || automationLevel || pricingModel || algoFeatures)
 
   return (
     <div className="flex flex-wrap items-center gap-2 px-6 py-3 border-b border-[#E5E7E0]">
@@ -578,6 +604,58 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
           <button
             type="button"
             onClick={() => removeFilter('platformFeatures', feature.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {botStrategyType && botStrategyType.split(",").map((type, index) => (
+        <span key={type} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {type.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('botStrategyType', type.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {automationLevel && automationLevel.split(",").map((level, index) => (
+        <span key={level} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {level.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('automationLevel', level.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {pricingModel && pricingModel.split(",").map((model, index) => (
+        <span key={model} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {model.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('pricingModel', model.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {algoFeatures && algoFeatures.split(",").map((feature, index) => (
+        <span key={feature} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {feature.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('algoFeatures', feature.trim())}
             className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
           >
             <X size={12} />

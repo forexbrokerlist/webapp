@@ -67,6 +67,11 @@ export const ToolSearch = ({ placeholder, category, ...props }: ToolSearchProps)
         deployment={filters.deployment}
         bestFor={filters.bestFor}
         platformFeatures={filters.platformFeatures}
+        // Algo Trading filters
+        botStrategyType={filters.botStrategyType}
+        automationLevel={filters.automationLevel}
+        pricingModel={filters.pricingModel}
+        algoFeatures={filters.algoFeatures}
       />
     </Stack>
   )
