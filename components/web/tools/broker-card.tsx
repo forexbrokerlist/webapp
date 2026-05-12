@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Crown, Star, ShieldCheck, CalendarRange } from "lucide-react";
+import { Crown, Star, ShieldCheck, CalendarRange, ArrowUpRight } from "lucide-react";
 import type { ComponentProps } from "react";
 import { Badge } from "~/components/common/badge";
 import { Card, CardDescription, CardHeader } from "~/components/common/card";
@@ -69,18 +69,27 @@ export const BrokerCard = ({
         <Favicon src={logoUrl} size={24} className=" object-contain   w-12 h-12" contained />
 
 
-        <H4 as="h3" className="truncate">
-          <Link href={getBrokerRoute(broker.slug || '', categorySlug, (broker as any).categories)}>
-            <span className="absolute inset-0 z-40 rounded-lg" />
-            {broker.broker_name || "UNKNOWN BROKER"}
-          </Link>
-        </H4>
+        <Stack direction="column" size="xs" className="truncate">
+          <H4 as="h3" className="truncate flex items-center justify-center gap-3">
+            <Link href={getBrokerRoute(broker.slug || '', categorySlug, (broker as any).categories)}>
+              <span className="absolute inset-0 z-40 rounded-lg" />
+              {broker.broker_name || "UNKNOWN BROKER"}
+            </Link>
+            <VerifiedBadge size="md" className=" mb-0.5 shrink-0" />
+          </H4>
+          <div className="flex items-center gap-1.5">
+            <Star className="size-3.5 fill-[#F59E0B] text-[#F59E0B]" />
+            <span className="text-[12px] font-medium text-black100 uppercase tracking-wider">
+              {broker.overall_rating?.split("/")[0]?.trim() || "0.0"} Rating
+            </span>
+          </div>
+        </Stack>
 
-        <VerifiedBadge size="md" className="-ml-1.5 shrink-0" />
+
 
         {broker.isSponsor && (
-          <div className="absolute right-3 top-3 flex items-center gap-1.5 z-60 bg-white text-black100 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-primary backdrop-blur-md shadow-[0_0_10px_rgba(59,130,246,0.2)]">
-            <Crown className="size-[12px]" strokeWidth={2.5} />
+          <div className="absolute right-3 top-3.5 flex items-center gap-1.5 z-60 bg-white/50 text-muted-foreground px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-[#A8DD15] backdrop-blur-sm">
+            <Crown className="size-3" strokeWidth={2} />
             <span>Sponsor</span>
           </div>
         )}
@@ -88,21 +97,126 @@ export const BrokerCard = ({
 
       <div className="relative size-full flex flex-col">
         {/* Default State */}
-        <Stack size="lg" direction="column" className="flex-1 duration-200 group-hover:opacity-0 relative z-10">
+        <Stack size="lg" direction="column" className="flex-1 duration-200  relative z-10">
           <CardDescription className="line-clamp-2  text-base">
-            {broker.subtitle || broker.description || `Top rated forex broker based in ${broker.headquarters || 'global markets'} offering competitive spreads.`}
+            {broker.subtitle || broker.description || `Top rated forex broker based in ${broker.headquarters || 'global markets'}`}
           </CardDescription>
 
-          <Stack size="sm" className="mt-auto pt-4 text-base font-medium text-muted-foreground items-center">
-            <span>Min Deposit:</span>
-            <Badge variant="outline" className="gap-1 border-none px-2 py-0.5 text-base text-foreground bg-[#F2F4F7]">
-              {broker.minimum_deposit || "Varies"}
-            </Badge>
-          </Stack>
+          <div className="flex flex-col gap-2 mt-4">
+            {categorySlug === "forex-trading-courses" ? (
+              <>
+                {/* Education Badges Row 1 */}
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { 
+                      label: "Level", 
+                      value: broker.skill_level && broker.skill_level.length > 1 
+                        ? `${broker.skill_level[0]}-${broker.skill_level[broker.skill_level.length - 1]}` 
+                        : broker.skill_level?.join(', ') 
+                    },
+                    { label: "Format", value: broker.learning_format?.join(' + ') },
+                    { label: "Founded", value: broker.year_established },
+                    { label: "HQ", value: broker.headquarters },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#F5F4ED] border border-[#E1E0D3] text-[12px]">
+                      <span className="text-muted-foreground font-medium">{item.label}</span>
+                      <span className="font-medium text-black100">{item.value || "-"}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Education Status Badges Row 2 */}
+                <div className="flex flex-wrap gap-2 pt-4">
+                  {broker.free_trial_available && (
+                    <div className="px-3 py-1.5 rounded-lg bg-[#EAF3DE] border-[0.5px] border-[#C8D1BC] text-[12px] font-bold text-[#27500A]">
+                      Free trial
+                    </div>
+                  )}
+                  {broker.certificate_available && (
+                    <div className="px-3 py-1.5 rounded-lg bg-[#EAF3DE] border-[0.5px] border-[#C8D1BC] text-[12px] font-bold text-[#27500A]">
+                      Certificate
+                    </div>
+                  )}
+                  {broker.community_access && (
+                    <div className="px-3 py-1.5 rounded-lg bg-[#EAF3DE] border-[0.5px] border-[#C8D1BC] text-[12px] font-bold text-[#27500A]">
+                      Community
+                    </div>
+                  )}
+                  {broker.mentorship_available && (
+                    <div className="px-3 py-1.5 rounded-lg bg-[#EAF3DE] border-[0.5px] border-[#C8D1BC] text-[12px] font-bold text-[#27500A]">
+                      1-on-1 mentor
+                    </div>
+                  )}
+                  {broker.trading_platforms && (
+                    <div className="px-3 py-1.5 rounded-lg bg-[#EAF3DE] border-[0.5px] border-[#C8D1BC] text-[12px] font-bold text-[#27500A]">
+                      {broker.trading_platforms.split(',')[0]}
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { label: "Spread", value: broker.minimum_raw_spreads || broker.minimum_standard_spreads },
+                    { label: "Leverage", value: broker.maxLeverage },
+                    { label: "Regs", value: broker.regulators ? broker.regulators.split(',').length : null },
+                    {
+                      label: "Platform", value: broker.trading_platforms ? (() => {
+                        const platforms = broker.trading_platforms.split(',');
+                        return platforms.slice(0, 4).join(', ') + (platforms.length > 4 ? "..." : "");
+                      })() : null
+                    },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#F5F4ED] border border-[#E1E0D3] text-[12px]">
+                      <span className="text-muted-foreground font-medium">{item.label}</span>
+                      <span className="font-medium text-black100">{item.value || "—"}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-2 pt-4">
+                  {broker.availableInIndia && (
+                    <div className="px-3 py-1.5 rounded-lg bg-[#EAF3DE] border-[0.5px] border-[#C8D1BC] text-[12px] font-bold text-[#27500A]">
+                      India
+                    </div>
+                  )}
+                  {broker.islamicAccount && (
+                    <div className="px-3 py-1.5 rounded-lg bg-[#EAF3DE] border-[0.5px] border-[#C8D1BC] text-[12px] font-bold text-[#27500A]">
+                      Islamic
+                    </div>
+                  )}
+                  {broker.copyTrading && (
+                    <div className="px-3 py-1.5 rounded-lg bg-[#EAF3DE] border-[0.5px] border-[#C8D1BC] text-[12px] font-bold text-[#27500A]">
+                      Copy Trading
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+
+          <div className="mt-auto self-stretch -mx-5 px-5 pt-4 border-t border-black100/15">
+            <div className="flex items-center justify-between text-base uppercase font-medium text-black100">
+              <div className="flex items-center gap-2">
+                <span>Min Deposit:</span>
+                <Badge variant="outline" className="gap-1 border-none px-2 py-0.5 text-base text-foreground bg-[#F2F4F7]">
+                  {broker.minimum_deposit?.replace(/\s*\(.*?\)/g, '') || "Varies"}
+                </Badge>
+              </div>
+              
+              <Link 
+                href={getBrokerRoute(broker.slug || '', categorySlug, (broker as any).categories)}
+                className="flex items-center gap-1.5 text-black100 hover:text-primary transition-colors no-underline"
+              >
+                <span className="text-sm font-semibold normal-case">Read Details</span>
+                <ArrowUpRight className="size-4" />
+              </Link>
+            </div>
+          </div>
         </Stack>
 
         {/* Hover State */}
-        <div className="absolute inset-0 opacity-0 duration-200 group-hover:opacity-100 flex flex-col z-20 pointer-events-none">
+        {/* <div className="absolute inset-0 opacity-0 duration-200 group-hover:opacity-100 flex flex-col z-20 pointer-events-none">
           <CardDescription className="line-clamp-2 text-base">
             {broker.subtitle || broker.description || `Top rated forex broker based in ${broker.headquarters || 'global markets'} offering competitive spreads.`}
           </CardDescription>
@@ -131,7 +245,7 @@ export const BrokerCard = ({
               <span className="font-semibold text-foreground text-sm">{broker.year_established || "N/A"}</span>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </Card>
   );
