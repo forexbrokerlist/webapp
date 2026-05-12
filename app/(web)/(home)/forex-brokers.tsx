@@ -37,19 +37,21 @@ const BROKERS_MARQUEE = [
     { name: "HYCM", logo: "/assets/images/kling.svg" },
 ];
 
-const BrokerCard = ({ name, logo }: { name: string, logo: string }) => (
-    <div className='w-[240px] group shrink-0 border border-[#E4E4E4] bg-white shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] rounded-xl overflow-hidden mx-3'>
-        <div className='bg-[#1A1A1A] group-hover:bg-primary py-2 transition-all duration-300 px-4 flex items-center justify-center h-[36px]'>
-            <span className='text-white group-hover:text-black100 transition-all duration-300 text-sm font-bold tracking-widest uppercase opacity-90 truncate font-monda'>{name}</span>
+const BrokerCard = ({ name, logo, slug }: { name: string, logo: string, slug?: string }) => (
+    <Link href={slug ? `/forex-broker/${slug}` : "#"} className="block mx-3">
+        <div className='w-[240px] group shrink-0 border border-[#E4E4E4] bg-white shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] rounded-xl overflow-hidden cursor-pointer hover:border-primary transition-all duration-300'>
+            <div className='bg-[#1A1A1A] group-hover:bg-primary py-2 transition-all duration-300 px-4 flex items-center justify-center h-[36px]'>
+                <span className='text-white group-hover:text-black100 transition-all duration-300 text-sm font-bold tracking-widest uppercase opacity-90 truncate font-monda'>{name}</span>
+            </div>
+            <div className='h-[90px] flex items-center justify-center p-6 bg-white'>
+                <img
+                    src={logo}
+                    alt={name}
+                    className='max-h-[50px] max-w-[140px] object-contain transition-all duration-300'
+                />
+            </div>
         </div>
-        <div className='h-[90px] flex items-center justify-center p-6 bg-white'>
-            <img
-                src={logo}
-                alt={name}
-                className='max-h-[50px] max-w-[140px] object-contain  transition-all duration-300'
-            />
-        </div>
-    </div>
+    </Link>
 )
 
 
@@ -107,21 +109,23 @@ export default function ForexBrokers({ brokers }: any) {
                 </div>
                 <div className='grid grid-cols-7 max-mobile:px-4 max-tab:grid-cols-3 max-mobile:flex max-mobile:overflow-auto gap-3' style={{ scrollbarWidth: 'none' }}>
                     {(brokers && brokers.length > 0 ? brokers : BROKERS_LIST).map((broker: any, index: number) => (
-                        <motion.div
-                            key={index}
-                            className='border max-mobile:w-[280px] max-mobile:min-w-[280px] max-mobile:max-w-[280px] border-[#E4E4E4] bg-white shadow-[0_0_32.4px_0_rgba(26,26,26,0.05)] rounded-xl p-5'
-                            variants={{
-                                hidden: { opacity: 0, x: -30 },
-                                visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
-                            }}
-                        >
-                            <h3 className='text-black mb-1 text-lg font-semibold'>
-                                {broker.name}
-                            </h3>
-                            <p className='text-sm text-black700 font-medium whitespace-pre-line'>
-                                {broker.description}
-                            </p>
-                        </motion.div>
+                        <Link href={broker.slug ? `/forex-broker/${broker.slug}` : "#"} key={index}>
+                            <motion.div
+                                className='border h-full cursor-pointer hover:border-primary transition-all duration-300 max-mobile:w-[280px] max-mobile:min-w-[280px] max-mobile:max-w-[280px] border-[#E4E4E4] bg-white shadow-[0_0_32.4px_0_rgba(26,26,26,0.05)] rounded-xl p-5'
+                                variants={{
+                                    hidden: { opacity: 0, x: -30 },
+                                    visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+                                }}
+                                whileHover={{ y: -5 }}
+                            >
+                                <h3 className='text-black mb-1 text-lg font-semibold'>
+                                    {broker.name}
+                                </h3>
+                                <p className='text-sm text-black700 font-medium whitespace-pre-line'>
+                                    {broker.description}
+                                </p>
+                            </motion.div>
+                        </Link>
                     ))}
                 </div>
 
@@ -144,8 +148,8 @@ export default function ForexBrokers({ brokers }: any) {
                             ease: "linear"
                         }}
                     >
-                        {[...BROKERS_MARQUEE, ...BROKERS_MARQUEE].map((broker, index) => (
-                            <BrokerCard key={index} name={broker.name} logo={broker.logo} />
+                        {[...(brokers || []), ...(brokers || [])].map((broker: any, index: number) => (
+                            <BrokerCard key={index} name={broker.name} logo={broker.logoUrl} slug={broker.slug} />
                         ))}
                     </motion.div>
                 </div>
