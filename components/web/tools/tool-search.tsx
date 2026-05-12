@@ -56,6 +56,11 @@ export const ToolSearch = ({ placeholder, category, ...props }: ToolSearchProps)
         assetClass={filters.assetClass}
         executionType={filters.executionType}
         providerType={filters.providerType}
+        // PSP Partner filters
+        paymentType={filters.paymentType}
+        settlementCurrency={filters.settlementCurrency}
+        integrationType={filters.integrationType}
+        pspFeatures={filters.pspFeatures}
       />
     </Stack>
   )

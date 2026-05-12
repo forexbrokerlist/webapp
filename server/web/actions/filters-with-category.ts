@@ -73,6 +73,7 @@ export const findFilterOptionsWithCategory = actionClient
     const isBridgeOrPlugin =
       category === "forex-bridge-providers" || category === "plugin-providers";
     const isLiquidityPartner = category === "liquidity-providers";
+    const isPspPartner = category === "forex-psp-partners";
     console.log(
       "🔍 isForexEducation:",
       isForexEducation,
@@ -80,6 +81,8 @@ export const findFilterOptionsWithCategory = actionClient
       isBridgeOrPlugin,
       "🔍 isLiquidityPartner:",
       isLiquidityPartner,
+      "🔍 isPspPartner:",
+      isPspPartner,
       "for category:",
       category,
     );
@@ -207,7 +210,6 @@ export const findFilterOptionsWithCategory = actionClient
         {
           type: "regulators",
           options: [
-
             { slug: "fca", name: "FCA", count: 0 },
             { slug: "asic", name: "ASIC", count: 0 },
             { slug: "mas", name: "MAS", count: 0 },
@@ -245,6 +247,80 @@ export const findFilterOptionsWithCategory = actionClient
             { slug: "crypto_lp", name: "Crypto LP good", count: 0 },
             { slug: "white_label", name: "White Label ", count: 0 },
             { slug: "retail_lp", name: "Retail LP optional", count: 0 },
+          ],
+        },
+      ];
+    } else if (isPspPartner) {
+      // PSP Partner filters
+      filterOptions = [
+        {
+          type: "paymentType",
+          options: [
+            { slug: "crypto_gateway", name: "Crypto gateway ", count: 0 },
+            {
+              slug: "card_processing",
+              name: "Card processing ",
+              count: 0,
+            },
+            { slug: "bank_transfer", name: "Bank transfer ", count: 0 },
+            { slug: "e_wallet", name: "E-wallet ", count: 0 },
+            { slug: "local_payments", name: "Local payments ", count: 0 },
+            { slug: "open_banking", name: "Open banking", count: 0 },
+          ],
+        },
+        {
+          type: "settlementCurrency",
+          options: [
+            { slug: "usd", name: "USD", count: 0 },
+            { slug: "eur", name: "EUR", count: 0 },
+            { slug: "usdt", name: "USDT", count: 0 },
+            { slug: "gbp", name: "GBP ", count: 0 },
+            { slug: "multi_fiat", name: "Multi-fiat", count: 0 },
+            { slug: "crypto_only", name: "Crypto only", count: 0 },
+          ],
+        },
+        {
+          type: "integrationType",
+          options: [
+            { slug: "api", name: "API ", count: 0 },
+            { slug: "plugin", name: "Plugin ", count: 0 },
+            {
+              slug: "hosted_checkout",
+              name: "Hosted checkout",
+              count: 0,
+            },
+            { slug: "mass_payout", name: "Mass payout", count: 0 },
+            { slug: "white_label", name: "White label", count: 0 },
+          ],
+        },
+        {
+          type: "pspFeatures",
+          options: [
+            {
+              slug: "auto_fiat_conversion",
+              name: "Auto fiat conversion ",
+              count: 0,
+            },
+            {
+              slug: "instant_settlement",
+              name: "Instant settlement ",
+              count: 0,
+            },
+            {
+              slug: "invoice_payments",
+              name: "Invoice payments ",
+              count: 0,
+            },
+            {
+              slug: "recurring_billing",
+              name: "Recurring billing ",
+              count: 0,
+            },
+            {
+              slug: "chargeback_protection",
+              name: "Chargeback protection",
+              count: 0,
+            },
           ],
         },
       ];

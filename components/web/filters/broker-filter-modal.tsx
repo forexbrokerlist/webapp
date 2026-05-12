@@ -35,6 +35,11 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
   const [localAssetClass, setLocalAssetClass] = useState<string[]>([])
   const [localExecutionType, setLocalExecutionType] = useState<string[]>([])
   const [localProviderType, setLocalProviderType] = useState<string[]>([])
+  // PSP Partner state
+  const [localPaymentType, setLocalPaymentType] = useState<string[]>([])
+  const [localSettlementCurrency, setLocalSettlementCurrency] = useState<string[]>([])
+  const [localIntegrationType, setLocalIntegrationType] = useState<string[]>([])
+  const [localPspFeatures, setLocalPspFeatures] = useState<string[]>([])
   const [expandedSections, setExpandedSections] = useState<string[]>(["category", "features"])
   const { filters, updateFilters } = useFilters<ToolFilterSchema>()
   const { result, execute } = useAction(findFilterOptionsWithCategory)
@@ -67,8 +72,13 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       setLocalAssetClass(filters.assetClass ? filters.assetClass.split(",") : [])
       setLocalExecutionType(filters.executionType ? filters.executionType.split(",") : [])
       setLocalProviderType(filters.providerType ? filters.providerType.split(",") : [])
+      // Sync PSP partner filters
+      setLocalPaymentType(filters.paymentType ? filters.paymentType.split(",") : [])
+      setLocalSettlementCurrency(filters.settlementCurrency ? filters.settlementCurrency.split(",") : [])
+      setLocalIntegrationType(filters.integrationType ? filters.integrationType.split(",") : [])
+      setLocalPspFeatures(filters.pspFeatures ? filters.pspFeatures.split(",") : [])
     }
-  }, [isOpen, filters.category, filters.regulators, filters.platforms, filters.rating, filters.features, filters.skillLevel, filters.learningFormat, filters.pricing, filters.educationFeatures, filters.locationLanguage, filters.solutionType, filters.compatiblePlatform, filters.targetClient, filters.hqRegion, filters.regulation, filters.assetClass, filters.executionType, filters.providerType])
+  }, [isOpen, filters.category, filters.regulators, filters.platforms, filters.rating, filters.features, filters.skillLevel, filters.learningFormat, filters.pricing, filters.educationFeatures, filters.locationLanguage, filters.solutionType, filters.compatiblePlatform, filters.targetClient, filters.hqRegion, filters.regulation, filters.assetClass, filters.executionType, filters.providerType, filters.paymentType, filters.settlementCurrency, filters.integrationType, filters.pspFeatures])
 
   // Lock body scroll when open
   useEffect(() => {
@@ -110,7 +120,12 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       regulation: localRegulation.join(","),
       assetClass: localAssetClass.join(","),
       executionType: localExecutionType.join(","),
-      providerType: localProviderType.join(",")
+      providerType: localProviderType.join(","),
+      // Apply PSP partner filters
+      paymentType: localPaymentType.join(","),
+      settlementCurrency: localSettlementCurrency.join(","),
+      integrationType: localIntegrationType.join(","),
+      pspFeatures: localPspFeatures.join(",")
     })
     setIsOpen(false)
   }
@@ -137,6 +152,11 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
     setLocalAssetClass([])
     setLocalExecutionType([])
     setLocalProviderType([])
+    // Clear PSP partner filters
+    setLocalPaymentType([])
+    setLocalSettlementCurrency([])
+    setLocalIntegrationType([])
+    setLocalPspFeatures([])
     updateFilters({
       category: "",
       regulators: "",
@@ -155,7 +175,11 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       regulation: "",
       assetClass: "",
       executionType: "",
-      providerType: ""
+      providerType: "",
+      paymentType: "",
+      settlementCurrency: "",
+      integrationType: "",
+      pspFeatures: ""
     })
     setIsOpen(false)
   }
@@ -178,7 +202,11 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
     (filters.regulation ? filters.regulation.split(",").length : 0) +
     (filters.assetClass ? filters.assetClass.split(",").length : 0) +
     (filters.executionType ? filters.executionType.split(",").length : 0) +
-    (filters.providerType ? filters.providerType.split(",").length : 0)
+    (filters.providerType ? filters.providerType.split(",").length : 0) +
+    (filters.paymentType ? filters.paymentType.split(",").length : 0) +
+    (filters.settlementCurrency ? filters.settlementCurrency.split(",").length : 0) +
+    (filters.integrationType ? filters.integrationType.split(",").length : 0) +
+    (filters.pspFeatures ? filters.pspFeatures.split(",").length : 0)
 
   const removeFilter = (filterType: string, value: string) => {
     if (filterType === 'category') {
@@ -215,7 +243,11 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       regulation: "REGULATION",
       assetClass: "ASSETCLASS",
       executionType: "EXECUTIONTYPE",
-      providerType: "PROVIDERTYPE"
+      providerType: "PROVIDERTYPE",
+      paymentType: "PAYMENT TYPE",
+      settlementCurrency: "SETTLEMENT CURRENCY",
+      integrationType: "INTEGRATION TYPE",
+      pspFeatures: "FEATURES"
     }
     return labels[type] ?? type.replace(/_/g, " ").toUpperCase()
   }
@@ -934,6 +966,150 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
                                 setLocalProviderType(prev =>
                                   prev.includes(slug)
                                     ? prev.filter(p => p !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "paymentType" && (
+                      <>
+                        {/* "All Payment Types" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localPaymentType.length === 0}
+                            onChange={() => setLocalPaymentType([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Payment Types
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localPaymentType.includes(slug)}
+                              onChange={() =>
+                                setLocalPaymentType(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(p => p !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "settlementCurrency" && (
+                      <>
+                        {/* "All Settlement Currencies" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localSettlementCurrency.length === 0}
+                            onChange={() => setLocalSettlementCurrency([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Settlement Currencies
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localSettlementCurrency.includes(slug)}
+                              onChange={() =>
+                                setLocalSettlementCurrency(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(s => s !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "integrationType" && (
+                      <>
+                        {/* "All Integration Types" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localIntegrationType.length === 0}
+                            onChange={() => setLocalIntegrationType([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Integration Types
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localIntegrationType.includes(slug)}
+                              onChange={() =>
+                                setLocalIntegrationType(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(i => i !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "pspFeatures" && (
+                      <>
+                        {/* "All Features" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localPspFeatures.length === 0}
+                            onChange={() => setLocalPspFeatures([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Features
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localPspFeatures.includes(slug)}
+                              onChange={() =>
+                                setLocalPspFeatures(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(f => f !== slug)
                                     : [...prev, slug]
                                 )
                               }

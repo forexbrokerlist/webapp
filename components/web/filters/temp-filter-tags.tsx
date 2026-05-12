@@ -25,9 +25,64 @@ interface FilterTagsProps {
   assetClass?: string
   executionType?: string
   providerType?: string
+  // PSP Partner fields
+  paymentType?: string
+  settlementCurrency?: string
+  integrationType?: string
+  pspFeatures?: string
 }
 
-export const FilterTags = ({ category, regulators, platforms, rating, features, skillLevel, learningFormat, pricing, educationFeatures, locationLanguage, solutionType, compatiblePlatform, targetClient, hqRegion, regulation, assetClass, executionType, providerType }: FilterTagsProps) => {
+// Helper function to map filter slugs to display names
+const getFilterDisplayName = (slug: string, filterType: string): string => {
+  switch (filterType) {
+    case 'paymentType':
+      const paymentTypeMap: Record<string, string> = {
+        'crypto_gateway': 'Crypto gateway',
+        'card_processing': 'Card processing',
+        'bank_transfer': 'Bank transfer',
+        'e_wallet': 'E-wallet',
+        'local_payments': 'Local payments',
+        'open_banking': 'Open banking'
+      }
+      return paymentTypeMap[slug] || slug
+
+    case 'settlementCurrency':
+      const currencyMap: Record<string, string> = {
+        'usd': 'USD',
+        'eur': 'EUR',
+        'usdt': 'USDT',
+        'gbp': 'GBP',
+        'multi_fiat': 'Multi-fiat',
+        'crypto_only': 'Crypto only'
+      }
+      return currencyMap[slug] || slug
+
+    case 'integrationType':
+      const integrationMap: Record<string, string> = {
+        'api': 'API',
+        'plugin': 'Plugin',
+        'hosted_checkout': 'Hosted checkout',
+        'mass_payout': 'Mass payout',
+        'white_label': 'White label'
+      }
+      return integrationMap[slug] || slug
+
+    case 'pspFeatures':
+      const featureMap: Record<string, string> = {
+        'auto_fiat_conversion': 'Auto fiat conversion',
+        'instant_settlement': 'Instant settlement',
+        'invoice_payments': 'Invoice payments',
+        'recurring_billing': 'Recurring billing',
+        'chargeback_protection': 'Chargeback protection'
+      }
+      return featureMap[slug] || slug
+
+    default:
+      return slug
+  }
+}
+
+export const FilterTags = ({ category, regulators, platforms, rating, features, skillLevel, learningFormat, pricing, educationFeatures, locationLanguage, solutionType, compatiblePlatform, targetClient, hqRegion, regulation, assetClass, executionType, providerType, paymentType, settlementCurrency, integrationType, pspFeatures }: FilterTagsProps) => {
   const { filters, updateFilters } = useFilters<ToolFilterSchema>()
 
   const removeFilter = (filterType: string, value: string) => {
@@ -93,6 +148,22 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
       const currentProviderType = filters.providerType ? filters.providerType.split(",") : []
       const newProviderType = currentProviderType.filter(p => p !== value)
       updateFilters({ providerType: newProviderType.join(",") })
+    } else if (filterType === 'paymentType') {
+      const currentPaymentType = filters.paymentType ? filters.paymentType.split(",") : []
+      const newPaymentType = currentPaymentType.filter(p => p !== value)
+      updateFilters({ paymentType: newPaymentType.join(",") })
+    } else if (filterType === 'settlementCurrency') {
+      const currentSettlementCurrency = filters.settlementCurrency ? filters.settlementCurrency.split(",") : []
+      const newSettlementCurrency = currentSettlementCurrency.filter(s => s !== value)
+      updateFilters({ settlementCurrency: newSettlementCurrency.join(",") })
+    } else if (filterType === 'integrationType') {
+      const currentIntegrationType = filters.integrationType ? filters.integrationType.split(",") : []
+      const newIntegrationType = currentIntegrationType.filter(i => i !== value)
+      updateFilters({ integrationType: newIntegrationType.join(",") })
+    } else if (filterType === 'pspFeatures') {
+      const currentPspFeatures = filters.pspFeatures ? filters.pspFeatures.split(",") : []
+      const newPspFeatures = currentPspFeatures.filter(f => f !== value)
+      updateFilters({ pspFeatures: newPspFeatures.join(",") })
     }
   }
 
@@ -118,11 +189,16 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
       assetClass: "",
       executionType: "",
       providerType: "",
+      // PSP Partner fields
+      paymentType: "",
+      settlementCurrency: "",
+      integrationType: "",
+      pspFeatures: "",
       q: ""
     })
   }
 
-  const hasActiveFilters = !!(category || regulators || platforms || rating || features || skillLevel || learningFormat || pricing || educationFeatures || locationLanguage || solutionType || compatiblePlatform || targetClient || hqRegion || regulation || assetClass || executionType || providerType)
+  const hasActiveFilters = !!(category || regulators || platforms || rating || features || skillLevel || learningFormat || pricing || educationFeatures || locationLanguage || solutionType || compatiblePlatform || targetClient || hqRegion || regulation || assetClass || executionType || providerType || paymentType || settlementCurrency || integrationType || pspFeatures)
 
   return (
     <div className="flex flex-wrap items-center gap-2 px-6 py-3 border-b border-[#E5E7E0]">
@@ -353,6 +429,58 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
           <button
             type="button"
             onClick={() => removeFilter('providerType', provider.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {paymentType && paymentType.split(",").map((payment, index) => (
+        <span key={payment} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {getFilterDisplayName(payment.trim(), 'paymentType')}
+          <button
+            type="button"
+            onClick={() => removeFilter('paymentType', payment.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {settlementCurrency && settlementCurrency.split(",").map((currency, index) => (
+        <span key={currency} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {getFilterDisplayName(currency.trim(), 'settlementCurrency')}
+          <button
+            type="button"
+            onClick={() => removeFilter('settlementCurrency', currency.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {integrationType && integrationType.split(",").map((integration, index) => (
+        <span key={integration} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {getFilterDisplayName(integration.trim(), 'integrationType')}
+          <button
+            type="button"
+            onClick={() => removeFilter('integrationType', integration.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {pspFeatures && pspFeatures.split(",").map((feature, index) => (
+        <span key={feature} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {getFilterDisplayName(feature.trim(), 'pspFeatures')}
+          <button
+            type="button"
+            onClick={() => removeFilter('pspFeatures', feature.trim())}
             className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
           >
             <X size={12} />

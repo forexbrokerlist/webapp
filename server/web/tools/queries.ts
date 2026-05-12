@@ -189,6 +189,11 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     assetClass,
     executionType,
     providerType,
+    // PSP Partner specific filters
+    paymentType,
+    settlementCurrency,
+    integrationType,
+    pspFeatures,
   } = search;
   const skip = (page - 1) * perPage;
   const take = perPage;
@@ -599,6 +604,154 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     );
   }
 
+  // Filter brokers in memory for payment type
+  if (paymentType) {
+    const selectedPaymentTypes = paymentType
+      .split(",")
+      .map((p) => p.trim())
+      .filter((p) => p !== "All");
+    console.log("🔍 DEBUG: Filtering for payment type:", paymentType);
+    brokers = brokers.filter((broker) => {
+      if (selectedPaymentTypes.length === 0) return true;
+
+      const brokerFundingMethods =
+        broker.funding_methods?.split(",").map((m) => m.trim()) || [];
+      return selectedPaymentTypes.some((selectedPay) =>
+        brokerFundingMethods.some(
+          (pay) => pay.toLowerCase() === selectedPay.toLowerCase(),
+        ),
+      );
+    });
+    console.log("🔍 DEBUG: Brokers after payment type filter:", brokers.length);
+  }
+
+  // Filter brokers in memory for settlement currency
+  if (settlementCurrency) {
+    const selectedCurrencies = settlementCurrency
+      .split(",")
+      .map((c) => c.trim())
+      .filter((c) => c !== "All");
+    console.log(
+      "🔍 DEBUG: Filtering for settlement currency:",
+      settlementCurrency,
+    );
+    brokers = brokers.filter((broker) => {
+      if (selectedCurrencies.length === 0) return true;
+
+      const brokerFiatCurrencies =
+        broker.fiat_currencies?.split(",").map((c) => c.trim()) || [];
+      return selectedCurrencies.some((selectedCurr) =>
+        brokerFiatCurrencies.some(
+          (curr) => curr.toLowerCase() === selectedCurr.toLowerCase(),
+        ),
+      );
+    });
+    console.log(
+      "🔍 DEBUG: Brokers after settlement currency filter:",
+      brokers.length,
+    );
+  }
+
+  // Filter brokers in memory for integration type
+  if (integrationType) {
+    const selectedIntegrationTypes = integrationType
+      .split(",")
+      .map((i) => i.trim())
+      .filter((i) => i !== "All");
+    console.log("🔍 DEBUG: Filtering for integration type:", integrationType);
+    brokers = brokers.filter((broker) => {
+      if (selectedIntegrationTypes.length === 0) return true;
+
+      const brokerIntegrationTypes = broker.integration_type || [];
+      return selectedIntegrationTypes.some((selectedInt) =>
+        brokerIntegrationTypes.some(
+          (int) => int.toLowerCase() === selectedInt.toLowerCase(),
+        ),
+      );
+    });
+    console.log(
+      "🔍 DEBUG: Brokers after integration type filter:",
+      brokers.length,
+    );
+  }
+
+  // Filter brokers in memory for PSP features
+  if (pspFeatures) {
+    const selectedFeatures = pspFeatures
+      .split(",")
+      .map((f) => f.trim())
+      .filter((f) => f !== "All");
+    console.log("🔍 DEBUG: Filtering for PSP features:", pspFeatures);
+    console.log("🔍 DEBUG: Selected PSP Features:", selectedFeatures);
+    console.log("🔍 DEBUG: Total brokers before PSP filter:", brokers.length);
+
+    brokers = brokers.filter((broker) => {
+      if (selectedFeatures.length === 0) return true;
+
+      const brokerMatches = selectedFeatures.every((selectedFeat) => {
+        console.log(
+          `🔍 DEBUG: Checking broker ${broker.broker_name} for feature: ${selectedFeat}`,
+        );
+        switch (selectedFeat) {
+          case "auto_fiat_conversion":
+            console.log(
+              `🔍 DEBUG: auto_fiat_conversion for ${broker.broker_name}: ${broker.auto_fiat_conversion}`,
+            );
+            return broker.auto_fiat_conversion === true;
+          case "instant_settlement":
+            const settlementTime = broker.settlement_time;
+            console.log(
+              `🔍 DEBUG: settlement_time for ${broker.broker_name}: ${settlementTime}`,
+            );
+
+            if (!settlementTime) return false;
+
+            const settlementParts = settlementTime
+              .split("/")
+              .map((part) => part.trim());
+            const hasInstantSettlement = settlementParts.some((part) =>
+              part.toLowerCase().includes("instant"),
+            );
+
+            console.log(
+              `🔍 DEBUG: Settlement parts: ${JSON.stringify(settlementParts)}`,
+            );
+            console.log(
+              `🔍 DEBUG: Has instant settlement: ${hasInstantSettlement}`,
+            );
+
+            return hasInstantSettlement;
+          case "invoice_payments":
+            console.log(
+              `🔍 DEBUG: checkout_page for ${broker.broker_name}: ${broker.checkout_page}`,
+            );
+            return broker.checkout_page === true;
+          case "recurring_billing":
+            console.log(
+              `🔍 DEBUG: recurring_billing for ${broker.broker_name}: (no direct field)`,
+            );
+            return false; // No direct field found, skipping
+          case "chargeback_protection":
+            console.log(
+              `🔍 DEBUG: chargeback_protection for ${broker.broker_name}: (no direct field)`,
+            );
+            return false; // No direct field found, skipping
+          default:
+            return false;
+        }
+      });
+      console.log(
+        `🔍 DEBUG: Broker ${broker.broker_name} matches all selected features: ${brokerMatches}`,
+      );
+      return brokerMatches;
+    });
+    console.log("🔍 DEBUG: Brokers after PSP features filter:", brokers.length);
+    console.log(
+      "🔍 DEBUG: Final filtered brokers:",
+      brokers.map((b) => b.broker_name),
+    );
+  }
+
   // Apply pagination after filtering
   const hasFilters = !!(
     regulators ||
@@ -616,7 +769,11 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     regulation ||
     assetClass ||
     executionType ||
-    providerType
+    providerType ||
+    paymentType ||
+    settlementCurrency ||
+    integrationType ||
+    pspFeatures
   );
   const total = hasFilters ? brokers.length : totalCount;
   const paginatedBrokers = brokers.slice(skip, skip + take);

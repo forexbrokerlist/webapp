@@ -34,6 +34,11 @@ export const toolFilterParams = {
   assetClass: parseAsString.withDefault(""),
   executionType: parseAsString.withDefault(""),
   providerType: parseAsString.withDefault(""),
+  // PSP Partner specific fields
+  paymentType: parseAsString.withDefault(""),
+  settlementCurrency: parseAsString.withDefault(""),
+  integrationType: parseAsString.withDefault(""),
+  pspFeatures: parseAsString.withDefault(""),
 };
 
 export const toolFilterParamsCache = createSearchParamsCache(toolFilterParams);
