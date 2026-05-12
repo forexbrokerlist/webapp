@@ -21,10 +21,7 @@ type FilterOptions = Array<{
 export const findFilterOptionsWithCategory = actionClient
   .inputSchema(z.object({ category: z.string().optional() }))
   .action(async ({ parsedInput: { category } }) => {
-    console.log(
-      "🔍 findFilterOptionsWithCategory received category:",
-      category,
-    );
+   
     const [categories, brokers] = await Promise.all([
       findCategories({ all: true }),
       db.brokers.findMany({
@@ -74,18 +71,8 @@ export const findFilterOptionsWithCategory = actionClient
       category === "forex-bridge-providers" || category === "plugin-providers";
     const isLiquidityPartner = category === "liquidity-providers";
     const isPspPartner = category === "forex-psp-partners";
-    console.log(
-      "🔍 isForexEducation:",
-      isForexEducation,
-      "🔍 isBridgeOrPlugin:",
-      isBridgeOrPlugin,
-      "🔍 isLiquidityPartner:",
-      isLiquidityPartner,
-      "🔍 isPspPartner:",
-      isPspPartner,
-      "for category:",
-      category,
-    );
+    const isTradingPlatform = category === "forex-trading-platform";
+    
 
     let filterOptions: FilterOptions = [];
 
@@ -322,6 +309,64 @@ export const findFilterOptionsWithCategory = actionClient
               count: 0,
             },
           ],
+        },
+      ];
+    } else if (isTradingPlatform) {
+      // Trading Platform filters
+      filterOptions = [
+        {
+          type: "platformType",
+          options: [
+           
+            "White Label",
+            "Standalone",
+            "MT4/MT5 Addon",
+            "Cloud Native",
+          ].map((type) => ({
+            slug: type,
+            name: type,
+            count: 0, // TODO: Update when trading platform data is available
+          })),
+        },
+        {
+          type: "propFirm",
+          options: [
+           
+            { slug: "supported", name: "Supported", count: 0 },
+            { slug: "not_supported", name: "Not Supported", count: 0 },
+          ],
+        },
+        {
+          type: "deployment",
+          options: [ "Web", "Desktop", "Mobile App", "All Platforms"].map(
+            (deployment) => ({
+              slug: deployment,
+              name: deployment,
+              count: 0, // TODO: Update when trading platform data is available
+            }),
+          ),
+        },
+        {
+          type: "bestFor",
+          options: [ "Brokers", "Prop Firms", "Both"].map((audience) => ({
+            slug: audience,
+            name: audience,
+            count: 0, // TODO: Update when trading platform data is available
+          })),
+        },
+        {
+          type: "platformFeatures",
+          options: [
+            "TradingView Charts",
+            "MT5 Backend",
+            "ECN Execution",
+            "Algo Trading",
+            "Demo Available",
+          ].map((feature) => ({
+            slug: feature,
+            name: feature,
+            count: 0, // TODO: Update when trading platform data is available
+          })),
         },
       ];
     } else {

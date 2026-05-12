@@ -26,10 +26,7 @@ export const getCategoryWithBrokers = async (slug: string, limit?: number) => {
  * Fetches trusted trading platforms.
  */
 export const getTrustedPlatforms = async (limit: number = 7) => {
-  const category = await getCategoryWithBrokers(
-    "forex-brokers",
-    limit,
-  );
+  const category = await getCategoryWithBrokers("forex-brokers", limit);
   const brokers = await Promise.all(
     (category?.brokers || []).map(async (broker) => ({
       id: broker.id,
@@ -272,7 +269,6 @@ export const getPremiumBrokers = async (limit: number = 10) => {
       description: broker.subtitle || broker.description || "",
       logoUrl: await getBrokerLogo(broker),
       slug: broker.slug || "",
-    }))
+    })),
   );
 };
-

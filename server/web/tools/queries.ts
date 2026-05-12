@@ -194,6 +194,12 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     settlementCurrency,
     integrationType,
     pspFeatures,
+    // Trading Platform specific filters
+    platformType,
+    propFirm,
+    deployment,
+    bestFor,
+    platformFeatures,
   } = search;
   const skip = (page - 1) * perPage;
   const take = perPage;
@@ -257,8 +263,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
   // Filter brokers in memory for regulators
   let brokers = allBrokers;
   if (regulators) {
-    console.log("🔍 DEBUG: Filtering for regulators:", regulators);
-    console.log("🔍 DEBUG: Total brokers before filter:", allBrokers.length);
+  
 
     const selectedRegulators = regulators.split(",").map((r) => r.trim());
 
@@ -285,7 +290,6 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       return hasMatch;
     });
 
-    console.log("🔍 DEBUG: Brokers after regulator filter:", brokers.length);
   }
 
   // Filter brokers in memory for platforms
@@ -311,7 +315,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     const selectedFeatures = features.split(",").map((f) => f.trim());
     console.log("🔍 DEBUG: Filtering for features:", features);
     brokers = brokers.filter((broker) => {
-      return selectedFeatures.every((selectedFeature) => {
+      return selectedFeatures.some((selectedFeature) => {
         switch (selectedFeature) {
           case "Islamic Account":
             return broker.islamicAccount === true;
@@ -377,7 +381,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       educationFeatures,
     );
     brokers = brokers.filter((broker) => {
-      return selectedFeatures.every((selectedFeature) => {
+      return selectedFeatures.some((selectedFeature) => {
         switch (selectedFeature) {
           case "Certificate":
             return broker.certificate_available === true;
@@ -404,7 +408,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
   // Filter brokers in memory for location/language
   if (locationLanguage) {
     const selectedLocations = locationLanguage.split(",").map((l) => l.trim());
-    console.log("🔍 DEBUG: Filtering for location/language:", locationLanguage);
+    
     brokers = brokers.filter((broker) => {
       const languages = broker.languages_supported || [];
       const headquarters = broker.headquarters || "";
@@ -425,10 +429,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
         return languageMatch || locationMatch;
       });
     });
-    console.log(
-      "🔍 DEBUG: Brokers after location/language filter:",
-      brokers.length,
-    );
+    
   }
 
   // Filter brokers in memory for solution type
@@ -437,10 +438,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     brokers = brokers.filter((broker) => {
       return broker.solution_type === solutionType;
     });
-    console.log(
-      "🔍 DEBUG: Brokers after solution type filter:",
-      brokers.length,
-    );
+  
   }
 
   // Filter brokers in memory for compatible platform
@@ -449,10 +447,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       .split(",")
       .map((p) => p.trim())
       .filter((p) => p !== "All");
-    console.log(
-      "🔍 DEBUG: Filtering for compatible platforms:",
-      compatiblePlatform,
-    );
+   
     brokers = brokers.filter((broker) => {
       if (selectedPlatforms.length === 0) return true;
 
@@ -466,10 +461,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
         );
       });
     });
-    console.log(
-      "🔍 DEBUG: Brokers after compatible platform filter:",
-      brokers.length,
-    );
+  
   }
 
   // Filter brokers in memory for target client
@@ -478,7 +470,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       .split(",")
       .map((c) => c.trim())
       .filter((c) => c !== "All");
-    console.log("🔍 DEBUG: Filtering for target client:", targetClient);
+    
     brokers = brokers.filter((broker) => {
       if (selectedClients.length === 0) return true;
 
@@ -489,10 +481,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
         ),
       );
     });
-    console.log(
-      "🔍 DEBUG: Brokers after target client filter:",
-      brokers.length,
-    );
+  
   }
 
   // Filter brokers in memory for HQ region
@@ -501,7 +490,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       .split(",")
       .map((r) => r.trim())
       .filter((r) => r !== "All");
-    console.log("🔍 DEBUG: Filtering for HQ region:", hqRegion);
+   
     brokers = brokers.filter((broker) => {
       if (selectedRegions.length === 0) return true;
 
@@ -511,7 +500,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
         return headquarters.toLowerCase().includes(lowerSelected);
       });
     });
-    console.log("🔍 DEBUG: Brokers after HQ region filter:", brokers.length);
+   
   }
 
   // Filter brokers in memory for regulation
@@ -520,7 +509,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       .split(",")
       .map((r) => r.trim())
       .filter((r) => r !== "All");
-    console.log("🔍 DEBUG: Filtering for regulation:", regulation);
+    
     brokers = brokers.filter((broker) => {
       if (selectedRegulations.length === 0) return true;
 
@@ -533,7 +522,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
         ),
       );
     });
-    console.log("🔍 DEBUG: Brokers after regulation filter:", brokers.length);
+   
   }
 
   // Filter brokers in memory for asset class
@@ -542,7 +531,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       .split(",")
       .map((a) => a.trim())
       .filter((a) => a !== "All");
-    console.log("🔍 DEBUG: Filtering for asset class:", assetClass);
+ 
     brokers = brokers.filter((broker) => {
       if (selectedAssetClasses.length === 0) return true;
 
@@ -553,7 +542,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
         ),
       );
     });
-    console.log("🔍 DEBUG: Brokers after asset class filter:", brokers.length);
+   
   }
 
   // Filter brokers in memory for execution type
@@ -562,7 +551,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       .split(",")
       .map((e) => e.trim())
       .filter((e) => e !== "All");
-    console.log("🔍 DEBUG: Filtering for execution type:", executionType);
+    
     brokers = brokers.filter((broker) => {
       if (selectedExecutionTypes.length === 0) return true;
 
@@ -587,7 +576,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       .split(",")
       .map((p) => p.trim())
       .filter((p) => p !== "All");
-    console.log("🔍 DEBUG: Filtering for provider type:", providerType);
+  
     brokers = brokers.filter((broker) => {
       if (selectedProviderTypes.length === 0) return true;
 
@@ -610,7 +599,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
       .split(",")
       .map((p) => p.trim())
       .filter((p) => p !== "All");
-    console.log("🔍 DEBUG: Filtering for payment type:", paymentType);
+      
     brokers = brokers.filter((broker) => {
       if (selectedPaymentTypes.length === 0) return true;
 
@@ -622,7 +611,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
         ),
       );
     });
-    console.log("🔍 DEBUG: Brokers after payment type filter:", brokers.length);
+   
   }
 
   // Filter brokers in memory for settlement currency
@@ -646,10 +635,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
         ),
       );
     });
-    console.log(
-      "🔍 DEBUG: Brokers after settlement currency filter:",
-      brokers.length,
-    );
+    
   }
 
   // Filter brokers in memory for integration type
@@ -688,7 +674,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     brokers = brokers.filter((broker) => {
       if (selectedFeatures.length === 0) return true;
 
-      const brokerMatches = selectedFeatures.every((selectedFeat) => {
+      const brokerMatches = selectedFeatures.some((selectedFeat) => {
         console.log(
           `🔍 DEBUG: Checking broker ${broker.broker_name} for feature: ${selectedFeat}`,
         );
@@ -699,10 +685,210 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
             );
             return broker.auto_fiat_conversion === true;
           case "instant_settlement":
-            const settlementTime = broker.settlement_time;
+            const settlementType = broker.settlement_time?.toLowerCase();
+         
+            return settlementType?.includes("Instant") || false;
+          case "invoice_payments":
+           
+            return broker.checkout_page === true;
+          case "recurring_billing":
             console.log(
-              `🔍 DEBUG: settlement_time for ${broker.broker_name}: ${settlementTime}`,
+              `🔍 DEBUG: recurring_billing for ${broker.broker_name}: (no direct field)`,
             );
+            return false; // No direct field found, skipping
+          case "chargeback_protection":
+          
+            return false; // No direct field found, skipping
+          default:
+            return false;
+        }
+      });
+     
+      return brokerMatches;
+    });
+   
+  }
+
+  // Filter brokers in memory for platform type
+  if (platformType && platformType !== "All") {
+   
+    brokers = brokers.filter((broker) => {
+      const platformTypes = broker.platform_type || [];
+      return platformTypes.some(
+        (type) => type.toLowerCase() === platformType.toLowerCase(),
+      );
+    });
+
+  }
+
+  // Filter brokers in memory for prop firm
+  if (propFirm && propFirm !== "all") {
+
+    brokers = brokers.filter((broker) => {
+      const propFirmSupport = broker.prop_firm_support || [];
+      if (propFirm === "supported") {
+        return propFirmSupport.some((support) =>
+          support.toLowerCase().includes("supported"),
+        );
+      } else if (propFirm === "not_supported") {
+        return propFirmSupport.some((support) =>
+          support.toLowerCase().includes("not supported"),
+        );
+      }
+      return true;
+    });
+   
+  }
+
+  // Filter brokers in memory for deployment
+  if (deployment && deployment !== "All") {
+    brokers = brokers.filter((broker) => {
+      const deployments = broker.deployment_type || [];
+
+      // Split deployment filter by comma and check if any match
+      const selectedDeployments = deployment
+        .split(",")
+        .map((d) => d.toLowerCase().trim());
+
+      const hasMatch = deployments.some((dep: string) => {
+        const depClean = dep.toLowerCase().trim();
+        const match = selectedDeployments.includes(depClean);
+     
+        return match;
+      });
+
+      return hasMatch;
+    });
+   
+  }
+
+  // Filter brokers in memory for best for
+  if (bestFor && bestFor !== "All") {
+   
+    brokers = brokers.filter((broker) => {
+      const bestForArray = broker.bestFor || [];
+      if (bestFor === "Both") {
+        return (
+          bestForArray.some((item: string) =>
+            item.toLowerCase().includes("brokers"),
+          ) &&
+          bestForArray.some((item: string) =>
+            item.toLowerCase().includes("prop firms"),
+          )
+        );
+      } else if (bestFor === "Brokers") {
+        return bestForArray.some((item: string) =>
+          item.toLowerCase().includes("brokers"),
+        );
+      } else if (bestFor === "Prop Firms") {
+        return bestForArray.some((item: string) =>
+          item.toLowerCase().includes("prop firms"),
+        );
+      }
+      return true;
+    });
+  
+  }
+
+  // Filter brokers in memory for platform features
+  if (platformFeatures) {
+    const selectedFeatures = platformFeatures
+      .split(",")
+      .map((f) => f.trim())
+      .filter((f) => f !== "All");
+   
+    brokers = brokers.filter((broker) => {
+      return selectedFeatures.some((selectedFeature) => {
+        switch (selectedFeature) {
+          case "TradingView Charts":
+            const chartingTools = broker.charting_tools || [];
+            return chartingTools.some((tool: string) =>
+              tool.toLowerCase().trim().includes("trading view"),
+            );
+          case "MT5 Backend":
+            return broker.mt5_backend === true;
+          case "ECN Execution":
+            // Check if execution_types contains ECN
+            const executionTypes = broker.execution_types
+              ? broker.execution_types.split(",").map((e) => e.trim())
+              : [];
+            return executionTypes.some((type: string) =>
+              type.toLowerCase().includes("ecn"),
+            );
+          case "Algo Trading":
+            // Check if features array contains algo trading
+            const features = broker.features || [];
+            return features.some((feature: string) =>
+              feature.toLowerCase().includes("algo"),
+            );
+          case "Demo Available":
+            return broker.demoAccount === true;
+          default:
+            return false;
+        }
+      });
+    });
+   
+  }
+
+  // Filter brokers in memory for settlement currency
+  if (settlementCurrency) {
+    const selectedCurrencies = settlementCurrency
+      .split(",")
+      .map((c) => c.trim())
+      .filter((c) => c !== "All");
+ 
+    brokers = brokers.filter((broker) => {
+      if (selectedCurrencies.length === 0) return true;
+
+      const brokerFiatCurrencies =
+        broker.fiat_currencies?.split(",").map((c) => c.trim()) || [];
+      return selectedCurrencies.some((selectedCurr) =>
+        brokerFiatCurrencies.some(
+          (curr) => curr.toLowerCase() === selectedCurr.toLowerCase(),
+        ),
+      );
+    });
+  
+  }
+
+  // Filter brokers in memory for integration type
+  if (integrationType) {
+    const selectedIntegrationTypes = integrationType
+      .split(",")
+      .map((i) => i.trim())
+      .filter((i) => i !== "All");
+  
+    brokers = brokers.filter((broker) => {
+      if (selectedIntegrationTypes.length === 0) return true;
+
+      const brokerIntegrationTypes = broker.integration_type || [];
+      return selectedIntegrationTypes.some((selectedInt) =>
+        brokerIntegrationTypes.some(
+          (int) => int.toLowerCase() === selectedInt.toLowerCase(),
+        ),
+      );
+    });
+    
+  }
+
+  // Filter brokers in memory for PSP features
+  if (pspFeatures) {
+    const selectedFeatures = pspFeatures
+      .split(",")
+      .map((f) => f.trim())
+      .filter((f) => f !== "All");
+
+    brokers = brokers.filter((broker) => {
+      if (selectedFeatures.length === 0) return true;
+
+      const brokerMatches = selectedFeatures.every((selectedFeat) => {
+        switch (selectedFeat) {
+          case "auto_fiat_conversion":
+            return broker.auto_fiat_conversion === true;
+          case "instant_settlement":
+            const settlementTime = broker.settlement_time;
+           
 
             if (!settlementTime) return false;
 
@@ -713,43 +899,24 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
               part.toLowerCase().includes("instant"),
             );
 
-            console.log(
-              `🔍 DEBUG: Settlement parts: ${JSON.stringify(settlementParts)}`,
-            );
-            console.log(
-              `🔍 DEBUG: Has instant settlement: ${hasInstantSettlement}`,
-            );
+        
 
             return hasInstantSettlement;
           case "invoice_payments":
-            console.log(
-              `🔍 DEBUG: checkout_page for ${broker.broker_name}: ${broker.checkout_page}`,
-            );
+          
             return broker.checkout_page === true;
           case "recurring_billing":
-            console.log(
-              `🔍 DEBUG: recurring_billing for ${broker.broker_name}: (no direct field)`,
-            );
+          
             return false; // No direct field found, skipping
           case "chargeback_protection":
-            console.log(
-              `🔍 DEBUG: chargeback_protection for ${broker.broker_name}: (no direct field)`,
-            );
             return false; // No direct field found, skipping
           default:
             return false;
         }
       });
-      console.log(
-        `🔍 DEBUG: Broker ${broker.broker_name} matches all selected features: ${brokerMatches}`,
-      );
+
       return brokerMatches;
     });
-    console.log("🔍 DEBUG: Brokers after PSP features filter:", brokers.length);
-    console.log(
-      "🔍 DEBUG: Final filtered brokers:",
-      brokers.map((b) => b.broker_name),
-    );
   }
 
   // Apply pagination after filtering
@@ -773,7 +940,12 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
     paymentType ||
     settlementCurrency ||
     integrationType ||
-    pspFeatures
+    pspFeatures ||
+    platformType ||
+    propFirm ||
+    deployment ||
+    bestFor ||
+    platformFeatures
   );
   const total = hasFilters ? brokers.length : totalCount;
   const paginatedBrokers = brokers.slice(skip, skip + take);

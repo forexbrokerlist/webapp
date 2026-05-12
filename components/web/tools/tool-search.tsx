@@ -17,7 +17,7 @@ export type ToolSearchProps = ComponentProps<typeof Stack> & {
 }
 
 export const ToolSearch = ({ placeholder, category, ...props }: ToolSearchProps) => {
-  console.log("🔍 ToolSearch received category:", category)
+  
   const t = useTranslations("tools.filters")
   const { enableSort, enableFilters, filters } = useFilters<ToolFilterSchema>()
 
@@ -61,6 +61,12 @@ export const ToolSearch = ({ placeholder, category, ...props }: ToolSearchProps)
         settlementCurrency={filters.settlementCurrency}
         integrationType={filters.integrationType}
         pspFeatures={filters.pspFeatures}
+        // Trading Platform filters
+        platformType={filters.platformType}
+        propFirm={filters.propFirm}
+        deployment={filters.deployment}
+        bestFor={filters.bestFor}
+        platformFeatures={filters.platformFeatures}
       />
     </Stack>
   )

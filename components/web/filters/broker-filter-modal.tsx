@@ -40,6 +40,12 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
   const [localSettlementCurrency, setLocalSettlementCurrency] = useState<string[]>([])
   const [localIntegrationType, setLocalIntegrationType] = useState<string[]>([])
   const [localPspFeatures, setLocalPspFeatures] = useState<string[]>([])
+  // Trading Platform state
+  const [localPlatformType, setLocalPlatformType] = useState<string[]>([])
+  const [localPropFirm, setLocalPropFirm] = useState<string[]>([])
+  const [localDeployment, setLocalDeployment] = useState<string[]>([])
+  const [localBestFor, setLocalBestFor] = useState<string[]>([])
+  const [localPlatformFeatures, setLocalPlatformFeatures] = useState<string[]>([])
   const [expandedSections, setExpandedSections] = useState<string[]>(["category", "features"])
   const { filters, updateFilters } = useFilters<ToolFilterSchema>()
   const { result, execute } = useAction(findFilterOptionsWithCategory)
@@ -77,8 +83,14 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       setLocalSettlementCurrency(filters.settlementCurrency ? filters.settlementCurrency.split(",") : [])
       setLocalIntegrationType(filters.integrationType ? filters.integrationType.split(",") : [])
       setLocalPspFeatures(filters.pspFeatures ? filters.pspFeatures.split(",") : [])
+      // Sync trading platform filters
+      setLocalPlatformType(filters.platformType ? filters.platformType.split(",") : [])
+      setLocalPropFirm(filters.propFirm ? filters.propFirm.split(",") : [])
+      setLocalDeployment(filters.deployment ? filters.deployment.split(",") : [])
+      setLocalBestFor(filters.bestFor ? filters.bestFor.split(",") : [])
+      setLocalPlatformFeatures(filters.platformFeatures ? filters.platformFeatures.split(",") : [])
     }
-  }, [isOpen, filters.category, filters.regulators, filters.platforms, filters.rating, filters.features, filters.skillLevel, filters.learningFormat, filters.pricing, filters.educationFeatures, filters.locationLanguage, filters.solutionType, filters.compatiblePlatform, filters.targetClient, filters.hqRegion, filters.regulation, filters.assetClass, filters.executionType, filters.providerType, filters.paymentType, filters.settlementCurrency, filters.integrationType, filters.pspFeatures])
+  }, [isOpen, filters.category, filters.regulators, filters.platforms, filters.rating, filters.features, filters.skillLevel, filters.learningFormat, filters.pricing, filters.educationFeatures, filters.locationLanguage, filters.solutionType, filters.compatiblePlatform, filters.targetClient, filters.hqRegion, filters.regulation, filters.assetClass, filters.executionType, filters.providerType, filters.paymentType, filters.settlementCurrency, filters.integrationType, filters.pspFeatures, filters.platformType, filters.propFirm, filters.deployment, filters.bestFor, filters.platformFeatures])
 
   // Lock body scroll when open
   useEffect(() => {
@@ -125,7 +137,13 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       paymentType: localPaymentType.join(","),
       settlementCurrency: localSettlementCurrency.join(","),
       integrationType: localIntegrationType.join(","),
-      pspFeatures: localPspFeatures.join(",")
+      pspFeatures: localPspFeatures.join(","),
+      // Apply trading platform filters
+      platformType: localPlatformType.join(","),
+      propFirm: localPropFirm.join(","),
+      deployment: localDeployment.join(","),
+      bestFor: localBestFor.join(","),
+      platformFeatures: localPlatformFeatures.join(",")
     })
     setIsOpen(false)
   }
@@ -157,6 +175,12 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
     setLocalSettlementCurrency([])
     setLocalIntegrationType([])
     setLocalPspFeatures([])
+    // Clear trading platform filters
+    setLocalPlatformType([])
+    setLocalPropFirm([])
+    setLocalDeployment([])
+    setLocalBestFor([])
+    setLocalPlatformFeatures([])
     updateFilters({
       category: "",
       regulators: "",
@@ -179,7 +203,12 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       paymentType: "",
       settlementCurrency: "",
       integrationType: "",
-      pspFeatures: ""
+      pspFeatures: "",
+      platformType: "",
+      propFirm: "",
+      deployment: "",
+      bestFor: "",
+      platformFeatures: ""
     })
     setIsOpen(false)
   }
@@ -206,7 +235,12 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
     (filters.paymentType ? filters.paymentType.split(",").length : 0) +
     (filters.settlementCurrency ? filters.settlementCurrency.split(",").length : 0) +
     (filters.integrationType ? filters.integrationType.split(",").length : 0) +
-    (filters.pspFeatures ? filters.pspFeatures.split(",").length : 0)
+    (filters.pspFeatures ? filters.pspFeatures.split(",").length : 0) +
+    (filters.platformType ? filters.platformType.split(",").length : 0) +
+    (filters.propFirm ? filters.propFirm.split(",").length : 0) +
+    (filters.deployment ? filters.deployment.split(",").length : 0) +
+    (filters.bestFor ? filters.bestFor.split(",").length : 0) +
+    (filters.platformFeatures ? filters.platformFeatures.split(",").length : 0)
 
   const removeFilter = (filterType: string, value: string) => {
     if (filterType === 'category') {
@@ -221,6 +255,26 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       updateFilters({ platforms: newPlatforms.join(",") })
     } else if (filterType === 'rating') {
       updateFilters({ rating: filters.rating === value ? "" : value })
+    } else if (filterType === 'platformType') {
+      const currentPlatformTypes = filters.platformType ? filters.platformType.split(",") : []
+      const newPlatformTypes = currentPlatformTypes.filter(p => p !== value)
+      updateFilters({ platformType: newPlatformTypes.join(",") })
+    } else if (filterType === 'propFirm') {
+      const currentPropFirms = filters.propFirm ? filters.propFirm.split(",") : []
+      const newPropFirms = currentPropFirms.filter(p => p !== value)
+      updateFilters({ propFirm: newPropFirms.join(",") })
+    } else if (filterType === 'deployment') {
+      const currentDeployments = filters.deployment ? filters.deployment.split(",") : []
+      const newDeployments = currentDeployments.filter(d => d !== value)
+      updateFilters({ deployment: newDeployments.join(",") })
+    } else if (filterType === 'bestFor') {
+      const currentBestFor = filters.bestFor ? filters.bestFor.split(",") : []
+      const newBestFor = currentBestFor.filter(b => b !== value)
+      updateFilters({ bestFor: newBestFor.join(",") })
+    } else if (filterType === 'platformFeatures') {
+      const currentPlatformFeatures = filters.platformFeatures ? filters.platformFeatures.split(",") : []
+      const newPlatformFeatures = currentPlatformFeatures.filter(f => f !== value)
+      updateFilters({ platformFeatures: newPlatformFeatures.join(",") })
     }
   }
 
@@ -247,7 +301,12 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
       paymentType: "PAYMENT TYPE",
       settlementCurrency: "SETTLEMENT CURRENCY",
       integrationType: "INTEGRATION TYPE",
-      pspFeatures: "FEATURES"
+      pspFeatures: "FEATURES",
+      platformType: "PLATFORM TYPE",
+      propFirm: "PROP FIRM",
+      deployment: "DEPLOYMENT",
+      bestFor: "BEST FOR",
+      platformFeatures: "PLATFORM FEATURES"
     }
     return labels[type] ?? type.replace(/_/g, " ").toUpperCase()
   }
@@ -1122,31 +1181,213 @@ export const BrokerFilterModal = ({ category }: BrokerFilterModalProps) => {
                         ))}
                       </>
                     )}
+                    {type === "platformType" && (
+                      <>
+                        {/* "All Platform Types" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localPlatformType.length === 0}
+                            onChange={() => setLocalPlatformType([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Platform Types
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localPlatformType.includes(slug)}
+                              onChange={() =>
+                                setLocalPlatformType(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(p => p !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "propFirm" && (
+                      <>
+                        {/* "All Prop Firm Support" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localPropFirm.length === 0}
+                            onChange={() => setLocalPropFirm([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Prop Firm Support
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localPropFirm.includes(slug)}
+                              onChange={() =>
+                                setLocalPropFirm(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(p => p !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "deployment" && (
+                      <>
+                        {/* "All Deployment Types" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localDeployment.length === 0}
+                            onChange={() => setLocalDeployment([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Deployment Types
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localDeployment.includes(slug)}
+                              onChange={() =>
+                                setLocalDeployment(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(d => d !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "bestFor" && (
+                      <>
+                        {/* "All Best For" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localBestFor.length === 0}
+                            onChange={() => setLocalBestFor([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Best For
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localBestFor.includes(slug)}
+                              onChange={() =>
+                                setLocalBestFor(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(b => b !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
+                    {type === "platformFeatures" && (
+                      <>
+                        {/* "All Platform Features" option */}
+                        <label className="flex items-center gap-2.5 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={localPlatformFeatures.length === 0}
+                            onChange={() => setLocalPlatformFeatures([])}
+                            className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                          />
+                          <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors">
+                            All Platform Features
+                          </span>
+                        </label>
+
+                        {options.map(({ slug, name }) => (
+                          <label key={slug} className="flex items-center gap-2.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={localPlatformFeatures.includes(slug)}
+                              onChange={() =>
+                                setLocalPlatformFeatures(prev =>
+                                  prev.includes(slug)
+                                    ? prev.filter(f => f !== slug)
+                                    : [...prev, slug]
+                                )
+                              }
+                              className="w-4 h-4 rounded accent-[#A8DD15] cursor-pointer"
+                            />
+                            <span className="text-sm text-[#444] group-hover:text-[#222] transition-colors line-clamp-1">
+                              {name as string}
+                            </span>
+                          </label>
+                        ))}
+                      </>
+                    )}
                   </div>
                 )}
               </div>
             )
-          })}
-        </div>
-
-        {/* Footer actions */}
-        <div className="flex items-center gap-3 px-6 py-4 border-t border-[#E5E7E0] bg-white">
-          <button
-            type="button"
-            onClick={handleClear}
-            className="flex-1 py-3 rounded-lg border cursor-pointer border-[#E5E7E0] text-sm font-medium text-[#444] hover:bg-gray-50 transition-colors"
-          >
-            Clear
-          </button>
-          <button
-            type="button"
-            onClick={handleApply}
-            className="flex-1 py-3 rounded-lg bg-[#A8DD15] text-sm font-medium cursor-pointer rounded-full text-black100 hover:bg-[#97c813] active:bg-[#85b311] transition-colors"
-          >
-            Show Result
-          </button>
-        </div>
+          }
+          )}
+        
       </div>
+
+      {/* Footer actions */}
+      <div className="flex items-center gap-3 px-6 py-4 border-t border-[#E5E7E0] bg-white">
+        <button
+          type="button"
+          onClick={handleClear}
+          className="flex-1 py-3 rounded-lg border cursor-pointer border-[#E5E7E0] text-sm font-medium text-[#444] hover:bg-gray-50 transition-colors"
+        >
+          Clear
+        </button>
+        <button
+          type="button"
+          onClick={handleApply}
+          className="flex-1 py-3 rounded-lg bg-[#A8DD15] text-sm font-medium cursor-pointer rounded-full text-black100 hover:bg-[#97c813] active:bg-[#85b311] transition-colors"
+        >
+          Show Result
+        </button>
+      </div>
+          </div>
     </>
   )
 }

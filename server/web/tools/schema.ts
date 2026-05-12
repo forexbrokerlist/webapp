@@ -39,6 +39,12 @@ export const toolFilterParams = {
   settlementCurrency: parseAsString.withDefault(""),
   integrationType: parseAsString.withDefault(""),
   pspFeatures: parseAsString.withDefault(""),
+  // Trading Platform specific fields
+  platformType: parseAsString.withDefault(""),
+  propFirm: parseAsString.withDefault(""),
+  deployment: parseAsString.withDefault(""),
+  bestFor: parseAsString.withDefault(""),
+  platformFeatures: parseAsString.withDefault(""),
 };
 
 export const toolFilterParamsCache = createSearchParamsCache(toolFilterParams);

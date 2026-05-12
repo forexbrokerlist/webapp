@@ -30,6 +30,12 @@ interface FilterTagsProps {
   settlementCurrency?: string
   integrationType?: string
   pspFeatures?: string
+  // Trading Platform fields
+  platformType?: string
+  propFirm?: string
+  deployment?: string
+  bestFor?: string
+  platformFeatures?: string
 }
 
 // Helper function to map filter slugs to display names
@@ -82,7 +88,7 @@ const getFilterDisplayName = (slug: string, filterType: string): string => {
   }
 }
 
-export const FilterTags = ({ category, regulators, platforms, rating, features, skillLevel, learningFormat, pricing, educationFeatures, locationLanguage, solutionType, compatiblePlatform, targetClient, hqRegion, regulation, assetClass, executionType, providerType, paymentType, settlementCurrency, integrationType, pspFeatures }: FilterTagsProps) => {
+export const FilterTags = ({ category, regulators, platforms, rating, features, skillLevel, learningFormat, pricing, educationFeatures, locationLanguage, solutionType, compatiblePlatform, targetClient, hqRegion, regulation, assetClass, executionType, providerType, paymentType, settlementCurrency, integrationType, pspFeatures, platformType, propFirm, deployment, bestFor, platformFeatures }: FilterTagsProps) => {
   const { filters, updateFilters } = useFilters<ToolFilterSchema>()
 
   const removeFilter = (filterType: string, value: string) => {
@@ -164,6 +170,26 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
       const currentPspFeatures = filters.pspFeatures ? filters.pspFeatures.split(",") : []
       const newPspFeatures = currentPspFeatures.filter(f => f !== value)
       updateFilters({ pspFeatures: newPspFeatures.join(",") })
+    } else if (filterType === 'platformType') {
+      const currentPlatformType = filters.platformType ? filters.platformType.split(",") : []
+      const newPlatformType = currentPlatformType.filter(p => p !== value)
+      updateFilters({ platformType: newPlatformType.join(",") })
+    } else if (filterType === 'propFirm') {
+      const currentPropFirm = filters.propFirm ? filters.propFirm.split(",") : []
+      const newPropFirm = currentPropFirm.filter(p => p !== value)
+      updateFilters({ propFirm: newPropFirm.join(",") })
+    } else if (filterType === 'deployment') {
+      const currentDeployment = filters.deployment ? filters.deployment.split(",") : []
+      const newDeployment = currentDeployment.filter(d => d !== value)
+      updateFilters({ deployment: newDeployment.join(",") })
+    } else if (filterType === 'bestFor') {
+      const currentBestFor = filters.bestFor ? filters.bestFor.split(",") : []
+      const newBestFor = currentBestFor.filter(b => b !== value)
+      updateFilters({ bestFor: newBestFor.join(",") })
+    } else if (filterType === 'platformFeatures') {
+      const currentPlatformFeatures = filters.platformFeatures ? filters.platformFeatures.split(",") : []
+      const newPlatformFeatures = currentPlatformFeatures.filter(f => f !== value)
+      updateFilters({ platformFeatures: newPlatformFeatures.join(",") })
     }
   }
 
@@ -194,11 +220,17 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
       settlementCurrency: "",
       integrationType: "",
       pspFeatures: "",
+      // Trading Platform fields
+      platformType: "",
+      propFirm: "",
+      deployment: "",
+      bestFor: "",
+      platformFeatures: "",
       q: ""
     })
   }
 
-  const hasActiveFilters = !!(category || regulators || platforms || rating || features || skillLevel || learningFormat || pricing || educationFeatures || locationLanguage || solutionType || compatiblePlatform || targetClient || hqRegion || regulation || assetClass || executionType || providerType || paymentType || settlementCurrency || integrationType || pspFeatures)
+  const hasActiveFilters = !!(category || regulators || platforms || rating || features || skillLevel || learningFormat || pricing || educationFeatures || locationLanguage || solutionType || compatiblePlatform || targetClient || hqRegion || regulation || assetClass || executionType || providerType || paymentType || settlementCurrency || integrationType || pspFeatures || platformType || propFirm || deployment || bestFor || platformFeatures)
 
   return (
     <div className="flex flex-wrap items-center gap-2 px-6 py-3 border-b border-[#E5E7E0]">
@@ -481,6 +513,71 @@ export const FilterTags = ({ category, regulators, platforms, rating, features, 
           <button
             type="button"
             onClick={() => removeFilter('pspFeatures', feature.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {platformType && platformType.split(",").map((platform, index) => (
+        <span key={platform} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {platform.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('platformType', platform.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {propFirm && propFirm.split(",").map((firm, index) => (
+        <span key={firm} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {firm.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('propFirm', firm.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {deployment && deployment.split(",").map((deploy, index) => (
+        <span key={deploy} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {deploy.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('deployment', deploy.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {bestFor && bestFor.split(",").map((best, index) => (
+        <span key={best} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {best.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('bestFor', best.trim())}
+            className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        </span>
+      ))}
+
+      {platformFeatures && platformFeatures.split(",").map((feature, index) => (
+        <span key={feature} className="inline-flex items-center gap-1 px-4 py-2 bg-[#E9EAE3] text-[#1A1A1A] rounded-full text-sm font-medium">
+          {feature.trim()}
+          <button
+            type="button"
+            onClick={() => removeFilter('platformFeatures', feature.trim())}
             className="ml-1 text-[#1A1A1A] transition-colors cursor-pointer"
           >
             <X size={12} />
