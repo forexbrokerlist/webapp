@@ -108,13 +108,20 @@ export default function OurIntegration({
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ duration: 0.3, delay: index * 0.05 }}
-                                    className='max-w-[300px] w-[300px] max-mobile:w-full max-mobile:p-3 max-mobile:max-w-full max-mobile:min-w-full max-mobile:h-full h-[120px] flex items-center justify-center rounded-lg min-w-[300px] bg-white border border-solid border-primary  hover:shadow-md transition-shadow'
+                                    className='w-[240px] h-[240px] max-mobile:w-full flex flex-col items-center justify-center p-6 rounded-2xl bg-white border border-solid border-border-light300 hover:border-primary hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group'
                                 >
-                                    <img
-                                        src={partner.logoUrl || BrokreIcon}
-                                        alt={partner.broker_name || "Integration Logo"}
-                                        className='max-w-[180px] max-mobile:max-w-[90%] max-mobile:max-h-auto max-h-[60px] block object-contain  transition-all duration-300'
-                                    />
+                                    <div className='flex-1 flex items-center justify-center w-full'>
+                                        <img
+                                            src={partner.logoUrl || BrokreIcon}
+                                            alt={partner.broker_name || "Integration Logo"}
+                                            className='max-w-[140px] max-h-[70px] block object-contain   transition-all duration-300'
+                                        />
+                                    </div>
+                                    <div className='pt-4 w-full text-center'>
+                                        <p className='text-lg font-bold text-black700 leading-tight group-hover:text-primary transition-colors'>
+                                            {partner.broker_name || "Partner"}
+                                        </p>
+                                    </div>
                                 </motion.div>
                             ))}
                         </motion.div>
