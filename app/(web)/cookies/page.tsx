@@ -8,7 +8,8 @@ import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateWebPage } from "~/lib/structured-data"
-
+import CommonBanner from "~/components/web/common-banner"
+import AnimatedSection from "~/components/web/ui/animated-section"
 // I18n page namespace
 const namespace = "pages.cookies"
 
@@ -41,15 +42,30 @@ export default async function () {
 
   return (
     <>
-      <div className="pt-[140px] pb-100 max-mobile:pb-16 max-mobile:pt-[120px]">
-        <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
-          <Intro className="pb-10">
-            <IntroTitle>{metadata.title}</IntroTitle>
-            <IntroDescription>{metadata.description}</IntroDescription>
-          </Intro>
-
-          <Prose>
-            <h2>1. What Are Cookies?</h2>
+    <CommonBanner highlightedText={metadata.title.split(" ")[0] + " Policy - "} title={"Your Privacy & Data Protection, Tracking Policy"} description={metadata.description} image="/assets/images/CookiePolicy.png" />
+     
+        <div className="py-20 max-mobile:py-12 ">
+                    {/* same container as banner */}
+                    <div className="max-w-[1700px] mx-auto px-5 max-laptop:px-16 max-tab:px-5 max-mobile:px-4">
+            
+                      {/* Card */}
+                      <div className="bg-white rounded-3xl px-8 py-12 md:px-12 md:py-16">
+                        <AnimatedSection>
+                          <Prose
+                            className="
+                        max-w-[2000px]
+                       
+                        prose-headings:text-black100
+                        prose-p:text-black700
+                        prose-li:text-black700
+                        prose-h2:text-2xl
+                        prose-h2:font-bold
+                        prose-h2:mt-12
+                        prose-h2:mb-6
+                        first:prose-h2:mt-0
+                      "
+                          >
+                                   <h2>1. What Are Cookies?</h2>
             <p>
               Cookies are small text files placed on your device when you visit a website. They help
               websites remember your preferences, understand how you use the site, and deliver relevant
@@ -135,9 +151,13 @@ export default async function () {
               Questions about our Cookie Policy? Email:{" "}
               <a href="mailto:forexbrokerlist24@gmail.com">forexbrokerlist24@gmail.com</a>
             </p>
-          </Prose>
-        </div>
-      </div >
+                            {/* remaining content */}
+                          </Prose>
+                        </AnimatedSection>
+                      </div>
+            
+                    </div>
+                  </div>
       <div className='w-full h-[1px] bg-[linear-gradient(90deg,#F0F1EC_0%,#A8DD15_50%,#F0F1EC_100%)]'></div>
       <StructuredData data={structuredData} />
     </>
