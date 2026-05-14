@@ -2,12 +2,14 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 
 const BrokreIcon = '/assets/images/brokree1.svg';
 
 interface IntegrationPartner {
     broker_name: string | null;
     logoUrl: string | null;
+    slug: string | null;
 }
 
 interface OurIntegrationProps {
@@ -54,6 +56,23 @@ export default function OurIntegration({
     ];
 
     const [activeTab, setActiveTab] = useState(integrationTabs[0].id);
+
+    const getPartnerPath = (tabId: string, slug: string) => {
+        switch (tabId) {
+            case 'platform':
+                return `/forex-trading-platform/${slug}`;
+            case 'bridge':
+                return `/forex-bridge-providers/${slug}`;
+            case 'psp':
+                return `/forex-psp-partners/${slug}`;
+            case 'liquidity':
+                return `/liquidity-providers/${slug}`;
+            case 'algo':
+                return `/algo-trading/${slug}`;
+            default:
+                return `/forex-broker/${slug}`;
+        }
+    }
 
     return (
         <div className='py-100 max-mobile:py-16'>
@@ -103,19 +122,31 @@ export default function OurIntegration({
                             className='flex items-center max-mobile:grid max-mobile:grid-cols-2 flex-wrap gap-3 justify-center'
                         >
                             {integrationTabs.find(t => t.id === activeTab)?.partners.map((partner, index) => (
-                                <motion.div
+                                <Link
                                     key={`${activeTab}-${index}`}
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ duration: 0.3, delay: index * 0.05 }}
-                                    className='max-w-[300px] w-[300px] max-mobile:w-full max-mobile:p-3 max-mobile:max-w-full max-mobile:min-w-full max-mobile:h-full h-[120px] flex items-center justify-center rounded-lg min-w-[300px] bg-white border border-solid border-primary  hover:shadow-md transition-shadow'
+                                    href={getPartnerPath(activeTab, partner.slug || '')}
+                                    className="block"
                                 >
-                                    <img
-                                        src={partner.logoUrl || BrokreIcon}
-                                        alt={partner.broker_name || "Integration Logo"}
-                                        className='max-w-[180px] max-mobile:max-w-[90%] max-mobile:max-h-auto max-h-[60px] block object-contain  transition-all duration-300'
-                                    />
-                                </motion.div>
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                                        className='w-[240px] h-[240px] max-mobile:w-full flex flex-col items-center justify-center p-6 rounded-2xl bg-white border border-solid border-border-light300 hover:border-primary hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group'
+                                    >
+                                        <div className='flex-1 flex items-center justify-center w-full'>
+                                            <img
+                                                src={partner.logoUrl || BrokreIcon}
+                                                alt={partner.broker_name || "Integration Logo"}
+                                                className='max-w-[140px] max-h-[70px] block object-contain   transition-all duration-300'
+                                            />
+                                        </div>
+                                        <div className='pt-4 w-full text-center'>
+                                            <p className='text-lg font-bold text-black700 leading-tight group-hover:text-primary transition-colors'>
+                                                {partner.broker_name || "Partner"}
+                                            </p>
+                                        </div>
+                                    </motion.div>
+                                </Link>
                             ))}
                         </motion.div>
                     </AnimatePresence>
