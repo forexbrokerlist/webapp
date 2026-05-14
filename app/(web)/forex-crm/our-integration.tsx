@@ -10,7 +10,7 @@ interface IntegrationPartner {
     broker_name: string | null;
     logoUrl: string | null;
     slug: string | null;
-    categories?: { slug: string }[];
+
 }
 
 interface OurIntegrationProps {
@@ -57,6 +57,23 @@ export default function OurIntegration({
     ];
 
     const [activeTab, setActiveTab] = useState(integrationTabs[0].id);
+
+    const getPartnerPath = (tabId: string, slug: string) => {
+        switch (tabId) {
+            case 'platform':
+                return `/forex-trading-platform/${slug}`;
+            case 'bridge':
+                return `/forex-bridge-providers/${slug}`;
+            case 'psp':
+                return `/forex-psp-partners/${slug}`;
+            case 'liquidity':
+                return `/liquidity-providers/${slug}`;
+            case 'algo':
+                return `/algo-trading/${slug}`;
+            default:
+                return `/forex-broker/${slug}`;
+        }
+    }
 
     return (
         <div className='py-100 max-mobile:py-16'>
@@ -105,37 +122,33 @@ export default function OurIntegration({
                             transition={{ duration: 0.4, ease: "easeOut" }}
                             className='flex items-center max-mobile:grid max-mobile:grid-cols-2 flex-wrap gap-3 justify-center'
                         >
-                            {integrationTabs.find(t => t.id === activeTab)?.partners.map((partner, index) => {
-                                const categorySlug = partner.categories?.[0]?.slug;
-                                const href = categorySlug === 'trusted-trading-platforms' || categorySlug === 'forex-brokers'
-                                    ? `/forex-broker/${partner.slug}`
-                                    : categorySlug ? `/${categorySlug}/${partner.slug}` : `/brokers/${partner.slug}`;
-
-                                return (
-                                    <Link href={href} key={`${activeTab}-${index}`}>
-                                        <motion.div
-                                            initial={{ opacity: 0, scale: 0.8 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            transition={{ duration: 0.3, delay: index * 0.05 }}
-                                            className='w-[240px] h-[240px] max-mobile:w-full flex flex-col items-center justify-center p-6 rounded-2xl bg-white border border-solid border-border-light300 hover:border-primary hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group'
-                                        >
-                                            <div className='flex-1 flex items-center justify-center w-full'>
-                                                <img
-                                                    src={partner.logoUrl || BrokreIcon}
-                                                    alt={partner.broker_name || "Integration Logo"}
-                                                    className='max-w-[140px] max-h-[70px] block object-contain   transition-all duration-300'
-                                                />
-                                            </div>
-                                            <div className='pt-4 w-full text-center'>
-                                                <p className='text-lg font-bold text-black700 leading-tight group-hover:text-primary transition-colors'>
-                                                    {partner.broker_name || "Partner"}
-                                                </p>
-                                            </div>
-                                        </motion.div>
-                                    </Link>
-                                );
-                            })}
-                            
+                            {integrationTabs.find(t => t.id === activeTab)?.partners.map((partner, index) => (
+                                <Link
+                                    key={`${activeTab}-${index}`}
+                                    href={getPartnerPath(activeTab, partner.slug || '')}
+                                    className="block"
+                                >
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                                        className='w-[240px] h-[240px] max-mobile:w-full flex flex-col items-center justify-center p-6 rounded-2xl bg-white border border-solid border-border-light300 hover:border-primary hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group'
+                                    >
+                                        <div className='flex-1 flex items-center justify-center w-full'>
+                                            <img
+                                                src={partner.logoUrl || BrokreIcon}
+                                                alt={partner.broker_name || "Integration Logo"}
+                                                className='max-w-[140px] max-h-[70px] block object-contain   transition-all duration-300'
+                                            />
+                                        </div>
+                                        <div className='pt-4 w-full text-center'>
+                                            <p className='text-lg font-bold text-black700 leading-tight group-hover:text-primary transition-colors'>
+                                                {partner.broker_name || "Partner"}
+                                            </p>
+                                        </div>
+                                    </motion.div>
+                                </Link>
+                            ))}
                         </motion.div>
                     </AnimatePresence>
                 </div>
