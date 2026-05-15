@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 import { cache, Suspense } from "react"
+import CommonBanner from "~/components/web/common-banner"
 import { StructuredData } from "~/components/web/structured-data"
 import { ToolListingSkeleton } from "~/components/web/tools/tool-listing"
 import { ToolQuery } from "~/components/web/tools/tool-query"
@@ -61,22 +62,26 @@ export default async function (props: Props) {
 
   return (
     <>
-      <Breadcrumbs items={breadcrumbs} />
+      {/* <Breadcrumbs items={breadcrumbs} /> */}
+      <CommonBanner highlightedText="Browse Forex " title=" Broker Tags" image="/assets/images/TagsBanner.png" description="Discover trusted forex brokers through categorized trading features including spreads, platforms, regulations, account types, and market instruments."/>
+      <div className="pt-[140px] pb-100 max-mobile:pb-16 max-mobile:pt-[120px]">
+        <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
+         
 
-      <Intro>
-        <IntroTitle>{metadata.title}</IntroTitle>
-      </Intro>
+          <Suspense fallback={<ToolListingSkeleton />}>
+            <ToolQuery
+              searchParams={props.searchParams}
+              where={{ tags: { some: { slug: tag.slug } } }}
+              search={{ placeholder }}
+              options={{ enableFilters: false }}
+              ad="Tools"
+            />
+          </Suspense>
 
-      <Suspense fallback={<ToolListingSkeleton />}>
-        <ToolQuery
-          searchParams={props.searchParams}
-          where={{ tags: { some: { slug: tag.slug } } }}
-          search={{ placeholder }}
-          ad="Tools"
-        />
-      </Suspense>
-
-      <StructuredData data={structuredData} />
+          <StructuredData data={structuredData} />
+        </div>
+      </div>
+      <div className='w-full h-[1px] bg-[linear-gradient(90deg,#F0F1EC_0%,#A8DD15_50%,#F0F1EC_100%)]'></div>
     </>
   )
 }
