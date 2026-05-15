@@ -450,52 +450,89 @@ export const generateBrokerFAQ = (
 }
 
 /**
- * Reviewer names and sentiments used for synthetic review generation
+ * Real DB review shape (from the broker.reviews relation)
  */
-const REVIEWER_POOL = [
-  { name: "James Richardson", title: "Experienced Trader" },
-  { name: "Sarah Mitchell", title: "Forex Analyst" },
-  { name: "David Chen", title: "Retail Investor" },
-  { name: "Emma Thornton", title: "Day Trader" },
-  { name: "Michael Osei", title: "Professional Trader" },
-]
-
-const REVIEW_BODIES = [
-  (name: string) =>
-    `I have been using ${name} for over two years and the overall experience has been outstanding. Execution speeds are excellent and customer support is always responsive.`,
-  (name: string) =>
-    `${name} offers a solid trading environment with tight spreads and a user-friendly platform. Withdrawals are processed quickly and the regulatory standing gives me confidence.`,
-  (name: string) =>
-    `After comparing several providers, I chose ${name} and have not looked back. The range of instruments available is broad and the research tools are top-notch.`,
-  (name: string) =>
-    `${name} stands out for its transparency and competitive pricing. Account opening was straightforward and the onboarding team was very helpful.`,
-  (name: string) =>
-    `A reliable and trustworthy service. ${name} delivers on its promises with consistent execution and fair pricing, making it a great choice for both beginners and professionals.`,
-]
+type BrokerReview = {
+  reviewer_name?: string | null
+  reviewer_location?: string | null
+  review_rat?: string | number | null
+  review_description?: string | null
+  createdAt?: Date | string | null
+}
 
 /**
- * Generates an array of User Review schemas for a broker.
- * Ratings and reviewers are deterministically seeded from the broker name
- * so they remain stable across renders.
+ * Generates an array of Review schemas for a broker.
+ * When broker.reviews (DB relation) is available those are used directly —
+ * matching exactly what UserReview renders on the page.
+ * Falls back to synthetic reviews for brokers that have no reviews yet.
  */
 export const generateUserReviews = (
-  broker: BrokerSchemaData,
+  broker: BrokerSchemaData & { reviews?: BrokerReview[] | null },
   count = 5,
 ): Review[] => {
   const name = broker.broker_name || "This Provider"
-  const seed = name
-    .split("")
-    .reduce((acc, char) => acc + char.charCodeAt(0), 0)
 
+  // ── Use real DB reviews when available ───────────────────────────────────
+  if (broker.reviews && broker.reviews.length > 0) {
+    return broker.reviews
+      .filter(r => r.review_description?.trim())
+      .slice(0, count)
+      .map(r => {
+        const reviewerName = r.reviewer_name?.trim() || "Anonymous"
+        const rating = Math.min(5, Math.max(1, parseFloat(String(r.review_rat || "4"))))
+        const dateStr = r.createdAt
+          ? new Date(r.createdAt).toISOString().split("T")[0]
+          : new Date().toISOString().split("T")[0]
+
+        return {
+          "@type": "Review",
+          author: {
+            "@type": "Person",
+            name: reviewerName,
+            ...(r.reviewer_location ? { description: r.reviewer_location } : {}),
+          },
+          reviewRating: {
+            "@type": "Rating",
+            ratingValue: rating.toString(),
+            bestRating: "5",
+            worstRating: "1",
+          },
+          reviewBody: r.review_description!,
+          datePublished: dateStr,
+          name: `${name} Review by ${reviewerName}`,
+        } as Review
+      })
+  }
+
+  // ── Fallback: synthetic reviews seeded from broker name ──────────────────
+  const REVIEWER_POOL = [
+    { name: "James Richardson", title: "Experienced Trader" },
+    { name: "Sarah Mitchell", title: "Forex Analyst" },
+    { name: "David Chen", title: "Retail Investor" },
+    { name: "Emma Thornton", title: "Day Trader" },
+    { name: "Michael Osei", title: "Professional Trader" },
+  ]
+
+  const REVIEW_BODIES = [
+    (n: string) =>
+      `I have been using ${n} for over two years and the overall experience has been outstanding. Execution speeds are excellent and customer support is always responsive.`,
+    (n: string) =>
+      `${n} offers a solid trading environment with tight spreads and a user-friendly platform. Withdrawals are processed quickly and the regulatory standing gives me confidence.`,
+    (n: string) =>
+      `After comparing several providers, I chose ${n} and have not looked back. The range of instruments available is broad and the research tools are top-notch.`,
+    (n: string) =>
+      `${n} stands out for its transparency and competitive pricing. Account opening was straightforward and the onboarding team was very helpful.`,
+    (n: string) =>
+      `A reliable and trustworthy service. ${n} delivers on its promises with consistent execution and fair pricing, making it a great choice for both beginners and professionals.`,
+  ]
+
+  const seed = name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0)
   const ratingBase =
-    broker.overall_rating != null
-      ? Number(broker.overall_rating)
-      : generateRating(name)
+    broker.overall_rating != null ? Number(broker.overall_rating) : generateRating(name)
 
   return Array.from({ length: Math.min(count, REVIEWER_POOL.length) }, (_, i) => {
     const reviewer = REVIEWER_POOL[(seed + i) % REVIEWER_POOL.length]
     const body = REVIEW_BODIES[(seed + i) % REVIEW_BODIES.length](name)
-    // Vary ratings slightly around the base rating (±0.3)
     const variance = ((seed + i * 7) % 7 - 3) * 0.1
     const rating = Math.min(5, Math.max(3.5, Math.round((ratingBase + variance) * 10) / 10))
 
@@ -513,9 +550,7 @@ export const generateUserReviews = (
         worstRating: "1",
       },
       reviewBody: body,
-      datePublished: new Date(
-        Date.now() - ((seed + i * 31) % 365) * 24 * 60 * 60 * 1000,
-      )
+      datePublished: new Date(Date.now() - ((seed + i * 31) % 365) * 24 * 60 * 60 * 1000)
         .toISOString()
         .split("T")[0],
       name: `${name} Review by ${reviewer.name}`,
