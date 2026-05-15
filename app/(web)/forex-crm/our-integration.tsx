@@ -131,7 +131,7 @@ export default function OurIntegration({
                                         initial={{ opacity: 0, scale: 0.8 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         transition={{ duration: 0.3, delay: index * 0.05 }}
-                                        className='w-[240px] h-[240px] max-mobile:w-full flex flex-col items-center justify-center p-6 rounded-2xl bg-white border border-solid border-border-light300 hover:border-primary hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group'
+                                        className='w-[240px] h-[240px]  max-h-[152px] max-mobile:w-full flex flex-col items-center justify-center p-6 rounded-2xl bg-white border border-solid border-border-light300 hover:border-primary hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group'
                                     >
                                         <div className='flex-1 flex items-center justify-center w-full'>
                                             <img
