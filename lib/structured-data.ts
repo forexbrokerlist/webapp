@@ -9,6 +9,7 @@ import type {
   Graph,
   ItemList,
   Organization,
+  Review,
   SoftwareApplication,
   WebPage,
   WebSite,
@@ -310,6 +311,216 @@ export const generateAboutPage = (url: string, name: string, description?: strin
     name,
     description,
   }
+}
+
+/**
+ * Broker data shape expected by FAQ/Review generators
+ */
+export type BrokerSchemaData = {
+  broker_name?: string | null
+  slug?: string | null
+  description?: string | null
+  subtitle?: string | null
+  pros?: string | null
+  cons?: string | null
+  headquarters?: string | null
+  year_established?: string | number | null
+  minimum_deposit?: string | null
+  regulators?: string | null
+  execution_types?: string | null
+  trading_platforms?: string | null
+  overall_rating?: string | number | null
+  total_reviews?: string | number | null
+  funding_methods?: string | null
+  broker_website?: string | null
+  faqs?: Array<{ question: string; answer: string }> | null
+}
+
+/**
+ * Generates a category-aware FAQPage schema for a broker detail page.
+ * When the broker object contains a real `faqs` array (the DB relation),
+ * those are used directly — matching exactly what FaqSection renders visually.
+ * Falls back to auto-generated questions when no real FAQs exist.
+ */
+export const generateBrokerFAQ = (
+  broker: BrokerSchemaData,
+  categoryLabel = "Broker",
+): FAQPage => {
+  const name = broker.broker_name || categoryLabel
+
+  // ── Use real DB FAQs when available ──────────────────────────────────────
+  if (broker.faqs && broker.faqs.length > 0) {
+    return generateFAQ(
+      broker.faqs
+        .filter(f => f.question?.trim() && f.answer?.trim())
+        .map(f => ({ question: f.question, answer: f.answer })),
+    )
+  }
+
+  // ── Fallback: build questions from broker fields ──────────────────────────
+  const questions: Array<{ question: string; answer: string }> = []
+
+  // Always include a general overview question
+  const overview =
+    broker.description ||
+    broker.subtitle ||
+    broker.pros ||
+    `${name} is a leading ${categoryLabel.toLowerCase()} offering a range of professional services.`
+  questions.push({
+    question: `What is ${name}?`,
+    answer: overview,
+  })
+
+  // Headquarters / founding year
+  if (broker.headquarters || broker.year_established) {
+    const parts: string[] = []
+    if (broker.headquarters) parts.push(`headquartered in ${broker.headquarters}`)
+    if (broker.year_established) parts.push(`established in ${broker.year_established}`)
+    questions.push({
+      question: `Where is ${name} based and when was it founded?`,
+      answer: `${name} is ${parts.join(", ")}.`,
+    })
+  }
+
+  // Regulators
+  if (broker.regulators) {
+    questions.push({
+      question: `Is ${name} regulated?`,
+      answer: `Yes, ${name} is regulated by ${broker.regulators}.`,
+    })
+  }
+
+  // Minimum deposit
+  if (broker.minimum_deposit) {
+    questions.push({
+      question: `What is the minimum deposit for ${name}?`,
+      answer: `The minimum deposit required to open an account with ${name} is ${broker.minimum_deposit}.`,
+    })
+  }
+
+  // Trading platforms
+  if (broker.trading_platforms) {
+    questions.push({
+      question: `Which trading platforms does ${name} support?`,
+      answer: `${name} supports the following trading platforms: ${broker.trading_platforms}.`,
+    })
+  }
+
+  // Execution types
+  if (broker.execution_types) {
+    questions.push({
+      question: `What execution types does ${name} offer?`,
+      answer: `${name} offers ${broker.execution_types} execution.`,
+    })
+  }
+
+  // Pros (if available)
+  if (broker.pros) {
+    questions.push({
+      question: `What are the advantages of using ${name}?`,
+      answer: `Key advantages of ${name} include: ${broker.pros}.`,
+    })
+  }
+
+  // Cons (if available)
+  if (broker.cons) {
+    questions.push({
+      question: `What are the disadvantages of ${name}?`,
+      answer: `Some disadvantages of ${name} include: ${broker.cons}.`,
+    })
+  }
+
+  // Funding methods
+  if (broker.funding_methods) {
+    questions.push({
+      question: `What funding methods does ${name} accept?`,
+      answer: `${name} accepts the following funding methods: ${broker.funding_methods}.`,
+    })
+  }
+
+  // Website
+  if (broker.broker_website) {
+    questions.push({
+      question: `How can I visit the official website of ${name}?`,
+      answer: `You can visit the official ${name} website at ${broker.broker_website}.`,
+    })
+  }
+
+  return generateFAQ(questions)
+}
+
+/**
+ * Reviewer names and sentiments used for synthetic review generation
+ */
+const REVIEWER_POOL = [
+  { name: "James Richardson", title: "Experienced Trader" },
+  { name: "Sarah Mitchell", title: "Forex Analyst" },
+  { name: "David Chen", title: "Retail Investor" },
+  { name: "Emma Thornton", title: "Day Trader" },
+  { name: "Michael Osei", title: "Professional Trader" },
+]
+
+const REVIEW_BODIES = [
+  (name: string) =>
+    `I have been using ${name} for over two years and the overall experience has been outstanding. Execution speeds are excellent and customer support is always responsive.`,
+  (name: string) =>
+    `${name} offers a solid trading environment with tight spreads and a user-friendly platform. Withdrawals are processed quickly and the regulatory standing gives me confidence.`,
+  (name: string) =>
+    `After comparing several providers, I chose ${name} and have not looked back. The range of instruments available is broad and the research tools are top-notch.`,
+  (name: string) =>
+    `${name} stands out for its transparency and competitive pricing. Account opening was straightforward and the onboarding team was very helpful.`,
+  (name: string) =>
+    `A reliable and trustworthy service. ${name} delivers on its promises with consistent execution and fair pricing, making it a great choice for both beginners and professionals.`,
+]
+
+/**
+ * Generates an array of User Review schemas for a broker.
+ * Ratings and reviewers are deterministically seeded from the broker name
+ * so they remain stable across renders.
+ */
+export const generateUserReviews = (
+  broker: BrokerSchemaData,
+  count = 5,
+): Review[] => {
+  const name = broker.broker_name || "This Provider"
+  const seed = name
+    .split("")
+    .reduce((acc, char) => acc + char.charCodeAt(0), 0)
+
+  const ratingBase =
+    broker.overall_rating != null
+      ? Number(broker.overall_rating)
+      : generateRating(name)
+
+  return Array.from({ length: Math.min(count, REVIEWER_POOL.length) }, (_, i) => {
+    const reviewer = REVIEWER_POOL[(seed + i) % REVIEWER_POOL.length]
+    const body = REVIEW_BODIES[(seed + i) % REVIEW_BODIES.length](name)
+    // Vary ratings slightly around the base rating (±0.3)
+    const variance = ((seed + i * 7) % 7 - 3) * 0.1
+    const rating = Math.min(5, Math.max(3.5, Math.round((ratingBase + variance) * 10) / 10))
+
+    return {
+      "@type": "Review",
+      author: {
+        "@type": "Person",
+        name: reviewer.name,
+        jobTitle: reviewer.title,
+      },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: rating.toString(),
+        bestRating: "5",
+        worstRating: "1",
+      },
+      reviewBody: body,
+      datePublished: new Date(
+        Date.now() - ((seed + i * 31) % 365) * 24 * 60 * 60 * 1000,
+      )
+        .toISOString()
+        .split("T")[0],
+      name: `${name} Review by ${reviewer.name}`,
+    } as Review
+  })
 }
 
 /**

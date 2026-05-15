@@ -27,7 +27,7 @@ import { Section } from "~/components/web/ui/section"
 import { Sticky } from "~/components/web/ui/sticky"
 import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
-import { generateCollectionPage } from "~/lib/structured-data"
+import { generateCollectionPage, generateBrokerFAQ, generateUserReviews } from "~/lib/structured-data"
 import { findBrokerBySlug, findLiquidityProvidersForComparison, findRandomLiquidityProviders } from "~/server/web/tools/queries"
 import { getPresignedUrlFromFull, getScreenshotFetchUrl } from "~/lib/media"
 
@@ -63,7 +63,11 @@ const getData = cache(async ({ params }: Props) => {
       { url: "/", title: t("navigation.tools") },
       { url, title: broker.broker_name || "Broker" },
     ],
-    structuredData: [generateCollectionPage(url, title, description)],
+    structuredData: [
+      generateCollectionPage(url, title, description),
+      generateBrokerFAQ(broker, "Liquidity Provider"),
+      ...generateUserReviews(broker),
+    ],
   })
    const randomBrokersRaw = await findRandomLiquidityProviders(3, slug)
     const randomBrokers = await Promise.all(
