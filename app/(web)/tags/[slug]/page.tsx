@@ -58,12 +58,12 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 export default async function (props: Props) {
   const { tag, metadata, breadcrumbs, structuredData } = await getData(props)
   const t = await getTranslations()
-  const placeholder = t(`${namespace}.search.placeholder`, { name: tag.name.toLowerCase() })
+  const placeholder = t(`${namespace}.search.placeholder`, { name: tag.name })
 
   return (
     <>
       {/* <Breadcrumbs items={breadcrumbs} /> */}
-      <CommonBanner highlightedText="Browse Forex " title=" Broker Tags" image="/assets/images/TagsBanner.png" description="Discover trusted forex brokers through categorized trading features including spreads, platforms, regulations, account types, and market instruments."/>
+      <CommonBanner highlightedText="Browse Forex" title={` ${tag.name}`} image="/assets/images/TagsBanner.png" description="Discover trusted forex brokers through categorized trading features including spreads, platforms, regulations, account types, and market instruments."/>
       <div className=" pb-100 max-mobile:pb-16 max-mobile:pt-[120px]">
         <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
          
