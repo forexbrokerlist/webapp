@@ -18,12 +18,14 @@ type TagListingProps = {
 const TagListing = ({ list, pagination, options, search }: TagListingProps) => {
   return (
     <FiltersProvider schema={tagsSearchParams} {...options}>
-      <div className="space-y-10" id="tags">
+      <div className="space-y-16" id="tags">
         <TagSearch {...search} />
         <TagList {...list} />
       </div>
 
-      <Pagination {...pagination} />
+      <div className="mt-16">
+        <Pagination {...pagination} />
+      </div>
     </FiltersProvider>
   )
 }
@@ -32,7 +34,7 @@ const TagListingSkeleton = () => {
   const t = useTranslations("common")
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-16">
       <Input size="lg" placeholder={t("loading")} disabled />
       <TagListSkeleton />
     </div>

@@ -28,7 +28,7 @@ import { Sticky } from "~/components/web/ui/sticky"
 
 import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
-import { generateCollectionPage } from "~/lib/structured-data"
+import { generateCollectionPage, generateBrokerFAQ, generateUserReviews } from "~/lib/structured-data"
 import { findBrokerBySlug,findRandomBridgeProviders,findBridgeProvidersForComparison } from "~/server/web/tools/queries"
 import { getPresignedUrlFromFull, getScreenshotFetchUrl } from "~/lib/media"
 import ForexBridgeProviderDetails from "~/components/web/forex-bridge-provider-details"
@@ -62,7 +62,11 @@ const getData = cache(async ({ params }: Props) => {
       { url: "/", title: t("navigation.tools") },
       { url, title: broker.broker_name || "Broker" },
     ],
-    structuredData: [generateCollectionPage(url, title, description)],
+    structuredData: [
+      generateCollectionPage(url, title, description),
+      generateBrokerFAQ(broker, "Forex Bridge Provider"),
+      ...generateUserReviews(broker),
+    ],
   })
 
   const screenshotUrl = await getPresignedUrlFromFull(broker.screenshotUrl)

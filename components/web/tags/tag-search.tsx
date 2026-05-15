@@ -23,9 +23,24 @@ export const TagSearch = ({ placeholder, ...props }: TagSearchProps) => {
   ]
 
   return (
-    <Filters placeholder={placeholder || t("search_placeholder")} {...props}>
-      {enableSort && <Sort options={sortOptions} />}
-      {enableFilters && <TagFilters />}
-    </Filters>
+    <div className="space-y-6">
+      <Filters
+        placeholder={placeholder || t("search_placeholder")}
+        className="gap-4"
+        {...props}
+      >
+        {enableSort && (
+          <div className="w-full md:w-auto md:min-w-[220px]">
+            <Sort options={sortOptions} />
+          </div>
+        )}
+      </Filters>
+
+      {enableFilters && (
+        <div className="pt-4 border-t border-black/[0.04]">
+          <TagFilters />
+        </div>
+      )}
+    </div>
   )
 }
