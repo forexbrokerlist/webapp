@@ -486,6 +486,10 @@ export const generateUserReviews = (
 
         return {
           "@type": "Review",
+          itemReviewed: {
+            "@type": "Organization",
+            name: name,
+          },
           author: {
             "@type": "Person",
             name: reviewerName,
