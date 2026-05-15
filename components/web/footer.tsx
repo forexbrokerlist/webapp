@@ -55,7 +55,7 @@ export const Footer = ({ children, className, ...props }: ComponentProps<"div">)
               </div>
               <div>
                 <h6 className="text-lg mb-3 text-black font-medium">{t("navigation.browse")}:</h6>
-                <NavLink className="text-base font-medium text-black700 block pb-2" href="/">{t("navigation.tools")}</NavLink>
+                <NavLink className="text-base font-medium text-black700 block pb-2" href="/brokers">{t("navigation.tools")}</NavLink>
                 <NavLink className="text-base font-medium text-black700 block pb-2" href="/categories">{t("navigation.categories")}</NavLink>
                 <NavLink className="text-base font-medium text-black700 block pb-2" href="/tags">{t("navigation.tags")}</NavLink>
                 <NavLink className="text-base font-medium text-black700 block " href="/blog">{t("navigation.blog")}</NavLink>

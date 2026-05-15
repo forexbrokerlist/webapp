@@ -16,7 +16,7 @@ const TagList = ({ tags, className, ...props }: TagListProps) => {
   const t = useTranslations()
 
   return (
-    <Grid className={cx("gap-x-8", className)} {...props}>
+    <Grid className={cx("gap-6", className)} {...props}>
       {tags.map(tag => (
         <TagCard key={tag.slug} tag={tag} />
       ))}
@@ -28,7 +28,7 @@ const TagList = ({ tags, className, ...props }: TagListProps) => {
 
 const TagListSkeleton = () => {
   return (
-    <Grid className="gap-x-8">
+    <Grid className="gap-6">
       {[...Array(24)].map((_, index) => (
         <TagCardSkeleton key={index} />
       ))}
