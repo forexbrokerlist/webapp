@@ -1,18 +1,58 @@
 import React from 'react'
+import { formatCategory } from './news-card-list'
 
-export default function Overview() {
+export default function Overview({analyzedResult}:any) {
+  const overviewData = [{
+label:"HAWKISH/DOVISH",
+value:`${analyzedResult?.data?.text_signal_analysis?.hawkish_dovish_score}/10`
+  },
+  {
+    label:"RISK ON/OFF",
+    value:`${analyzedResult?.data?.text_signal_analysis?.risk_on_off_score}/10`
+  },
+{
+    label:"UNCERTAINITY",
+    value:`${analyzedResult?.data?.text_signal_analysis?.uncertainty_intensity_score}/10`
+},
+{
+    label:"SURPRISE",
+    value:`${analyzedResult?.data?.core_impact_assessment?.perceived_surprise_score}/10`
+},
+{
+    label:"DURATION",
+    value:formatCategory(analyzedResult?.data?.time_modeling?.impact_duration)
+},
+{
+    label:"REACTION",
+    value:formatCategory(analyzedResult?.data?.time_modeling?.reaction_speed)
+},{
+     label:"FATIGUE",
+    value:`${analyzedResult?.data?.event_fatigue_analysis?.fatigue_score}/10`
+},
+{
+     label:"EXPOSURE",
+    value:analyzedResult?.data?.risk_guidance?.suggested_exposure_range_pct
+      ? `${analyzedResult.data.risk_guidance.suggested_exposure_range_pct}`
+      : "N/A"
+},
+{
+    
+ label:"PROBABILITY",
+    value:`${analyzedResult?.data?.probability_and_confidence?.overall_confidence_score}%` 
+}
+]
     return (
         <div>
             <div className='grid grid-cols-3 gap-3'>
                 {
-                    [...Array(6)].map(() => {
+                    overviewData.map((item) => {
                         return (
                             <div className='p-3 rounded-md border border-border-light300 bg-[#F4F4F4]'>
                                 <p className='text-sm font-medium text-black700 text-center mb-1'>
-                                    HAWKISH/DOVISH
+                                    {item.label}
                                 </p>
                                 <h3 className='text-xl font-medium text-black100 text-center'>
-                                    0/10
+                                   {item.value}
                                 </h3>
                             </div>
                         )
@@ -22,8 +62,7 @@ export default function Overview() {
             <div className='py-5'>
                 <div className='border border-border-light300 bg-[#F4F4F4] rounded-md p-3'>
                     <p className='text-base font-medium text-black700'>
-                        <span className='text-black100'> Executive Summary : </span> The confirmed closure of the Strait of Hormuz is a high-impact geopolitical event. It creates a structural supply shock for energy, driving immediate risk-off sentiment. Market participants should expect heightened volatility and prioritize safe-haven assets while monitoring energy-
-                        linked currencies.
+                        <span className='text-black100'> Executive Summary : </span> {analyzedResult?.data?.executive_summary}
                     </p>
                 </div>
             </div>
@@ -33,12 +72,12 @@ export default function Overview() {
                 </h3>
                 <div className='grid grid-cols-3 gap-3 pb-4'>
                     {[
-                        { label: "Forex", val: 6, max: 10 },
-                        { label: "Crypto", val: 4, max: 10 },
-                        { label: "Equities", val: 7, max: 10 },
-                        { label: "Text Clarity", val: 6, max: 10 },
-                        { label: "Shock Magnitude", val: 6, max: 10 },
-                        { label: "Cross Asset Logic", val: 6, max: 10 },
+                        { label: "Forex", val: analyzedResult?.data?.core_impact_assessment?.market_category_scores?.forex, max: 10 },
+                        { label: "Crypto", val: analyzedResult?.data?.core_impact_assessment?.market_category_scores?.crypto, max: 10 },
+                        { label: "Equities", val: analyzedResult?.data?.core_impact_assessment?.market_category_scores?.global_equities, max: 10 },
+                        { label: "Text Clarity", val: analyzedResult?.data?.probability_and_confidence?.confidence_breakdown?.text_clarity, max: 10 },
+                        { label: "Shock Magnitude", val: analyzedResult?.data?.core_impact_assessment?.perceived_surprise_score, max: 10 },
+                        { label: "Cross Asset Logic", val: analyzedResult?.data?.probability_and_confidence?.confidence_breakdown?.cross_asset_logic_strength, max: 10 },
                     ].map((item) => (
                         <div key={item.label} className='p-3 rounded-lg border border-border-light300 bg-[#F4F4F4]'>
                             <div className='flex items-center justify-between mb-2'>
