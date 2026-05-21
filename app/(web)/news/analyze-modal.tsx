@@ -106,9 +106,9 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                         ) : (
                             <>
                                 <div className="relative h-[250px] md:h-[400px] w-full rounded-2xl overflow-hidden mb-6">
-                                    {analyzedResult?.data?.image_url ? (
+                                    {analyzedResult?.article?.image_url ? (
                                         <img
-                                            src={analyzedResult?.data?.image_url}
+                                            src={analyzedResult?.article?.image_url}
                                             alt="Analyze"
                                             className="w-full h-full object-cover"
                                         />
