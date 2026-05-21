@@ -610,7 +610,7 @@ export const searchBrokers = async (search: ToolFilterParams, where?: any) => {
             .replace(/_/g, " ");
 
           // Also handle potential slash or space in selected values (e.g., "ecn_stp" -> "ecn stp")
-          const selectedParts = normalizedSelected.split(/[\/\s]/);
+          const selectedParts = normalizedSelected.split(/[/\s]/);
           if (selectedParts.length > 1) {
             return selectedParts.some(
               (part) => part.trim() !== "" && part.trim() === normalizedExec,
@@ -1268,6 +1268,8 @@ export const findRandomCrmProviders = async (
       logoUrl: true,
       screenshotUrl: true,
       slug: true,
+      year_established: true,
+      headquarters: true,
       categories: {
         select: {
           slug: true,
@@ -1307,6 +1309,8 @@ export const findRandomBridgeProviders = async (
       logoUrl: true,
       screenshotUrl: true,
       slug: true,
+      year_established: true,
+      headquarters: true,
       categories: {
         select: {
           slug: true,
@@ -1346,6 +1350,8 @@ export const findRandomLiquidityProviders = async (
       logoUrl: true,
       screenshotUrl: true,
       slug: true,
+      year_established: true,
+      headquarters: true,
       categories: {
         select: {
           slug: true,
@@ -1385,6 +1391,8 @@ export const findRandomPSPPartners = async (
       logoUrl: true,
       screenshotUrl: true,
       slug: true,
+      year_established: true,
+      headquarters: true,
       categories: {
         select: {
           slug: true,
@@ -1424,6 +1432,8 @@ export const findRandomTradingPlatforms = async (
       logoUrl: true,
       screenshotUrl: true,
       slug: true,
+      year_established: true,
+      headquarters: true,
       categories: {
         select: {
           slug: true,
@@ -1463,6 +1473,8 @@ export const findRandomAlgoProviders = async (
       logoUrl: true,
       screenshotUrl: true,
       slug: true,
+      year_established: true,
+      headquarters: true,
       categories: {
         select: {
           slug: true,

@@ -10,6 +10,7 @@ interface IntegrationPartner {
     broker_name: string | null;
     logoUrl: string | null;
     slug: string | null;
+
 }
 
 interface OurIntegrationProps {

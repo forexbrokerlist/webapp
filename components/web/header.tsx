@@ -126,6 +126,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
               {adsConfig.enabled && <NavLink href="/advertise" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.advertise")}</NavLink>}
 
               <NavLink href="/contact" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.contact_us")}</NavLink>
+              <NavLink href="/news" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.news")}</NavLink>
               
             </nav>
 
@@ -202,6 +203,8 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
                     { href: "/about", label: t("navigation.about") },
                     { href: "/contact", label: t("navigation.contact_us") },
                     { href: "/forex-crm", label: t("navigation.forex_crm") },
+                    { href: "/news", label: t("navigation.news") },
+
                     ...(adsConfig.enabled ? [{ href: "/advertise", label: t("navigation.advertise") }] : []),
                   ].map(({ href, label }, i) => (
                     <motion.div

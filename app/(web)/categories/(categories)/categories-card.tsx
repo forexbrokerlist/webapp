@@ -403,7 +403,7 @@ export default function CategoriesCard({
                         </div>
                         <div className='bg-white overflow-hidden rounded-2xl border border-solid border-border-light500 p-[30px] max-mobile:p-6 flex flex-col'>
                             <h2 className='text-2xl font-bold text-black100 mb-1.5 max-mobile:text-xl'>
-                                {trustedCategory?.name || 'Top-Rated Forex Brokers'}
+                                {trustedCategory?.label || 'Top-Rated Forex Brokers'}
                             </h2>
                             <p className='text-base text-black700 mb-5 font-medium max-mobile:text-sm'>
                                 {trustedCategory?.description || 'A curated collection of the best browse verified forex brokers.'}
