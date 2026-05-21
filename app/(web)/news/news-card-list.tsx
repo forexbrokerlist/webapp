@@ -4,6 +4,7 @@ import { Button } from '~/components/common/button';
 import AnalyzeModal from './analyze-modal';
 import axios from 'axios';
 import Link from 'next/link';
+import { EmptyList } from '~/components/web/empty-list';
 const UpdateCard = '/assets/images/update-card.png';
 
 export const formatCategory = (category: string) => {
@@ -239,7 +240,15 @@ console.log("analyze response:", res.data)
                                 </div>
                             )
                         })
-                            : <div>No News Available</div>
+                            : (
+                               
+  <div className='col-span-full flex items-center justify-center min-h-[400px]'>
+    <div className='w-full max-w-[500px]'>
+      <EmptyList>No News Available</EmptyList>
+    </div>
+  </div>
+
+                            )
                     }
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mt-4 md:mt-6">
