@@ -17,6 +17,7 @@
     "db:reset": "prisma migrate reset",
     "db:seed": "prisma db seed",
     "seed:logos": "bun run scripts/seed-logos.ts",
+    "import:brokers": "bun run scripts/import-brokers.ts",
     "postinstall": "bun run db:generate"
   },
   "dependencies": {

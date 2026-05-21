@@ -1,6 +1,6 @@
 import React from 'react'
 import SocialMedia from './social-media'
-import NewsUpdateCard from '../news/news-update-card';
+// import NewsUpdateCard from '../news/news-update-card';
 const NewsBanner = '/assets/images/news.png';
 export default function NewsDetails() {
     const latestNews = [
@@ -120,7 +120,7 @@ export default function NewsDetails() {
                             Latest Updates
                         </h2>
                         <div className='bg-[#f8f9fa] h-[844px] overflow-auto rounded-xl p-4 shadow-sm border border-border-light200'>
-                            <div className='space-y-2'>
+                            {/* <div className='space-y-2'>
                                 {latestNews.map((news, index) => (
                                     <NewsUpdateCard
                                         key={index}
@@ -130,7 +130,7 @@ export default function NewsDetails() {
                                         description={news.description}
                                     />
                                 ))}
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
