@@ -113,7 +113,7 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
-                                        <div className="flex flex-col justify-end h-full w-full bg-primary/50 p-4 md:p-5 relative overflow-hidden">
+                                        <div className="flex flex-col justify-end h-full w-full bg-gradient-to-b from-[#9a7f8b] via-[#7d6874] to-[#34313d] p-4 md:p-5 relative overflow-hidden">
                                             <h3 className="text-white text-xl font-bold leading-tight line-clamp-3 relative z-10">
                                                 {analyzedResult?.data?.event_metadata?.title || 'Market outlook'}
                                             </h3>
