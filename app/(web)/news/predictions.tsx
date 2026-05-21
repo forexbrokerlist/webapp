@@ -24,7 +24,7 @@ export default function Predictions({ predictionResult }: any) {
                     </div>
 
                     {/* 3 price cards */}
-                    <div className='grid grid-cols-3 gap-3'>
+                    <div className='grid grid-cols-1 sm:grid-cols-3 gap-3'>
                         <div className='p-3 rounded-md border border-border-light300 bg-[#F4F4F4] flex flex-col gap-1'>
                             <p className='text-sm font-medium text-black700 text-center mt-1'>Start Price</p>
                             <p className='text-xl font-semibold text-black100 text-center'>

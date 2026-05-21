@@ -38,7 +38,7 @@ export default function NewsCategoriesTab({
     }, [])
 
     return (
-        <div className="pb-16 select-none">
+        <div className="pb-16 select-none max-mobile:py-10">
             <div className="max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4">
                 <div
                     ref={containerRef}
@@ -55,11 +55,10 @@ export default function NewsCategoriesTab({
                             <button
                                 key={source}
                                 onClick={() => onSourceChange(source)}
-                                className={`relative py-2.5 px-6 rounded-full border-none text-base font-medium whitespace-nowrap transition-colors z-10 cursor-pointer ${
-                                    activeTab === source
-                                        ? "text-black100"
-                                        : "text-black100/60 hover:text-black100"
-                                }`}
+                                className={`relative py-2.5 max-mobile:px-4 max-mobile:text-sm px-6 rounded-full border-none text-base font-medium whitespace-nowrap transition-colors z-10 cursor-pointer ${activeTab === source
+                                    ? "text-black100"
+                                    : "text-black100/60 hover:text-black100"
+                                    }`}
                             >
                                 {activeTab === source && (
                                     <motion.div

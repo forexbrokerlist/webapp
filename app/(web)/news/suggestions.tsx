@@ -55,7 +55,7 @@ export default function Suggestions({ analyzedResult }: any) {
                         {items.map((item: any, i: number) => (
                             <div key={i}>
                                 <div className='border border-border-light300 bg-[#F4F4F4] rounded-md p-3'>
-                                    <div className='flex items-center gap-3 pb-3'>
+                                    <div className='flex flex-wrap items-center gap-3 pb-3'>
                                         <p className='text-lg font-medium text-black100'>
                                             {item.asset}
                                         </p>

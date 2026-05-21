@@ -33,7 +33,7 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
 
     const tabs = React.useMemo(() => [
         "Overview",
-       "Directional bias",
+        "Directional bias",
         "Insights",
         "Suggestions",
         ...(predictionResult?.data?.length > 0 ? ["Predictions"] : [])
@@ -73,10 +73,10 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                         </svg>
                     </button>
 
-                    <div className="p-5">
+                    <div className="p-4 md:p-5">
                         {!analyzedResult ? (
                             <div className="animate-pulse">
-                                <div className="h-[400px] w-full rounded-2xl bg-gray-200 mb-6" />
+                                <div className="h-[250px] md:h-[400px] w-full rounded-2xl bg-gray-200 mb-6" />
                                 <div className="flex gap-2 mb-4">
                                     <div className="h-8 w-24 rounded-md bg-gray-200" />
                                     <div className="h-8 w-24 rounded-md bg-gray-200" />
@@ -86,9 +86,9 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                                 <div className="h-4 w-5/6 rounded bg-gray-200 mb-6" />
                                 <div className="h-[1px] w-full bg-gray-200 mb-4" />
                                 <div className="h-16 w-full rounded-xl bg-gray-200 mb-4" />
-                                <div className="flex justify-between mb-5">
+                                <div className="flex flex-wrap justify-between gap-4 mb-5">
                                     <div className="h-8 w-24 rounded-md bg-gray-200" />
-                                    <div className="flex gap-2">
+                                    <div className="flex flex-wrap gap-2">
                                         <div className="h-8 w-32 rounded-md bg-gray-200" />
                                         <div className="h-8 w-24 rounded-md bg-gray-200" />
                                     </div>
@@ -105,26 +105,26 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                             </div>
                         ) : (
                             <>
-                                <div className="relative h-[400px] w-full rounded-2xl overflow-hidden mb-6">
-  {analyzedResult?.data?.image_url ? (
-        <img
-            src={analyzedResult?.data?.image_url}
-            alt="Analyze"
-            className="w-full h-full object-cover"
-        />
-    ) : (
-        <div className="flex flex-col justify-end h-full w-full bg-primary/50 p-5 relative overflow-hidden">
-            <h3 className="text-white text-xl font-bold leading-tight line-clamp-3 relative z-10">
-                {analyzedResult?.data?.event_metadata?.title || 'Market outlook'}
-            </h3>
-        </div>
-    )}
-{analyzedResult?.data?.event_metadata?.source && (
+                                <div className="relative h-[250px] md:h-[400px] w-full rounded-2xl overflow-hidden mb-6">
+                                    {analyzedResult?.data?.image_url ? (
+                                        <img
+                                            src={analyzedResult?.data?.image_url}
+                                            alt="Analyze"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="flex flex-col justify-end h-full w-full bg-primary/50 p-4 md:p-5 relative overflow-hidden">
+                                            <h3 className="text-white text-xl font-bold leading-tight line-clamp-3 relative z-10">
+                                                {analyzedResult?.data?.event_metadata?.title || 'Market outlook'}
+                                            </h3>
+                                        </div>
+                                    )}
+                                    {analyzedResult?.data?.event_metadata?.source && (
                                         <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-md text-white px-3 py-1 rounded-md text-sm font-medium">
                                             {analyzedResult?.data?.event_metadata?.source}
                                         </div>
                                     )}
-                                  
+
                                 </div>
 
                                 <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -133,7 +133,7 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                                         {formatCategory(analyzedResult?.article?.news_category)}
                                     </span>
                                     <span className="text-black100 bg-black100/10 px-3 py-1.5 rounded-md text-sm font-medium">Latest News</span>
-                                    <span className="ml-auto text-black100 bg-primary px-3 py-1.5 rounded-md text-sm font-medium">Regulatory Policy</span>
+                                    <span className="md:ml-auto text-black100 bg-primary px-3 py-1.5 rounded-md text-sm font-medium">Regulatory Policy</span>
                                 </div>
 
                                 <h2 className="text-xl font-bold text-black100 mb-3 leading-tight">
@@ -154,19 +154,19 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                                     </p>
                                 </div>
 
-                                <div className='flex items-center justify-between pb-4'>
-                                    <button className='py-1 px-3 text-base font-medium text-[#2AA411] flex items-center gap-2 rounded-[6px] bg-[rgba(42,164,17,0.10)]'>
+                                <div className='flex flex-wrap items-center justify-between gap-4 pb-4'>
+                                    <button className='py-1 px-3 text-sm md:text-base font-medium text-[#2AA411] flex items-center gap-2 rounded-[6px] bg-[rgba(42,164,17,0.10)] shrink-0'>
                                         <SearchIcon />
                                         Analyze
                                     </button>
-                                    <div className='flex items-center gap-2.5'>
-                                        <button className='py-1.5 px-3 text-black100 text-base rounded-md bg-[rgba(26,26,26,0.10)] border-none'>
+                                    <div className='flex flex-wrap items-center gap-2.5'>
+                                        <button className='py-1.5 px-3 text-black100 text-sm md:text-base rounded-md bg-[rgba(26,26,26,0.10)] border-none'>
                                             {analyzedResult?.data?.event_classification?.shock_type}
                                         </button>
-                                        <button className='py-1.5 px-3 text-black100 text-base rounded-md bg-[rgba(26,26,26,0.10)] border-none'>
+                                        <button className='py-1.5 px-3 text-black100 text-sm md:text-base rounded-md bg-[rgba(26,26,26,0.10)] border-none'>
                                             {analyzedResult?.article?.market_mode?.toLowerCase()}
                                         </button>
-                                        <button className='py-1.5 px-3 text-black100 text-base rounded-md bg-[rgba(26,26,26,0.10)] border-none'>
+                                        <button className='py-1.5 px-3 text-black100 text-sm md:text-base rounded-md bg-[rgba(26,26,26,0.10)] border-none'>
                                             Conf: {analyzedResult?.article?.confidence}/100
                                         </button>
                                     </div>
@@ -186,7 +186,7 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                                     </div>
                                 </div>
 
-                                <div className='border border-solid border-border-light300 p-1 rounded-full flex justify-between items-center gap-1 overflow-x-auto scrollbar-none mb-6'>
+                                <div className='border border-solid border-border-light300 p-1 rounded-full flex justify-start md:justify-between items-center gap-1 overflow-x-auto scrollbar-none mb-6'>
                                     {tabs.map((tab) => (
                                         <button
                                             key={tab}

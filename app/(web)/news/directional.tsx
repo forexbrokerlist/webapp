@@ -60,7 +60,7 @@ export default function Directional({ analyzedResult }: { analyzedResult: any })
                         <p className='text-sm font-medium text-black700 mb-2.5'>
                             Forex Directional Bias
                         </p>
-                        <div className='flex items-center gap-2.5'>
+                        <div className='flex flex-wrap items-center gap-2.5'>
                             <p className='text-xl font-medium text-black100 capitalize'>
                                 {directionalBias?.forex?.[0].pair} {directionalBias?.forex?.[0].direction}
                             </p>
@@ -75,7 +75,7 @@ export default function Directional({ analyzedResult }: { analyzedResult: any })
                             })()}
                         </div>
                     </div>
-                    <div className='grid grid-cols-2 gap-3'>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
                         {[
                             { label: "Strength", val: directionalBias?.forex[0]?.impact_strength, max: 10 },
                             { label: "Confidence", val: directionalBias?.forex[0]?.confidence, max: 100 },
@@ -108,7 +108,7 @@ export default function Directional({ analyzedResult }: { analyzedResult: any })
                         <p className='text-sm font-medium text-black700 mb-2.5'>
                             Global Equities Directional Bias
                         </p>
-                        <div className='flex items-center gap-2.5'>
+                        <div className='flex flex-wrap items-center gap-2.5'>
                             <p className='text-xl font-medium text-black100 capitalize'>
                                 {directionalBias?.global_equities?.[0].pair || 'SPX'} {directionalBias?.global_equities?.[0].direction || 'bearish'}
                             </p>
@@ -123,7 +123,7 @@ export default function Directional({ analyzedResult }: { analyzedResult: any })
                             })()}
                         </div>
                     </div>
-                    <div className='grid grid-cols-2 gap-3'>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
                         {[
                             { label: "Equities", val: 7, max: 10 },
                             { label: "Bonds", val: 3, max: 10 },
@@ -156,7 +156,7 @@ export default function Directional({ analyzedResult }: { analyzedResult: any })
                         <p className='text-sm font-medium text-black700 mb-2.5'>
                             Crypto Directional Bias
                         </p>
-                        <div className='flex items-center gap-2.5'>
+                        <div className='flex flex-wrap items-center gap-2.5'>
                             <p className='text-xl font-medium text-black100 capitalize'>
                                 {directionalBias?.crypto?.[0].asset || 'BTC'} {directionalBias?.crypto?.[0].direction || 'bullish'}
                             </p>
@@ -171,7 +171,7 @@ export default function Directional({ analyzedResult }: { analyzedResult: any })
                             })()}
                         </div>
                     </div>
-                    <div className='grid grid-cols-2 gap-3'>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
                         {[
                             { label: "Strength", val: directionalBias?.crypto[0]?.impact_strength, max: 10 },
                             { label: "Confidence", val: directionalBias?.crypto[0]?.confidence, max: 100 },
