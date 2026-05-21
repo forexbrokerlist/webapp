@@ -135,7 +135,7 @@ export default function NewsCardList({ activeSource }: NewsCardListProps) {
                                         {item.image_url ? (
                                             <img src={item.image_url} alt="UpdateCard" className='block h-full w-full object-cover' />
                                         ) : (
-                                            <div className='flex flex-col justify-end h-full w-full bg-primary/50 p-5 relative overflow-hidden'>
+                                            <div className='flex flex-col justify-end h-full w-full bg-gradient-to-b from-[#9a7f8b] via-[#7d6874] to-[#34313d] p-5 relative overflow-hidden'>
                                                 <h3 className='text-white text-xl max-mobile:text-lg font-bold leading-tight line-clamp-3 relative z-10'>
                                                     {item.title || 'Market outlook'}
                                                 </h3>
@@ -148,9 +148,9 @@ export default function NewsCardList({ activeSource }: NewsCardListProps) {
                                     <div className='pt-5'>
                                         <div className='flex items-center justify-between gap-2 pb-4'>
                                             <div className='flex items-center gap-2 flex-wrap'>
-                                                <button className='text-[#2AA411] rounded-md bg-[rgba(42,164,17,0.10)] text-sm py-1.5 px-3 font-medium'>
+                                                <Button className='text-[#2AA411] rounded-md bg-[rgba(42,164,17,0.10)] text-sm py-1.5 px-3 font-medium'>
                                                     {formatCategory(item?.news_category)}
-                                                </button>
+                                                </Button>
                                                 <button className='text-black100 rounded-md  bg-[rgba(26,26,26,0.10)] text-sm py-1.5 px-3 font-medium'>
                                                     Latest News
                                                 </button>
