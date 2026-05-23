@@ -4,6 +4,7 @@ import { tryCatch } from "@primoui/utils"
 import { getTranslations } from "next-intl/server"
 import { isRateLimited } from "~/lib/rate-limiter"
 import { actionClient } from "~/lib/safe-actions"
+import { sendSlackNotification } from "~/services/slack"
 import { z } from "zod"
 
 const crmEnquirySchema = z.object({
@@ -40,6 +41,11 @@ export const submitCrmEnquiry = actionClient
       console.error("Failed to save CRM Enquiry:", error)
       throw new Error("Failed to submit enquiry. Please try again later.")
     }
+
+    // Notify Slack on every new CRM enquiry submission
+    await sendSlackNotification(
+      `📋 *New CRM Enquiry*\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}\nType: CRM`,
+    )
 
     return "Your enquiry has been submitted successfully! Our team will get in touch shortly."
   })
