@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server"
 import { isRateLimited } from "~/lib/rate-limiter"
 import { actionClient } from "~/lib/safe-actions"
 import { createContactUsSchema } from "~/server/web/shared/schema"
+import { sendSlackNotification } from "~/services/slack"
 
 export const submitContactUs = actionClient
   .inputSchema(async () => {
@@ -36,5 +37,11 @@ export const submitContactUs = actionClient
       throw new Error(t("errors.failed"))
     }
 
+    // Notify Slack on every new contact form submission
+    await sendSlackNotification(
+      `📬 *New Contact Form Submission*\nName: ${name}\nEmail: ${email}\nSubject: ${subject || "(none)"}\nMessage: ${message}\nType: Contact us`,
+    )
+
     return t("success_message")
   })
+
