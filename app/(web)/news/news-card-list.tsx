@@ -176,9 +176,9 @@ console.log("analyze response:", res.data)
                                                     Latest News
                                                 </button>
                                             </div>
-                                            <button className='text-black100 whitespace-nowrap rounded-md bg-primary text-sm py-1.5 px-3 font-medium'>
+                                            {/* <button className='text-black100 whitespace-nowrap rounded-md bg-primary text-sm py-1.5 px-3 font-medium'>
                                                 Regulatory Policy
-                                            </button>
+                                            </button> */}
                                         </div>
                                         <h3 className='text-base font-medium text-black100 line-clamp-3 mb-2'>
                                             {item?.title || `The latest war between Israel and Hamas, and the closure of the Strait of Hormuz, have sent economic shock waves
