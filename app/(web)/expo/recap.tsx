@@ -1,14 +1,40 @@
 "use client";
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { expo_history } from '~/.generated/prisma/client';
 
 const ExpoCardImage = '/assets/images/expo-card.png';
 
-const tabs = [2025, 2024, 2023, 2022, 2021, 2020];
 
-export default function Recap() {
-    const [activeTab, setActiveTab] = useState(2025);
+
+export default function Recap({recap}:{recap:expo_history[]}) {
+    const [selectedItem, setSelectedItem] = useState<expo_history | null>(null);
+    
+    const tabs = [...new Set(recap.map((item) => item.year))]
+    .filter((year): year is number => year !== null)
+    .sort((a, b) => b - a);
+    const [activeTab, setActiveTab] = useState(recap[0]?.year ?? 2025);
+    console.log("Recap",recap)
+
+    // Lock body scroll when modal is open
+    useEffect(() => {
+        if (selectedItem) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [selectedItem]);
+
+    const formatDate = (date: Date | null) => {
+        if (!date) return 'TBD';
+        return new Date(date).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    };
 
     return (
         <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4 '>
@@ -91,53 +117,137 @@ export default function Recap() {
                 ))}
             </motion.div>
 
-            <motion.div
-                layout
-                className='pt-[40px] grid grid-cols-2 max-laptop:grid-cols-1 gap-5'
-            >
-                {
-                    [...Array(6)].map((_, index) => {
-                        return (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 50 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                                transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
-                                whileHover={{ y: -5, boxShadow: "0px 10px 30px rgba(0,0,0,0.08)" }}
-                                className='bg-white p-5 rounded-xl border border-[rgba(26,26,26,0.14)] export-card-grid gap-5 overflow-hidden transition-all duration-300 cursor-pointer'
+          <motion.div
+    layout
+    className='pt-[40px] grid grid-cols-2 max-laptop:grid-cols-1 gap-5'
+>
+    {
+        recap
+            .filter((item) => item.year === activeTab)
+            .map((item, index) => {
+                const startDate = item.start_time
+    ? new Date(item.start_time).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+    })
+    : 'TBD';
+
+                return (
+                    <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, y: 50 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-50px" }}
+                        transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
+                        whileHover={{ y: -5, boxShadow: "0px 10px 30px rgba(0,0,0,0.08)" }}
+                        onClick={() => setSelectedItem(item)}
+                        className='bg-white p-5 rounded-xl border border-[rgba(26,26,26,0.14)] export-card-grid gap-5 overflow-hidden transition-all duration-300 cursor-pointer'
+                    >
+                        <div className='bg-[#F4F4F4] rounded-md p-6 flex flex-col justify-center'>
+                            <div className='flex pb-4 items-center justify-between'>
+                                <button className='border-none text-sm font-medium text-black100 py-1.5 bg-[rgba(26,26,26,0.10)] px-4 rounded-md'>
+                                    {startDate}
+                                </button>
+                                <button className='border-none text-sm font-medium text-black100 py-1.5 bg-primary px-4 rounded-md'>
+                                    Recap
+                                </button>
+                            </div>
+                            <h2 className='text-[22px] mb-3 font-bold text-black100 leading-snug'>
+                                {item.country} · {item.city}
+                            </h2>
+                            <p className='text-base text-black700 line-clamp-3 leading-relaxed'>
+                                {item.content}
+                            </p>
+                        </div>
+                        <div className='h-full w-full overflow-hidden rounded-md'>
+                            <motion.img
+                                whileHover={{ scale: 1.05 }}
+                                transition={{ duration: 0.4 }}
+                                src={item.img||""}
+                                alt={`${item.city} ${item.year}`}
+                                className="h-full object-cover rounded-md w-full block"
+                            />
+                        </div>
+                    </motion.div>
+                );
+            })
+    }
+</motion.div>
+
+            {/* Detail Modal */}
+            <AnimatePresence>
+                {selectedItem && (
+                    <motion.div
+                        className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.25 }}
+                    >
+                        {/* Backdrop */}
+                        <motion.div
+                            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedItem(null)}
+                        />
+
+                        {/* Modal Content */}
+                        <motion.div
+                            className="relative bg-white rounded-2xl shadow-2xl max-w-[480px] w-full max-h-[90vh] overflow-y-auto z-10"
+                            initial={{ opacity: 0, scale: 0.9, y: 40 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 40 }}
+                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                            {/* Close Button */}
+                            <button
+                                onClick={() => setSelectedItem(null)}
+                                className="absolute top-3 right-3 z-20 w-9 h-9 flex items-center justify-center rounded-full bg-white shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer"
                             >
-                                <div className='bg-[#F4F4F4] rounded-md p-6 flex flex-col justify-center'>
-                                    <div className='flex pb-4 items-center justify-between'>
-                                        <button className='border-none text-sm font-medium text-black100 py-1.5 bg-[rgba(26,26,26,0.10)] px-4 rounded-md'>
-                                            Nov 11,2026
-                                        </button>
-                                        <button className='border-none text-sm font-medium text-black100 py-1.5 bg-primary px-4 rounded-md'>
-                                            Recap
-                                        </button>
-                                    </div>
-                                    <h2 className='text-[22px] mb-3 font-bold text-black100 leading-snug'>
-                                        United Arab Emirates · Dubai
-                                    </h2>
-                                    <p className='text-base text-black700 line-clamp-3 leading-relaxed'>
-                                        Wiki Finance Dubai 2026, will be held on 4 Dec 2026 and there will be 1 day exhibition Wiki Finance Dubai 2026, will be held on
-                                        4 Dec 2026 and there will be 1 day exhibition
-                                    </p>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                            </button>
+
+                            {/* Image */}
+                            <div className="w-full h-[260px] max-mobile:h-[200px] overflow-hidden rounded-t-2xl">
+                                <img
+                                    src={selectedItem.img || ""}
+                                    alt={`${selectedItem.city} ${selectedItem.year}`}
+                                    className="w-full h-full object-cover block"
+                                />
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-6 max-mobile:p-4">
+                                {/* Date & Badge */}
+                                <div className="flex items-center gap-3 mb-4">
+                                    <span className="inline-block bg-[#EFEFEF] text-black100 text-sm font-medium px-3 py-1.5 rounded-md">
+                                        {formatDate(selectedItem.start_time)}
+                                    </span>
+                                    <span className="inline-block bg-primary text-black100 text-sm font-medium px-3 py-1.5 rounded-md">
+                                        Recap
+                                    </span>
                                 </div>
-                                <div className='h-full w-full overflow-hidden rounded-md'>
-                                    <motion.img
-                                        whileHover={{ scale: 1.05 }}
-                                        transition={{ duration: 0.4 }}
-                                        src={ExpoCardImage}
-                                        alt="ExpoCardImage"
-                                        className="h-full object-cover rounded-md w-full block"
-                                    />
-                                </div>
-                            </motion.div>
-                        )
-                    })
-                }
-            </motion.div>
+
+                                {/* Title */}
+                                <h3 className="text-xl font-bold text-black100 mb-3 leading-snug">
+                                    {selectedItem.country} · {selectedItem.city}
+                                </h3>
+
+                                {/* Description */}
+                                <p className="text-base text-black700 leading-relaxed">
+                                    {selectedItem.content}
+                                </p>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     )
 }

@@ -2,19 +2,41 @@
 import React from 'react';
 import { Play } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { cx } from '~/lib/utils';
 
 interface CommonBannerProps {
     highlightedText?: string | null;
     title: string;
     description: string;
     image: string;
+    className?: string;
+    titleClassName?: string;
+    titleClasses?: string;
+    highlightedTextClassName?: string;
+    highlightedTextClasses?: string;
 }
 
-export default function CommonBanner({ highlightedText, title, description, image }: CommonBannerProps) {
+export default function CommonBanner({ 
+    highlightedText, 
+    title, 
+    description, 
+    image, 
+    className,
+    titleClassName,
+    titleClasses,
+    highlightedTextClassName,
+    highlightedTextClasses
+}: CommonBannerProps) {
+    const finalTitleClassName = titleClassName || titleClasses;
+    const finalHighlightedTextClassName = highlightedTextClassName || highlightedTextClasses;
+    
+    // Check if the passed title classes specify a font size class
+    const hasTextSize = finalTitleClassName && /\btext-(?:[a-z0-9\-]+|\[[^\]]+\])\b/.test(finalTitleClassName);
+
     return (
         <div className="pt-[100px]">
             {/* Note: Removed overflow-hidden here so the border-radius sides don't get clipped! */}
-            <div className='max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 py-8 max-mobile:py-0 max-mobile:mb-0 mb-10'>
+            <div className={cx('max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4 py-8 max-mobile:py-0 max-mobile:mb-0 mb-10', className)}>
 
                 {/* Main banner container */}
                 <div className="relative w-full  isolate max-tab:bg-white max-tab:rounded-lg">
@@ -29,8 +51,12 @@ export default function CommonBanner({ highlightedText, title, description, imag
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5 }}
-                                className='text-[50px] max-mobile:text-3xl max-mobile:leading-[40px] mb-3 text-black100 font-bold leading-[60px] max-w-[739px]'>
-                                <span className='text-[#A8DD15]'> {highlightedText} </span>
+                                className={cx(
+                                    !hasTextSize && 'text-[50px] max-mobile:text-3xl max-mobile:leading-[40px] leading-[60px]',
+                                    'mb-3 text-black100 font-bold max-w-[739px]',
+                                    finalTitleClassName
+                                )}>
+                                <span className={cx('text-[#A8DD15]', finalHighlightedTextClassName)}> {highlightedText} </span>
                                 {title}
                             </motion.h1>
                             <motion.p

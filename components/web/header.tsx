@@ -127,6 +127,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
 
               <NavLink href="/contact" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.contact_us")}</NavLink>
               <NavLink href="/news" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>{t("navigation.news")}</NavLink>
+              <NavLink href="/expo" className="block py-2 px-5 text-base font-medium text-black100 rounded-full hover:bg-primary data-active:bg-primary transition-all duration-300" isPadded={false}>Expo</NavLink>
               
             </nav>
 
