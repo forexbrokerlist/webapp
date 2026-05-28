@@ -150,6 +150,7 @@ export default function FintechExhibition({ brokers }: Props) {
                         <Link
                           key={broker.name}
                           href={`/forex-broker/${broker.slug}`}
+                          target="_blank"
                           className='flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer transition'
                           onClick={() => {
                             setQuery(broker.name)
