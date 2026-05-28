@@ -57,20 +57,7 @@ export default function Recap({recap}:{recap:expo_history[]}) {
                 >
                     Our mission is simple: to empower traders with clarity. We believe that every trader whether a beginner or a seasoned professional deserves
                 </motion.p>
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-                    className='flex pt-2 items-center justify-center gap-0.5 cursor-pointer hover:opacity-80 transition-opacity'
-                >
-                    <span className='block text-lg font-medium text-black100'>
-                        View more
-                    </span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M7.5026 4.16634L12.8613 8.96853C13.4942 9.53566 13.4942 10.4637 12.8613 11.0308L7.50261 15.833" stroke="#1A1A1A" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                </motion.div>
+            
             </div>
 
             <motion.div
@@ -142,9 +129,9 @@ export default function Recap({recap}:{recap:expo_history[]}) {
                         transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
                         whileHover={{ y: -5, boxShadow: "0px 10px 30px rgba(0,0,0,0.08)" }}
                         onClick={() => setSelectedItem(item)}
-                        className='bg-white p-5 rounded-xl border border-[rgba(26,26,26,0.14)] export-card-grid gap-5 overflow-hidden transition-all duration-300 cursor-pointer'
+                        className='bg-white p-5 rounded-xl border border-[rgba(26,26,26,0.14)] flex flex-col md:grid md:grid-cols-[1fr_260px] gap-5 overflow-hidden transition-all duration-300 cursor-pointer'
                     >
-                        <div className='bg-[#F4F4F4] rounded-md p-6 flex flex-col justify-center'>
+                        <div className='w-full bg-[#F4F4F4] rounded-md p-6 max-mobile:mx-0  flex flex-col justify-center order-2 md:order-1'>
                             <div className='flex pb-4 items-center justify-between'>
                                 <button className='border-none text-sm font-medium text-black100 py-1.5 bg-[rgba(26,26,26,0.10)] px-4 rounded-md'>
                                     {startDate}
@@ -160,7 +147,7 @@ export default function Recap({recap}:{recap:expo_history[]}) {
                                 {item.content}
                             </p>
                         </div>
-                        <div className='h-full w-full overflow-hidden rounded-md'>
+                        <div className='h-[240px] md:h-full w-full overflow-hidden rounded-md order-1 md:order-2'>
                             <motion.img
                                 whileHover={{ scale: 1.05 }}
                                 transition={{ duration: 0.4 }}

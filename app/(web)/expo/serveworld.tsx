@@ -141,11 +141,10 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
               </div>
 
               <p class="expo-desc">
-                ${
-                  city.content
-                    ? city.content.slice(0, 120)
-                    : 'No content available'
-                }...
+                ${city.content
+          ? city.content.slice(0, 120)
+          : 'No content available'
+        }...
               </p>
 
               <button class="expo-btn">
@@ -201,7 +200,7 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
 
   useEffect(() => {
     mapboxgl.accessToken =
-     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
+      mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
     if (!mapContainerRef.current) return
 
@@ -285,8 +284,8 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
         <p className="text-lg max-mobile:text-base text-black700 text-center mx-auto font-medium max-w-[650px]">
           Our mission is simple: to empower traders with clarity.
         </p>
-        <div className="flex items-center justify-center gap-8 py-4">
-          <div className="flex items-center gap-2"> <span className="w-3 h-3 rounded-full bg-lime-400 inline-block"></span> <p className="text-base font-semibold text-black"> Holding now <span className="text-gray-600 font-medium">(Last year)</span> </p> </div> <div className="w-px h-5 bg-gray-300"></div> <div className="flex items-center gap-2"> <span className="w-3 h-3 rounded-full bg-orange-500 inline-block"></span> <p className="text-base font-semibold text-black"> Not started </p> </div> <div className="w-px h-5 bg-gray-300"></div> <div className="flex items-center gap-2"> <span className="w-3 h-3 rounded-full bg-gray-400 inline-block"></span> <p className="text-base font-semibold text-black"> Ended </p> </div>
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 py-4">
+          <div className="flex items-center gap-2"> <span className="w-3 h-3 rounded-full bg-lime-400 inline-block"></span> <p className="text-base font-semibold text-black"> Holding now <span className="text-gray-600 font-medium">(Last year)</span> </p> </div> <div className="hidden sm:block w-px h-5 bg-gray-300"></div> <div className="flex items-center gap-2"> <span className="w-3 h-3 rounded-full bg-orange-500 inline-block"></span> <p className="text-base font-semibold text-black"> Not started </p> </div> <div className="hidden sm:block w-px h-5 bg-gray-300"></div> <div className="flex items-center gap-2"> <span className="w-3 h-3 rounded-full bg-gray-400 inline-block"></span> <p className="text-base font-semibold text-black"> Ended </p> </div>
         </div>
       </div>
 
@@ -397,10 +396,32 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
           font-weight: 600;
           cursor: pointer;
         }
+
+        @media (max-width: 768px) {
+          .expo-card {
+            width: 260px;
+          }
+          .expo-card-inner {
+            padding: 12px;
+            border-radius: 12px;
+          }
+          .expo-location {
+            font-size: 13px;
+          }
+          .expo-desc {
+            font-size: 12px;
+            line-height: 1.4;
+          }
+          .expo-btn {
+            margin-top: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+          }
+        }
       `}</style>
 
       <div className="max-w-[1640px] mx-auto px-5 mb-6">
-        <div className="relative w-full h-[800px] max-sm:h-[450px] rounded-3xl overflow-hidden">
+        <div className="relative w-full h-[450px] md:h-[600px] lg:h-[800px] rounded-3xl overflow-hidden">
           <div
             ref={mapContainerRef}
             id="map"
