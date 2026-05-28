@@ -132,8 +132,8 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                                         <span className="w-2 h-2 rounded-full bg-[#2AA411]"></span>
                                         {formatCategory(analyzedResult?.article?.news_category)}
                                     </span>
-                                    <span className="text-black100 bg-black100/10 px-3 py-1.5 rounded-md text-sm font-medium">Latest News</span>
-                                    <span className="md:ml-auto text-black100 bg-primary px-3 py-1.5 rounded-md text-sm font-medium">Regulatory Policy</span>
+                                    {/* <span className="text-black100 bg-black100/10 px-3 py-1.5 rounded-md text-sm font-medium">Latest News</span>
+                                    <span className="md:ml-auto text-black100 bg-primary px-3 py-1.5 rounded-md text-sm font-medium">Regulatory Policy</span> */}
                                 </div>
 
                                 <h2 className="text-xl font-bold text-black100 mb-3 leading-tight">

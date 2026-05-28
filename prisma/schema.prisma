@@ -808,3 +808,66 @@ model CRMEnquiry{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model expo_getrotation{
+  id Int @id @default(autoincrement())
+  url String?
+  expo_id String? @unique
+  content String?
+  start_time DateTime? @db.Timestamptz
+  end_time DateTime? @db.Timestamptz
+  linkurl String? 
+  name String? 
+  @@map("expo_getrotation") 
+}
+
+model expo_tourcity {
+  id            Int       @id @default(autoincrement())
+  country       String?
+  city          String?
+  expoid        String?   @unique
+  flag          String?
+  expoimg       String?
+  starting_date DateTime? @db.Timestamptz
+  content       String?
+
+  @@map("expo_tourcity")
+}
+
+model expo_news {
+  id      String  @id
+  title   String?
+  imgurl  String?
+  summary String?
+  content String?
+
+  @@map("expo_news")
+}
+
+model expo_countrydata {
+  id           Int      @id @default(autoincrement())
+  country_code String?  @unique
+  name         String?
+  coords       Json?
+  data         Json
+  created_at   DateTime @default(now()) @db.Timestamptz
+
+  @@map("expo_countrydata")
+}
+
+model expo_history {
+  id         Int       @id @default(autoincrement())
+  expo_id    String?   @unique
+  year       Int?
+  img        String?
+  city       String?
+  country    String?
+  flag       String?
+  linkurl    String?
+  content    String?
+  start_time DateTime? @db.Timestamptz
+  end_time   DateTime? @db.Timestamptz
+  created_at DateTime  @default(now()) @db.Timestamptz
+
+  @@map("expo_history")
+}
