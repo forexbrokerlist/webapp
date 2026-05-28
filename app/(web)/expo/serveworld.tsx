@@ -30,7 +30,7 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
       name: item?.data?.countryName || item?.data?.city,
       city: [
         {
-          country: item?.data?.countryName,
+          country: item?.data?.aggData?.country?.name,
           city: item?.data?.city,
           longitude: lng,
           latitude: lat,
@@ -39,7 +39,7 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
           status: item?.data?.status,
           content: item?.data?.content,
           flag:
-            item?.data?.countryFlag ||
+            item?.data?.aggData?.country?.flag||
             'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg',
         },
       ],
@@ -127,7 +127,7 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
 
           <div class="expo-card">
             <div class="expo-card-inner">
-
+ 
               <div class="expo-header">
                 <img 
                   src="${city.flag}" 
@@ -147,9 +147,7 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
         }...
               </p>
 
-              <button class="expo-btn">
-                Recap →
-              </button>
+          
 
             </div>
           </div>
@@ -208,14 +206,24 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: 'mapbox://styles/mapbox/light-v11',
-        center: [0, 25],
+        center: [100,20],
         zoom: 1.4,
-        minZoom: 1.2,
+        minZoom: 1,
         attributionControl: false,
         projection: 'mercator',
       })
 
       mapRef.current.on('style.load', () => {
+        // Set the map base background to white
+        if (mapRef.current!.getLayer('background')) {
+          mapRef.current!.setPaintProperty('background', 'background-color', '#ffffff');
+        }
+          mapRef.current!.setPaintProperty('background', 'background-color', '#ffffff')
+
+  // Target all water layers
+ 
+ 
+
         mapRef.current!.addLayer({
           id: 'countries',
           source: {
@@ -225,7 +233,7 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
           'source-layer': 'ne_10m_admin_0_countries-76t9ly',
           type: 'fill',
           paint: {
-            'fill-color': '#d9d9d9',
+            'fill-color': '#ffffff',
             'fill-outline-color': 'transparent',
           },
         })

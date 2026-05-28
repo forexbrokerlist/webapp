@@ -338,4 +338,9 @@
   content: "";
 }
 
-
+
+.export-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 20px;
+}
