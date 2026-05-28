@@ -2,34 +2,26 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
-const ExpoCardImage = '/assets/images/expo-card.png';
-const ExpoCardImage1 = '/assets/images/news-hero-main.png';
-const ExpoCardImage2 = '/assets/images/expo-card.png';
+type ExpoNews = {
+    id: string;
+    title: string | null;
+    imgurl: string | null;
+    summary: string | null;
+    content: string | null;
+};
 
-export default function ExhibitorNews() {
-    const newsItems = [
-        {
-            date: "Nov 11,2026",
-            title: "WikiEXPO Global Expert Interviews Yiannos Ashiotis:How S...",
-            desc: "As WikiEXPO Dubai concludes successfully, we had the pleasure of interviewing Yiannos Ashiotis, the Group Managing Partner of Pnyx Hill an...",
-            image: ExpoCardImage
-        },
-        {
-            date: "Nov 11,2026",
-            title: "(WikiEXPO Global Expert Interviews) Dolly Ramaiya: How T...",
-            desc: "As WikiEXPO Dubai concludes successfully, we had the pleasure of interviewing Dolly Ramaiya, Founder and Senior Executive Officer of Truleu...",
-            image: ExpoCardImage1
-        },
-        {
-            date: "Nov 11,2026",
-            title: "(WikiEXPO Global Expert Interviews)Robert Hahm: From As...",
-            desc: "As WikiEXPO Dubai concludes successfully, we had the pleasure of interviewing Robert Hahm, the Founder and CEO of Algorada. Robert Hah...",
-            image: ExpoCardImage2
-        }
-    ];
+export default function ExhibitorNews({ news }: { news: ExpoNews[] }) {
+    const newsItems = news.map((item) => ({
+        id: item.id,
+        title: item.title || "Untitled",
+        desc: item.summary || "",
+        image: item.imgurl || "/assets/images/expo-card.png",
+    }));
 
     const [activeIndex, setActiveIndex] = useState(0);
+    const router = useRouter();
 
     return (
         <div className='py-100'>
@@ -74,6 +66,7 @@ export default function ExhibitorNews() {
                     <div className='grid grid-cols-2 max-laptop:grid-cols-1 gap-5'>
                         {/* Left Side Image */}
                         <motion.div
+                            onClick={() => router.push(`/exhibitor/${newsItems[activeIndex].id}`)}
                             initial={{ opacity: 0, x: -30 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true, margin: "-50px" }}
@@ -121,6 +114,7 @@ export default function ExhibitorNews() {
                             {newsItems.map((item, index) => (
                                 <motion.div
                                     key={index}
+                                    onClick={() => router.push(`/exhibitor/${item.id}`)}
                                     onMouseEnter={() => setActiveIndex(index)}
                                     initial={{ opacity: 0, x: 30 }}
                                     whileInView={{ opacity: 1, x: 0 }}
@@ -133,9 +127,7 @@ export default function ExhibitorNews() {
                                         boxShadow: activeIndex === index ? '0px 4px 20px rgba(0,0,0,0.03)' : 'none'
                                     }}
                                 >
-                                    <div className='inline-block bg-[#EFEFEF] text-black100 text-sm font-medium px-3 py-1 rounded-md mb-4'>
-                                        {item.date}
-                                    </div>
+
                                     <h3 className='text-xl max-mobile:text-lg font-bold text-black100 mb-2 line-clamp-1'>
                                         {item.title}
                                     </h3>

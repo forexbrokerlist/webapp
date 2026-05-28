@@ -33,7 +33,7 @@ export const formatPublishedDate = (publishedDate: any) => {
         hour12: true,
     });
 
-    return `${relativeTime}.${formattedTime}`;
+    return `${formattedTime}`;
 };
 
 interface NewsCardListProps {
@@ -172,9 +172,9 @@ console.log("analyze response:", res.data)
                                                 <Button className='text-[#2AA411] rounded-md bg-[rgba(42,164,17,0.10)] text-sm py-1.5 px-3 font-medium'>
                                                     {formatCategory(item?.news_category)}
                                                 </Button>
-                                                <button className='text-black100 rounded-md  bg-[rgba(26,26,26,0.10)] text-sm py-1.5 px-3 font-medium'>
+                                                {/* <button className='text-black100 rounded-md  bg-[rgba(26,26,26,0.10)] text-sm py-1.5 px-3 font-medium'>
                                                     Latest News
-                                                </button>
+                                                </button> */}
                                             </div>
                                             {/* <button className='text-black100 whitespace-nowrap rounded-md bg-primary text-sm py-1.5 px-3 font-medium'>
                                                 Regulatory Policy
@@ -189,13 +189,13 @@ console.log("analyze response:", res.data)
                                             waves across the Mideast.`}
                                         </p>
                                         <div className='flex gap-3 mb-3'>
-                                            <p className="text-sm text-black100">
+                                            {/* <p className="text-sm text-black100">
                                                 Published :{" "}
                                                 <span className="text-black700 font-medium">
                                                     {formatPublishedDate(item?.published)}
                                                 </span>
-                                            </p>
-                                            <div className='w-[1px] h-[17px] bg-[rgba(26,26,26,0.14)]'></div>
+                                            </p> */}
+                                            {/* <div className='w-[1px] h-[17px] bg-[rgba(26,26,26,0.14)]'></div> */}
                                             <p className="text-sm text-black100">
                                                 Posted :{" "}
                                                 <span className="text-black700 font-medium">
@@ -204,7 +204,7 @@ console.log("analyze response:", res.data)
                                             </p>
                                         </div>
                                         <div className='grid grid-cols-2 gap-3 pt-2 mt-auto'>
-                                            <Link href={item.link} target="_blank" onClick={(e) => e.stopPropagation()}>
+                                            {/* <Link href={item.link} target="_blank" onClick={(e) => e.stopPropagation()}>
                                                 <Button size="md" variant="primary" className="px-5 gap-2.5 group relative z-[9]">
                                                     Read Now
                                                     <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
@@ -214,7 +214,7 @@ console.log("analyze response:", res.data)
                                                         </svg>
                                                     </div>
                                                 </Button>
-                                            </Link>
+                                            </Link> */}
                                             <Button
                                                 size="md"
                                                 variant="primary"
@@ -225,7 +225,7 @@ console.log("analyze response:", res.data)
                                                     else if (item.analyzed) fetchDetails(item.id)
                                                 }}
                                                 disabled={analyzingId === item.id}
-                                                className={`px-5 max-mobile:px-3 max-mobile:gap-1.5 gap-2.5 group rounded-full relative z-[9] border transition-all hover:bg-white text-black100 border-[rgba(26,26,26,0.10)] bg-[#F0F1EC]`}
+                                                className={`px-5 max-mobile:px-3 col-span-2 max-mobile:gap-1.5 gap-2.5 group rounded-full relative z-[9] border transition-all hover:bg-white bg-black100 text-white border-[rgba(26,26,26,0.10)] `}
                                             >
                                                 {analyzingId === item.id ? 'Analyzing' : item.analyzed ? item?.impact_score + "/10 " + formatCategory(item?.impact_duration?.split(/[-_]/)[0]) + " Impact" : 'Analyze'}
                                                 <div className={`w-7 h-7 max-mobile:w-6 max-mobile:h-6 rounded-full flex items-center justify-center transition-all duration-300
