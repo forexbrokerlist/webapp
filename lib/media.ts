@@ -204,6 +204,7 @@ export const enhanceLogo = async (
   buffer: Buffer,
   targetSize = 512,
 ): Promise<Buffer> => {
+  const sharp = (await import('sharp')).default;
   return (
     sharp(buffer)
       // Upscale with Lanczos3 — best quality interpolation for pixel-art & flat logos
