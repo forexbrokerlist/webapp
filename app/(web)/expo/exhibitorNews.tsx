@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 type ExpoNews = {
     id: string;
@@ -53,9 +54,11 @@ export default function ExhibitorNews({ news }: { news: ExpoNews[] }) {
                         transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
                         className='flex pt-2 items-center justify-center gap-0.5 cursor-pointer hover:opacity-80 transition-opacity'
                     >
+                        <Link href="/exhibitor-news">
                         <span className='block text-lg font-medium text-black100'>
                             View more
                         </span>
+                        </Link>
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                             <path d="M7.5026 4.16634L12.8613 8.96853C13.4942 9.53566 13.4942 10.4637 12.8613 11.0308L7.50261 15.833" stroke="#1A1A1A" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>

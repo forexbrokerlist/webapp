@@ -205,6 +205,7 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
                     { href: "/contact", label: t("navigation.contact_us") },
                     { href: "/forex-crm", label: t("navigation.forex_crm") },
                     { href: "/news", label: t("navigation.news") },
+                    {href:"/expo",label:"Expo"},
 
                     ...(adsConfig.enabled ? [{ href: "/advertise", label: t("navigation.advertise") }] : []),
                   ].map(({ href, label }, i) => (
