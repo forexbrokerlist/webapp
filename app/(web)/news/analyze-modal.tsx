@@ -117,6 +117,7 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                                             <h3 className="text-white text-xl font-bold leading-tight line-clamp-3 relative z-10">
                                                 {analyzedResult?.data?.event_metadata?.title || 'Market outlook'}
                                             </h3>
+                                            
                                         </div>
                                     )}
                                     {analyzedResult?.data?.event_metadata?.source && (
@@ -132,8 +133,11 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                                         <span className="w-2 h-2 rounded-full bg-[#2AA411]"></span>
                                         {formatCategory(analyzedResult?.article?.news_category)}
                                     </span>
-                                    {/* <span className="text-black100 bg-black100/10 px-3 py-1.5 rounded-md text-sm font-medium">Latest News</span>
-                                    <span className="md:ml-auto text-black100 bg-primary px-3 py-1.5 rounded-md text-sm font-medium">Regulatory Policy</span> */}
+                                    {/* <span className="text-black100 bg-black100/10 px-3 py-1.5 rounded-md text-sm font-medium">Latest News</span>*/}
+                                          
+                                    <span className="md:ml-auto text-black100 bg-primary px-3 py-1.5 rounded-md text-sm font-medium">
+                                          {analyzedResult?.data?.event_metadata?.source}
+                                        </span> 
                                 </div>
 
                                 <h2 className="text-xl font-bold text-black100 mb-3 leading-tight">
@@ -144,8 +148,8 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                                 </p>
 
                                 <div className="flex flex-wrap gap-4 text-sm text-black700 mb-4 pb-4 border-b border-black100/10">
-                                    <span>Source Posted : <span className="font-medium text-black100">{formatPublishedDate(analyzedResult?.article?.published)}</span></span>
-                                    <span>Scraped : <span className="font-medium text-black100">{formatPublishedDate(analyzedResult?.article?.created_at)}</span></span>
+                                    {/* <span>Source Posted : <span className="font-medium text-black100">{formatPublishedDate(analyzedResult?.article?.published)}</span></span> */}
+                                    <span>Posted : <span className="font-medium text-black100">{formatPublishedDate(analyzedResult?.article?.created_at)}</span></span>
                                 </div>
 
                                 <div className="bg-[#F0F1EC] p-4 rounded-xl mb-4">
@@ -159,7 +163,7 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                                         <SearchIcon />
                                         Analyze
                                     </button>
-                                    <div className='flex flex-wrap items-center gap-2.5'>
+                                    {/* <div className='flex flex-wrap items-center gap-2.5'>
                                         <button className='py-1.5 px-3 text-black100 text-sm md:text-base rounded-md bg-[rgba(26,26,26,0.10)] border-none'>
                                             {analyzedResult?.data?.event_classification?.shock_type}
                                         </button>
@@ -169,7 +173,7 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
                                         <button className='py-1.5 px-3 text-black100 text-sm md:text-base rounded-md bg-[rgba(26,26,26,0.10)] border-none'>
                                             Conf: {analyzedResult?.article?.confidence}/100
                                         </button>
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 <div className='grid grid-cols-[46px_1fr] gap-3 pt-1 pb-5'>
