@@ -206,8 +206,8 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: 'mapbox://styles/mapbox/light-v11',
-        center: [100,20],
-        zoom: 1.4,
+        center: [110,20],
+        zoom: 2.2,
         minZoom: 1,
         attributionControl: false,
         projection: 'mercator',
@@ -290,7 +290,7 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
         </h2>
 
         <p className="text-lg max-mobile:text-base text-black700 text-center mx-auto font-medium max-w-[650px]">
-          Our mission is simple: to empower traders with clarity.
+        Our mission is simple: to empower traders with clarity. We believe that every trader whether a beginner or a seasoned professional deserves
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 py-4">
           <div className="flex items-center gap-2"> <span className="w-3 h-3 rounded-full bg-lime-400 inline-block"></span> <p className="text-base font-semibold text-black"> Holding now <span className="text-gray-600 font-medium">(Last year)</span> </p> </div> <div className="hidden sm:block w-px h-5 bg-gray-300"></div> <div className="flex items-center gap-2"> <span className="w-3 h-3 rounded-full bg-orange-500 inline-block"></span> <p className="text-base font-semibold text-black"> Not started </p> </div> <div className="hidden sm:block w-px h-5 bg-gray-300"></div> <div className="flex items-center gap-2"> <span className="w-3 h-3 rounded-full bg-gray-400 inline-block"></span> <p className="text-base font-semibold text-black"> Ended </p> </div>
@@ -350,7 +350,7 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
 
           transition: all 0.25s ease;
 
-          z-index: 9999;
+          z-index: 999999;
           pointer-events: none;
         }
 
@@ -372,6 +372,8 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
           align-items: center;
           gap: 10px;
           margin-bottom: 12px;
+          font-weight:600px;
+          font-size:22px;
         }
 
         .expo-flag {
@@ -388,9 +390,11 @@ export default function ServeWorld({ countryData }: { countryData: any }) {
         }
 
         .expo-desc {
-          font-size: 14px;
+          font-size: 18px;
           color: #555;
           line-height: 1.6;
+          font-weight:400px;
+          
         }
 
         .expo-btn {

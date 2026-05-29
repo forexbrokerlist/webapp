@@ -9,7 +9,7 @@ export default async function Page() {
   return (
     <div>
       <CommonBanner
-        image={"/assets/images/news-card.png"}
+        image={"/assets/images/Exhbition.png"}
         highlightedText="Global Fintech & Broker Expos"
         title="with live event updates & exhibitor insights."
         description="Stay ahead with real-time announcements, key takeaways, and behind-the-scenes coverage directly from the world's leading financial exhibitions and summits."

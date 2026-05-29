@@ -95,8 +95,8 @@ export default function ExpoNewsList({ allNews }: ExpoNewsListProps) {
                       onClick={() => setCurrentPage(p as number)}
                       className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full font-medium transition-all text-sm md:text-base
                         ${currentPage === p
-                          ? 'bg-primary text-black100 font-bold md:text-lg shadow-sm'
-                          : 'bg-white border border-solid border-border-light300 text-black700 hover:bg-primary hover:border-primary'
+                          ? 'bg-primary text-black100 font-bold cursor-pointer md:text-lg shadow-sm'
+                          : 'bg-white border border-solid cursor-pointer border-border-light300 text-black700 hover:bg-primary hover:border-primary'
                         }`}
                     >
                       {p}
