@@ -10,6 +10,7 @@ import { Note } from "~/components/common/note"
 import { Stack } from "~/components/common/stack"
 import { Tooltip } from "~/components/common/tooltip"
 import { CTAForm } from "~/components/web/cta-form"
+import { usePathname } from "next/navigation"
 import { ExternalLink } from "~/components/web/external-link"
 import { FullLogo } from "~/components/web/ui/full-logo"
 import { NavLink, navLinkVariants } from "~/components/web/ui/nav-link"
@@ -20,6 +21,7 @@ const MapImage = '/assets/images/map-img.png';
 
 
 export const Footer = ({ children, className, ...props }: ComponentProps<"div">) => {
+  const pathname = usePathname();
   const t = useTranslations()
 
   return (
@@ -80,7 +82,7 @@ export const Footer = ({ children, className, ...props }: ComponentProps<"div">)
                   Join 5,000+ other members and get updates straight to your
                   inbox.
                 </p>
-                <CTAForm />
+                <CTAForm key={pathname} />
               </div>
             </div>
             <div className="text-base relative z-10 max-mobile:pt-[40px] font-medium text-black700 pt-[60px]">
@@ -96,7 +98,7 @@ export const Footer = ({ children, className, ...props }: ComponentProps<"div">)
                 Sponsored listings are clearly marked and do not imply endorsement or recommendation. Always verify a broker's regulatory status through official authorities such as FCA, ASIC, or CySEC before depositing funds.
               </p>
               <p className="mt-2">
-                For queries or listing requests, contact us at: <span className="text-primary underline"> forexbrokerlist24@gmail.com </span>
+                For queries or listing requests, contact us at: <a href="mailto:forexbrokerlist24@gmail.com" className="text-primary underline">forexbrokerlist24@gmail.com</a>
               </p>
             </div>
             <div className='w-full mt-4  h-[1px]   bg-[#1A1A1A1A]'></div>

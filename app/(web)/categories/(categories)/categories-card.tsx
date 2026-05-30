@@ -76,7 +76,7 @@ export default function CategoriesCard({
  
     return (
         <>
-            <section className='pb-100 max-mobile:pb-16'>
+            <section className='pb-100 max-mobile:pb-16 max-mobile:pt-10'>
                 <div className='max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4'>
                     <div className='grid grid-cols-2 max-tab:grid-cols-2 max-mobile:grid-cols-1 gap-6'>
                         <div className='bg-white rounded-2xl items-center border border-solid border-border-light500 py-10 px-10 max-tab:py-8 max-tab:px-6 max-mobile:py-6 max-mobile:px-5 grid grid-cols-[1fr_333px] max-tab:grid-cols-1 gap-8'>
@@ -98,7 +98,7 @@ export default function CategoriesCard({
                                 </Link>
 
                             </div>
-                            <div className='flex justify-center'>
+                            <div className='flex justify-center py-8'>
                                 <div className='max-w-[270px] w-full relative flex items-center justify-center h-[270px] max-mobile:h-[220px] max-mobile:max-w-[220px]'>
                                     <svg width="100%" height="100%" viewBox="0 0 270 270" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0">
                                         <motion.circle

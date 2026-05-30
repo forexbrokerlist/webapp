@@ -199,13 +199,22 @@ export const AdDetailsForm = ({
                 </FieldLabel>
                 <Note className="text-xs">{t("description_note")}</Note>
               </Stack>
-              <TextArea
-                id={field.name}
-                size="lg"
-                placeholder={t("description_placeholder")}
-                {...field}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+           <TextArea
+  id={field.name}
+  size="lg"
+  placeholder={t("description_placeholder")}
+  maxLength={160}
+  {...field}
+/>
+<div className="flex justify-between items-center">
+  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+  <span className={cx(
+    "ml-auto text-xs tabular-nums",
+    field.value?.length >= 160 ? "text-red-500" : "text-muted-foreground"
+  )}>
+    {field.value?.length ?? 0}/160
+  </span>
+</div>
             </Field>
           )}
         />
