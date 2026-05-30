@@ -55,7 +55,12 @@ export const CTAForm = ({
       },
 
       onSettled: () => {
-        form.reset()
+        // If subscription failed, clear the email field while preserving other values
+        if (action.result.serverError) {
+          form.setValue('email', '')
+        }
+        // Reset only the captcha field (hidden)
+        form.reset({ captcha: '' })
       },
     },
   })
@@ -110,7 +115,7 @@ export const CTAForm = ({
           </Hint>
         )}
 
-        {action.result.data && <p className="text-sm text-green-600">{action.result.data}</p>}
+        {action.result.data && !(action.result.serverError || form.formState.errors.email) && (<p className="text-sm text-green-600">{action.result.data}</p>)}
 
         {children}
       </form>

@@ -176,7 +176,7 @@ export default function CrmEnquiry() {
                                     render={({ field, fieldState }) => (
                                         <Field data-invalid={fieldState.invalid}>
                                             <FieldLabel htmlFor={field.name} className="text-black100 font-medium block text-base">
-                                                Name
+                                                Name <span className="text-red-500">*</span>
                                             </FieldLabel>
                                             <Input
                                                 id={field.name}
@@ -191,7 +191,7 @@ export default function CrmEnquiry() {
 
                                 <Field data-invalid={!!form.formState.errors.phone}>
                                     <FieldLabel className="text-black100 font-medium block text-base">
-                                        Phone Number
+                                        Phone Number <span className="text-red-500">*</span>
                                     </FieldLabel>
                                     <div className="grid grid-cols-[120px_1fr] gap-3 h-14">
                                         <Select
@@ -234,7 +234,7 @@ export default function CrmEnquiry() {
                                     render={({ field, fieldState }) => (
                                         <Field data-invalid={fieldState.invalid}>
                                             <FieldLabel htmlFor={field.name} className="text-black100 font-medium block text-base">
-                                                Email
+                                                Email <span className="text-red-500">*</span>
                                             </FieldLabel>
                                             <Input
                                                 id={field.name}
@@ -254,7 +254,7 @@ export default function CrmEnquiry() {
                                     render={({ field, fieldState }) => (
                                         <Field data-invalid={fieldState.invalid}>
                                             <FieldLabel htmlFor={field.name} className="text-black100 font-medium block text-base">
-                                                Message
+                                                                                                Message <span className="text-red-500">*</span>
                                             </FieldLabel>
                                             <TextArea
                                                 id={field.name}
@@ -285,7 +285,7 @@ export default function CrmEnquiry() {
                                 </div>
 
                                 <p className='text-center text-black100 text-base font-normal'>
-                                    By continuing i accept the <Link href="/privacy" className='underline decoration-black100 text-black700 font-medium'>Privacy Policy</Link>
+                                    By continuing I accept the <Link href="/privacy" className='underline decoration-black100 text-black700 font-medium'>Privacy Policy</Link>
                                 </p>
                             </form>
                         </div>

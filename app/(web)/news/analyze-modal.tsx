@@ -40,7 +40,16 @@ export default function AnalyzeModal({ isOpen, onClose, analyzedResult, predicti
     ], [predictionResult, hasDirectionalBias])
 
     React.useEffect(() => {
-        if (isOpen) setActiveTab("Overview")
+        if (isOpen) {
+            setActiveTab("Overview")
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = 'unset'
+        }
+
+        return () => {
+            document.body.style.overflow = 'unset'
+        }
     }, [isOpen])
 
     if (!isOpen) return null
