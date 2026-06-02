@@ -285,7 +285,7 @@ export default function CrmEnquiry() {
                                 </div>
 
                                 <p className='text-center text-black100 text-base font-normal'>
-                                    By continuing I accept the <Link href="/privacy" className='underline decoration-black100 text-black700 font-medium'>Privacy Policy</Link>
+                                  By submitting this form, you agree to our <Link href="/privacy" className='underline decoration-black100 text-black700 font-medium'>Privacy Policy</Link>
                                 </p>
                             </form>
                         </div>
