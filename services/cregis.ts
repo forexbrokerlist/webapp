@@ -52,9 +52,11 @@ export const cregis = {
 
     const fullPayload: CregisPayload = {
       ...payload,
+      // order_amount: roundedAmount,
       order_amount: roundedAmount,
       pid: env.CREJIS_PROJECT_ID,
       tokens: env.CREJIS_TOKENS,
+      // tokens: "USDT-TRC20",
     }
 
     const signedPayload = generateSignature(fullPayload, env.CREJIS_API_SECRET)
@@ -63,7 +65,7 @@ export const cregis = {
 
     try {
       const response = await axios.post<CregisResponse>(
-        `${env.CREJIS_PAYMENT_URL}api/v2/checkout`,
+        `${env.CREJIS_PAYMENT_URL}/api/v2/checkout`,
         signedPayload,
         {
           headers: {

@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
 import { useTranslations } from "next-intl"
-import type { ComponentProps } from "react"
+import { type ComponentProps, useMemo } from "react"
 import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
 import { Button } from "~/components/common/button"
@@ -16,6 +16,7 @@ import { cx } from "~/lib/utils"
 import { createAdFromCheckout } from "~/server/web/ads/actions"
 import type { AdOne } from "~/server/web/ads/payloads"
 import { createAdDetailsSchema } from "~/server/web/shared/schema"
+import { FormMedia } from "~/components/common/form-media"
 import {
   Select,
   SelectContent,
@@ -23,7 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/common/select"
-import { findCategories } from "~/server/web/categories/queries"
+import Image from "next/image"
+import { getRandomString, slugify } from "@primoui/utils"
 import type { CategoryMany } from "~/server/web/categories/payloads"
 
 type AdFormProps = ComponentProps<"form"> & {
@@ -48,7 +50,10 @@ export const AdForm = ({ className, sessionId, ad, categories, ...props }: AdFor
         websiteUrl: ad?.websiteUrl ?? "",
         description: ad?.description ?? "",
         categoryId: ad?.categoryId ?? "",
+        subcategoryId: ad?.subcategoryId ?? "",
         buttonLabel: ad?.buttonLabel ?? "",
+        faviconUrl: ad?.faviconUrl ?? "",
+        bannerUrl: ad?.bannerUrl ?? "",
       },
     },
 
@@ -63,11 +68,14 @@ export const AdForm = ({ className, sessionId, ad, categories, ...props }: AdFor
     },
   })
 
+  const [name, websiteUrl] = form.watch(["name", "websiteUrl"])
+  const path = useMemo(() => `ads/${name ? slugify(name) : getRandomString(12)}`, [name])
+
   return (
     <Form {...form}>
       <form
         onSubmit={handleSubmitWithAction}
-        className={cx("grid w-full gap-5 @md:grid-cols-2", className)}
+        className={cx("grid w-full gap-5 grid-cols-2", className)}
         noValidate
         {...props}
       >
@@ -107,21 +115,27 @@ export const AdForm = ({ className, sessionId, ad, categories, ...props }: AdFor
 
         <Controller
           control={form.control}
-          name="description"
+          name="categoryId"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <Stack className="w-full justify-between">
-                <FieldLabel data-required htmlFor={field.name}>
-                  {t("description_label")}
-                </FieldLabel>
-                <Note className="text-xs">{t("description_note")}</Note>
-              </Stack>
-              <TextArea
-                id={field.name}
-                size="lg"
-                placeholder={t("description_placeholder")}
-                {...field}
-              />
+              <FieldLabel data-required htmlFor={field.name}>
+                Category
+              </FieldLabel>
+              <Select onValueChange={(val) => {
+                field.onChange(val)
+                form.setValue("subcategoryId", "")
+              }} defaultValue={field.value}>
+                <SelectTrigger id={field.name} size="lg">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map(category => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -141,30 +155,83 @@ export const AdForm = ({ className, sessionId, ad, categories, ...props }: AdFor
 
         <Controller
           control={form.control}
-          name="categoryId"
+          name="description"
           render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel data-required htmlFor={field.name}>
-                Category
-              </FieldLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <SelectTrigger id={field.name} size="lg">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map(category => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            <Field className="col-span-full" data-invalid={fieldState.invalid}>
+              <Stack className="w-full justify-between">
+                <FieldLabel data-required htmlFor={field.name}>
+                  {t("description_label")}
+                </FieldLabel>
+                <Note className="text-xs">{t("description_note")}</Note>
+              </Stack>
+              <TextArea
+                id={field.name}
+                size="lg"
+                placeholder={t("description_placeholder")}
+                maxLength={160}
+                {...field}
+              />
+              <div className="flex justify-between items-center">
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                <span className={cx(
+                  "ml-auto text-xs tabular-nums",
+                  field.value?.length >= 160 ? "text-red-500" : "text-muted-foreground"
+                )}>
+                  {field.value?.length ?? 0}/160
+                </span>
+              </div>
             </Field>
           )}
         />
 
-        <Button type="submit" className="col-span-full" isPending={action.isPending}>
+        <Controller
+          control={form.control}
+          name="faviconUrl"
+          render={({ field }) => (
+            <FormMedia
+              className="max-mobile:col-span-full"
+              form={form}
+              field={field}
+              path={`${path}/favicon`}
+              fetchType="favicon"
+              websiteUrl={websiteUrl}
+            >
+              {({ value }) =>
+                value && (
+                  <Image
+                    src={value}
+                    alt="Favicon"
+                    width={32}
+                    height={32}
+                    className="size-8 border box-content rounded-md object-contain"
+                  />
+                )
+              }
+            </FormMedia>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="bannerUrl"
+          render={({ field }) => (
+            <FormMedia form={form} field={field} path={`${path}/banner`} className="max-mobile:col-span-full">
+              {({ value }) =>
+                value && (
+                  <Image
+                    src={value}
+                    alt="Banner"
+                    height={72}
+                    width={128}
+                    className="h-8 w-auto border box-content rounded-md aspect-video object-cover"
+                  />
+                )
+              }
+            </FormMedia>
+          )}
+        />
+
+        <Button type="submit" size="lg" variant="secondary" className="col-span-full text-base mt-2" isPending={action.isPending}>
           {t(`${ad ? "update" : "create"}.button_label`)}
         </Button>
       </form>

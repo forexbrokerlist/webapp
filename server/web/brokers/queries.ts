@@ -272,3 +272,31 @@ export const getPremiumBrokers = async (limit: number = 10) => {
     })),
   );
 };
+
+/**
+ * Fetches all brokers for the search input dropdown in the Hero section.
+ */
+export const getAllBrokersForSearch = async () => {
+  const brokers = await db.brokers.findMany({
+    select: {
+      broker_name: true,
+      logoUrl: true,
+      slug: true,
+      categories: {
+        select: {
+          slug: true,
+        },
+        take: 1,
+      },
+    },
+  });
+
+  return Promise.all(
+    brokers.map(async (broker) => ({
+      name: broker.broker_name || "",
+      logoUrl: await getBrokerLogo(broker),
+      slug: broker.slug || "",
+      categorySlug: broker.categories?.[0]?.slug || null,
+    }))
+  );
+};
