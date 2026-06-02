@@ -109,7 +109,7 @@ export const Hero = ({ className, brokers, ...props }: HeroProps) => {
                 <div className='flex flex-col sm:flex-row sm:items-center gap-5 w-full lg:w-auto'>
 
                   {/* Search bar */}
-                  <div className='relative w-full sm:w-[250px] lg:w-[340px]'>
+                  <div className='relative w-full sm:w-[250px] lg:w-[320px]'>
                     <div
                       className='flex items-center rounded-full px-3 py-2 gap-2 w-full bg-white/10 border border-[#1A1A1A]/20 backdrop-blur-[13.8px] cursor-text'
                       onClick={() => {

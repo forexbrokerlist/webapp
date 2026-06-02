@@ -2,7 +2,7 @@
 import React from 'react'
 import { Button } from '~/components/common/button';
 import { motion, Variants } from 'framer-motion';
-import Link from 'next/link';
+
 
 const TextImage = '/assets/images/text-img.png';
 
@@ -64,17 +64,26 @@ export default function ForexBusiness() {
                                 integration to help your brokerage thrive in the competitive market.
                             </motion.p>
                             <motion.div variants={itemVariants}>
-                           <Link href="#crm-enquiry-section">
-                                <Button size="md" variant="primary" className="px-5 gap-2.5 group relative z-[9]">
-                                    Contact Us
-                                    <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                            <path d="M12.0254 4.94141L17.0837 9.99974L12.0254 15.0581" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
-                                            <path d="M2.91699 10H16.942" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                    </div>
-                                </Button>
-                                </Link>
+                            <Button
+                                size="md"
+                                variant="primary"
+                                className="px-5 gap-2.5 group relative z-[9]"
+                                onClick={() => {
+                                    const el = document.getElementById('crm-enquiry-section');
+                                    if (el) {
+                                        el.scrollIntoView({ behavior: 'smooth' });
+                                        setTimeout(() => history.replaceState(null, '', window.location.pathname), 500);
+                                    }
+                                }}
+                            >
+                                Contact Us
+                                <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                        <path d="M12.0254 4.94141L17.0837 9.99974L12.0254 15.0581" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+                                        <path d="M2.91699 10H16.942" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
+                            </Button>
                             </motion.div>
                         </motion.div>
                         <motion.div variants={imageVariants}>
