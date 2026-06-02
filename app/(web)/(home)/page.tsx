@@ -37,7 +37,8 @@ import {
   getTradingPlatformPartners,
   getAlgoPartners,
   getForexEducationPartners,
-  getPremiumBrokers
+  getPremiumBrokers,
+  getAllBrokersForSearch
 } from "~/server/web/brokers/queries"
 
 const namespace = "pages.blog"
@@ -160,6 +161,7 @@ export default async function (props: any) {
   const { brokers: AlgoPartners, category: AlgoCategory } = await getAlgoPartners(3)
   const { brokers: ForexPartners, category: ForexCategory } = await getForexEducationPartners(3)
   const premiumBrokers = await getPremiumBrokers(10)
+  const allBrokersForSearch = await getAllBrokersForSearch()
   // const ForexCategory = await db.category.findUnique({
   //   where: { slug: "forex-education-and-training" },
   // })
@@ -215,7 +217,7 @@ export default async function (props: any) {
   return (
     <>
       <div className="overflow-x-hidden">
-        <Hero />
+        <Hero brokers={allBrokersForSearch} />
         <ClientLogo logos={LogoPartners} />
         <TrustedTrading
           platforms={trustedPlatforms}
