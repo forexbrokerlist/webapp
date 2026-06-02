@@ -51,7 +51,7 @@ export default function CoreProduct() {
             borderColor: "border-[rgba(255,255,255,0.10)]"
         },
         {
-            title: "Copy trading",
+            title: "Copy Trading",
             description: "Enable Clients to copy expert traders strategies and grow their portfolios.",
             icon: CrmPrimary,
             bgColor: "bg-[#F4F4F4]",

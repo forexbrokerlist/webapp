@@ -106,7 +106,7 @@ export default function ClientSay() {
                         variants={headerVariants}
                         className='flex justify-center pb-3'
                     >
-                        <button className='bg-white border-none rounded-full py-2 px-6 text-sm font-semibold text-black100 shadow-[0_4px_14px_0_rgba(0,0,0,0.06)] uppercase tracking-wider'>
+                        <button className='bg-white border-none rounded-full py-2 px-4 text-base font-medium text-black700 shadow-sm'>
                             Testimonials
                         </button>
                     </motion.div>

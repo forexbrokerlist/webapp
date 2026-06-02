@@ -110,10 +110,11 @@ You Anytime" />
                         Most requests receive a reply within 1-2 business days.
                       </p>
                     </div>
+                    
                   </div>
+                  
                 </div>
-              </div>
-              <div className="p-5">
+                     <div className="mx-5">
                 <div className="bg-white rounded-xl p-3 grid grid-cols-[50px_1fr] items-center gap-3">
                   <div className="w-[50px] h-[50px] bg-primary rounded-full flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
@@ -125,12 +126,13 @@ You Anytime" />
                     <p className="text-lg font-semibold text-black800 mb-0">
                       Prefer direct email?
                     </p>
-                    <a className="block text-base text-primary  underline underline-offset-4 cursor-pointer">
-                      forexbrokerlist24@gmail.com
-                    </a>
+                     <a href="mailto:forexbrokerlist24@gmail.com" className="block text-base text-primary  underline underline-offset-4 cursor-pointer">forexbrokerlist24@gmail.com</a>
+                     
                   </div>
                 </div>
               </div>
+              </div>
+         
 
             </div>
           </div>

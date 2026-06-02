@@ -88,7 +88,7 @@ export default async function (props: PageProps<"/advertise/success">) {
 
   return (
     <>
-      <Intro alignment="center">
+      {/* <Intro alignment="center">
         <IntroTitle>{metadata.title}</IntroTitle>
         <IntroDescription>{metadata.description}</IntroDescription>
       </Intro>
@@ -108,7 +108,46 @@ export default async function (props: PageProps<"/advertise/success">) {
             <AdCard type="All" explicitAd={existingAd} />
           </Section.Sidebar>
         )}
-      </Section>
+      </Section> */}
+
+
+      <div className="pt-[140px] pb-100 max-mobile:py-16">
+              <div className="max-w-[1640px] px-5 max-laptop:px-16 mx-auto relative max-tab:px-5 max-mobile:px-4">
+                <div className="grid grid-cols-2 gap-7 max-tab:grid-cols-1 max-mobile:gap-5">
+                  <div className="flex flex-col justify-between max-tab:gap-16">
+                    {/* slider */}
+                    <div>
+                          <Intro alignment="center">
+        <h1 className="font-bold text-4xl text-center w-[350px]">{metadata.title}</h1>
+        {/* <IntroDescription>{metadata.description}</IntroDescription> */}
+      </Intro>
+                    </div>
+                    {/* slider */}
+                    <div className="pb-10 items-center">
+                     <img src="/assets/images/Payment.png" className="mx-auto"/>
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-2xl shadow-md p-6">
+                     <Section.Content className={cx(!existingAd && "md:col-span-full")}>
+                      <h1 className="font-semibold text-3xl">Ad Details: Enter your ad information</h1>
+          <AdForm
+            sessionId={session.id}
+            ad={existingAd}
+            categories={categories}
+            className="w-full max-w-full "
+          />
+        </Section.Content>
+
+        {existingAd && (
+          <Section.Sidebar>
+            <AdCard type="All" explicitAd={existingAd} />
+          </Section.Sidebar>
+        )}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='w-full h-[1px] bg-[linear-gradient(90deg,#F0F1EC_0%,#A8DD15_50%,#F0F1EC_100%)]'></div>
     </>
   )
 }

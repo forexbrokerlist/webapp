@@ -1,13 +1,42 @@
 "use client"
 
-import { type ComponentProps } from "react"
+import { useRef, useState, useEffect, useMemo, type ComponentProps } from "react"
 import { Button } from "~/components/common/button"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { getTrustedPlatforms } from '~/server/web/brokers/queries'
+import { Search } from "lucide-react"
+type Broker = {
+  name: string
+  logoUrl: string
+  slug?: string | null
+  categorySlug?: string | null
+}
+
+interface HeroProps extends ComponentProps<"section"> {
+  brokers: Broker[]
+}
 
 const Herobanner = '/assets/images/herobanner.png';
 
-export const Hero = ({ className, ...props }: ComponentProps<"section">) => {
+export const Hero = ({ className, brokers, ...props }: HeroProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const allBrokers = brokers || [];
+  const randomBrokers = useMemo(() => {
+    if (!allBrokers.length) return [];
+    const shuffled = [...allBrokers].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 5);
+  }, [allBrokers, isOpen]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  // Determine which brokers to display: random set initially, filtered when query present
+  const displayedBrokers = useMemo(() => {
+    if (query) {
+      return allBrokers.filter((b) => b.name.toLowerCase().includes(query.toLowerCase()));
+    }
+    return randomBrokers;
+  }, [query, allBrokers, randomBrokers]);
   return (
     <>
       {/* <section className={cx("relative flex flex-col gap-y-12 w-full pt-16 pb-24 border-b border-border/40", className)} {...props}>
@@ -22,7 +51,7 @@ export const Hero = ({ className, ...props }: ComponentProps<"section">) => {
           </Suspense>
         </Intro>
       </section> */}
-      <section className="relative overflow-hidden max-mobile:pb-16 min-h-[calc(100dvh-50px)] max-tab:min-h-auto" {...props}>
+      <section className="relative overflow-hidden max-mobile:pb-16 min-h-[calc(100dvh-50px)] max-tab:min-h-auto mb-4" {...props}>
         <div className="max-w-[1640px] px-5 mx-auto max-laptop:px-16 max-tab:px-5 max-mobile:px-4">
           <div className="relative bg-[#F0F2EC]">
 
@@ -64,18 +93,70 @@ export const Hero = ({ className, ...props }: ComponentProps<"section">) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
+                className="flex  items-center gap-2"
               >
                 <Link href="/brokers">
-                <Button size="md" variant="primary" className="px-5 gap-2.5 group relative z-[9]">
-                  Find Your Broker
-                  <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <path d="M12.0254 4.94141L17.0837 9.99974L12.0254 15.0581" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M2.91699 10H16.942" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </div>
-                </Button>
+                  <Button size="md" variant="primary" className="px-5 gap-2.5 group relative z-[9]">
+                    Find Your Broker
+                    <div className="w-7 h-7 rounded-full flex items-center group-hover:bg-white transition-all duration-300 justify-center bg-primary">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M12.0254 4.94141L17.0837 9.99974L12.0254 15.0581" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M2.91699 10H16.942" stroke="#1A1A1A" strokeWidth="1.25" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                  </Button>
                 </Link>
+                <div className='flex flex-col sm:flex-row sm:items-center gap-5 w-full lg:w-auto'>
+
+                  {/* Search bar */}
+                  <div className='relative w-full sm:w-[250px] lg:w-[320px]'>
+                    <div
+                      className='flex items-center rounded-full px-3 py-2 gap-2 w-full bg-white/10 border border-[#1A1A1A]/20 backdrop-blur-[13.8px] cursor-text'
+                      onClick={() => {
+                        setIsOpen(true)
+                        inputRef.current?.focus()
+                      }}
+                    >
+                      <input
+                        ref={inputRef}
+                        type='text'
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        onFocus={() => setIsOpen(true)}
+                        onBlur={() => setTimeout(() => setIsOpen(false), 150)}
+                        placeholder='Search Broker ...'
+                        className='bg-transparent text-black100 text-sm placeholder:text-black100/40 outline-none w-full'
+                      />
+                      <Search className='text-white bg-black100 p-1.5 rounded-full w-8 h-8 shrink-0' />
+
+                    </div>
+
+                    {isOpen && (
+                      <div className='absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50'>
+                        <ul className='max-h-[300px] overflow-y-auto'>
+                          {displayedBrokers.length > 0 ? (
+                            displayedBrokers.map((broker) => (
+                              <Link
+                                key={broker.name}
+                                href={broker.categorySlug === "forex-brokers" ? `/forex-broker/${broker.slug}` : `/${broker.categorySlug || "forex-broker"}/${broker.slug}`}
+                                className='flex items-center gap-3 px-4 py-3 hover:bg-gray-50'
+                              >
+                                <img src={broker.logoUrl} alt={broker.name} className='w-6 h-6 object-contain' />
+                                <span className='text-sm text-gray-800'>{broker.name}</span>
+                              </Link>
+                            ))
+                          ) : (
+                            <li className='px-4 py-3 text-sm text-gray-400'>No results found</li>
+                          )}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Icon buttons — below search on mobile, inline on sm+ */}
+
+
+                </div>
               </motion.div>
 
               <motion.div

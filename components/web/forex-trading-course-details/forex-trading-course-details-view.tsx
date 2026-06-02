@@ -49,7 +49,7 @@ export default function ForexCrmDetailsView({ broker, randomBrokers = [], truste
 
     // Always include these sections as they are core course information
     tableOfContentsItems.push("Trading Course Details");
-    tableOfContentsItems.push("Course Modules");
+    // tableOfContentsItems.push("Course Modules");
     tableOfContentsItems.push("Trading Specifications");
     tableOfContentsItems.push("Topics & Skills");
     tableOfContentsItems.push("Trading Course Review");
